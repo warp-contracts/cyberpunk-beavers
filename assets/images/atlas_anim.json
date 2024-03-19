@@ -1,0 +1,100 @@
+{
+    "anims": [
+        {
+            "key": "walk",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "atlas",
+                    "frame": "walk-1"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-2"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-3"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-4"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-5"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-6"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-7"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-8"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-9"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-10"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-11"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-12"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-13"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-14"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-15"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "walk-16"
+                }
+            ]
+        },
+        {
+            "key": "idle",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "atlas",
+                    "frame": "idle-1"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "idle-2"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "idle-3"
+                },
+                {
+                    "key": "atlas",
+                    "frame": "idle-4"
+                }
+            ]
+        }
+    ]
+}
