@@ -1,24 +1,31 @@
-export default class Player extends Phaser.Physics.Matter.Sprite {
+export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
     let { scene, x, y, texture, frame } = data;
-    super(scene.matter.world, x, y, texture, frame);
-    this.scene.add.existing(this);
+    super(scene, x, y, texture, frame);
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
+    scene.physics.add.collider(this, scene.collideLayer);
+    this.getBody().setCollideWorldBounds(true);
+    this.getBody().setSize(64, 64);
+    this.getBody().setOffset(0, 0);
+    this.initAnimations();
+    console.log(this);
 
-    const { Body, Bodies } = Phaser.Physics.Matter.Matter;
-    const playerCollider = Bodies.circle(this.x, this.y, 12, {
-      isSensor: false,
-      label: 'playerCollider',
-    });
-    const playerSensor = Bodies.circle(this.x, this.y, 24, {
-      isSensor: true,
-      label: 'playerSensor',
-    });
-    const compoundBody = Body.create({
-      parts: [playerCollider, playerSensor],
-      frictionAir: 0.35,
-    });
-    this.setExistingBody(compoundBody);
-    this.setFixedRotation();
+    // const { Body, Bodies } = Phaser.Physics.Arc.Matter;
+    // const playerCollider = Bodies.circle(this.x, this.y, 12, {
+    //   isSensor: false,
+    //   label: 'playerCollider',
+    // });
+    // const playerSensor = Bodies.circle(this.x, this.y, 24, {
+    //   isSensor: true,
+    //   label: 'playerSensor',
+    // });
+    // const compoundBody = Body.create({
+    //   parts: [playerCollider, playerSensor],
+    //   frictionAir: 0.35,
+    // });
+    // this.setExistingBody(compoundBody);
+    // this.setFixedRotation();
   }
 
   static preload(scene) {
@@ -27,7 +34,17 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       'assets/images/atlas.png',
       'assets/images/atlas.json'
     );
-    scene.load.animation('atlas_anim', 'assets/images/atlas_anim.json');
+    scene.load.atlas(
+      'bat_idle_atlas',
+      'assets/images/idle_bat.png',
+      'assets/images/idle_bat_atlas.json'
+    );
+    scene.load.atlas(
+      'bat_move_atlas',
+      'assets/images/move_bat.png',
+      'assets/images/move_bat_atlas.json'
+    );
+    // scene.load.animation('atlas_anim', 'assets/images/atlas_anim.json');
   }
 
   get velocity() {
@@ -35,26 +52,60 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   update() {
-    const speed = 10;
-    let playerVelocity = new Phaser.Math.Vector2();
-    if (this.inputKeys.left.isDown) {
-      playerVelocity.x = -1;
-    } else if (this.inputKeys.right.isDown) {
-      playerVelocity.x = 1;
-    } else if (this.inputKeys.down.isDown) {
-      playerVelocity.y = 1;
-    } else if (this.inputKeys.up.isDown) {
-      playerVelocity.y = -1;
-    }
+    console.log('update');
+    // const speed = 17;
+    // let playerVelocity = new Phaser.Math.Vector2();
+    // if (this.inputKeys.left.isDown) {
+    //   this.body.x -= 8;
+    //   this.scaleX = -1;
+    //   this.getBody().setOffset(48, 15);
+    //   this.anims.play('walk', true);
+    // } else if (this.inputKeys.right.isDown) {
+    //   this.body.x += 8;
+    //   this.scaleX = 1;
+    //   this.getBody().setOffset(0, 15);
+    //   this.anims.play('walk', true);
+    // } else if (this.inputKeys.down.isDown) {
+    //   this.body.y += 8;
+    //   this.anims.play('walk', true);
+    // } else if (this.inputKeys.up.isDown) {
+    //   this.body.y -= 8;
+    //   this.anims.play('walk', true);
+    // } else {
+    //   this.anims.play('idle', true);
+    // }
+    // playerVelocity.normalize();
+    // playerVelocity.scale(speed);
+    // this.setVelocity(playerVelocity.x, playerVelocity.y);
+    // if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
+    //   this.anims.play('walk', true);
+    // } else {
+    //   this.anims.play('idle', true);
+    // }
+  }
 
-    playerVelocity.normalize();
-    playerVelocity.scale(speed);
-    this.setVelocity(playerVelocity.x, playerVelocity.y);
+  getBody() {
+    return this.body;
+  }
 
-    if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
-      this.anims.play('walk', true);
-    } else {
-      this.anims.play('idle', true);
-    }
+  initAnimations() {
+    this.scene.anims.create({
+      key: 'walk',
+      frames: this.scene.anims.generateFrameNames('bat_move_atlas', {
+        prefix: 'tile00',
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 8,
+    });
+    this.scene.anims.create({
+      key: 'idle',
+      frames: this.scene.anims.generateFrameNames('bat_idle_atlas', {
+        prefix: 'tile00',
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 8,
+    });
   }
 }
