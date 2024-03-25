@@ -53,27 +53,35 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   update() {
     console.log('update');
+
+    let movementTemplate = {
+      targets: this,
+      ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: 0, // -1: infinity
+      yoyo: false,
+      onStart: () => {
+        this.anims.play('walk', true);
+      },
+      onComplete: () => {
+        this.anims.play('idle', true);
+      },
+    }
+
+
     // const speed = 17;
     // let playerVelocity = new Phaser.Math.Vector2();
-    // if (this.inputKeys.left.isDown) {
-    //   this.body.x -= 8;
-    //   this.scaleX = -1;
-    //   this.getBody().setOffset(48, 15);
-    //   this.anims.play('walk', true);
-    // } else if (this.inputKeys.right.isDown) {
-    //   this.body.x += 8;
-    //   this.scaleX = 1;
-    //   this.getBody().setOffset(0, 15);
-    //   this.anims.play('walk', true);
-    // } else if (this.inputKeys.down.isDown) {
-    //   this.body.y += 8;
-    //   this.anims.play('walk', true);
-    // } else if (this.inputKeys.up.isDown) {
-    //   this.body.y -= 8;
-    //   this.anims.play('walk', true);
-    // } else {
-    //   this.anims.play('idle', true);
-    // }
+    if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
+      var tween = this.scene.tweens.add({...movementTemplate, x: '-=48', });
+    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
+      var tween = this.scene.tweens.add({...movementTemplate, x: '+=48', });
+    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.up)) {
+      var tween = this.scene.tweens.add({...movementTemplate, y: '-=48', });
+    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
+      var tween = this.scene.tweens.add({...movementTemplate, y: '+=48', });
+    } else {
+      this.anims.play('idle', true);
+    }
     // playerVelocity.normalize();
     // playerVelocity.scale(speed);
     // this.setVelocity(playerVelocity.x, playerVelocity.y);

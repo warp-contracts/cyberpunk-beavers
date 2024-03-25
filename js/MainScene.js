@@ -193,12 +193,7 @@ export default class MainScene extends Phaser.Scene {
     this.player.anims.play('idle', true);
     // this.player.setDepth(2);
 
-    this.player.inputKeys = this.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.UP,
-      down: Phaser.Input.Keyboard.KeyCodes.DOWN,
-      right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-      left: Phaser.Input.Keyboard.KeyCodes.LEFT,
-    });
+    this.player.inputKeys = this.input.keyboard.createCursorKeys();
 
     // function collisionHandler(obj1, obj2) {
     //   console.log('Colliding!', obj1, obj2);

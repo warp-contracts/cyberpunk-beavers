@@ -3,8 +3,6 @@ import UIScene from './UiScene.js';
 import LoadingScene from './LoadingScene.js';
 
 const config = {
-  width: 480,
-  height: 480,
   title: 'Phaser game tutorial',
   type: Phaser.WEBGL,
   parent: 'game',
