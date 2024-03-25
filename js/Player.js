@@ -9,6 +9,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.getBody().setSize(64, 64);
     this.getBody().setOffset(0, 0);
     this.initAnimations();
+    this.setupWebSocketListener();
     console.log(this);
 
     // const { Body, Bodies } = Phaser.Physics.Arc.Matter;
@@ -26,6 +27,45 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // });
     // this.setExistingBody(compoundBody);
     // this.setFixedRotation();
+  }
+
+  setupWebSocketListener() {
+    let movementTemplate = {
+      targets: this,
+      ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: 0, // -1: infinity
+      yoyo: false,
+      onStart: () => {
+        this.anims.play('walk', true);
+      },
+      onComplete: () => {
+        this.anims.play('idle', true);
+      },
+    }
+
+
+    const player = this;
+    // Event listener for incoming messages from the server
+    this.scene.socket.onmessage = function (event) {
+      console.log('Data from ws %s', event.data);
+      switch (event.data) {
+        case 'move left':
+          player.scaleX = -1;
+          player.scene.tweens.add({...movementTemplate, x: '-=48', });
+          break;
+        case 'move right':
+          player.scaleX = 1;
+          player.scene.tweens.add({...movementTemplate, x: '+=48', });
+          break;
+        case 'move up':
+          player.scene.tweens.add({...movementTemplate, y: '-=48', });
+          break;
+        case 'move down':
+          player.scene.tweens.add({...movementTemplate, y: '+=48', });
+          break;
+      }
+    };
   }
 
   static preload(scene) {
@@ -54,31 +94,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   update() {
     console.log('update');
 
-    let movementTemplate = {
-      targets: this,
-      ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-      duration: 500,
-      repeat: 0, // -1: infinity
-      yoyo: false,
-      onStart: () => {
-        this.anims.play('walk', true);
-      },
-      onComplete: () => {
-        this.anims.play('idle', true);
-      },
-    }
-
 
     // const speed = 17;
     // let playerVelocity = new Phaser.Math.Vector2();
     if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
-      var tween = this.scene.tweens.add({...movementTemplate, x: '-=48', });
+      this.scene.socket.send('left');
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
-      var tween = this.scene.tweens.add({...movementTemplate, x: '+=48', });
+      this.scene.socket.send('right');
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.up)) {
-      var tween = this.scene.tweens.add({...movementTemplate, y: '-=48', });
+      this.scene.socket.send('up');
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
-      var tween = this.scene.tweens.add({...movementTemplate, y: '+=48', });
+      this.scene.socket.send('down');
     } else {
       this.anims.play('idle', true);
     }

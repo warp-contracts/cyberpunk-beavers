@@ -182,6 +182,18 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     this.initMap();
+    if (game.config.useWebSocket) {
+      this.socket = new WebSocket('ws://localhost:8080');
+    } else {
+      this.socket = {
+        send: (data) => {
+          console.log('Got: ', data);
+          this.socket.onmessage({
+            data: 'move ' + data
+          })
+        }
+      }
+    }
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.player = new Player({
       scene: this,

@@ -52,3 +52,6 @@ window.sizeChanged = () => {
 window.onresize = () => window.sizeChanged();
 
 window.game = new Phaser.Game(config);
+
+// If true run `node js/server/main.js`
+window.game.config.useWebSocket = false;
