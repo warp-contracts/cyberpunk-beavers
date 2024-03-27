@@ -4,7 +4,9 @@ const EVENTS_NAME = {
 
 const Command = {
   register: 'register',
-  move: 'move'
+  registered: 'registered',
+  move: 'move',
+  moved: 'moved'
 }
 
 const Direction = {

@@ -1,20 +1,26 @@
-import Const from "./const.mjs";
+import Const from "./common/const.mjs";
+import move from "./common/move.js";
+
+const gameState = {
+    singlePlayer: {
+        name: 'LocalPlayer',
+        pos: [0, 0]
+    }
+}
 
 const response = (request) => {
     switch (request.cmd) {
         case Const.Command.register: {
             return {
-                cmd: 'registered',
-                player: {
-                    name: 'LocalPlayer',
-                    pos: [0, 0]
-                }
+                cmd: Const.Command.registered,
+                player: gameState.singlePlayer
             }
         }
         case Const.Command.move: {
             return {
-                cmd: Const.Command.move,
-                dir: request.dir
+                cmd: Const.Command.moved,
+                pid: gameState.singlePlayer.name,
+                pos: move(gameState.singlePlayer.pos, request.dir)
             }
         }
     }
@@ -37,6 +43,7 @@ export default function webSocketMock() {
         send: (data) => {
             console.log('WebSocketMock received req: ', data);
             const req = JSON.parse(data);
+            console.log('WebSocketMock responding: ', response(req));
             listeners['message'].forEach((callback) => {
                 callback({
                     data: JSON.stringify(response(req))

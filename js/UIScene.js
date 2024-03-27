@@ -1,6 +1,6 @@
 import Score from './Score.js';
 import Dom from './DOMElement.js';
-import EVENTS_NAME from './const.mjs';
+import EVENTS_NAME from './common/const.mjs';
 
 export default class UIScene extends Phaser.Scene {
     score;
