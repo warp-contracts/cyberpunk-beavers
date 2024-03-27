@@ -1,7 +1,11 @@
+import Const from './const.mjs';
+
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { scene, x, y, texture, frame } = data;
+    let { name, scene, x, y, texture, frame } = data;
     super(scene, x, y, texture, frame);
+    this.playerName = name;
     scene.add.existing(this);
     scene.physics.add.existing(this);
     scene.physics.add.collider(this, scene.collideLayer);
@@ -47,25 +51,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     const player = this;
     // Event listener for incoming messages from the server
-    this.scene.socket.onmessage = function (event) {
-      console.log('Data from ws %s', event.data);
-      switch (event.data) {
-        case 'move left':
-          player.scaleX = -1;
-          player.scene.tweens.add({...movementTemplate, x: '-=48', });
-          break;
-        case 'move right':
-          player.scaleX = 1;
-          player.scene.tweens.add({...movementTemplate, x: '+=48', });
-          break;
-        case 'move up':
-          player.scene.tweens.add({...movementTemplate, y: '-=48', });
-          break;
-        case 'move down':
-          player.scene.tweens.add({...movementTemplate, y: '+=48', });
-          break;
+    this.scene.ws.addEventListener("message", function (event) {
+      const response = JSON.parse(event.data);
+      console.log('Data from ws %s', event.data, response.cmd, response.dir);
+      if (response.cmd === Const.Command.move) {
+
+        const moveHorizontal = (74 + response.pos[0] * 48) - player.x;
+        const moveVertical = (74 + response.pos[1] * 48) - player.y;
+
+        player.scaleX = Math.sign(moveHorizontal) || player.scaleX;
+        player.scene.tweens.add({...movementTemplate, x: `+=${moveHorizontal}`, });
+        player.scene.tweens.add({...movementTemplate, y: `+=${moveVertical}`, });
+
       }
-    };
+    });
   }
 
   static preload(scene) {
@@ -92,19 +91,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    console.log('update');
+    console.log('update', this.playerName);
 
 
     // const speed = 17;
     // let playerVelocity = new Phaser.Math.Vector2();
     if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
-      this.scene.socket.send('left');
+      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.move, dir: Const.Direction.left }));
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
-      this.scene.socket.send('right');
+      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.move, dir: Const.Direction.right }));
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.up)) {
-      this.scene.socket.send('up');
+      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.move, dir: Const.Direction.up }));
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
-      this.scene.socket.send('down');
+      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.move, dir: Const.Direction.down }));
     } else {
       this.anims.play('idle', true);
     }

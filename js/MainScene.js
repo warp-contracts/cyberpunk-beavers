@@ -1,5 +1,6 @@
 import Player from './Player.js';
-import EVENTS_NAME from './const.js';
+import webSocketMock from "./WebSockerMock.js";
+import Const from "./const.mjs";
 
 const level1 = [
   [
@@ -181,64 +182,47 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    this.initWebSocket();
     this.initMap();
-    if (game.config.useWebSocket) {
-      this.socket = new WebSocket('ws://localhost:8080');
-    } else {
-      this.socket = {
-        send: (data) => {
-          console.log('Got: ', data);
-          this.socket.onmessage({
-            data: 'move ' + data
-          })
-        }
-      }
-    }
+    this.registerPlayer();
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
+
+    this.showDebugWalls();
+  }
+
+  createPlayer(playerInfo) {
     this.player = new Player({
+      name: playerInfo.name,
       scene: this,
-      x: 74,
-      y: 74,
+      x: 74 + playerInfo.pos[0] * 48,
+      y: 74 + playerInfo.pos[1] * 48,
       texture: 'atlas',
       frame: 'walk-1',
     });
     this.player.anims.play('idle', true);
-    // this.player.setDepth(2);
 
     this.player.inputKeys = this.input.keyboard.createCursorKeys();
-
-    // function collisionHandler(obj1, obj2) {
-    //   console.log('Colliding!', obj1, obj2);
-    // }
-    // this.physics.collide(
-    //   this.player,
-    //   this.collideLayer,
-    //   collisionHandler,
-    //   null,
-    //   this
-    // );
-    // this.collideLayer.setCollision(1);
-
-    // this.physics.add.collider(this.player, this.collideLayer);
-
-    this.showDebugWalls();
-
     this.physics.collide(
-      this.player,
-      this.obstacle,
-      () => console.log('colide'),
-      null,
-      this
+        this.player,
+        this.obstacle,
+        () => console.log('colide'),
+        null,
+        this
     );
-
-    this.initCamera();
-    this.initListeners();
   }
 
   update() {
-    this.player.update();
-    if (!this.player.anims.isPlaying) {
+    this.player?.update();
+    if (this.player && !this.player.anims.isPlaying) {
       this.player.anims.play('idle');
+    }
+  }
+
+  initWebSocket() {
+    if (game.config.useWebSocket) {
+      this.ws = new WebSocket('ws://localhost:8080');
+    } else {
+      this.ws = webSocketMock();
     }
   }
 
@@ -297,6 +281,21 @@ export default class MainScene extends Phaser.Scene {
     this.showDebugWalls();
   }
 
+  registerPlayer() {
+    const self = this;
+    self.ws.addEventListener('message', (event) => {
+      const response = JSON.parse(event.data);
+      if (response.cmd === 'registered') {
+        console.log('Registered player', response.player);
+        self.createPlayer(response.player);
+        self.initCamera();
+      }
+    })
+    self.ws.addEventListener("open", () => {
+      self.ws.send(JSON.stringify({ cmd: Const.Command.register}));
+    });
+  }
+
   showDebugWalls() {
     const debugGraphics = this.add.graphics().setAlpha(0.7);
     this.collideLayer.renderDebug(debugGraphics, {
@@ -309,83 +308,5 @@ export default class MainScene extends Phaser.Scene {
     this.cameras.main.setSize(this.game.scale.width, this.game.scale.height);
     this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
     this.cameras.main.setZoom(1);
-  }
-
-  handleValueChange(value) {
-    if (value == 'a') {
-      var tween = this.tweens.add({
-        targets: this.player,
-        // x: 1,
-        x: '-=48',
-        ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        duration: 500,
-        repeat: 0, // -1: infinity
-        yoyo: false,
-        onStart: () => {
-          this.player.anims.play('walk', true);
-          this.player.scaleX = -1;
-        },
-        onComplete: () => {
-          this.player.anims.play('idle', true);
-        },
-      });
-    } else if (value == 'd') {
-      var tween = this.tweens.add({
-        targets: this.player,
-        // x: 1,
-        x: '+=48',
-        ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        duration: 500,
-        repeat: 0, // -1: infinity
-        yoyo: false,
-        onStart: () => {
-          this.player.anims.play('walk', true);
-          this.player.scaleX = 1;
-        },
-        onComplete: () => {
-          this.player.anims.play('idle', true);
-        },
-      });
-    } else if (value == 's') {
-      var tween = this.tweens.add({
-        targets: this.player,
-        // x: 1,
-        y: '+=48',
-        ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        duration: 500,
-        repeat: 0, // -1: infinity
-        yoyo: false,
-        onStart: () => {
-          this.player.anims.play('walk', true);
-          // this.player.scaleX = 1;
-        },
-        onComplete: () => {
-          this.player.anims.play('idle', true);
-        },
-      });
-    } else if (value == 'w') {
-      var tween = this.tweens.add({
-        targets: this.player,
-        // x: 1,
-        y: '-=48',
-        ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        duration: 500,
-        repeat: 0, // -1: infinity
-        yoyo: false,
-        onStart: () => {
-          this.player.anims.play('walk', true);
-        },
-        onComplete: () => {
-          this.player.anims.play('idle', true);
-        },
-      });
-    } else {
-      this.player.anims.play('idle', true);
-    }
-  }
-
-  initListeners() {
-    console.log('initializing events');
-    this.game.events.on(EVENTS_NAME.currentMove, this.handleValueChange, this);
   }
 }
