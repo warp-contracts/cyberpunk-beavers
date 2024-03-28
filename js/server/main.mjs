@@ -1,6 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import Const from '../common/const.mjs';
-import move from "../common/move.js";
+import level from "./level.mjs";
 
 // Create a WebSocket server
 const wss = new WebSocketServer({ port: 8080 });
@@ -30,7 +30,8 @@ let names = [
 
 const gameState = {
     players: {
-    }
+    },
+    playersOnTiles: Array(level.height).fill([]).map(() => Array(level.width))
 }
 
 function getRandomNumber(min, max) {
@@ -45,12 +46,40 @@ function randomPlayer() {
         pos: [random, random]
     }
     gameState.players[newPlayer.name] = newPlayer;
+    gameState.playersOnTiles[newPlayer.pos[1]][newPlayer.pos[0]] = newPlayer.name;
     names.splice(random, 1);
     return {
         cmd: Const.Command.registered,
         player: newPlayer
     };
 }
+
+function move(player, dir) {
+    const newPos = [...player.pos];
+    switch (dir) {
+        case Const.Direction.left :
+            newPos[0] -= 1
+            break;
+        case Const.Direction.right :
+            newPos[0] += 1
+            break;
+        case Const.Direction.up :
+            newPos[1] -= 1
+            break;
+        case Const.Direction.down :
+            newPos[1] += 1
+            break;
+    }
+    if (gameState.playersOnTiles[newPos[1]][newPos[0]]) {
+        console.log(`Cannot move ${player.name}. Tile ${newPos} occupied by ${gameState.playersOnTiles[newPos[1]][newPos[0]]}`);
+        return player.pos;
+    } else {
+        gameState.playersOnTiles[player.pos[1]][player.pos[0]] = null;
+        gameState.playersOnTiles[newPos[1]][newPos[0]] = player.name;
+        return player.pos = newPos;
+    }
+}
+
 
 // Event listener for WebSocket connections
 wss.on('connection', function connection(ws) {
@@ -72,7 +101,7 @@ wss.on('connection', function connection(ws) {
                 const response = {
                     cmd: Const.Command.moved,
                     pid: req.pid,
-                    pos: move(gameState.players[req.pid].pos, req.dir)
+                    pos: move(gameState.players[req.pid], req.dir)
                 }
                 console.log('Response: ', JSON.stringify(response));
 
