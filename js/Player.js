@@ -1,3 +1,5 @@
+import Const from "./common/const.mjs";
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
     let { playerName, scene, x, y, texture, frame } = data;
@@ -23,8 +25,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       },
     }
 
-    const moveHorizontal = (74 + response.pos[0] * 48) - this.x;
-    const moveVertical = (74 + response.pos[1] * 48) - this.y;
+    const moveHorizontal = (26 + response.pos[0] * Const.Tile.size) - this.x;
+    const moveVertical = (26 + response.pos[1] * Const.Tile.size) - this.y;
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
     this.scene.tweens.add({...movementTemplate, x: `+=${moveHorizontal}`, });
@@ -48,10 +50,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       'assets/images/move_bat_atlas.json'
     );
     // scene.load.animation('atlas_anim', 'assets/images/atlas_anim.json');
-  }
-
-  getBody() {
-    return this.body;
   }
 
   initAnimations() {

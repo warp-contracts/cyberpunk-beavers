@@ -3,14 +3,6 @@ import Player from "./Player.js";
 
 
 export default class MainPlayer extends Player {
-  constructor(data) {
-    super(data);
-    data.scene.physics.add.existing(this);
-    data.scene.physics.add.collider(this, data.scene.collideLayer);
-    this.getBody().setCollideWorldBounds(true);
-    this.getBody().setSize(64, 64);
-    this.getBody().setOffset(0, 0);
-  }
 
   update() {
     console.log('update', this.playerName);

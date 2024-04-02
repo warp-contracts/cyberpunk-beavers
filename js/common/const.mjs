@@ -16,7 +16,11 @@ const Direction = {
   down: 'down'
 }
 
+const Tile = {
+  size: 48
+}
+
 export default {
-  Command, Direction, EVENTS_NAME
+  Command, Direction, EVENTS_NAME, Tile
 };
 
