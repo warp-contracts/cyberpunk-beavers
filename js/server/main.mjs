@@ -14,7 +14,7 @@ function registerPlayer() {
         cmd: Const.Command.registered,
         level1: gameContract.state.level1,
         level2: gameContract.state.level2,
-        player: gameContract.registerPlayer(getRandomNumber(0, 19))
+        player: gameContract.registerPlayer(getRandomNumber(0, gameContract.names.length-1))
     }
 }
 
@@ -46,6 +46,26 @@ wss.on('connection', function connection(ws) {
         const req = JSON.parse(message);
 
         switch (req.cmd) {
+            case Const.Command.attack: {
+                const fightResult = gameContract.attack(req);
+                const response = {
+                    cmd: Const.Command.stats,
+                    pid: req.pid,
+                    stats: fightResult.player.stats
+                }
+                console.log('Response: ', JSON.stringify(response));
+                broadcast(JSON.stringify(response))
+                if (fightResult.opponent) {
+                    const response = {
+                        cmd: Const.Command.stats,
+                        pid: fightResult.opponent.name,
+                        stats: fightResult.opponent.stats
+                    }
+                    console.log('Response: ', JSON.stringify(response));
+                    broadcast(JSON.stringify(response))
+                }
+            }
+            break;
             case Const.Command.register: {
                 const response = registerPlayer();
                 console.log('Response: ', JSON.stringify(response));
@@ -66,13 +86,7 @@ wss.on('connection', function connection(ws) {
                 }
                 console.log('Response: ', JSON.stringify(response));
 
-                wss.clients.forEach(function each(client) {
-                    if (client.readyState === WebSocket.OPEN) {
-                        setTimeout(() => {
-                            client.send(JSON.stringify(response));
-                        }, 150)
-                    }
-                });
+                broadcast(JSON.stringify(response));
             }
 
         }
@@ -83,5 +97,15 @@ wss.on('connection', function connection(ws) {
         console.log('Client disconnected');
     });
 });
+
+function broadcast(message) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            setTimeout(() => {
+                client.send(message);
+            }, 150)
+        }
+    });
+}
 
 console.log('WebSocket server is running on port 8080');

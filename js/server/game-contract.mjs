@@ -35,23 +35,38 @@ function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function step(pos, dir) {
+    switch (dir) {
+        case Const.Direction.left :  return [pos[0]-1, pos[1]];
+        case Const.Direction.right : return [pos[0]+1, pos[1]];
+        case Const.Direction.up :    return [pos[0], pos[1]-1];
+        case Const.Direction.down :  return [pos[0], pos[1]+1];
+    }
+}
+
+function attack(message) {
+    const player = state.players[message.pid];
+    const newPos = step(player.pos, message.dir);
+    player.stats.ap -= 1;
+
+    if (newPos[0] < 0 || newPos[0] >= SIZE || newPos[1] < 0 || newPos[1] >= SIZE) {
+        console.log(`Cannot perform attack ${player.name}. Reached edge of the universe ${newPos}`);
+    } else if (state.playersOnTiles[newPos[1]][newPos[0]]) {
+        const opponent = state.players[state.playersOnTiles[newPos[1]][newPos[0]]];
+        console.log(`Player ${player.name} attacked ${opponent.name}`);
+        opponent.stats.hp -= 10;
+        player.stats.score += 10;
+        return { player, opponent };
+    } else if ([2,4,6].includes(state.level1[newPos[1]][newPos[0]])) {
+        console.log(`Attack found obstacle ${player.name}. Tile ${newPos} has obstacle`);
+    }
+    return { player };
+}
+
+
 function movePlayer(message) {
     const player = state.players[message.pid];
-    const newPos = [...player.pos];
-    switch (message.dir) {
-        case Const.Direction.left :
-            newPos[0] -= 1;
-            break;
-        case Const.Direction.right :
-            newPos[0] += 1;
-            break;
-        case Const.Direction.up :
-            newPos[1] -= 1;
-            break;
-        case Const.Direction.down :
-            newPos[1] += 1;
-            break;
-    }
+    const newPos = step(player.pos, message.dir);
 
     if (newPos[0] < 0 || newPos[0] >= SIZE || newPos[1] < 0 || newPos[1] >= SIZE) {
         console.log(`Cannot move ${player.name}. Reached edge of the universe ${newPos}`);
@@ -73,6 +88,11 @@ function movePlayer(message) {
 function registerPlayer(randomId) {
     let newPlayer = {
         name: names[randomId].replace(/\s/g, ''),
+        stats: {
+            ap: 10,
+            hp: 100,
+            score: 0,
+        },
         pos: [randomId, randomId]
     }
     names.splice(randomId, 1);
@@ -103,6 +123,6 @@ let names = [
     'Techterror Tusk'];
 
 export default {
-    state, movePlayer, names, registerPlayer
+    attack, state, movePlayer, names, registerPlayer
 }
 

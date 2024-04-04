@@ -3,11 +3,13 @@ const EVENTS_NAME = {
 };
 
 const Command = {
+  attack: 'attack',
   join: 'join',
+  move: 'move',
+  moved: 'moved',
   register: 'register',
   registered: 'registered',
-  move: 'move',
-  moved: 'moved'
+  stats: 'stats'
 }
 
 const Direction = {

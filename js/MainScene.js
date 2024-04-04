@@ -6,6 +6,7 @@ import MainPlayer from "./MainPlayer.js";
 
 export default class MainScene extends Phaser.Scene {
   obstacle;
+  pInfo;
   constructor() {
     super('MainScene');
   }
@@ -20,6 +21,10 @@ export default class MainScene extends Phaser.Scene {
   create() {
     this.initWebSocket();
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
+    this.pInfo = this.add.text(10, 10, 'Playeroo')
+        .setOrigin(0)
+        .setStyle({fontFamily: 'Arial'});
+    this.pInfo.setDepth(10);
     this.allPlayers = {};
   }
 
@@ -27,6 +32,7 @@ export default class MainScene extends Phaser.Scene {
   createMainPlayer(playerInfo) {
     this.mainPlayer = new MainPlayer({
       playerName: playerInfo.name,
+      stats: playerInfo.stats,
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
@@ -52,6 +58,10 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
+    this.pInfo.x = this.mainPlayer?.x - game.config.width/2 + 20;
+    this.pInfo.y = this.mainPlayer?.y - game.config.height/2 + 20;
+    this.pInfo.setText(`${this.mainPlayer?.playerName} \nAP: ${this.mainPlayer?.stats.ap} \nHP:${this.mainPlayer?.stats.hp} \nScore: ${this.mainPlayer?.stats.score}`);
+
     this.mainPlayer?.update();
     for (const [_, player] of Object.entries(this.allPlayers)) {
       if (!player.anims.isPlaying) {
@@ -88,6 +98,15 @@ export default class MainScene extends Phaser.Scene {
             self.createPlayer(response);
           } else {
             self.allPlayers[response.pid].moveTo(response);
+          }
+        }
+        break;
+
+        case Const.Command.stats: {
+          console.log('Player stats', event.data);
+          if (response.pid === self.mainPlayer.playerName) {
+            console.log('Stats update', response.pid);
+            self.mainPlayer.stats = response.stats
           }
         }
       }
