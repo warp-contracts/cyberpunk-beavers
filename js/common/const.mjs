@@ -3,6 +3,7 @@ const EVENTS_NAME = {
 };
 
 const Command = {
+  join: 'join',
   register: 'register',
   registered: 'registered',
   move: 'move',

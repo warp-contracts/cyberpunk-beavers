@@ -74,6 +74,7 @@ export default class MainScene extends Phaser.Scene {
       switch (response.cmd) {
         case Const.Command.registered: {
           console.log('Registered player', response.player);
+          localStorage.setItem('player', JSON.stringify( { id: response.player.name }));
           self.initMap(response.level1, response.level2);
           self.createMainPlayer(response.player);
           self.initCamera();
@@ -93,7 +94,14 @@ export default class MainScene extends Phaser.Scene {
 
     })
     self.ws.addEventListener("open", () => {
-      self.ws.send(JSON.stringify({ cmd: Const.Command.register}));
+      const player = localStorage.getItem('player');
+      if (!player) {
+        self.ws.send(JSON.stringify({ cmd: Const.Command.register}));
+      } else {
+        self.ws.send(JSON.stringify({ cmd: Const.Command.join, playerId: JSON.parse(player).id }));
+      }
+
+
     });
   }
 

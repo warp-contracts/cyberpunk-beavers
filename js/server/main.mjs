@@ -9,6 +9,33 @@ function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function registerPlayer() {
+    return {
+        cmd: Const.Command.registered,
+        level1: gameContract.state.level1,
+        level2: gameContract.state.level2,
+        player: gameContract.registerPlayer(getRandomNumber(0, 19))
+    }
+}
+
+function getPlayer(id) {
+    if (!id) {
+        console.log(`Cannot getPlayer, id is undefined`);
+    }
+    const player = gameContract.state.players[id];
+    if (!player) {
+        console.log(`No player registered under id`, id);
+        return registerPlayer();
+    }
+    return {
+        cmd: Const.Command.registered,
+        level1: gameContract.state.level1,
+        level2: gameContract.state.level2,
+        player: player
+    }
+}
+
+
 // Event listener for WebSocket connections
 wss.on('connection', function connection(ws) {
     console.log('A new client connected');
@@ -20,12 +47,13 @@ wss.on('connection', function connection(ws) {
 
         switch (req.cmd) {
             case Const.Command.register: {
-                const response = {
-                    cmd: Const.Command.registered,
-                    level1: gameContract.state.level1,
-                    level2: gameContract.state.level2,
-                    player: gameContract.registerPlayer(getRandomNumber(0, 19))
-                }
+                const response = registerPlayer();
+                console.log('Response: ', JSON.stringify(response));
+                ws.send(JSON.stringify(response));
+            }
+            break;
+            case Const.Command.join: {
+                const response = getPlayer(req.playerId);
                 console.log('Response: ', JSON.stringify(response));
                 ws.send(JSON.stringify(response));
             }
