@@ -4,24 +4,32 @@ import Player from "./Player.js";
 
 export default class MainPlayer extends Player {
 
-  update() {
-    console.log('update', this.playerName);
+    update() {
+        console.log('update', this.playerName);
 
-    if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
-      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.move, dir: Const.Direction.left }));
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
-      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.move, dir: Const.Direction.right }));
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.up)) {
-      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.move, dir: Const.Direction.up }));
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
-      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.move, dir: Const.Direction.down }));
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
-      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.attack, dir: Const.Direction.down }));
-      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.attack, dir: Const.Direction.up }));
-      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.attack, dir: Const.Direction.left }));
-      this.scene.ws.send(JSON.stringify({ pid: this.playerName, cmd: Const.Command.attack, dir: Const.Direction.right }));
-    } else {
-      this.anims.play('idle', true);
+        const {up, left, right, down} = Const.Direction;
+        const {attack, move} = Const.Command;
+        const pid = this.playerName;
+
+        if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
+            this.send({cmd: move, pid, dir: left});
+        } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
+            this.send({cmd: move, pid, dir: right});
+        } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.up)) {
+            this.send({cmd: move, pid, dir: up});
+        } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
+            this.send({cmd: move, pid, dir: down});
+        } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
+            this.send({cmd: attack, pid, dir: down});
+            this.send({cmd: attack, pid, dir: up});
+            this.send({cmd: attack, pid, dir: left});
+            this.send({cmd: attack, pid, dir: right});
+        } else {
+            this.anims.play('idle', true);
+        }
     }
-  }
+
+    send(message) {
+        this.scene.ws.send(JSON.stringify(message));
+    }
 }

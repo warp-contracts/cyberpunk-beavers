@@ -1,94 +1,58 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import Const from '../common/const.mjs';
 import gameContract from "./game-contract.mjs";
+import registerPlayer from "./commands/register.mjs";
+import getPlayer from "./commands/join.mjs";
+
+const WS_PORT = 8080;
 
 // Create a WebSocket server
-const wss = new WebSocketServer({ port: 8080 });
-
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function registerPlayer() {
-    return {
-        cmd: Const.Command.registered,
-        level1: gameContract.state.level1,
-        level2: gameContract.state.level2,
-        player: gameContract.registerPlayer(getRandomNumber(0, gameContract.names.length-1))
-    }
-}
-
-function getPlayer(id) {
-    if (!id) {
-        console.log(`Cannot getPlayer, id is undefined`);
-    }
-    const player = gameContract.state.players[id];
-    if (!player) {
-        console.log(`No player registered under id`, id);
-        return registerPlayer();
-    }
-    return {
-        cmd: Const.Command.registered,
-        level1: gameContract.state.level1,
-        level2: gameContract.state.level2,
-        player: player
-    }
-}
+const wss = new WebSocketServer({port: WS_PORT});
 
 
 // Event listener for WebSocket connections
-wss.on('connection', function connection(ws) {
+wss.on('connection', (ws) => {
     console.log('A new client connected');
 
     // Event listener for messages from the client
-    ws.on('message', function incoming(message) {
-        console.log('Received message from client: %s', message);
+    ws.on('message', (message) => {
+        console.log('------')
+        console.log('WS REQ: %s', message);
         const req = JSON.parse(message);
 
         switch (req.cmd) {
             case Const.Command.attack: {
                 const fightResult = gameContract.attack(req);
-                const response = {
+                logAndBroadcast(JSON.stringify({
                     cmd: Const.Command.stats,
                     pid: req.pid,
                     stats: fightResult.player.stats
-                }
-                console.log('Response: ', JSON.stringify(response));
-                broadcast(JSON.stringify(response))
+                }));
+
                 if (fightResult.opponent) {
-                    const response = {
+                    logAndBroadcast(JSON.stringify({
                         cmd: Const.Command.stats,
                         pid: fightResult.opponent.name,
                         stats: fightResult.opponent.stats
-                    }
-                    console.log('Response: ', JSON.stringify(response));
-                    broadcast(JSON.stringify(response))
+                    }))
                 }
             }
-            break;
+                break;
             case Const.Command.register: {
-                const response = registerPlayer();
-                console.log('Response: ', JSON.stringify(response));
-                ws.send(JSON.stringify(response));
+                logAndReply(ws, JSON.stringify(registerPlayer()));
             }
-            break;
+                break;
             case Const.Command.join: {
-                const response = getPlayer(req.playerId);
-                console.log('Response: ', JSON.stringify(response));
-                ws.send(JSON.stringify(response));
+                logAndReply(ws, JSON.stringify(getPlayer(req.playerId)));
             }
-            break;
+                break;
             case Const.Command.move: {
-                const response = {
+                logAndBroadcast(JSON.stringify({
                     cmd: Const.Command.moved,
                     pid: req.pid,
                     pos: gameContract.movePlayer(req)
-                }
-                console.log('Response: ', JSON.stringify(response));
-
-                broadcast(JSON.stringify(response));
+                }));
             }
-
         }
     });
 
@@ -98,8 +62,14 @@ wss.on('connection', function connection(ws) {
     });
 });
 
-function broadcast(message) {
-    wss.clients.forEach(function each(client) {
+function logAndReply(ws, message) {
+    console.log('WS RES:', message);
+    ws.send(message);
+}
+
+function logAndBroadcast(message) {
+    console.log('WS RES:', message);
+    wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
             setTimeout(() => {
                 client.send(message);
@@ -108,4 +78,4 @@ function broadcast(message) {
     });
 }
 
-console.log('WebSocket server is running on port 8080');
+console.log(`WebSocket server is running on port ${WS_PORT}`);
