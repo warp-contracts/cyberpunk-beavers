@@ -15,6 +15,7 @@ function getPlayer(id) {
         cmd: Const.Command.registered,
         level1: gameContract.state.level1,
         level2: gameContract.state.level2,
+        round: gameContract.state.round,
         player: player
     }
 }

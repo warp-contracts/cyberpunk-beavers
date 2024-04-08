@@ -5,6 +5,7 @@ import MainPlayer from "./MainPlayer.js";
 
 
 export default class MainScene extends Phaser.Scene {
+  round;
   obstacle;
   pInfo;
   constructor() {
@@ -58,9 +59,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
+    const roundInfo = this.roundTick();
     this.pInfo.x = this.mainPlayer?.x - game.config.width/2 + 20;
     this.pInfo.y = this.mainPlayer?.y - game.config.height/2 + 20;
-    this.pInfo.setText(`${this.mainPlayer?.playerName} \nAP: ${this.mainPlayer?.stats.ap} \nHP:${this.mainPlayer?.stats.hp} \nScore: ${this.mainPlayer?.stats.score}`);
+    const ps = this.mainPlayer?.stats;
+    const stats = `AP: ${ps?.ap.current} \nHP:${ps?.hp.current} \nScore: ${ps?.score}`
+    this.pInfo.setText(`${this.mainPlayer?.playerName}\n${roundInfo}\n${stats}`);
 
     this.mainPlayer?.update();
     for (const [_, player] of Object.entries(this.allPlayers)) {
@@ -68,6 +72,20 @@ export default class MainScene extends Phaser.Scene {
         player.anims.play('idle');
       }
     }
+  }
+
+  roundTick() {
+    if (!this.round) {
+      return `Waiting to start the round...`
+    }
+    const tsChange = Date.now() - this.round.start;
+    const currentRound = ~~(tsChange / this.round.interval);
+    const left = ~~(10 - 10 * (tsChange - currentRound * this.round.interval)/this.round.interval);
+    if (left === 9) {
+      this.mainPlayer.nextRound();
+    }
+
+    return `Round: ${currentRound} ${'◦'.repeat(left)}`
   }
 
   initWebSocket() {
@@ -85,6 +103,7 @@ export default class MainScene extends Phaser.Scene {
         case Const.Command.registered: {
           console.log('Registered player', response.player);
           localStorage.setItem('player', JSON.stringify( { id: response.player.name }));
+          self.round = response.round;
           self.initMap(response.level1, response.level2);
           self.createMainPlayer(response.player);
           self.initCamera();

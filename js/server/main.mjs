@@ -47,10 +47,16 @@ wss.on('connection', (ws) => {
             }
                 break;
             case Const.Command.move: {
+                const player = gameContract.movePlayer(req);
                 logAndBroadcast(JSON.stringify({
                     cmd: Const.Command.moved,
                     pid: req.pid,
-                    pos: gameContract.movePlayer(req)
+                    pos: player.pos
+                }));
+                logAndReply(ws, JSON.stringify({
+                    cmd: Const.Command.stats,
+                    pid: req.pid,
+                    stats: player.stats
                 }));
             }
         }

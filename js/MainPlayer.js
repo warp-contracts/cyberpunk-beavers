@@ -29,6 +29,10 @@ export default class MainPlayer extends Player {
         }
     }
 
+    nextRound() {
+        this.stats.ap.current = this.stats.ap.max;
+    }
+
     send(message) {
         this.scene.ws.send(JSON.stringify(message));
     }
