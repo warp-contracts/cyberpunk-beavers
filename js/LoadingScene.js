@@ -1,10 +1,10 @@
 export default class LoadingScene extends Phaser.Scene {
   constructor() {
-    super('loading-scene');
+    super('loading-scene')
   }
   create() {
-    this.scene.start('MainScene');
-    this.scene.start('ui-scene');
-    console.log('Loading scene was created');
+    this.scene.start('MainScene')
+    this.scene.start('ui-scene')
+    console.log('Loading scene was created')
   }
 }

@@ -9,21 +9,32 @@ const Command = {
   moved: 'moved',
   register: 'register',
   registered: 'registered',
-  stats: 'stats'
-}
+  stats: 'stats',
+  pick: 'pick',
+  picked: 'picked',
+};
 
 const Direction = {
   left: 'left',
   right: 'right',
   up: 'up',
-  down: 'down'
-}
-
-const Tile = {
-  size: 48
-}
-
-export default {
-  Command, Direction, EVENTS_NAME, Tile
+  down: 'down',
 };
 
+const Tile = {
+  size: 48,
+};
+
+const GameObject = {
+  hp: 'hp',
+  ap: 'ap',
+  none: 'none',
+};
+
+export default {
+  Command,
+  Direction,
+  EVENTS_NAME,
+  Tile,
+  GameObject,
+};

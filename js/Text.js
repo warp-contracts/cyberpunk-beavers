@@ -5,8 +5,8 @@ export default class Text extends Phaser.GameObjects.Text {
       color: '#fff',
       stroke: '#000',
       strokeThickness: 4,
-    });
-    this.setOrigin(0, 0);
-    scene.add.existing(this);
+    })
+    this.setOrigin(0, 0)
+    scene.add.existing(this)
   }
 }

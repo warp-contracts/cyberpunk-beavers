@@ -1,4 +1,4 @@
-import Const from "./common/const.mjs";
+import Const from './common/const.mjs';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
@@ -8,6 +8,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.stats = stats;
     scene.add.existing(this);
     this.initAnimations();
+    this.initInputKeys();
+    this.onGameObject = null;
     console.log(this);
   }
 
@@ -24,14 +26,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       onComplete: () => {
         this.anims.play('idle', true);
       },
-    }
+    };
 
-    const moveHorizontal = (26 + response.pos[0] * Const.Tile.size) - this.x;
-    const moveVertical = (26 + response.pos[1] * Const.Tile.size) - this.y;
+    const moveHorizontal = 26 + response.pos[0] * Const.Tile.size - this.x;
+    const moveVertical = 26 + response.pos[1] * Const.Tile.size - this.y;
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
-    this.scene.tweens.add({...movementTemplate, x: `+=${moveHorizontal}`, });
-    this.scene.tweens.add({...movementTemplate, y: `+=${moveVertical}`, });
+    this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}` });
+    this.scene.tweens.add({ ...movementTemplate, y: `+=${moveVertical}` });
   }
 
   static preload(scene) {
@@ -71,6 +73,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         end: 7,
       }),
       frameRate: 8,
+    });
+  }
+
+  initInputKeys() {
+    this.inputKeys = this.scene.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.UP,
+      down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+      right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+      left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      p: Phaser.Input.Keyboard.KeyCodes.P,
     });
   }
 }
