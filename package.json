@@ -1,7 +1,14 @@
 {
   "name": "cyberpunk-beavers",
   "type": "module",
+  "scripts": {
+    "dev": "yarn nodemon js/server/main.mjs"
+  },
   "dependencies": {
     "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5"
   }
 }

@@ -1,13 +1,13 @@
 import Player from './Player.js';
-import webSocketMock from "./WebSockerMock.js";
-import Const from "./common/const.mjs";
-import MainPlayer from "./MainPlayer.js";
-
+import webSocketMock from './WebSockerMock.js';
+import Const from './common/const.mjs';
+import MainPlayer from './MainPlayer.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
   obstacle;
   pInfo;
+  gameObjectsLayer;
   constructor() {
     super('MainScene');
   }
@@ -16,19 +16,19 @@ export default class MainScene extends Phaser.Scene {
     Player.preload(this);
     this.load.image('tiles', 'assets/images/dices.png');
     this.load.image('cyberpunk_bg', 'assets/images/bg_tiles.png');
-    // this.load.tilemapTiledJSON('map', 'assets/images/map.json');
+    this.load.image('cyberpunk_game_objects', 'assets/images/bee.png');
   }
 
   create() {
     this.initWebSocket();
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
-    this.pInfo = this.add.text(10, 10, 'Playeroo')
-        .setOrigin(0)
-        .setStyle({fontFamily: 'Arial'});
+    this.pInfo = this.add
+      .text(10, 10, 'Playeroo')
+      .setOrigin(0)
+      .setStyle({ fontFamily: 'Arial' });
     this.pInfo.setDepth(10);
     this.allPlayers = {};
   }
-
 
   createMainPlayer(playerInfo) {
     this.mainPlayer = new MainPlayer({
@@ -42,29 +42,30 @@ export default class MainScene extends Phaser.Scene {
     });
     this.mainPlayer.anims.play('idle', true);
 
-    this.mainPlayer.inputKeys = this.input.keyboard.createCursorKeys();
     this.allPlayers[this.mainPlayer.playerName] = this.mainPlayer;
     return this.mainPlayer;
   }
 
   createPlayer(playerInfo) {
-    return this.allPlayers[playerInfo.pid] = new Player({
+    return (this.allPlayers[playerInfo.pid] = new Player({
       playerName: playerInfo.pid,
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
       texture: 'atlas',
       frame: 'walk-1',
-    });
+    }));
   }
 
   update() {
     const roundInfo = this.roundTick();
-    this.pInfo.x = this.mainPlayer?.x - game.config.width/2 + 20;
-    this.pInfo.y = this.mainPlayer?.y - game.config.height/2 + 20;
+    this.pInfo.x = this.mainPlayer?.x - game.config.width / 2 + 20;
+    this.pInfo.y = this.mainPlayer?.y - game.config.height / 2 + 20;
     const ps = this.mainPlayer?.stats;
-    const stats = `AP: ${ps?.ap.current} \nHP:${ps?.hp.current} \nScore: ${ps?.score}`
-    this.pInfo.setText(`${this.mainPlayer?.playerName}\n${roundInfo}\n${stats}`);
+    const stats = `AP: ${ps?.ap.current} \nHP:${ps?.hp.current} \nScore: ${ps?.score}`;
+    this.pInfo.setText(
+      `${this.mainPlayer?.playerName}\n${roundInfo}\n${stats}`
+    );
 
     this.mainPlayer?.update();
     for (const [_, player] of Object.entries(this.allPlayers)) {
@@ -76,16 +77,20 @@ export default class MainScene extends Phaser.Scene {
 
   roundTick() {
     if (!this.round) {
-      return `Waiting to start the round...`
+      return `Waiting to start the round...`;
     }
     const tsChange = Date.now() - this.round.start;
     const currentRound = ~~(tsChange / this.round.interval);
-    const left = ~~(10 - 10 * (tsChange - currentRound * this.round.interval)/this.round.interval);
+    const left = ~~(
+      10 -
+      (10 * (tsChange - currentRound * this.round.interval)) /
+        this.round.interval
+    );
     if (left === 9) {
       this.mainPlayer.nextRound();
     }
 
-    return `Round: ${currentRound} ${'◦'.repeat(left)}`
+    return `Round: ${currentRound} ${'◦'.repeat(left)}`;
   }
 
   initWebSocket() {
@@ -98,77 +103,102 @@ export default class MainScene extends Phaser.Scene {
     const self = this;
     self.ws.addEventListener('message', (event) => {
       const response = JSON.parse(event.data);
-
+      console.log(response.cmd);
       switch (response.cmd) {
-        case Const.Command.registered: {
-          console.log('Registered player', response.player);
-          localStorage.setItem('player', JSON.stringify( { id: response.player.name }));
-          self.round = response.round;
-          self.initMap(response.level1, response.level2);
-          self.createMainPlayer(response.player);
-          self.initCamera();
-        }
-        break;
-
-        case Const.Command.moved: {
-          console.log('Player moved', event.data);
-          if (!self.allPlayers[response.pid]) {
-            console.log('Setting up new player', response.pid);
-            self.createPlayer(response);
-          } else {
-            self.allPlayers[response.pid].moveTo(response);
+        case Const.Command.registered:
+          {
+            console.log('Registered player', response.player);
+            localStorage.setItem(
+              'player',
+              JSON.stringify({ id: response.player.name })
+            );
+            self.round = response.round;
+            self.initMap(response.groundTilemap, response.gameObjectsTilemap);
+            self.createMainPlayer(response.player);
+            self.initCamera();
           }
-        }
-        break;
+          break;
 
-        case Const.Command.stats: {
-          console.log('Player stats', event.data);
-          if (response.pid === self.mainPlayer.playerName) {
-            console.log('Stats update', response.pid);
-            self.mainPlayer.stats = response.stats
+        case Const.Command.moved:
+          {
+            console.log('Player moved', event.data);
+            if (!self.allPlayers[response.pid]) {
+              console.log('Setting up new player', response.pid);
+              self.createPlayer(response);
+            } else {
+              self.allPlayers[response.pid].moveTo(response);
+            }
+
+            if (response.onGameObject != null) {
+              console.log(
+                `Player stood on a game object: ${JSON.stringify(response.onGameObject)}`
+              );
+              this.mainPlayer.onGameObject = response.onGameObject;
+            }
           }
-        }
+          break;
+
+        case Const.Command.stats:
+          {
+            console.log('Player stats', event.data);
+            if (response.pid === self.mainPlayer.playerName) {
+              console.log('Stats update', response.pid);
+              self.mainPlayer.stats = response.stats;
+            }
+          }
+          break;
+
+        case Const.Command.picked:
+          {
+            console.log(`Player picked a game object.`);
+            this.gameObjectsLayer.removeTileAt(
+              response.pos[0],
+              response.pos[1]
+            );
+          }
+          break;
       }
-
-    })
-    self.ws.addEventListener("open", () => {
+    });
+    self.ws.addEventListener('open', () => {
       const player = localStorage.getItem('player');
       if (!player) {
-        self.ws.send(JSON.stringify({ cmd: Const.Command.register}));
+        self.ws.send(JSON.stringify({ cmd: Const.Command.register }));
       } else {
-        self.ws.send(JSON.stringify({ cmd: Const.Command.join, playerId: JSON.parse(player).id }));
+        self.ws.send(
+          JSON.stringify({
+            cmd: Const.Command.join,
+            playerId: JSON.parse(player).id,
+          })
+        );
       }
-
-
     });
   }
 
   initMap(level1, level2) {
-    // const map = this.make.tilemap({ key: 'map' });
-    const map = this.make.tilemap({
-      data: level1,
-      tileWidth: Const.Tile.size,
-      tileHeight: Const.Tile.size,
-    });
-
-    const tiles = map.addTilesetImage('cyberpunk_bg');
-    map.createLayer(0, tiles, 0, 0);
-    // // layer.setDepth(0);
-
-    // const map2 = this.make.tilemap({
-    //   data: level2,
-    //   tileWidth: Const.Tile.size,
-    //   tileHeight: Const.Tile.size,
-    // });
-    // const tiles = map2.addTilesetImage('tiles');
-
-    // const tiles2 = map2.addTilesetImage('tiles');
-    // map2.createLayer(1, tiles2, 0, 0);
+    this.groundLayer = this.createLayer(level1, 'cyberpunk_bg', 0);
+    this.gameObjectsLayer = this.createLayer(level2, 'cyberpunk_game_objects');
   }
 
   initCamera() {
     this.cameras.main.setSize(this.game.scale.width, this.game.scale.height);
     this.cameras.main.startFollow(this.mainPlayer, true, 0.09, 0.09);
     this.cameras.main.setZoom(1);
+  }
+
+  createLayer(data, image, depth) {
+    const map = this.make.tilemap({
+      data,
+      tileWidth: Const.Tile.size,
+      tileHeight: Const.Tile.size,
+    });
+
+    const tiles = map.addTilesetImage(image);
+    const layer = map.createLayer(0, tiles, 0, 0);
+
+    if (depth) {
+      layer.setDepth(depth);
+    }
+
+    return layer;
   }
 }
