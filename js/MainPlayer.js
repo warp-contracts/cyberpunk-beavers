@@ -3,7 +3,6 @@ import Player from './Player.js'
 
 export default class MainPlayer extends Player {
   update() {
-    console.log('update', this.playerName)
 
     const { up, left, right, down } = Const.Direction
     const { attack, move, pick } = Const.Command
@@ -27,7 +26,7 @@ export default class MainPlayer extends Player {
         this.send({ cmd: pick, pid })
       }
     } else {
-      this.anims.play('idle', true)
+      // this.anims.play('idle', true)
     }
   }
 

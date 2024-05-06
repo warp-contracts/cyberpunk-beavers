@@ -38,9 +38,9 @@ export default class MainScene extends Phaser.Scene {
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
       texture: 'atlas',
+      animated: false,
       frame: 'walk-1',
     });
-    this.mainPlayer.anims.play('idle', true);
 
     this.allPlayers[this.mainPlayer.playerName] = this.mainPlayer;
     return this.mainPlayer;
@@ -68,11 +68,11 @@ export default class MainScene extends Phaser.Scene {
     );
 
     this.mainPlayer?.update();
-    for (const [_, player] of Object.entries(this.allPlayers)) {
-      if (!player.anims.isPlaying) {
-        player.anims.play('idle');
-      }
-    }
+    // for (const [_, player] of Object.entries(this.allPlayers)) {
+    //   if (!player.anims.isPlaying) {
+    //     player.anims.play('idle');
+    //   }
+    // }
   }
 
   roundTick() {
