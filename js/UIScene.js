@@ -1,39 +1,74 @@
-import Score from './Score.js'
-import Dom from './DOMElement.js'
-import EVENTS_NAME from './common/const.mjs'
-
 export default class UIScene extends Phaser.Scene {
-  score
+    score;
+    playerAgileOne;
 
-  constructor() {
-    super('ui-scene')
-  }
+    constructor() {
+        super('ui-scene');
+    }
 
-  create() {
-    const dom = new Dom(this, 0, 0)
-    let form = `<input type="button" name="playButton" value="Enter" style="font-size: 12px">`
+    init() {
+        console.log(`UI Scene - 1. Init`);
+        const player = JSON.parse(localStorage.getItem('player'));
+        if (player?.beaverId) {
+            this.scene.start('MainScene', { beaverChoice: player.beaverId });
+        }
+    }
 
-    const element = dom.createFromHTML(form)
-    element.addListener('click')
+    preload() {
+        console.log('UI Scene - 2. Preload');
+    }
 
-    this.initListeners()
+    create() {
+        console.log('UI Scene - 3. Create');
+        this.add.text(10, 10, 'Choose one... and survive...')
+            .setOrigin(0)
+            .setStyle({fontFamily: 'Arial'});
+        this.playerAgileOne = this.addBeaverOptionPick({
+            imgName: 'beaver_agile',
+            x: 50,
+            y: 100
+        });
+        this.addBeaverOptionPick({
+            imgName: 'beaver_tank',
+            x: 250,
+            y: 100
+        });
+        this.addBeaverOptionPick({
+            imgName: 'beaver_techy',
+            x: 600,
+            y: 100
+        });
+        this.addBeaverOptionPick({
+            imgName: 'beaver_runner',
+            x: 50,
+            y: 400
+        });
+        this.addBeaverOptionPick({
+            imgName: 'beaver_water_pistol',
+            x: 270,
+            y: 400
+        });
+        this.addBeaverOptionPick({
+            imgName: 'player_bat',
+            x: 550,
+            y: 400
+        });
+    }
 
-    element.on('click', (event) => {
-      if (event.target.name === 'playButton') {
-        console.log(this)
-        this.game.events.emit(EVENTS_NAME.currentMove, 'input')
-      }
-    })
 
-    this.score = new Score(this, 20, 20, 'test')
-  }
-
-  initListeners() {
-    console.log('initializing events')
-    this.game.events.on(
-      EVENTS_NAME.currentMove,
-      (value) => this.score.changeValue(value),
-      this
-    )
-  }
+    addBeaverOptionPick(option) {
+        const beaverSprite = this.add.sprite(option.x, option.y, option.imgName);
+        return beaverSprite
+            .setInteractive()
+            .setOrigin(0)
+            .on('pointerover', () => {
+                beaverSprite.preFX.addGlow();
+            })
+            .on('pointerout', () => {
+                beaverSprite.clearFX();
+            })
+            .on('pointerdown', () => {
+                this.scene.start('MainScene', { beaverChoice: option.imgName });
+            });
+    }
 }

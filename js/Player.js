@@ -2,14 +2,14 @@ import Const from './common/const.mjs';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { playerName, stats, scene, x, y, texture, animated, frame } = data;
+    let { walletAddress, stats, scene, x, y, texture, animated, frame } = data;
     super(scene, x, y, texture, frame);
-    this.playerName = playerName;
+    this.walletAddress = walletAddress;
     this.stats = stats;
     this.animated = animated;
     scene.add.existing(this);
     if (animated) {
-    this.initAnimations();
+      this.initAnimations();
     }
     this.initInputKeys();
     this.onGameObject = null;
@@ -42,19 +42,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   static preload(scene) {
     if (this.animated) {
       scene.load.atlas(
-          'atlas',
-          'assets/images/atlas.png',
-          'assets/images/atlas.json'
+        'atlas',
+        'assets/images/atlas.png',
+        'assets/images/atlas.json',
       );
       scene.load.atlas(
-          'bat_idle_atlas',
-          'assets/images/idle_bat.png',
-          'assets/images/idle_bat_atlas.json'
+        'bat_idle_atlas',
+        'assets/images/idle_bat.png',
+        'assets/images/idle_bat_atlas.json',
       );
       scene.load.atlas(
-          'bat_move_atlas',
-          'assets/images/move_bat.png',
-          'assets/images/move_bat_atlas.json'
+        'bat_move_atlas',
+        'assets/images/move_bat.png',
+        'assets/images/move_bat_atlas.json',
       );
       // scene.load.animation('atlas_anim', 'assets/images/atlas_anim.json');
     }

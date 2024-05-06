@@ -1,15 +1,21 @@
 import gameContract from '../game-contract.mjs'
 import Const from '../../common/const.mjs'
-import registerPlayer from './register.mjs'
 
-function getPlayer(id) {
-  if (!id) {
-    console.log(`Cannot getPlayer, id is undefined`)
+function getPlayer(walletAddress) {
+  if (!walletAddress) {
+    console.log(`Cannot getPlayer, walletAddress is undefined`);
+    return {
+      cmd: Const.Command.registered,
+      error: Const.Errors.invalidWallet
+    }
   }
-  const player = gameContract.state.players[id]
+  const player = gameContract.state.players[walletAddress]
   if (!player) {
-    console.log(`No player registered under id`, id)
-    return registerPlayer()
+    console.log(`No player registered under wallet`, walletAddress);
+    return {
+      cmd: Const.Command.registered,
+      error: Const.Errors.notRegistered
+    }
   }
   return {
     cmd: Const.Command.registered,

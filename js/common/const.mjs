@@ -31,10 +31,16 @@ const GameObject = {
   none: 'none',
 };
 
+const Errors = {
+  notRegistered: 'Player not registered',
+  invalidWallet: 'Wallet address is invalid'
+}
+
 export default {
   Command,
   Direction,
   EVENTS_NAME,
+  Errors,
   Tile,
   GameObject,
 };

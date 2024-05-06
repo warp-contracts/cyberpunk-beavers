@@ -1,5 +1,4 @@
 import Player from './Player.js';
-import webSocketMock from './WebSockerMock.js';
 import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
 
@@ -12,14 +11,27 @@ export default class MainScene extends Phaser.Scene {
     super('MainScene');
   }
 
+  init(data) {
+    console.log('Main Scene - 1. Init', data);
+    this.beaverChoice = data.beaverChoice;
+  }
+
   preload() {
+    console.log('Main Scene - 2. Preload');
     Player.preload(this);
     this.load.image('tiles', 'assets/images/dices.png');
     this.load.image('cyberpunk_bg', 'assets/images/bg_tiles.png');
     this.load.image('cyberpunk_game_objects', 'assets/images/bee.png');
+    this.load.image('beaver_agile48', 'assets/images/beaver_agile48.png');
+    this.load.image('beaver_runner48', 'assets/images/beaver_runner48.png');
+    this.load.image('beaver_tank48', 'assets/images/beaver_tank48.png');
+    this.load.image('beaver_techy48', 'assets/images/beaver_player_techy48.png');
+    this.load.image('beaver_water_pistol48', 'assets/images/beaver_water_pistol48.png');
+    this.load.image('player_bat48', 'assets/images/idle_bat.png');
   }
 
   create() {
+    console.log('Main Scene - 3. Create');
     this.initWebSocket();
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.pInfo = this.add
@@ -32,27 +44,27 @@ export default class MainScene extends Phaser.Scene {
 
   createMainPlayer(playerInfo) {
     this.mainPlayer = new MainPlayer({
-      playerName: playerInfo.name,
+      walletAddress: playerInfo.walletAddress,
       stats: playerInfo.stats,
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
-      texture: 'atlas',
+      texture: `${playerInfo.beaverId}48`,
       animated: false,
       frame: 'walk-1',
     });
 
-    this.allPlayers[this.mainPlayer.playerName] = this.mainPlayer;
+    this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
     return this.mainPlayer;
   }
 
   createPlayer(playerInfo) {
-    return (this.allPlayers[playerInfo.pid] = new Player({
-      playerName: playerInfo.pid,
+    return (this.allPlayers[playerInfo.walletAddress] = new Player({
+      walletAddress: playerInfo.walletAddress,
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
-      texture: 'atlas',
+      texture: `${playerInfo.beaverId}48`,
       frame: 'walk-1',
     }));
   }
@@ -64,7 +76,7 @@ export default class MainScene extends Phaser.Scene {
     const ps = this.mainPlayer?.stats;
     const stats = `AP: ${ps?.ap.current} \nHP:${ps?.hp.current} \nScore: ${ps?.score}`;
     this.pInfo.setText(
-      `${this.mainPlayer?.playerName}\n${roundInfo}\n${stats}`
+      `${this.mainPlayer?.walletAddress}\n${roundInfo}\n${stats}`
     );
 
     this.mainPlayer?.update();
@@ -94,11 +106,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   initWebSocket() {
-    if (game.config.useWebSocket) {
-      this.ws = new WebSocket('ws://localhost:8080');
-    } else {
-      this.ws = webSocketMock();
-    }
+    this.ws = new WebSocket('ws://localhost:8080');
 
     const self = this;
     self.ws.addEventListener('message', (event) => {
@@ -107,26 +115,32 @@ export default class MainScene extends Phaser.Scene {
       switch (response.cmd) {
         case Const.Command.registered:
           {
-            console.log('Registered player', response.player);
-            localStorage.setItem(
-              'player',
-              JSON.stringify({ id: response.player.name })
-            );
-            self.round = response.round;
-            self.initMap(response.groundTilemap, response.gameObjectsTilemap);
-            self.createMainPlayer(response.player);
-            self.initCamera();
+            console.log('Registered player', response);
+            if (response.error) {
+              console.error('Failed to join the game', response.error);
+              localStorage.removeItem('player');
+              self.scene.start('ui-scene');
+            } else {
+              localStorage.setItem(
+                'player',
+                JSON.stringify({ id: response.player.walletAddress, beaverId: response.player.beaverId })
+              );
+              self.round = response.round;
+              self.initMap(response.groundTilemap, response.gameObjectsTilemap);
+              self.createMainPlayer(response.player);
+              self.initCamera();
+            }
           }
           break;
 
         case Const.Command.moved:
           {
             console.log('Player moved', event.data);
-            if (!self.allPlayers[response.pid]) {
-              console.log('Setting up new player', response.pid);
+            if (!self.allPlayers[response.walletAddress]) {
+              console.log('Setting up new player', response.walletAddress);
               self.createPlayer(response);
             } else {
-              self.allPlayers[response.pid].moveTo(response);
+              self.allPlayers[response.walletAddress].moveTo(response);
             }
 
             if (response.onGameObject != null) {
@@ -141,8 +155,8 @@ export default class MainScene extends Phaser.Scene {
         case Const.Command.stats:
           {
             console.log('Player stats', event.data);
-            if (response.pid === self.mainPlayer.playerName) {
-              console.log('Stats update', response.pid);
+            if (response.walletAddress === self.mainPlayer.walletAddress) {
+              console.log('Stats update', response.walletAddress);
               self.mainPlayer.stats = response.stats;
             }
           }
@@ -160,16 +174,17 @@ export default class MainScene extends Phaser.Scene {
       }
     });
     self.ws.addEventListener('open', () => {
-      const player = localStorage.getItem('player');
-      if (!player) {
-        self.ws.send(JSON.stringify({ cmd: Const.Command.register }));
+
+      const walletAddress = localStorage.getItem('wallet_address')
+          || Math.random().toString(36).substring(2);
+      localStorage.setItem('wallet_address', walletAddress);
+
+      const player = JSON.parse(localStorage.getItem('player'));
+      console.log(`Found player info in local storage`, player);
+      if (player) {
+        self.ws.send(JSON.stringify({ cmd: Const.Command.join, walletAddress: walletAddress }));
       } else {
-        self.ws.send(
-          JSON.stringify({
-            cmd: Const.Command.join,
-            playerId: JSON.parse(player).id,
-          })
-        );
+        self.ws.send(JSON.stringify({ cmd: Const.Command.register, walletAddress: walletAddress, beaverId: self.beaverChoice }));
       }
     });
   }

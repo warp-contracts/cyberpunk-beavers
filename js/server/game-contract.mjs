@@ -68,15 +68,16 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+/**
+ * Updates current game round
+ */
 function gameRoundTick() {
   const tsNow = Date.now();
   const tsChange = tsNow - state.round.start;
   const round = ~~(tsChange / state.round.interval);
   console.log('Last round ', state.round);
   state.round.current = round;
-  console.log(
-    `new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`
-  );
+  console.log(`new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`);
 }
 
 function gamePlayerTick(player) {
@@ -100,34 +101,32 @@ function step(pos, dir) {
 }
 
 function pick(message) {
-  const player = state.players[message.pid];
+  const player = state.players[message.walletAddress];
 
   if (player.stats.ap.current < 1) {
-    console.log(
-      `Cannot perform pick ${player.name}. Not enough ap ${player.stats.ap.current}`
-    );
+    console.log(`Cannot perform pick ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
     return { player, picked: false };
   }
 
   player.stats.ap.current -= 1;
 
   const tile = gameObjectsTiles.find(
-    (t) => t.tile == state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
+    (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]],
   );
   const { type } = tile;
-  if (type == GameObject.none) {
+  if (type === GameObject.none) {
     console.log(
-      `Cannot perform pick ${player.name}. Player does not stand on a game object`
+      `Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`,
     );
     return { player, picked: false };
   }
 
   player.stats.ap.current -= 1;
   console.log(type);
-  if (type == GameObject.hp) {
+  if (type === GameObject.hp) {
     console.log(`Player stands on a game object, increasing ${type}.`);
     player.stats.hp.current += 5;
-  } else if (type == GameObject.ap) {
+  } else if (type === GameObject.ap) {
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += 5;
   }
@@ -137,12 +136,10 @@ function pick(message) {
 
 function attack(message) {
   gameRoundTick();
-  const player = state.players[message.pid];
+  const player = state.players[message.walletAddress];
   gamePlayerTick(player);
   if (player.stats.ap.current < 1) {
-    console.log(
-      `Cannot perform attak ${player.name}. Not enough ap ${player.stats.ap.current}`
-    );
+    console.log(`Cannot perform attak ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
     return { player };
   }
   const attackPos = step(player.pos, message.dir);
@@ -150,26 +147,22 @@ function attack(message) {
   if (state.playersOnTiles[attackPos[1]][attackPos[0]]) {
     const opponent =
       state.players[state.playersOnTiles[attackPos[1]][attackPos[0]]];
-    console.log(`Player ${player.name} attacked ${opponent.name}`);
+    console.log(`Player ${player.walletAddress} attacked ${opponent.name}`);
     opponent.stats.hp -= 10;
     player.stats.score += 10;
     return { player, opponent };
-  } else if (
-    [2, 4, 6].includes(state.groundTilemap[attackPos[1]][attackPos[0]])
-  ) {
-    console.log(
-      `Attack found obstacle ${player.name}. Tile ${attackPos} has obstacle`
-    );
+  } else if ([2, 4, 6].includes(state.groundTilemap[attackPos[1]][attackPos[0]])) {
+    console.log(`Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`);
   }
   return { player };
 }
 
 function movePlayer(message) {
   gameRoundTick();
-  const player = state.players[message.pid];
+  const player = state.players[message.walletAddress];
   gamePlayerTick(player);
   if (player.stats.ap.current < 1) {
-    console.log(`Cannot move ${player.name}. Not enough ap`);
+    console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
     return player;
   }
 
@@ -182,36 +175,36 @@ function movePlayer(message) {
     newPos[1] >= SIZE
   ) {
     console.log(
-      `Cannot move ${player.name}. Reached edge of the universe ${newPos}`
+      `Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`,
     );
     return player;
   } else if (state.playersOnTiles[newPos[1]][newPos[0]]) {
     console.log(
-      `Cannot move ${player.name}. Tile ${newPos} occupied by ${
+      `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${
         state.playersOnTiles[newPos[1]][newPos[0]]
-      }`
+      }`,
     );
     return player;
   } else if ([2, 4, 6].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
-    console.log(`Cannot move ${player.name}. Tile ${newPos} has obstacle`);
+    console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
     return player;
   } else {
     player.onGameObject = gameObjectsTiles.find(
-      (t) => t.tile == state.gameObjectsTilemap[newPos[1]][newPos[0]]
-    );
+      (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]);
 
     state.playersOnTiles[player.pos[1]][player.pos[0]] = null;
-    state.playersOnTiles[newPos[1]][newPos[0]] = player.name;
+    state.playersOnTiles[newPos[1]][newPos[0]] = player.walletAddress;
     player.pos = newPos;
     player.stats.ap.current -= 1;
     return player;
   }
 }
 
-function registerPlayer(randomId) {
+function registerPlayer(walletAddress, beaverId) {
   gameRoundTick();
   let newPlayer = {
-    name: names[randomId].replace(/\s/g, ''),
+    walletAddress,
+    beaverId,
     stats: {
       ap: {
         current: 100,
@@ -226,40 +219,16 @@ function registerPlayer(randomId) {
       },
       score: 0,
     },
-    pos: [randomId, randomId],
+    pos: [Math.floor(Math.random() * SIZE), Math.floor(Math.random() * SIZE)],
   };
-  names.splice(randomId, 1);
-  return (state.players[newPlayer.name] = newPlayer);
+  return (state.players[newPlayer.walletAddress] = newPlayer);
 }
 
-let names = [
-  'Byteblade',
-  'Cyberclaw Assassin',
-  'Techshredder',
-  'Nanofang Fury',
-  'Blitzgnawer',
-  'Machbyte Marauder',
-  'Cyberblade Berserker',
-  'Circuitcarver',
-  'Byteburst Butcher',
-  'Razorbyte Ravager',
-  'Cyberfury Fangs',
-  'Blitzgnasher',
-  'Megabyte Mauler',
-  'Byteblitz Bruiser',
-  'Circuitcrusher',
-  'Nanoblade Ninja',
-  'Datastream Slayer',
-  'Cyberstorm Striker',
-  'Bytebreaker Banshee',
-  'Techterror Tusk',
-];
 
 export default {
   pick,
   attack,
   state,
   movePlayer,
-  names,
   registerPlayer,
 };

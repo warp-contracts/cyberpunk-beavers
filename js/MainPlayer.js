@@ -6,24 +6,24 @@ export default class MainPlayer extends Player {
 
     const { up, left, right, down } = Const.Direction
     const { attack, move, pick } = Const.Command
-    const pid = this.playerName
+    const walletAddress = this.walletAddress
 
     if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
-      this.send({ cmd: move, pid, dir: left })
+      this.send({ cmd: move, walletAddress, dir: left })
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
-      this.send({ cmd: move, pid, dir: right })
+      this.send({ cmd: move, walletAddress, dir: right })
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.up)) {
-      this.send({ cmd: move, pid, dir: up })
+      this.send({ cmd: move, walletAddress, dir: up })
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
-      this.send({ cmd: move, pid, dir: down })
+      this.send({ cmd: move, walletAddress, dir: down })
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
-      this.send({ cmd: attack, pid, dir: down })
-      this.send({ cmd: attack, pid, dir: up })
-      this.send({ cmd: attack, pid, dir: left })
-      this.send({ cmd: attack, pid, dir: right })
+      this.send({ cmd: attack, walletAddress, dir: down })
+      this.send({ cmd: attack, walletAddress, dir: up })
+      this.send({ cmd: attack, walletAddress, dir: left })
+      this.send({ cmd: attack, walletAddress, dir: right })
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.p)) {
       if (this.onGameObject) {
-        this.send({ cmd: pick, pid })
+        this.send({ cmd: pick, walletAddress })
       }
     } else {
       // this.anims.play('idle', true)
