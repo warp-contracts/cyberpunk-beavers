@@ -181,6 +181,15 @@ export default class MainScene extends Phaser.Scene {
             );
           }
           break;
+
+        case Const.Command.digged:
+          {
+            console.log(`Player digged a game object.`);
+            this.gameObjectsLayer
+              .getTileAt(response.pos[0], response.pos[1])
+              .setVisible(true);
+          }
+          break;
       }
     });
     self.ws.addEventListener('open', () => {
@@ -213,6 +222,7 @@ export default class MainScene extends Phaser.Scene {
   initMap(level1, level2) {
     this.groundLayer = this.createLayer(level1, 'cyberpunk_bg', 0);
     this.gameObjectsLayer = this.createLayer(level2, 'cyberpunk_game_objects');
+    this.gameObjectsLayer.forEachTile((t) => t.setVisible(false));
   }
 
   initCamera() {

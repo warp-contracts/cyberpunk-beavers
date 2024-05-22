@@ -12,6 +12,8 @@ const Command = {
   stats: 'stats',
   pick: 'pick',
   picked: 'picked',
+  dig: 'dig',
+  digged: 'digged',
 };
 
 const Direction = {
@@ -33,8 +35,8 @@ const GameObject = {
 
 const Errors = {
   notRegistered: 'Player not registered',
-  invalidWallet: 'Wallet address is invalid'
-}
+  invalidWallet: 'Wallet address is invalid',
+};
 
 export default {
   Command,

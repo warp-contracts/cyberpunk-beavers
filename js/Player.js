@@ -44,17 +44,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       scene.load.atlas(
         'atlas',
         'assets/images/atlas.png',
-        'assets/images/atlas.json',
+        'assets/images/atlas.json'
       );
       scene.load.atlas(
         'bat_idle_atlas',
         'assets/images/idle_bat.png',
-        'assets/images/idle_bat_atlas.json',
+        'assets/images/idle_bat_atlas.json'
       );
       scene.load.atlas(
         'bat_move_atlas',
         'assets/images/move_bat.png',
-        'assets/images/move_bat_atlas.json',
+        'assets/images/move_bat_atlas.json'
       );
       // scene.load.animation('atlas_anim', 'assets/images/atlas_anim.json');
     }
@@ -89,6 +89,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       left: Phaser.Input.Keyboard.KeyCodes.LEFT,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
       p: Phaser.Input.Keyboard.KeyCodes.P,
+      d: Phaser.Input.Keyboard.KeyCodes.D,
     });
   }
 }

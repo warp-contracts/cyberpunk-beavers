@@ -20,67 +20,105 @@ wss.on('connection', (ws) => {
     const req = JSON.parse(message);
 
     switch (req.cmd) {
-      case Const.Command.pick: {
-        const pickResult = gameContract.pick(req);
-        logAndBroadcast(
-          JSON.stringify({
-            cmd: Const.Command.stats,
-            walletAddress: req.walletAddress,
-            stats: pickResult.player.stats,
-          }),
-        );
-
-        if (pickResult.picked) {
+      case Const.Command.pick:
+        {
+          const pickResult = gameContract.pick(req);
           logAndBroadcast(
             JSON.stringify({
-              cmd: Const.Command.picked,
+              cmd: Const.Command.stats,
               walletAddress: req.walletAddress,
-              pos: pickResult.player.pos,
-            }),
+              stats: pickResult.player.stats,
+            })
+          );
+
+          if (pickResult.picked) {
+            logAndBroadcast(
+              JSON.stringify({
+                cmd: Const.Command.picked,
+                walletAddress: req.walletAddress,
+                pos: pickResult.player.pos,
+              })
+            );
+          }
+        }
+        break;
+      case Const.Command.dig:
+        {
+          const digResult = gameContract.dig(req);
+          logAndBroadcast(
+            JSON.stringify({
+              cmd: Const.Command.stats,
+              walletAddress: req.walletAddress,
+              stats: digResult.player.stats,
+            })
+          );
+
+          if (digResult.digged?.type) {
+            logAndBroadcast(
+              JSON.stringify({
+                cmd: Const.Command.digged,
+                walletAddress: req.walletAddress,
+                pos: digResult.player.pos,
+                type: digResult.digged?.type,
+              })
+            );
+          }
+        }
+        break;
+      case Const.Command.attack:
+        {
+          const fightResult = gameContract.attack(req);
+          logAndBroadcast(
+            JSON.stringify({
+              cmd: Const.Command.stats,
+              walletAddress: req.walletAddress,
+              stats: fightResult.player.stats,
+            })
+          );
+
+          if (fightResult.opponent) {
+            logAndBroadcast(
+              JSON.stringify({
+                cmd: Const.Command.stats,
+                walletAddress: fightResult.opponent.name,
+                stats: fightResult.opponent.stats,
+              })
+            );
+          }
+        }
+        break;
+      case Const.Command.register:
+        {
+          logAndReply(
+            ws,
+            JSON.stringify(registerPlayer(req.walletAddress, req.beaverId))
           );
         }
-      }
         break;
-      case Const.Command.attack: {
-        const fightResult = gameContract.attack(req);
-        logAndBroadcast(
-          JSON.stringify({
-            cmd: Const.Command.stats,
-            walletAddress: req.walletAddress,
-            stats: fightResult.player.stats,
-          }));
-
-        if (fightResult.opponent) {
-          logAndBroadcast(JSON.stringify({
-            cmd: Const.Command.stats,
-            walletAddress: fightResult.opponent.name,
-            stats: fightResult.opponent.stats,
-          }));
+      case Const.Command.join:
+        {
+          logAndReply(ws, JSON.stringify(getPlayer(req.walletAddress)));
         }
-      }
-        break;
-      case Const.Command.register: {
-        logAndReply(ws, JSON.stringify(registerPlayer(req.walletAddress, req.beaverId)));
-      }
-        break;
-      case Const.Command.join: {
-        logAndReply(ws, JSON.stringify(getPlayer(req.walletAddress)));
-      }
         break;
       case Const.Command.move: {
         const player = gameContract.movePlayer(req);
-        logAndBroadcast(JSON.stringify({
-          cmd: Const.Command.moved,
-          walletAddress: req.walletAddress,
-          pos: player.pos,
-          beaverId: player.beaverId,
-          onGameObject: player.onGameObject,
-        }));
-        logAndReply(ws, JSON.stringify({
-          cmd: Const.Command.stats,
-          walletAddress: req.walletAddress,
-          stats: player.stats,
-        }));
+        logAndBroadcast(
+          JSON.stringify({
+            cmd: Const.Command.moved,
+            walletAddress: req.walletAddress,
+            pos: player.pos,
+            beaverId: player.beaverId,
+            onGameObject: player.onGameObject,
+          })
+        );
+        logAndReply(
+          ws,
+          JSON.stringify({
+            cmd: Const.Command.stats,
+            walletAddress: req.walletAddress,
+            stats: player.stats,
+          })
+        );
       }
     }
   });
