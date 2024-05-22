@@ -3,14 +3,20 @@
   "type": "module",
   "scripts": {
     "dev": "yarn nodemon js/server/main.mjs",
-    "serve": "yarn live-server --port=9000"
+    "serve": "yarn live-server --port=9000",
+    "test": "node build.js && vitest",
+    "build": "node build.js"
   },
   "dependencies": {
+    "warp-contracts-plugin-quickjs": "^1.1.5",
     "ws": "^8.16.0"
   },
   "devDependencies": {
     "live-server": "1.2.1",
+    "esbuild": "^0.20.2",
     "nodemon": "^3.1.0",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "replace-in-file": "^7.1.0",
+    "vitest": "^1.6.0"
   }
 }
