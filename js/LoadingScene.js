@@ -1,6 +1,6 @@
 export default class LoadingScene extends Phaser.Scene {
   constructor() {
-    super('loading-scene')
+    super('loading-scene');
   }
 
   init() {
@@ -13,12 +13,15 @@ export default class LoadingScene extends Phaser.Scene {
     this.load.image('beaver_runner', 'assets/images/beaver_runner.png');
     this.load.image('beaver_tank', 'assets/images/beaver_player_tank.png');
     this.load.image('beaver_techy', 'assets/images/beaver_player_techy.png');
-    this.load.image('beaver_water_pistol', 'assets/images/beaver_water_pistol.png');
+    this.load.image(
+      'beaver_water_pistol',
+      'assets/images/beaver_water_pistol.png'
+    );
     this.load.image('player_bat', 'assets/images/player_bat.png');
   }
 
   create() {
     console.log('Loading Scene - 3. Create');
-    this.scene.start('ui-scene');
+    this.scene.start('connect-wallet-scene');
   }
 }

@@ -1,6 +1,7 @@
-import MainScene from './MainScene.js'
-import UIScene from './UiScene.js'
-import LoadingScene from './LoadingScene.js'
+import MainScene from './MainScene.js';
+import LoadingScene from './LoadingScene.js';
+import PlayerPickScene from './PlayerPickScene.js';
+import ConnectWalletScene from './ConnectWalletScene.js';
 
 const config = {
   title: 'Phaser game tutorial',
@@ -27,7 +28,7 @@ const config = {
   },
   callbacks: {
     postBoot: () => {
-      window.sizeChanged()
+      window.sizeChanged();
     },
   },
   canvasStyle: `display: block; width: 100%; height: 100%;`,
@@ -35,21 +36,20 @@ const config = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, MainScene, UIScene],
-}
+  scene: [LoadingScene, ConnectWalletScene, PlayerPickScene, MainScene],
+};
 
 window.sizeChanged = () => {
   if (window.game.isBooted) {
     setTimeout(() => {
-      window.game.scale.resize(window.innerWidth, window.innerHeight)
+      window.game.scale.resize(window.innerWidth, window.innerHeight);
       window.game.canvas.setAttribute(
         'style',
         `display: block; width: ${window.innerWidth}px; height: ${window.innerHeight}px;`
-      )
-    }, 100)
+      );
+    }, 100);
   }
-}
-window.onresize = () => window.sizeChanged()
+};
+window.onresize = () => window.sizeChanged();
 
-window.game = new Phaser.Game(config)
-
+window.game = new Phaser.Game(config);

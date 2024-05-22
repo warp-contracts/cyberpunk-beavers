@@ -14,6 +14,7 @@ export default class MainScene extends Phaser.Scene {
   init(data) {
     console.log('Main Scene - 1. Init', data);
     this.beaverChoice = data.beaverChoice;
+    this.signer = data.signer;
   }
 
   preload() {
@@ -25,8 +26,14 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('beaver_agile48', 'assets/images/beaver_agile48.png');
     this.load.image('beaver_runner48', 'assets/images/beaver_runner48.png');
     this.load.image('beaver_tank48', 'assets/images/beaver_tank48.png');
-    this.load.image('beaver_techy48', 'assets/images/beaver_player_techy48.png');
-    this.load.image('beaver_water_pistol48', 'assets/images/beaver_water_pistol48.png');
+    this.load.image(
+      'beaver_techy48',
+      'assets/images/beaver_player_techy48.png'
+    );
+    this.load.image(
+      'beaver_water_pistol48',
+      'assets/images/beaver_water_pistol48.png'
+    );
     this.load.image('player_bat48', 'assets/images/idle_bat.png');
   }
 
@@ -119,11 +126,14 @@ export default class MainScene extends Phaser.Scene {
             if (response.error) {
               console.error('Failed to join the game', response.error);
               localStorage.removeItem('player');
-              self.scene.start('ui-scene');
+              self.scene.start('connect-wallet-scene');
             } else {
               localStorage.setItem(
                 'player',
-                JSON.stringify({ id: response.player.walletAddress, beaverId: response.player.beaverId })
+                JSON.stringify({
+                  id: response.player.walletAddress,
+                  beaverId: response.player.beaverId,
+                })
               );
               self.round = response.round;
               self.initMap(response.groundTilemap, response.gameObjectsTilemap);
@@ -174,17 +184,28 @@ export default class MainScene extends Phaser.Scene {
       }
     });
     self.ws.addEventListener('open', () => {
-
-      const walletAddress = localStorage.getItem('wallet_address')
-          || Math.random().toString(36).substring(2);
+      const walletAddress =
+        localStorage.getItem('wallet_address') ||
+        Math.random().toString(36).substring(2);
       localStorage.setItem('wallet_address', walletAddress);
 
       const player = JSON.parse(localStorage.getItem('player'));
       console.log(`Found player info in local storage`, player);
       if (player) {
-        self.ws.send(JSON.stringify({ cmd: Const.Command.join, walletAddress: walletAddress }));
+        self.ws.send(
+          JSON.stringify({
+            cmd: Const.Command.join,
+            walletAddress: walletAddress,
+          })
+        );
       } else {
-        self.ws.send(JSON.stringify({ cmd: Const.Command.register, walletAddress: walletAddress, beaverId: self.beaverChoice }));
+        self.ws.send(
+          JSON.stringify({
+            cmd: Const.Command.register,
+            walletAddress: walletAddress,
+            beaverId: self.beaverChoice,
+          })
+        );
       }
     });
   }
