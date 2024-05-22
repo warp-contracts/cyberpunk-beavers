@@ -3,18 +3,30 @@ import Const from '../common/const.mjs'
 import gameContract from './game-contract.mjs'
 import registerPlayer from './commands/register.mjs'
 import getPlayer from './commands/join.mjs'
+import {QuickJsPlugin} from "warp-contracts-plugin-quickjs";
+import fs from "fs";
+
+const wasmModule = fs.readFileSync("dist/output.js", "utf-8");
+
+const quickJsPlugin = new QuickJsPlugin({})
+const contract = await quickJsPlugin.process({
+  contractSource: wasmModule,
+  binaryType: 'release_sync'
+});
+
+const contractState = {};
 
 const WS_PORT = 8080
 
 // Create a WebSocket server
-const wss = new WebSocketServer({ port: WS_PORT })
+const wss = new WebSocketServer({port: WS_PORT});
 
 // Event listener for WebSocket connections
 wss.on('connection', (ws) => {
   console.log('A new client connected')
 
   // Event listener for messages from the client
-  ws.on('message', (message) => {
+  ws.on('message', async (message) => {
     console.log('------')
     console.log('WS REQ: %s', message)
     const req = JSON.parse(message)
@@ -22,24 +34,31 @@ wss.on('connection', (ws) => {
     switch (req.cmd) {
       case Const.Command.pick:
         {
-          const pickResult = gameContract.pick(req)
-          logAndBroadcast(
-            JSON.stringify({
-              cmd: Const.Command.stats,
-              pid: req.pid,
-              stats: pickResult.player.stats,
-            })
-          )
-
-          if (pickResult.picked) {
+          const response = await contract.handle(message, state)
+          if (response.Error) {
+            console.error(response.Error);
+          } else {
+            const pickResult = gameContract.pick(req)
             logAndBroadcast(
               JSON.stringify({
-                cmd: Const.Command.picked,
+                cmd: Const.Command.stats,
                 pid: req.pid,
-                pos: pickResult.player.pos,
+                stats: pickResult.player.stats,
               })
             )
+
+            if (pickResult.picked) {
+              logAndBroadcast(
+                JSON.stringify({
+                  cmd: Const.Command.picked,
+                  pid: req.pid,
+                  pos: pickResult.player.pos,
+                })
+              )
+            }
           }
+
+
         }
         break
       case Const.Command.attack:
