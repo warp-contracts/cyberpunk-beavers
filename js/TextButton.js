@@ -1,4 +1,6 @@
-export class TextButton extends Phaser.GameObjects.Text {
+import { Text } from './Text.js';
+
+export class TextButton extends Text {
   constructor(scene, x, y, text, style, callback) {
     super(scene, x, y, text, style);
 

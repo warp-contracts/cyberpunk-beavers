@@ -23,11 +23,14 @@ export default class ConnectWalletScene extends Phaser.Scene {
     console.log('Connect Wallet Scene - 2. Preload');
   }
 
-  create() {
+  async create() {
     console.log('Connect Wallet Scene - 3. Create');
-    this.helloText = new Text(this, 100, 100, 'Hello!', {
+
+    this.helloText = new Text(this, 100, 100, 'Hello stranger...', {
       fill: '#0f0',
     });
+
+    await this.helloText.animateText();
     this.clickButton = new TextButton(
       this,
       100,
@@ -38,6 +41,9 @@ export default class ConnectWalletScene extends Phaser.Scene {
       },
       async () => await this.connectWallet()
     );
+
+    await this.clickButton.animateText();
+    this.clickButton.blinkText();
   }
 
   async connectWallet() {

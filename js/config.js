@@ -31,7 +31,7 @@ const config = {
       window.sizeChanged();
     },
   },
-  canvasStyle: `display: block; width: 100%; height: 100%;`,
+  canvasStyle: `display: block; width: 100%; height: 100%; margin: -1px;`,
   autoFocus: true,
   audio: {
     disableWebAudio: false,
