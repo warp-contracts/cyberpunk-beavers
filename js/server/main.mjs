@@ -9,6 +9,8 @@ const WS_PORT = 8080;
 // Create a WebSocket server
 const wss = new WebSocketServer({ port: WS_PORT });
 
+gameContract.setGameObjectsTilesOnMap();
+
 // Event listener for WebSocket connections
 wss.on('connection', (ws) => {
   console.log('A new client connected');

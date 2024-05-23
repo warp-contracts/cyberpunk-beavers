@@ -5,18 +5,17 @@ const SIZE = 60;
 let i = -1;
 let j = 0;
 const groundTiles = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6];
-const gameObjectsTiles = [
-  { tile: 0, type: GameObject.ap },
-  { tile: 1, type: GameObject.hp },
-];
-for (let i = 0; i < 11; i++) {
-  gameObjectsTiles.push({ tile: 2, type: GameObject.none });
-}
+
 const state = {
   map: {
     width: SIZE,
     height: SIZE,
   },
+  gameObjectsTiles: [
+    { tile: 0, type: GameObject.ap },
+    { tile: 1, type: GameObject.hp },
+    { tile: 2, type: GameObject.none },
+  ],
   round: {
     current: 0,
     start: Date.now(),
@@ -51,19 +50,27 @@ const state = {
 
 const digged = [];
 
-state.gameObjectsTilemap = state.groundTilemap.map((a) => {
-  return a.map((b) => {
-    if ([1, 3, 5].includes(b)) {
-      return gameObjectsTiles[getRandomNumber(0, gameObjectsTiles.length - 1)]
-        .tile;
-    } else {
-      return 2;
-    }
-  });
-});
-
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function setGameObjectsTilesOnMap() {
+  const gameObjectsTilesToPropagate = state.gameObjectsTiles;
+  for (let i = 0; i < 11; i++) {
+    gameObjectsTilesToPropagate.push({ tile: 2, type: GameObject.none });
+  }
+
+  state.gameObjectsTilemap = state.groundTilemap.map((a) => {
+    return a.map((b) => {
+      if ([1, 3, 5].includes(b)) {
+        return gameObjectsTilesToPropagate[
+          getRandomNumber(0, gameObjectsTilesToPropagate.length - 1)
+        ].tile;
+      } else {
+        return 2;
+      }
+    });
+  });
 }
 
 /**
@@ -112,7 +119,7 @@ function pick(message) {
 
   player.stats.ap.current -= 1;
 
-  const tile = gameObjectsTiles.find(
+  const tile = state.gameObjectsTiles.find(
     (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
   );
   const { type } = tile;
@@ -161,7 +168,7 @@ function dig(message) {
 
   player.stats.ap.current -= 1;
 
-  const tile = gameObjectsTiles.find(
+  const tile = state.gameObjectsTiles.find(
     (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
   );
   const { type } = tile;
@@ -245,7 +252,7 @@ function movePlayer(message) {
     );
     return player;
   } else {
-    player.onGameObject = gameObjectsTiles.find(
+    player.onGameObject = state.gameObjectsTiles.find(
       (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]
     );
 
@@ -288,4 +295,5 @@ export default {
   state,
   movePlayer,
   registerPlayer,
+  setGameObjectsTilesOnMap,
 };
