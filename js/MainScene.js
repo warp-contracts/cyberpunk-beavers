@@ -15,6 +15,7 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 1. Init', data);
     this.beaverChoice = data.beaverChoice;
     this.signer = data.signer;
+    this.walletAddress = data.walletAddress;
   }
 
   preload() {
@@ -193,25 +194,20 @@ export default class MainScene extends Phaser.Scene {
       }
     });
     self.ws.addEventListener('open', () => {
-      const walletAddress =
-        localStorage.getItem('wallet_address') ||
-        Math.random().toString(36).substring(2);
-      localStorage.setItem('wallet_address', walletAddress);
-
       const player = JSON.parse(localStorage.getItem('player'));
       console.log(`Found player info in local storage`, player);
       if (player) {
         self.ws.send(
           JSON.stringify({
             cmd: Const.Command.join,
-            walletAddress: walletAddress,
+            walletAddress: this.walletAddress,
           })
         );
       } else {
         self.ws.send(
           JSON.stringify({
             cmd: Const.Command.register,
-            walletAddress: walletAddress,
+            walletAddress: this.walletAddress,
             beaverId: self.beaverChoice,
           })
         );
