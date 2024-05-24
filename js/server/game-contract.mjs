@@ -153,7 +153,7 @@ function pick(message) {
   }
 
   digged.splice(digged.indexOf(diggedObject), 1);
-  return { player, picked: true };
+  return { player, picked: { type } };
 }
 
 function dig(message) {

@@ -79,4 +79,3 @@ export default class PlayerPickScene extends Phaser.Scene {
       });
   }
 }
-

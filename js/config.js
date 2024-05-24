@@ -2,6 +2,7 @@ import MainScene from './MainScene.js';
 import LoadingScene from './LoadingScene.js';
 import PlayerPickScene from './PlayerPickScene.js';
 import ConnectWalletScene from './ConnectWalletScene.js';
+import HintScene from './HintScene.js';
 
 const config = {
   title: 'Phaser game tutorial',
@@ -36,7 +37,13 @@ const config = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, ConnectWalletScene, PlayerPickScene, MainScene],
+  scene: [
+    LoadingScene,
+    ConnectWalletScene,
+    PlayerPickScene,
+    MainScene,
+    HintScene,
+  ],
 };
 
 window.sizeChanged = () => {

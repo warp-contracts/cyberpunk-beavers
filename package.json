@@ -6,6 +6,8 @@
     "serve": "yarn live-server --port=9000"
   },
   "dependencies": {
+    "warp-contracts": "^1.4.45",
+    "warp-contracts-plugin-signature": "^1.0.20",
     "ws": "^8.16.0"
   },
   "devDependencies": {

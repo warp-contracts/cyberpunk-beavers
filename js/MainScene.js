@@ -1,6 +1,8 @@
 import Player from './Player.js';
 import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
+import { EVENTS_NAME } from './utils/events.js';
+import { HINTS } from './utils/hints.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -16,6 +18,7 @@ export default class MainScene extends Phaser.Scene {
     this.beaverChoice = data.beaverChoice;
     this.signer = data.signer;
     this.walletAddress = data.walletAddress;
+    this.scene.launch('hint-scene');
   }
 
   preload() {
@@ -180,6 +183,10 @@ export default class MainScene extends Phaser.Scene {
               response.pos[0],
               response.pos[1]
             );
+            this.game.events.emit(
+              EVENTS_NAME.displayHint,
+              HINTS.picked(response.type)
+            );
           }
           break;
 
@@ -189,6 +196,10 @@ export default class MainScene extends Phaser.Scene {
             this.gameObjectsLayer
               .getTileAt(response.pos[0], response.pos[1])
               .setVisible(true);
+            this.game.events.emit(
+              EVENTS_NAME.displayHint,
+              HINTS.digged(response.type)
+            );
           }
           break;
       }

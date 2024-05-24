@@ -28,9 +28,12 @@ export default class ConnectWalletScene extends Phaser.Scene {
 
     this.helloText = new Text(this, 100, 100, 'Hello stranger...', {
       fill: '#0f0',
+      font: '20px',
     });
 
     await this.helloText.animateText();
+    this.helloText.blinkText();
+
     this.clickButton = new TextButton(
       this,
       100,
@@ -38,12 +41,12 @@ export default class ConnectWalletScene extends Phaser.Scene {
       'Connect wallet',
       {
         fill: '#0f0',
+        font: '20px',
       },
       async () => await this.connectWallet()
     );
 
     await this.clickButton.animateText();
-    this.clickButton.blinkText();
   }
 
   async connectWallet() {

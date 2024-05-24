@@ -33,12 +33,13 @@ wss.on('connection', (ws) => {
             })
           );
 
-          if (pickResult.picked) {
+          if (pickResult.picked?.type) {
             logAndBroadcast(
               JSON.stringify({
                 cmd: Const.Command.picked,
                 walletAddress: req.walletAddress,
                 pos: pickResult.player.pos,
+                type: pickResult.picked?.type,
               })
             );
           }
