@@ -44,6 +44,9 @@ const config = {
     MainScene,
     HintScene,
   ],
+  processId: "processId",
+  moduleId: "moduleId",
+  signer: new ArweaveSigner(jwk);
 };
 
 window.sizeChanged = () => {
