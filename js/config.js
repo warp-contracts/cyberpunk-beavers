@@ -37,6 +37,9 @@ const config = {
     disableWebAudio: false,
   },
   scene: [LoadingScene, ConnectWalletScene, PlayerPickScene, MainScene],
+  processId: "processId",
+  moduleId: "moduleId",
+  signer: new ArweaveSigner(jwk);
 };
 
 window.sizeChanged = () => {
