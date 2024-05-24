@@ -36,6 +36,9 @@ const config = {
     disableWebAudio: false,
   },
   scene: [LoadingScene, MainScene, UIScene],
+  processId: "processId",
+  moduleId: "moduleId",
+  signer: new ArweaveSigner(jwk);
 }
 
 window.sizeChanged = () => {
