@@ -1,6 +1,7 @@
 import Player from './Player.js';
 import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
+import { initPubSub, subscribe } from 'warp-contracts-pubsub';
 import { EVENTS_NAME } from './utils/events.js';
 import { HINTS } from './utils/hints.js';
 
@@ -43,7 +44,8 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     console.log('Main Scene - 3. Create');
-    this.initWebSocket();
+    this.initSubscription();
+    //this.initWebSocket();
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.pInfo = this.add
       .text(10, 10, 'Playeroo')
@@ -56,6 +58,7 @@ export default class MainScene extends Phaser.Scene {
   createMainPlayer(playerInfo) {
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
+      signer: this.signer,
       stats: playerInfo.stats,
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
@@ -253,5 +256,108 @@ export default class MainScene extends Phaser.Scene {
     }
 
     return layer;
+  }
+
+  initSubscription() {
+    initPubSub();
+
+    console.log("processId", window.__ao.config.processId);
+
+    const subscription = subscribe(
+        `results/ao/${window.__ao.config.processId}`,
+        ({ data }) => {
+          const message = JSON.parse(data);
+          console.log('\n ==== new message ==== ', message.nonce);
+          if (message.tags) {
+            const salt = message.tags.find(t => t.name === 'Salt');
+            console.log('\n ==== created      ==== ', new Date(parseInt(salt.value)));
+          }
+          console.log('\n ==== sent from CU ==== ', message.sent);
+          console.log('\n ==== received     ==== ', new Date());
+
+          handleMessage(message.response);
+        },
+        console.error
+    )
+        .then(() => console.log('waiting for messages...'))
+        .catch((e) => console.error(e));
+
+
+    function handleMessage(response) {
+      switch (response.cmd) {
+        case Const.Command.registered:
+        {
+          console.log('Registered player', response);
+          if (response.error) {
+            console.error('Failed to join the game', response.error);
+            localStorage.removeItem('player');
+            self.scene.start('connect-wallet-scene');
+          } else {
+            localStorage.setItem(
+                'player',
+                JSON.stringify({
+                  id: response.player.walletAddress,
+                  beaverId: response.player.beaverId,
+                })
+            );
+            self.round = response.round;
+            self.initMap(response.groundTilemap, response.gameObjectsTilemap);
+            self.createMainPlayer(response.player);
+            self.initCamera();
+          }
+        }
+          break;
+
+        case Const.Command.moved:
+        {
+          console.log('Player moved', event.data);
+          if (!self.allPlayers[response.walletAddress]) {
+            console.log('Setting up new player', response.walletAddress);
+            self.createPlayer(response);
+          } else {
+            self.allPlayers[response.walletAddress].moveTo(response);
+          }
+
+          if (response.onGameObject != null) {
+            console.log(
+                `Player stood on a game object: ${JSON.stringify(response.onGameObject)}`
+            );
+            this.mainPlayer.onGameObject = response.onGameObject;
+          }
+        }
+          break;
+
+        case Const.Command.stats:
+        {
+          console.log('Player stats', event.data);
+          if (response.walletAddress === self.mainPlayer.walletAddress) {
+            console.log('Stats update', response.walletAddress);
+            self.mainPlayer.stats = response.stats;
+          }
+        }
+          break;
+
+        case Const.Command.picked:
+        {
+          console.log(`Player picked a game object.`);
+          this.gameObjectsLayer.removeTileAt(
+              response.pos[0],
+              response.pos[1]
+          );
+        }
+          break;
+
+        case Const.Command.digged:
+        {
+          console.log(`Player digged a game object.`);
+          this.gameObjectsLayer
+              .getTileAt(response.pos[0], response.pos[1])
+              .setVisible(true);
+        }
+          break;
+      }
+    }
+
+
   }
 }

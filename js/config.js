@@ -5,7 +5,7 @@ import ConnectWalletScene from './ConnectWalletScene.js';
 import HintScene from './HintScene.js';
 
 const config = {
-  title: 'Phaser game tutorial',
+  title: 'CyberBeavers',
   type: Phaser.WEBGL,
   parent: 'game',
   backgroundColor: '#000000',
@@ -44,9 +44,6 @@ const config = {
     MainScene,
     HintScene,
   ],
-  processId: "processId",
-  moduleId: "moduleId",
-  signer: new ArweaveSigner(jwk);
 };
 
 window.sizeChanged = () => {
@@ -63,3 +60,11 @@ window.sizeChanged = () => {
 window.onresize = () => window.sizeChanged();
 
 window.game = new Phaser.Game(config);
+
+window.__ao = {
+  config: {
+    processId: "nHHezRJAfhitmdDaLUstnq1tbdnugqk2vqNOuPdupwE",
+    moduleId: "7dkc0pHXrn-Bsu9LFRWx76FTqlA-dqR_fj8JwFAfJpo",
+    muAddress: "http://localhost:3004"
+  }
+}

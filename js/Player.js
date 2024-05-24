@@ -2,9 +2,10 @@ import Const from './common/const.mjs';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { walletAddress, stats, scene, x, y, texture, animated, frame } = data;
+    let { walletAddress, signer, stats, scene, x, y, texture, animated, frame } = data;
     super(scene, x, y, texture, frame);
     this.walletAddress = walletAddress;
+    this.signer = signer;
     this.stats = stats;
     this.animated = animated;
     scene.add.existing(this);
