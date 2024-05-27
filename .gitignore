@@ -8,8 +8,6 @@ crates/pst/cache/
 # Optional eslint cache
 .eslintcache
 
-lib/
-
 # WebStorm Local files
 .idea/
 

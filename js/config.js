@@ -1,6 +1,6 @@
 import MainScene from './MainScene.js';
 import LoadingScene from './LoadingScene.js';
-import PlayerPickScene from './PlayerPickScene.js';
+import CharacterPickScene from './CharacterPickScene.js';
 import ConnectWalletScene from './ConnectWalletScene.js';
 import HintScene from './HintScene.js';
 
@@ -10,7 +10,7 @@ const config = {
   parent: 'game',
   backgroundColor: '#000000',
   scale: {
-    mode: Phaser.Scale.ScaleModes.NONE,
+    mode: Phaser.Scale.ScaleModes.FIT,
     width: window.innerWidth,
     height: window.innerHeight,
   },
@@ -40,7 +40,7 @@ const config = {
   scene: [
     LoadingScene,
     ConnectWalletScene,
-    PlayerPickScene,
+    CharacterPickScene,
     MainScene,
     HintScene,
   ],
@@ -63,8 +63,8 @@ window.game = new Phaser.Game(config);
 
 window.__ao = {
   config: {
-    processId: "g5Kgi-Af5P_wnFXT9aafva46Z-m9vEv7D8GnZ9r8ibg",
-    moduleId: "Q1Z5yM25WeNpAKZ8XyGhdJOQrm2LNgiMb3nul9cmAQA",
-    muAddress: "http://localhost:3004"
-  }
-}
+    processId: 'g5Kgi-Af5P_wnFXT9aafva46Z-m9vEv7D8GnZ9r8ibg',
+    moduleId: 'Q1Z5yM25WeNpAKZ8XyGhdJOQrm2LNgiMb3nul9cmAQA',
+    muAddress: 'http://localhost:3004',
+  },
+};

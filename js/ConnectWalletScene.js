@@ -1,6 +1,7 @@
 import { TextButton } from './TextButton.js';
 import { InjectedArweaveSigner } from 'warp-contracts-plugin-signature';
 import { Text } from './Text.js';
+import { colors } from './utils/style.js';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {
@@ -27,7 +28,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
     console.log('Connect Wallet Scene - 3. Create');
 
     this.helloText = new Text(this, 100, 100, 'Hello stranger...', {
-      fill: '#0f0',
+      fill: colors.yellow,
       font: '20px',
     });
 
@@ -40,7 +41,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
       200,
       'Connect wallet',
       {
-        fill: '#0f0',
+        fill: colors.yellow,
         font: '20px',
       },
       async () => await this.connectWallet()
