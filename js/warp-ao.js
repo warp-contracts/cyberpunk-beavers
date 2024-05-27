@@ -5,7 +5,7 @@ window.warpAO = {
   config: {
     processId: "g5Kgi-Af5P_wnFXT9aafva46Z-m9vEv7D8GnZ9r8ibg",
     moduleId: "Q1Z5yM25WeNpAKZ8XyGhdJOQrm2LNgiMb3nul9cmAQA",
-    muAddress: "http://localhost:3004"
+    muAddress: "http://34.89.142.6:3004"
   },
   messageTags: (message) => [
     new Tag('Action', JSON.stringify(message)),
