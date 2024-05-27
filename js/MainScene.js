@@ -4,8 +4,6 @@ import MainPlayer from './MainPlayer.js';
 import { initPubSub, subscribe } from 'warp-contracts-pubsub';
 import { EVENTS_NAME } from './utils/events.js';
 import { HINTS } from './utils/hints.js';
-import { Tag } from 'warp-contracts';
-import { createData } from 'warp-arbundles';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -19,7 +17,6 @@ export default class MainScene extends Phaser.Scene {
   init(data) {
     console.log('Main Scene - 1. Init', data);
     this.beaverChoice = data.beaverChoice;
-    this.signer = data.signer;
     this.walletAddress = data.walletAddress;
     this.scene.launch('hint-scene');
   }
@@ -55,7 +52,7 @@ export default class MainScene extends Phaser.Scene {
     this.pInfo.setDepth(10);
     this.allPlayers = {};
 
-    if (window.__ao) {
+    if (window.warpAO) {
       if (!window.arweaveWallet) {
         this.scene.start('connect-wallet-scene');
       } else {
@@ -69,7 +66,6 @@ export default class MainScene extends Phaser.Scene {
   createMainPlayer(playerInfo) {
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
-      signer: this.signer,
       stats: playerInfo.stats,
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
@@ -274,10 +270,10 @@ export default class MainScene extends Phaser.Scene {
     initPubSub();
     const self = this;
 
-    console.log("processId", window.__ao.config.processId);
+    console.log("processId", window.warpAO.config.processId);
 
     const subscription = subscribe(
-        `results/ao/${window.__ao.config.processId}`,
+        `results/ao/${window.warpAO.config.processId}`,
         ({ data }) => {
           const message = JSON.parse(data);
           console.log('\n ==== new message ==== ', message);
@@ -300,14 +296,14 @@ export default class MainScene extends Phaser.Scene {
           console.log(`Found player info in local storage`, player);
           if (player) {
             console.log('Joinning game...');
-            this.send({
+             window.warpAO.send({
                 cmd: Const.Command.join,
                 walletAddress: this.walletAddress,
               }
             );
           } else {
             console.log('register player...');
-            this.send(
+             window.warpAO.send(
               {
                 cmd: Const.Command.register,
                 walletAddress: this.walletAddress,
@@ -395,43 +391,4 @@ export default class MainScene extends Phaser.Scene {
         break;
     }
   }
-
-
-  send(message) {
-    // this.scene.ws.send(JSON.stringify(message))
-    const messageTags = [
-      new Tag('Action', JSON.stringify(message)),
-      new Tag('Data-Protocol', 'ao'),
-      new Tag('Type', 'Message'),
-      new Tag('Variant', 'ao.TN.1'),
-      {name: 'SDK', value: 'ao'},
-      new Tag('From-Process', window.__ao.config.processId),
-      new Tag('From-Module', window.__ao.config.moduleId),
-      new Tag('Salt', '' + Date.now())
-    ];
-
-    const messageDataItem = createData('1234', window.signer, {
-      tags: messageTags,
-      target: window.__ao.config.processId,
-    });
-    console.log('messageDataItem', messageDataItem.sign);
-    messageDataItem.sign(window.signer).then(() => {
-      console.log('sent, lets send it')
-      const messageResponse = fetch(window.__ao.config.muAddress, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-          Accept: 'application/json'
-        },
-        body: messageDataItem.getRaw()
-      }).then((res) => res.json().then((parsed) => {
-        console.log(parsed);
-      }));
-    });
-
-
-
-  }
-
-
 }

@@ -10,14 +10,6 @@ export default class ConnectWalletScene extends Phaser.Scene {
 
   init() {
     console.log(`Connect Wallet Scene - 1. Init`);
-    const signer = JSON.parse(localStorage.getItem('signer'));
-    const walletAddress = localStorage.getItem('wallet_address');
-    if (walletAddress && signer?.publicKey) {
-      this.scene.start('player-pick-scene', {
-        signer,
-        walletAddress,
-      });
-    }
   }
 
   preload() {
@@ -54,20 +46,17 @@ export default class ConnectWalletScene extends Phaser.Scene {
     if (window.arweaveWallet) {
       await window.arweaveWallet.connect([
         'ACCESS_ADDRESS',
+        'DISPATCH',
         'SIGN_TRANSACTION',
         'ACCESS_PUBLIC_KEY',
         'SIGNATURE',
       ]);
-      const userSigner = new InjectedArweaveSigner(window.arweaveWallet);
-      await userSigner.setPublicKey();
       const walletAddress = await window.arweaveWallet.getActiveAddress();
       new Text(this, 100, 300, 'Wallet connected', {
         fill: '#ADD8E6',
       });
-      window.signer = userSigner;
       localStorage.setItem('wallet_address', walletAddress);
       this.scene.start('player-pick-scene', {
-        signer: userSigner,
         walletAddress,
       });
     } else {
