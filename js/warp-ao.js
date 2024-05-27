@@ -17,13 +17,13 @@ window.warpAO = {
     new Tag('From-Module', window.warpAO.config.moduleId),
     new Tag('Salt', '' + Date.now()),
   ],
+  data: (message) => ({
+      tags: window.warpAO.messageTags(message),
+      data: '1234',
+      target: window.warpAO.config.processId,
+  }),
   send: async (message) => {
-    window.arweaveWallet
-      .signDataItem({
-        tags: window.warpAO.messageTags(message),
-        data: '1234',
-        target: window.warpAO.config.processId,
-      })
+    window.arweaveWallet.signDataItem(window.warpAO.data(message))
       .then((signed) => {
         const dataItem = new DataItem(signed);
         const messageResponse = fetch(window.warpAO.config.muAddress, {

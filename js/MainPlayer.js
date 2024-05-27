@@ -37,6 +37,6 @@ export default class MainPlayer extends Player {
   }
 
   async send(message) {
-    await window.warpAO.send(message);
+    await this.scene.server.send(message);
   }
 }

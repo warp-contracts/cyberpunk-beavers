@@ -2,8 +2,6 @@ import Player from './Player.js';
 import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
 import { initPubSub, subscribe } from 'warp-contracts-pubsub';
-import { EVENTS_NAME } from './utils/events.js';
-import { HINTS } from './utils/hints.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -51,15 +49,12 @@ export default class MainScene extends Phaser.Scene {
       .setStyle({ fontFamily: 'Arial' });
     this.pInfo.setDepth(10);
     this.allPlayers = {};
-
-    if (window.warpAO) {
-      if (!window.arweaveWallet) {
-        this.scene.start('connect-wallet-scene');
-      } else {
-        this.initSubscription();
-      }
+    if (!window.arweaveWallet) {
+      this.scene.start('connect-wallet-scene');
     } else {
-      this.initWebSocket();
+      this.server = window.game.config.ao ?
+        this.initSubscription() :
+        this.initWebSocket();
     }
   }
 
@@ -128,113 +123,41 @@ export default class MainScene extends Phaser.Scene {
   }
 
   initWebSocket() {
-    this.ws = new WebSocket('ws://localhost:8080');
-
+    const ws = new WebSocket('ws://localhost:8080');
     const self = this;
-    self.ws.addEventListener('message', (event) => {
+    const mockDataOwner = (data) => {
+      const withTags = window.warpAO.data(data);
+      return { ...withTags, Owner: self.walletAddress, Tags: withTags.tags };
+    }
+
+    ws.addEventListener('message', (event) => {
       const response = JSON.parse(event.data);
       console.log(response.cmd);
-      switch (response.cmd) {
-        case Const.Command.registered:
-          {
-            console.log('Registered player', response);
-            if (response.error) {
-              console.error('Failed to join the game', response.error);
-              localStorage.removeItem('player');
-              self.scene.start('connect-wallet-scene');
-            } else {
-              localStorage.setItem(
-                'player',
-                JSON.stringify({
-                  id: response.player.walletAddress,
-                  beaverId: response.player.beaverId,
-                })
-              );
-              self.round = response.round;
-              self.initMap(response.groundTilemap, response.gameObjectsTilemap);
-              self.createMainPlayer(response.player);
-              self.initCamera();
-            }
-          }
-          break;
-
-        case Const.Command.moved:
-          {
-            console.log('Player moved', event.data.player);
-            if (!self.allPlayers[response.walletAddress]) {
-              console.log('Setting up new player', response.walletAddress);
-              self.createPlayer(response);
-            } else {
-              self.allPlayers[response.walletAddress].moveTo(response);
-            }
-
-            if (response.onGameObject != null) {
-              console.log(
-                `Player stood on a game object: ${JSON.stringify(response.onGameObject)}`
-              );
-              this.mainPlayer.onGameObject = response.onGameObject;
-            }
-          }
-          break;
-
-        case Const.Command.stats:
-          {
-            console.log('Player stats', event.data.player);
-            if (response.walletAddress === self.mainPlayer.walletAddress) {
-              console.log('Stats update', response.walletAddress);
-              self.mainPlayer.stats = response.stats;
-            }
-          }
-          break;
-
-        case Const.Command.picked:
-          {
-            console.log(`Player picked a game object.`);
-            this.gameObjectsLayer.removeTileAt(
-              response.pos[0],
-              response.pos[1]
-            );
-            this.game.events.emit(
-              EVENTS_NAME.displayHint,
-              HINTS.picked(response.type)
-            );
-          }
-          break;
-
-        case Const.Command.digged:
-          {
-            console.log(`Player digged a game object.`);
-            this.gameObjectsLayer
-              .getTileAt(response.pos[0], response.pos[1])
-              .setVisible(true);
-            this.game.events.emit(
-              EVENTS_NAME.displayHint,
-              HINTS.digged(response.type)
-            );
-          }
-          break;
-      }
+      self.handleMessage(response);
     });
-    self.ws.addEventListener('open', () => {
+    ws.addEventListener('open', () => {
       const player = JSON.parse(localStorage.getItem('player'));
       console.log(`Found player info in local storage`, player);
       if (player) {
-        self.ws.send(
-          JSON.stringify({
-            cmd: Const.Command.join,
-            walletAddress: this.walletAddress,
-          })
-        );
+        const data = mockDataOwner({
+          cmd: Const.Command.join,
+        });
+        console.log('data', data);
+        ws.send(JSON.stringify(data));
       } else {
-        self.ws.send(
-          JSON.stringify({
+        ws.send(
+          JSON.stringify(mockDataOwner({
             cmd: Const.Command.register,
-            walletAddress: this.walletAddress,
             beaverId: self.beaverChoice,
-          })
+          }))
         );
       }
     });
+    return {
+      send: async (message) => {
+        ws.send(JSON.stringify(mockDataOwner(message)));
+      }
+    }
   }
 
   initMap(level1, level2) {
@@ -313,6 +236,12 @@ export default class MainScene extends Phaser.Scene {
         }
       })
       .catch((e) => console.error(e));
+
+    return {
+      send: async (message) => {
+        await window.warpAO.send(message)
+      }
+    }
   }
 
   handleMessage(response) {
