@@ -91,7 +91,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    console.log(`update`)
+    console.log(`update`);
     const roundInfo = this.roundTick();
     this.pInfo.x = this.mainPlayer?.x - game.config.width / 2 + 20;
     this.pInfo.y = this.mainPlayer?.y - game.config.height / 2 + 20;
@@ -270,126 +270,134 @@ export default class MainScene extends Phaser.Scene {
     initPubSub();
     const self = this;
 
-    console.log("processId", window.warpAO.config.processId);
+    console.log('processId', window.warpAO.config.processId);
 
     const subscription = subscribe(
-        `results/ao/${window.warpAO.config.processId}`,
-        ({ data }) => {
-          const message = JSON.parse(data);
-          console.log('\n ==== new message ==== ', message);
-          if (message.tags) {
-            const salt = message.tags.find(t => t.name === 'Salt');
-            console.log('\n ==== created      ==== ', new Date(parseInt(salt.value)));
-          }
-          console.log('\n ==== sent from CU ==== ', message.sent);
-          console.log('\n ==== received     ==== ', new Date());
+      `results/ao/${window.warpAO.config.processId}`,
+      ({ data }) => {
+        const message = JSON.parse(data);
+        console.log('\n ==== new message ==== ', message);
+        if (message.tags) {
+          const salt = message.tags.find((t) => t.name === 'Salt');
+          console.log(
+            '\n ==== created      ==== ',
+            new Date(parseInt(salt.value))
+          );
+        }
+        console.log('\n ==== sent from CU ==== ', message.sent);
+        console.log('\n ==== received     ==== ', new Date());
 
-          if (message.output.cmd) {
-            this.handleMessage(message.output);
-          }
-        },
-        console.error
+        if (message.output.cmd) {
+          this.handleMessage(message.output);
+        }
+      },
+      console.error
     )
-        .then(() => {
-          console.log('Subscription started...');
-          const player = JSON.parse(localStorage.getItem('player'));
-          console.log(`Found player info in local storage`, player);
-          if (player) {
-            console.log('Joinning game...');
-             window.warpAO.send({
-                cmd: Const.Command.join,
-                walletAddress: this.walletAddress,
-              }
-            );
-          } else {
-            console.log('register player...');
-             window.warpAO.send(
-              {
-                cmd: Const.Command.register,
-                walletAddress: this.walletAddress,
-                beaverId: self.beaverChoice,
-              }
-            );
-          }
-
-        })
-        .catch((e) => console.error(e));
+      .then(() => {
+        console.log('Subscription started...');
+        const player = JSON.parse(localStorage.getItem('player'));
+        console.log(`Found player info in local storage`, player);
+        if (player) {
+          console.log('Joinning game...');
+          window.warpAO.send({
+            cmd: Const.Command.join,
+            walletAddress: this.walletAddress,
+          });
+        } else {
+          console.log('register player...');
+          window.warpAO.send({
+            cmd: Const.Command.register,
+            walletAddress: this.walletAddress,
+            beaverId: self.beaverChoice,
+          });
+        }
+      })
+      .catch((e) => console.error(e));
   }
 
   handleMessage(response) {
     const self = this;
     switch (response.cmd) {
       case Const.Command.registered:
-      {
-        console.log('Registered player', response);
-        if (response.error) {
-          console.error('Failed to join the game', response.error);
-          localStorage.removeItem('player');
-          self.scene.start('connect-wallet-scene');
-        } else {
-          localStorage.setItem(
-            'player',
-            JSON.stringify({
-              id: response.player.walletAddress,
-              beaverId: response.player.beaverId,
-            })
-          );
-          self.round = response.state.round;
-          if (response.player.walletAddress === this.walletAddress) {
-            self.initMap(response.state.groundTilemap, response.state.gameObjectsTilemap);
-            self.createMainPlayer(response.player);
-            self.initCamera();
+        {
+          console.log('Registered player', response);
+          if (response.error) {
+            console.error('Failed to join the game', response.error);
+            localStorage.removeItem('player');
+            self.scene.start('connect-wallet-scene');
+          } else {
+            localStorage.setItem(
+              'player',
+              JSON.stringify({
+                id: response.player.walletAddress,
+                beaverId: response.player.beaverId,
+              })
+            );
+            self.round = response.state.round;
+            if (response.player.walletAddress === this.walletAddress) {
+              self.initMap(
+                response.state.groundTilemap,
+                response.state.gameObjectsTilemap
+              );
+              self.createMainPlayer(response.player);
+              self.initCamera();
+            }
           }
         }
-      }
         break;
 
       case Const.Command.moved:
-      {
-        console.log('Player moved', response.player.pos, response.player.onGameObject);
-        if (!self.allPlayers[response.player.walletAddress]) {
-          console.log('Setting up new player', response.player.walletAddress);
-          self.createPlayer(response.player);
-        } else {
-          self.allPlayers[response.player.walletAddress].moveTo(response.player);
-        }
-
-        if (response.player.onGameObject != null) {
+        {
           console.log(
-            `Player stood on a game object: ${JSON.stringify(response.onGameObject)}`
+            'Player moved',
+            response.player.pos,
+            response.player.onGameObject
           );
-          this.mainPlayer.onGameObject = response.player.onGameObject;
+          if (!self.allPlayers[response.player.walletAddress]) {
+            console.log('Setting up new player', response.player.walletAddress);
+            self.createPlayer(response.player);
+          } else {
+            self.allPlayers[response.player.walletAddress].moveTo(
+              response.player
+            );
+          }
+
+          if (response.player.onGameObject != null) {
+            console.log(
+              `Player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`
+            );
+            this.mainPlayer.onGameObject = response.player.onGameObject;
+          }
         }
-      }
         break;
 
       case Const.Command.stats:
-      {
-        console.log('Player stats', response.player);
-        if (response.player.walletAddress === self.mainPlayer.walletAddress) {
-          console.log('Stats update', response.walletAddress);
-          self.mainPlayer.stats = response.stats;
+        {
+          console.log('Player stats', response.player);
+          if (response.player.walletAddress === self.mainPlayer.walletAddress) {
+            console.log('Stats update', response.walletAddress);
+            self.mainPlayer.stats = response.stats;
+          }
         }
-      }
         break;
 
       case Const.Command.picked:
-      {
-        console.log(`Player picked a game object.`);
-        this.gameObjectsLayer.removeTileAt(
-          response.player.pos[0],
-          response.player.pos[1]
-        );
-      }
+        {
+          console.log(`Player picked a game object.`);
+          this.gameObjectsLayer.removeTileAt(
+            response.player.pos[0],
+            response.player.pos[1]
+          );
+        }
         break;
 
       case Const.Command.digged:
-      {
-        console.log(`Player digged a game object.`);
-        this.gameObjectsLayer
-          .getTileAt(response.pos[0], response.pos[1])
-          .setVisible(true);
-      }
+        {
+          console.log(`Player digged a game object.`);
+          this.gameObjectsLayer
+            .getTileAt(response.player.pos[0], response.player.pos[1])
+            .setVisible(true);
+        }
         break;
     }
   }

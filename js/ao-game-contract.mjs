@@ -4,32 +4,64 @@ export function handle(state, message) {
   console.log("We're in");
   if (!state.hasOwnProperty('map')) {
     state = Object.assign(state, initState(message));
+    setGameObjectsTilesOnMap(state);
   }
 
-  const action = JSON.parse(message.Tags.find((t => t.name === 'Action')).value);
+  const action = JSON.parse(
+    message.Tags.find((t) => t.name === 'Action').value
+  );
   action.walletAddress = message.Owner;
   gameRoundTick(state, message);
 
   switch (action.cmd) {
     case 'increment':
       state.counter++;
-      ao.result({counter: state.counter, player: state.players[message.Owner]});
+      ao.result({
+        counter: state.counter,
+        player: state.players[message.Owner],
+      });
       break;
     case Const.Command.pick:
-      const res = pick(state, action);
-      ao.result({ cmd: Const.Command.picked, player: res.player, picked: res.picked});
+      const pickRes = pick(state, action);
+      ao.result({
+        cmd: Const.Command.picked,
+        player: pickRes.player,
+        picked: pickRes.picked,
+      });
+      break;
+    case Const.Command.dig:
+      const digRes = dig(state, action);
+      ao.result({
+        cmd: Const.Command.digged,
+        player: digRes.player,
+        digged: digRes.digged,
+      });
       break;
     case Const.Command.attack:
-      ao.result({ cmd: Const.Command.moved, player: attack(state, action).player});
+      ao.result({
+        cmd: Const.Command.moved,
+        player: attack(state, action).player,
+      });
       break;
     case Const.Command.move:
-      ao.result({cmd: Const.Command.moved, player: movePlayer(state, action)});
+      ao.result({
+        cmd: Const.Command.moved,
+        player: movePlayer(state, action),
+      });
       break;
     case Const.Command.register:
-      ao.result({cmd: Const.Command.registered, player: registerPlayer(state, action), state});
+      ao.result({
+        cmd: Const.Command.registered,
+        player: registerPlayer(state, action),
+        state,
+      });
       break;
     case Const.Command.join:
-      ao.result({cmd: Const.Command.registered, player: state.players[message.Owner], state});
+      ao.result({
+        cmd: Const.Command.registered,
+        player: state.players[message.Owner],
+        state,
+      });
       break;
     default:
       throw new ProcessError(`Unknown action: ${action.cmd}`);
@@ -41,17 +73,6 @@ const SIZE = 30;
 let i = -1;
 let j = 0;
 const groundTiles = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6];
-const gameObjectsTiles = [
-  { tile: 0, type: GameObject.ap },
-  { tile: 1, type: GameObject.hp },
-  { tile: 2, type: GameObject.none },
-  { tile: 2, type: GameObject.none },
-  { tile: 2, type: GameObject.none },
-  { tile: 2, type: GameObject.none },
-  { tile: 2, type: GameObject.none },
-  { tile: 2, type: GameObject.none },
-  { tile: 2, type: GameObject.none },
-];
 
 function initState(message) {
   const result = {
@@ -61,6 +82,12 @@ function initState(message) {
       width: SIZE,
       height: SIZE,
     },
+    gameObjectsTiles: [
+      { tile: 0, type: GameObject.ap },
+      { tile: 1, type: GameObject.hp },
+      { tile: 2, type: GameObject.none },
+    ],
+    digged: [],
     round: {
       current: 0,
       start: message.Timestamp * 1000,
@@ -93,18 +120,26 @@ function initState(message) {
       }),
   };
 
-  result.gameObjectsTilemap = result.groundTilemap.map((a) => {
+  return result;
+}
+
+function setGameObjectsTilesOnMap(state) {
+  const gameObjectsTilesToPropagate = state.gameObjectsTiles;
+  for (let i = 0; i < 11; i++) {
+    gameObjectsTilesToPropagate.push({ tile: 2, type: GameObject.none });
+  }
+
+  state.gameObjectsTilemap = state.groundTilemap.map((a) => {
     return a.map((b) => {
       if ([1, 3, 5].includes(b)) {
-        return gameObjectsTiles[getRandomNumber(0, gameObjectsTiles.length - 1)]
-          .tile;
+        return gameObjectsTilesToPropagate[
+          getRandomNumber(0, gameObjectsTilesToPropagate.length - 1)
+        ].tile;
       } else {
         return 2;
       }
     });
   });
-
-  return result;
 }
 
 function getRandomNumber(min, max) {
@@ -117,7 +152,9 @@ function gameRoundTick(state, message) {
   const round = ~~(tsChange / state.round.interval);
   console.log('Last round ', state.round);
   state.round.current = round;
-  console.log(`new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`);
+  console.log(
+    `new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`
+  );
 }
 
 function gamePlayerTick(state, player) {
@@ -140,25 +177,74 @@ function step(pos, dir) {
   }
 }
 
-function pick(state, message) {
-  const walletAddress = message.Tags['wallet_address'];
+function dig(state, action) {
+  const walletAddress = action.walletAddress;
+  const player = state.players[walletAddress];
+
+  if (player.stats.ap.current < 1) {
+    console.log(
+      `Cannot perform dig ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`
+    );
+    return { player, digged: false };
+  }
+
+  player.stats.ap.current -= 1;
+
+  const tile = state.gameObjectsTiles.find(
+    (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
+  );
+  const { type } = tile;
+  if (type === GameObject.none) {
+    console.log(`Player ${player.walletAddress} digged nothing.`);
+    return { player, digged: false };
+  }
+
+  if (type !== GameObject.none) {
+    console.log(`Player stands on a game object: ${type}.`);
+    state.digged.push({
+      player: walletAddress,
+      pos: { x: player.pos[1], y: player.pos[0] },
+    });
+    return { player, digged: { type } };
+  }
+
+  return { player, digged: false };
+}
+
+function pick(state, action) {
+  const walletAddress = action.walletAddress;
 
   const player = state.players[walletAddress];
 
   if (player.stats.ap.current < 1) {
-    console.log(`Cannot perform pick ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
+    console.log(
+      `Cannot perform pick ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`
+    );
     return { player, picked: false };
   }
 
   player.stats.ap.current -= 1;
 
-  const tile = gameObjectsTiles.find(
+  const tile = state.gameObjectsTiles.find(
     (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
   );
   const { type } = tile;
   if (type === GameObject.none) {
     console.log(
-      `Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`,
+      `Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`
+    );
+    return { player, picked: false };
+  }
+
+  const diggedObject = state.digged.find(
+    (d) =>
+      d.player == walletAddress &&
+      d.pos.x == player.pos[1] &&
+      d.pos.y == player.pos[0]
+  );
+  if (!diggedObject) {
+    console.log(
+      `Player ${walletAddress} does not stand on the object digged by them.`
     );
     return { player, picked: false };
   }
@@ -173,6 +259,8 @@ function pick(state, message) {
     player.stats.ap.current += 5;
   }
 
+  state.digged.splice(state.digged.indexOf(diggedObject), 1);
+
   return { player, picked: true };
 }
 
@@ -181,7 +269,9 @@ function attack(state, action) {
   const player = state.players[walletAddress];
   gamePlayerTick(state, player);
   if (player.stats.ap.current < 1) {
-    console.log(`Cannot perform attak ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
+    console.log(
+      `Cannot perform attak ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`
+    );
     return { player };
   }
   const attackPos = step(player.pos, dir);
@@ -193,8 +283,12 @@ function attack(state, action) {
     opponent.stats.hp -= 10;
     player.stats.score += 10;
     return { player, opponent };
-  } else if ([2, 4, 6].includes(state.groundTilemap[attackPos[1]][attackPos[0]])) {
-    console.log(`Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`);
+  } else if (
+    [2, 4, 6].includes(state.groundTilemap[attackPos[1]][attackPos[0]])
+  ) {
+    console.log(
+      `Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`
+    );
   }
   return { player };
 }
@@ -218,22 +312,25 @@ function movePlayer(state, action) {
     newPos[1] >= SIZE
   ) {
     console.log(
-      `Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`,
+      `Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`
     );
     return player;
   } else if (state.playersOnTiles[newPos[1]][newPos[0]]) {
     console.log(
       `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${
         state.playersOnTiles[newPos[1]][newPos[0]]
-      }`,
+      }`
     );
     return player;
   } else if ([2, 4, 6].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
-    console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
+    console.log(
+      `Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`
+    );
     return player;
   } else {
-    player.onGameObject = gameObjectsTiles.find(
-      (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]);
+    player.onGameObject = state.gameObjectsTiles.find(
+      (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]
+    );
 
     state.playersOnTiles[player.pos[1]][player.pos[0]] = null;
     state.playersOnTiles[newPos[1]][newPos[0]] = player.walletAddress;
@@ -247,7 +344,7 @@ function registerPlayer(state, action) {
   const walletAddress = action.walletAddress;
   const beaverId = action.beaverId;
   if (state.players[walletAddress]) {
-    return state.players[walletAddress]
+    return state.players[walletAddress];
   }
   let newPlayer = {
     walletAddress,
@@ -271,4 +368,3 @@ function registerPlayer(state, action) {
   state.players[newPlayer.walletAddress] = newPlayer;
   return newPlayer;
 }
-
