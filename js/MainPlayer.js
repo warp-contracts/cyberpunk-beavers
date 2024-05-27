@@ -49,11 +49,11 @@ export default class MainPlayer extends Player {
       new Tag('Salt', '' + Date.now())
     ];
 
-    const messageDataItem = createData('1234', this.signer, {
+    const messageDataItem = createData('1234', window.signer, {
       tags: messageTags,
       target: window.__ao.config.processId,
     });
-    messageDataItem.sign(this.signer).then(() => {
+    messageDataItem.sign(window.signer).then(() => {
       const messageResponse = fetch(window.__ao.config.muAddress, {
         method: 'POST',
         headers: {

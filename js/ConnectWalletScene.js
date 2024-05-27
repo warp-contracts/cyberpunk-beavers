@@ -63,7 +63,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
       new Text(this, 100, 300, 'Wallet connected', {
         fill: '#ADD8E6',
       });
-      localStorage.setItem('signer', JSON.stringify(userSigner));
+      window.signer = userSigner;
       localStorage.setItem('wallet_address', walletAddress);
       this.scene.start('player-pick-scene', {
         signer: userSigner,

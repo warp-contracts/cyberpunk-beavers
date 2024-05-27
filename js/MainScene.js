@@ -4,6 +4,8 @@ import MainPlayer from './MainPlayer.js';
 import { initPubSub, subscribe } from 'warp-contracts-pubsub';
 import { EVENTS_NAME } from './utils/events.js';
 import { HINTS } from './utils/hints.js';
+import { Tag } from 'warp-contracts';
+import { createData } from 'warp-arbundles';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -42,10 +44,9 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('player_bat48', 'assets/images/idle_bat.png');
   }
 
-  create() {
+  async create() {
     console.log('Main Scene - 3. Create');
-    this.initSubscription();
-    //this.initWebSocket();
+
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.pInfo = this.add
       .text(10, 10, 'Playeroo')
@@ -53,6 +54,16 @@ export default class MainScene extends Phaser.Scene {
       .setStyle({ fontFamily: 'Arial' });
     this.pInfo.setDepth(10);
     this.allPlayers = {};
+
+    if (window.__ao) {
+      if (!window.arweaveWallet) {
+        this.scene.start('connect-wallet-scene');
+      } else {
+        this.initSubscription();
+      }
+    } else {
+      this.initWebSocket();
+    }
   }
 
   createMainPlayer(playerInfo) {
@@ -84,6 +95,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
+    console.log(`update`)
     const roundInfo = this.roundTick();
     this.pInfo.x = this.mainPlayer?.x - game.config.width / 2 + 20;
     this.pInfo.y = this.mainPlayer?.y - game.config.height / 2 + 20;
@@ -152,7 +164,7 @@ export default class MainScene extends Phaser.Scene {
 
         case Const.Command.moved:
           {
-            console.log('Player moved', event.data);
+            console.log('Player moved', event.data.player);
             if (!self.allPlayers[response.walletAddress]) {
               console.log('Setting up new player', response.walletAddress);
               self.createPlayer(response);
@@ -171,7 +183,7 @@ export default class MainScene extends Phaser.Scene {
 
         case Const.Command.stats:
           {
-            console.log('Player stats', event.data);
+            console.log('Player stats', event.data.player);
             if (response.walletAddress === self.mainPlayer.walletAddress) {
               console.log('Stats update', response.walletAddress);
               self.mainPlayer.stats = response.stats;
@@ -260,6 +272,7 @@ export default class MainScene extends Phaser.Scene {
 
   initSubscription() {
     initPubSub();
+    const self = this;
 
     console.log("processId", window.__ao.config.processId);
 
@@ -267,7 +280,7 @@ export default class MainScene extends Phaser.Scene {
         `results/ao/${window.__ao.config.processId}`,
         ({ data }) => {
           const message = JSON.parse(data);
-          console.log('\n ==== new message ==== ', message.nonce);
+          console.log('\n ==== new message ==== ', message);
           if (message.tags) {
             const salt = message.tags.find(t => t.name === 'Salt');
             console.log('\n ==== created      ==== ', new Date(parseInt(salt.value)));
@@ -275,89 +288,150 @@ export default class MainScene extends Phaser.Scene {
           console.log('\n ==== sent from CU ==== ', message.sent);
           console.log('\n ==== received     ==== ', new Date());
 
-          handleMessage(message.response);
+          if (message.output.cmd) {
+            this.handleMessage(message.output);
+          }
         },
         console.error
     )
-        .then(() => console.log('waiting for messages...'))
+        .then(() => {
+          console.log('Subscription started...');
+          const player = JSON.parse(localStorage.getItem('player'));
+          console.log(`Found player info in local storage`, player);
+          if (player) {
+            console.log('Joinning game...');
+            this.send({
+                cmd: Const.Command.join,
+                walletAddress: this.walletAddress,
+              }
+            );
+          } else {
+            console.log('register player...');
+            this.send(
+              {
+                cmd: Const.Command.register,
+                walletAddress: this.walletAddress,
+                beaverId: self.beaverChoice,
+              }
+            );
+          }
+
+        })
         .catch((e) => console.error(e));
+  }
 
-
-    function handleMessage(response) {
-      switch (response.cmd) {
-        case Const.Command.registered:
-        {
-          console.log('Registered player', response);
-          if (response.error) {
-            console.error('Failed to join the game', response.error);
-            localStorage.removeItem('player');
-            self.scene.start('connect-wallet-scene');
-          } else {
-            localStorage.setItem(
-                'player',
-                JSON.stringify({
-                  id: response.player.walletAddress,
-                  beaverId: response.player.beaverId,
-                })
-            );
-            self.round = response.round;
-            self.initMap(response.groundTilemap, response.gameObjectsTilemap);
-            self.createMainPlayer(response.player);
-            self.initCamera();
-          }
-        }
-          break;
-
-        case Const.Command.moved:
-        {
-          console.log('Player moved', event.data);
-          if (!self.allPlayers[response.walletAddress]) {
-            console.log('Setting up new player', response.walletAddress);
-            self.createPlayer(response);
-          } else {
-            self.allPlayers[response.walletAddress].moveTo(response);
-          }
-
-          if (response.onGameObject != null) {
-            console.log(
-                `Player stood on a game object: ${JSON.stringify(response.onGameObject)}`
-            );
-            this.mainPlayer.onGameObject = response.onGameObject;
-          }
-        }
-          break;
-
-        case Const.Command.stats:
-        {
-          console.log('Player stats', event.data);
-          if (response.walletAddress === self.mainPlayer.walletAddress) {
-            console.log('Stats update', response.walletAddress);
-            self.mainPlayer.stats = response.stats;
-          }
-        }
-          break;
-
-        case Const.Command.picked:
-        {
-          console.log(`Player picked a game object.`);
-          this.gameObjectsLayer.removeTileAt(
-              response.pos[0],
-              response.pos[1]
+  handleMessage(response) {
+    const self = this;
+    switch (response.cmd) {
+      case Const.Command.registered:
+      {
+        console.log('Registered player', response);
+        if (response.error) {
+          console.error('Failed to join the game', response.error);
+          localStorage.removeItem('player');
+          self.scene.start('connect-wallet-scene');
+        } else {
+          localStorage.setItem(
+            'player',
+            JSON.stringify({
+              id: response.player.walletAddress,
+              beaverId: response.player.beaverId,
+            })
           );
+          self.round = response.state.round;
+          self.initMap(response.state.groundTilemap, response.state.gameObjectsTilemap);
+          self.createMainPlayer(response.player);
+          self.initCamera();
         }
-          break;
-
-        case Const.Command.digged:
-        {
-          console.log(`Player digged a game object.`);
-          this.gameObjectsLayer
-              .getTileAt(response.pos[0], response.pos[1])
-              .setVisible(true);
-        }
-          break;
       }
+        break;
+
+      case Const.Command.moved:
+      {
+        console.log('Player moved', response.player.pos, response.player.onGameObject);
+        if (!self.allPlayers[response.player.walletAddress]) {
+          console.log('Setting up new player', response.player.walletAddress);
+          self.createPlayer(response.player);
+        } else {
+          self.allPlayers[response.player.walletAddress].moveTo(response.player);
+        }
+
+        if (response.player.onGameObject != null) {
+          console.log(
+            `Player stood on a game object: ${JSON.stringify(response.onGameObject)}`
+          );
+          this.mainPlayer.onGameObject = response.player.onGameObject;
+        }
+      }
+        break;
+
+      case Const.Command.stats:
+      {
+        console.log('Player stats', response.player);
+        if (response.player.walletAddress === self.mainPlayer.walletAddress) {
+          console.log('Stats update', response.walletAddress);
+          self.mainPlayer.stats = response.stats;
+        }
+      }
+        break;
+
+      case Const.Command.picked:
+      {
+        console.log(`Player picked a game object.`);
+        this.gameObjectsLayer.removeTileAt(
+          response.player.pos[0],
+          response.player.pos[1]
+        );
+      }
+        break;
+
+      case Const.Command.digged:
+      {
+        console.log(`Player digged a game object.`);
+        this.gameObjectsLayer
+          .getTileAt(response.pos[0], response.pos[1])
+          .setVisible(true);
+      }
+        break;
     }
+  }
+
+
+  send(message) {
+    // this.scene.ws.send(JSON.stringify(message))
+    const messageTags = [
+      new Tag('Action', JSON.stringify(message)),
+      new Tag('Data-Protocol', 'ao'),
+      new Tag('Type', 'Message'),
+      new Tag('Variant', 'ao.TN.1'),
+      {name: 'SDK', value: 'ao'},
+      new Tag('From-Process', window.__ao.config.processId),
+      new Tag('From-Module', window.__ao.config.moduleId),
+      new Tag('Salt', '' + Date.now())
+    ];
+
+    const messageDataItem = createData('1234', window.signer, {
+      tags: messageTags,
+      target: window.__ao.config.processId,
+    });
+    console.log('messageDataItem', messageDataItem.sign);
+    messageDataItem.sign(window.signer).then(() => {
+      console.log('sent, lets send it')
+      const messageResponse = fetch(window.__ao.config.muAddress, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          Accept: 'application/json'
+        },
+        body: messageDataItem.getRaw()
+      }).then((res) => res.json().then((parsed) => {
+        console.log(parsed);
+      }));
+    });
+
 
 
   }
+
+
 }

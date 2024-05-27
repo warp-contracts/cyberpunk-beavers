@@ -63,8 +63,8 @@ window.game = new Phaser.Game(config);
 
 window.__ao = {
   config: {
-    processId: "nHHezRJAfhitmdDaLUstnq1tbdnugqk2vqNOuPdupwE",
-    moduleId: "7dkc0pHXrn-Bsu9LFRWx76FTqlA-dqR_fj8JwFAfJpo",
+    processId: "g5Kgi-Af5P_wnFXT9aafva46Z-m9vEv7D8GnZ9r8ibg",
+    moduleId: "Q1Z5yM25WeNpAKZ8XyGhdJOQrm2LNgiMb3nul9cmAQA",
     muAddress: "http://localhost:3004"
   }
 }
