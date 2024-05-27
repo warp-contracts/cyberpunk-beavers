@@ -246,6 +246,9 @@ function movePlayer(state, action) {
 function registerPlayer(state, action) {
   const walletAddress = action.walletAddress;
   const beaverId = action.beaverId;
+  if (state.players[walletAddress]) {
+    return state.players[walletAddress]
+  }
   let newPlayer = {
     walletAddress,
     beaverId,

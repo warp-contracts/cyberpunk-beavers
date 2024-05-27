@@ -335,9 +335,11 @@ export default class MainScene extends Phaser.Scene {
             })
           );
           self.round = response.state.round;
-          self.initMap(response.state.groundTilemap, response.state.gameObjectsTilemap);
-          self.createMainPlayer(response.player);
-          self.initCamera();
+          if (response.player.walletAddress === this.walletAddress) {
+            self.initMap(response.state.groundTilemap, response.state.gameObjectsTilemap);
+            self.createMainPlayer(response.player);
+            self.initCamera();
+          }
         }
       }
         break;
