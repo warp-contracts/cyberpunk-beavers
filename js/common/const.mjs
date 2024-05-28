@@ -28,11 +28,11 @@ const Tile = {
 };
 
 const GameObject = {
-  hp: 'hp',
-  ap: 'ap',
-  treasure: 'treasure',
-  hole: 'hole',
-  none: 'none',
+  hp: { type: 'hp', tile: 1 },
+  ap: { type: 'ap', tile: 0 },
+  treasure: { type: 'treasure', tile: 0 },
+  hole: { type: 'hole', tile: 1 },
+  none: { type: 'none', tile: 2 },
 };
 
 const Errors = {

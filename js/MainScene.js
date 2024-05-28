@@ -268,13 +268,13 @@ export default class MainScene extends Phaser.Scene {
             localStorage.removeItem('player');
             self.scene.start('connect-wallet-scene');
           } else {
-            localStorage.setItem(
-              'player',
-              JSON.stringify({
-                id: response.player.walletAddress,
-                beaverId: response.player.beaverId,
-              })
-            );
+            // localStorage.setItem(
+            //   'player',
+            //   JSON.stringify({
+            //     id: response.player.walletAddress,
+            //     beaverId: response.player.beaverId,
+            //   })
+            // );
             self.round = response.state.round;
             if (response.player.walletAddress === this.walletAddress) {
               self.initMap(
