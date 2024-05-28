@@ -30,6 +30,7 @@ const Tile = {
 const GameObject = {
   hp: 'hp',
   ap: 'ap',
+  treasure: 'treasure',
   none: 'none',
 };
 

@@ -13,6 +13,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
     this.initInputKeys();
     this.onGameObject = null;
+    this.setDepth(3);
     console.log(this);
   }
 

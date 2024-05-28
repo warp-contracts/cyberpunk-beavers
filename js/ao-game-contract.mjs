@@ -4,7 +4,8 @@ export function handle(state, message) {
   console.log("We're in");
   if (!state.hasOwnProperty('map')) {
     state = Object.assign(state, initState(message));
-    setGameObjectsTilesOnMap(state);
+    setVisibleGameObjects(state);
+    setInvisibleGameObjects(state);
   }
 
   const action = JSON.parse(
@@ -27,6 +28,12 @@ export function handle(state, message) {
         cmd: Const.Command.picked,
         player: pickRes.player,
         picked: pickRes.picked,
+      });
+      ao.result({
+        cmd: Const.Command.stats,
+        walletAddress: pickRes.player.name,
+        stats: pickRes.player.stats,
+        player: pickRes.player,
       });
       break;
     case Const.Command.dig:
@@ -105,6 +112,10 @@ function initState(message) {
       { tile: 1, type: GameObject.hp },
       { tile: 2, type: GameObject.none },
     ],
+    gameTreasuresTiles: [
+      { tile: 0, type: GameObject.treasure },
+      { tile: 1, type: GameObject.treasure },
+    ],
     digged: [],
     round: {
       current: 0,
@@ -141,13 +152,29 @@ function initState(message) {
   return result;
 }
 
-function setGameObjectsTilesOnMap(state) {
-  const gameObjectsTilesToPropagate = state.gameObjectsTiles;
-  for (let i = 0; i < 11; i++) {
+function setVisibleGameObjects(state) {
+  state.gameObjectsTilemap = setGameObjectsTilesOnMap(
+    state,
+    state.gameObjectsTiles,
+    11
+  );
+}
+
+function setInvisibleGameObjects(state) {
+  state.gameTreasuresTilemap = setGameObjectsTilesOnMap(
+    state,
+    state.gameTreasuresTiles,
+    11
+  );
+}
+
+function setGameObjectsTilesOnMap(state, tiles, noneTileFrequency) {
+  const gameObjectsTilesToPropagate = tiles;
+  for (let i = 0; i < noneTileFrequency; i++) {
     gameObjectsTilesToPropagate.push({ tile: 2, type: GameObject.none });
   }
 
-  state.gameObjectsTilemap = state.groundTilemap.map((a) => {
+  return state.groundTilemap.map((a) => {
     return a.map((b) => {
       if ([1, 3, 5].includes(b)) {
         return gameObjectsTilesToPropagate[
@@ -209,8 +236,8 @@ function dig(state, action) {
 
   player.stats.ap.current -= 1;
 
-  const tile = state.gameObjectsTiles.find(
-    (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
+  const tile = state.gameTreasuresTiles.find(
+    (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
   );
   const { type } = tile;
   if (type === GameObject.none) {
@@ -219,7 +246,7 @@ function dig(state, action) {
   }
 
   if (type !== GameObject.none) {
-    console.log(`Player stands on a game object: ${type}.`);
+    console.log(`Player stands on a game treasure: ${type}.`);
     state.digged.push({
       player: walletAddress,
       pos: { x: player.pos[1], y: player.pos[0] },
@@ -244,41 +271,46 @@ function pick(state, action) {
 
   player.stats.ap.current -= 1;
 
-  const tile = state.gameObjectsTiles.find(
+  const gameObjectTile = state.gameObjectsTiles.find(
     (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
   );
-  const { type } = tile;
-  if (type === GameObject.none) {
-    console.log(
-      `Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`
-    );
-    return { player, picked: false };
-  }
+  const { type } = gameObjectTile;
 
-  const diggedObject = state.digged.find(
-    (d) =>
-      d.player == walletAddress &&
-      d.pos.x == player.pos[1] &&
-      d.pos.y == player.pos[0]
-  );
-  if (!diggedObject) {
-    console.log(
-      `Player ${walletAddress} does not stand on the object digged by them.`
-    );
-    return { player, picked: false };
-  }
-
-  player.stats.ap.current -= 1;
-  console.log(type);
   if (type === GameObject.hp) {
+    player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}.`);
     player.stats.hp.current += 5;
   } else if (type === GameObject.ap) {
+    player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += 5;
+  } else if (type === GameObject.none) {
+    const gameTreasureTile = state.gameTreasuresTiles.find(
+      (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
+    );
+    const { type } = gameTreasureTile;
+    if (type === GameObject.none) {
+      console.log(
+        `Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`
+      );
+      return { player, picked: false };
+    } else if (type === GameObject.treasure) {
+      const diggedTreasure = state.digged.find(
+        (d) =>
+          d.player == walletAddress &&
+          d.pos.x == player.pos[1] &&
+          d.pos.y == player.pos[0]
+      );
+      if (!diggedTreasure) {
+        console.log(
+          `Player ${walletAddress} does not stand on the treasure digged by them.`
+        );
+        return { player, picked: false };
+      }
+      player.stats.coins += 10;
+      state.digged.splice(state.digged.indexOf(diggedTreasure), 1);
+    }
   }
-
-  state.digged.splice(state.digged.indexOf(diggedObject), 1);
 
   return { player, picked: true };
 }
@@ -352,6 +384,10 @@ function movePlayer(state, action) {
       (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]
     );
 
+    player.onGameTreasure = state.gameTreasuresTiles.find(
+      (t) => t.tile === state.gameTreasuresTilemap[newPos[1]][newPos[0]]
+    );
+
     state.playersOnTiles[player.pos[1]][player.pos[0]] = null;
     state.playersOnTiles[newPos[1]][newPos[0]] = player.walletAddress;
     player.pos = newPos;
@@ -382,6 +418,7 @@ function registerPlayer(state, action) {
         last: 0,
       },
       score: 0,
+      coins: 0,
     },
     pos: [Math.floor(Math.random() * SIZE), Math.floor(Math.random() * SIZE)],
   };

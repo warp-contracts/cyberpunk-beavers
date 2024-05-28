@@ -8,6 +8,7 @@ export default class MainScene extends Phaser.Scene {
   obstacle;
   pInfo;
   gameObjectsLayer;
+  gameTreasuresLayer;
   constructor() {
     super('MainScene');
   }
@@ -25,6 +26,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('tiles', 'assets/images/dices.png');
     this.load.image('cyberpunk_bg', 'assets/images/bg_tiles.png');
     this.load.image('cyberpunk_game_objects', 'assets/images/bee.png');
+    this.load.image('cyberpunk_game_treasures', 'assets/images/bitcoin.png');
     this.load.image('beaver_agile48', 'assets/images/beaver_agile48.png');
     this.load.image('beaver_runner48', 'assets/images/beaver_runner48.png');
     this.load.image('beaver_tank48', 'assets/images/beaver_tank48.png');
@@ -91,7 +93,7 @@ export default class MainScene extends Phaser.Scene {
     this.pInfo.x = this.mainPlayer?.x - game.config.width / 2 + 20;
     this.pInfo.y = this.mainPlayer?.y - game.config.height / 2 + 20;
     const ps = this.mainPlayer?.stats;
-    const stats = `AP: ${ps?.ap.current} \nHP:${ps?.hp.current} \nScore: ${ps?.score}`;
+    const stats = `AP: ${ps?.ap.current} \nHP:${ps?.hp.current} \nScore: ${ps?.score} \nCoins: ${ps?.coins}`;
     this.pInfo.setText(
       `${this.mainPlayer?.walletAddress}\n${roundInfo}\n${stats}`
     );
@@ -162,10 +164,19 @@ export default class MainScene extends Phaser.Scene {
     };
   }
 
-  initMap(level1, level2) {
+  initMap(level1, level2, level3) {
     this.groundLayer = this.createLayer(level1, 'cyberpunk_bg', 0);
-    this.gameObjectsLayer = this.createLayer(level2, 'cyberpunk_game_objects');
-    this.gameObjectsLayer.forEachTile((t) => t.setVisible(false));
+    this.gameObjectsLayer = this.createLayer(
+      level2,
+      'cyberpunk_game_objects',
+      2
+    );
+    this.gameTreasuresLayer = this.createLayer(
+      level3,
+      'cyberpunk_game_treasures',
+      1
+    );
+    this.gameTreasuresLayer.forEachTile((t) => t.setVisible(false));
   }
 
   initCamera() {
@@ -268,7 +279,8 @@ export default class MainScene extends Phaser.Scene {
             if (response.player.walletAddress === this.walletAddress) {
               self.initMap(
                 response.state.groundTilemap,
-                response.state.gameObjectsTilemap
+                response.state.gameObjectsTilemap,
+                response.state.gameTreasuresTilemap
               );
               self.createMainPlayer(response.player);
               self.initCamera();
@@ -299,6 +311,13 @@ export default class MainScene extends Phaser.Scene {
             );
             this.mainPlayer.onGameObject = response.player.onGameObject;
           }
+
+          if (response.player.onGameTreasure != null) {
+            console.log(
+              `Player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`
+            );
+            this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
+          }
         }
         break;
 
@@ -319,13 +338,19 @@ export default class MainScene extends Phaser.Scene {
             response.player.pos[0],
             response.player.pos[1]
           );
+          if (response.player.onGameTreasure.type == 'treasure') {
+            this.gameTreasuresLayer.removeTileAt(
+              response.player.pos[0],
+              response.player.pos[1]
+            );
+          }
         }
         break;
 
       case Const.Command.digged:
         {
-          console.log(`Player digged a game object.`);
-          this.gameObjectsLayer
+          console.log(`Player digged a game treasure.`);
+          this.gameTreasuresLayer
             .getTileAt(response.player.pos[0], response.player.pos[1])
             .setVisible(true);
         }
