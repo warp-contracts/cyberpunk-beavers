@@ -38,15 +38,33 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.attack:
+      const attackRes = attack(state, action);
       ao.result({
-        cmd: Const.Command.moved,
-        player: attack(state, action).player,
+        cmd: Const.Command.stats,
+        walletAddress: attackRes.player.name,
+        stats: attackRes.player.stats,
+        player: attackRes.player,
       });
+      if (attackRes.opponent) {
+        ao.result({
+          cmd: Const.Command.stats,
+          walletAddress: attackRes.opponent.name,
+          stats: attackRes.opponent.stats,
+          player: attackRes.opponent,
+        });
+      }
       break;
     case Const.Command.move:
+      const moveRes = movePlayer(state, action);
       ao.result({
         cmd: Const.Command.moved,
-        player: movePlayer(state, action),
+        player: moveRes,
+      });
+      ao.result({
+        cmd: Const.Command.stats,
+        walletAddress: moveRes.name,
+        stats: moveRes.stats,
+        player: moveRes,
       });
       break;
     case Const.Command.register:
@@ -158,6 +176,7 @@ function gameRoundTick(state, message) {
 }
 
 function gamePlayerTick(state, player) {
+  console.log(player);
   if (player.stats.round.last < state.round.current) {
     player.stats.ap.current = player.stats.ap.max;
     player.stats.round.last = state.round.current;
@@ -274,13 +293,14 @@ function attack(state, action) {
     );
     return { player };
   }
-  const attackPos = step(player.pos, dir);
+  player.stats.ap.current -= 1;
+  const attackPos = step(player.pos, action.dir);
 
   if (state.playersOnTiles[attackPos[1]][attackPos[0]]) {
     const opponent =
       state.players[state.playersOnTiles[attackPos[1]][attackPos[0]]];
     console.log(`Player ${player.walletAddress} attacked ${opponent.name}`);
-    opponent.stats.hp -= 10;
+    opponent.stats.hp.current -= 10;
     player.stats.score += 10;
     return { player, opponent };
   } else if (

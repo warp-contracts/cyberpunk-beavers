@@ -52,9 +52,9 @@ export default class MainScene extends Phaser.Scene {
     if (!window.arweaveWallet) {
       this.scene.start('connect-wallet-scene');
     } else {
-      this.server = window.game.config.ao ?
-        this.initSubscription() :
-        this.initWebSocket();
+      this.server = window.game.config.ao
+        ? this.initSubscription()
+        : this.initWebSocket();
     }
   }
 
@@ -128,7 +128,7 @@ export default class MainScene extends Phaser.Scene {
     const mockDataOwner = (data) => {
       const withTags = window.warpAO.data(data);
       return { ...withTags, Owner: self.walletAddress, Tags: withTags.tags };
-    }
+    };
 
     ws.addEventListener('message', (event) => {
       const response = JSON.parse(event.data);
@@ -146,18 +146,20 @@ export default class MainScene extends Phaser.Scene {
         ws.send(JSON.stringify(data));
       } else {
         ws.send(
-          JSON.stringify(mockDataOwner({
-            cmd: Const.Command.register,
-            beaverId: self.beaverChoice,
-          }))
+          JSON.stringify(
+            mockDataOwner({
+              cmd: Const.Command.register,
+              beaverId: self.beaverChoice,
+            })
+          )
         );
       }
     });
     return {
       send: async (message) => {
         ws.send(JSON.stringify(mockDataOwner(message)));
-      }
-    }
+      },
+    };
   }
 
   initMap(level1, level2) {
@@ -239,9 +241,9 @@ export default class MainScene extends Phaser.Scene {
 
     return {
       send: async (message) => {
-        await window.warpAO.send(message)
-      }
-    }
+        await window.warpAO.send(message);
+      },
+    };
   }
 
   handleMessage(response) {
@@ -304,7 +306,7 @@ export default class MainScene extends Phaser.Scene {
         {
           console.log('Player stats', response.player);
           if (response.player.walletAddress === self.mainPlayer.walletAddress) {
-            console.log('Stats update', response.walletAddress);
+            console.log('Stats update', response.player.walletAddress);
             self.mainPlayer.stats = response.stats;
           }
         }

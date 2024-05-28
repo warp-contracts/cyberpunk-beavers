@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "yarn nodemon js/server/main.mjs",
-    "serve": "yarn live-server --port=9000",
+    "serve": "yarn live-server",
     "test": "node build.js && vitest",
     "build": "node build.js"
   },
