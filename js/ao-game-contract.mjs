@@ -114,7 +114,8 @@ function initState(message) {
     ],
     gameTreasuresTiles: [
       { tile: 0, type: GameObject.treasure },
-      { tile: 1, type: GameObject.treasure },
+      { tile: 1, type: GameObject.hole },
+      { tile: 2, type: GameObject.none },
     ],
     digged: [],
     round: {
@@ -161,9 +162,12 @@ function setVisibleGameObjects(state) {
 }
 
 function setInvisibleGameObjects(state) {
+  const gameTreasuresTilesWthoutHole = state.gameTreasuresTiles.filter(
+    (t) => t.type != 'hole'
+  );
   state.gameTreasuresTilemap = setGameObjectsTilesOnMap(
     state,
-    state.gameTreasuresTiles,
+    gameTreasuresTilesWthoutHole,
     11
   );
 }
@@ -240,7 +244,7 @@ function dig(state, action) {
     (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
   );
   const { type } = tile;
-  if (type === GameObject.none) {
+  if (type === GameObject.none || type === GameObject.hole) {
     console.log(`Player ${player.walletAddress} digged nothing.`);
     return { player, digged: false };
   }
@@ -280,10 +284,14 @@ function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}.`);
     player.stats.hp.current += 5;
+    // TODO: do sth with this 2, currently it represent tile number for GameObject.none
+    state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = 2;
   } else if (type === GameObject.ap) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += 5;
+    // TODO: do sth with this 2, currently it represent tile number for GameObject.none
+    state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = 2;
   } else if (type === GameObject.none) {
     const gameTreasureTile = state.gameTreasuresTiles.find(
       (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
@@ -309,6 +317,9 @@ function pick(state, action) {
       }
       player.stats.coins += 10;
       state.digged.splice(state.digged.indexOf(diggedTreasure), 1);
+
+      // TODO: do sth with this 2, currently it represent tile number for GameObject.none
+      state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] = 1;
     }
   }
 

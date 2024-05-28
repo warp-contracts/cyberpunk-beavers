@@ -25,7 +25,6 @@ export default class ConnectWalletScene extends Phaser.Scene {
     });
 
     await this.helloText.animateText();
-    this.helloText.blinkText();
 
     this.clickButton = new TextButton(
       this,

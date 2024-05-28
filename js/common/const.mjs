@@ -31,6 +31,7 @@ const GameObject = {
   hp: 'hp',
   ap: 'ap',
   treasure: 'treasure',
+  hole: 'hole',
   none: 'none',
 };
 

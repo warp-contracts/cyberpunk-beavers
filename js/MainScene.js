@@ -26,7 +26,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('tiles', 'assets/images/dices.png');
     this.load.image('cyberpunk_bg', 'assets/images/bg_tiles.png');
     this.load.image('cyberpunk_game_objects', 'assets/images/bee.png');
-    this.load.image('cyberpunk_game_treasures', 'assets/images/bitcoin.png');
+    this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
     this.load.image('beaver_agile48', 'assets/images/beaver_agile48.png');
     this.load.image('beaver_runner48', 'assets/images/beaver_runner48.png');
     this.load.image('beaver_tank48', 'assets/images/beaver_tank48.png');
@@ -176,7 +176,7 @@ export default class MainScene extends Phaser.Scene {
       'cyberpunk_game_treasures',
       1
     );
-    this.gameTreasuresLayer.forEachTile((t) => t.setVisible(false));
+    // this.gameTreasuresLayer.forEachTile((t) => t.setVisible(false));
   }
 
   initCamera() {
@@ -339,9 +339,12 @@ export default class MainScene extends Phaser.Scene {
             response.player.pos[1]
           );
           if (response.player.onGameTreasure.type == 'treasure') {
-            this.gameTreasuresLayer.removeTileAt(
-              response.player.pos[0],
-              response.player.pos[1]
+            console.log(
+              this.gameTreasuresLayer.putTileAt(
+                1,
+                response.player.pos[0],
+                response.player.pos[1]
+              )
             );
           }
         }
@@ -349,10 +352,12 @@ export default class MainScene extends Phaser.Scene {
 
       case Const.Command.digged:
         {
-          console.log(`Player digged a game treasure.`);
-          this.gameTreasuresLayer
-            .getTileAt(response.player.pos[0], response.player.pos[1])
-            .setVisible(true);
+          if (response.digged == true) {
+            console.log(`Player digged a game treasure.`);
+            this.gameTreasuresLayer
+              .getTileAt(response.player.pos[0], response.player.pos[1])
+              .setVisible(true);
+          }
         }
         break;
     }
