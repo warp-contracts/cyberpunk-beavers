@@ -100,9 +100,6 @@ export default class CharacterPickScene extends Phaser.Scene {
           scale: 1.1,
           ease: 'Linear',
           duration: 100,
-          // hold: 2000,
-          // repeat: 0,
-          // yoyo: true,
         });
       })
       .on('pointerout', () => {

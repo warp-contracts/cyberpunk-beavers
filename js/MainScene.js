@@ -20,6 +20,8 @@ export default class MainScene extends Phaser.Scene {
     this.beaverChoice = data.beaverChoice;
     this.walletAddress = data.walletAddress;
     this.scene.launch('hint-scene');
+    this.scene.launch('stats-scene');
+    this.statsScene = this.scene.get('stats-scene');
   }
 
   preload() {
@@ -47,11 +49,11 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 3. Create');
 
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
-    this.pInfo = this.add
-      .text(10, 10, 'Playeroo')
-      .setOrigin(0)
-      .setStyle({ fontFamily: 'Arial' });
-    this.pInfo.setDepth(10);
+    // this.pInfo = this.add
+    //   .text(10, 10, 'Playeroo')
+    //   .setOrigin(0)
+    //   .setStyle({ fontFamily: 'Arial' });
+    // this.pInfo.setDepth(10);
     this.allPlayers = {};
     if (!window.arweaveWallet) {
       this.scene.start('connect-wallet-scene');
@@ -90,22 +92,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    console.log(`update`);
     const roundInfo = this.roundTick();
-    this.pInfo.x = this.mainPlayer?.x - game.config.width / 2 + 20;
-    this.pInfo.y = this.mainPlayer?.y - game.config.height / 2 + 20;
-    const ps = this.mainPlayer?.stats;
-    const stats = `AP: ${ps?.ap.current} \nHP:${ps?.hp.current} \nScore: ${ps?.score} \nCoins: ${ps?.coins}`;
-    this.pInfo.setText(
-      `${this.mainPlayer?.walletAddress}\n${roundInfo}\n${stats}`
-    );
+
+    this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
+    this.statsScene.stats = this.mainPlayer?.stats;
+    this.statsScene.roundInfo = roundInfo;
 
     this.mainPlayer?.update();
-    // for (const [_, player] of Object.entries(this.allPlayers)) {
-    //   if (!player.anims.isPlaying) {
-    //     player.anims.play('idle');
-    //   }
-    // }
   }
 
   roundTick() {
@@ -123,7 +116,7 @@ export default class MainScene extends Phaser.Scene {
       this.mainPlayer.nextRound();
     }
 
-    return `Round: ${currentRound} ${'◦'.repeat(left)}`;
+    return `${currentRound} ${'◦'.repeat(left)}`;
   }
 
   initWebSocket() {

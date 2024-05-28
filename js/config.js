@@ -3,6 +3,7 @@ import LoadingScene from './LoadingScene.js';
 import CharacterPickScene from './CharacterPickScene.js';
 import ConnectWalletScene from './ConnectWalletScene.js';
 import HintScene from './HintScene.js';
+import StatsScene from './StatsScene.js';
 
 const config = {
   title: 'CyberBeavers',
@@ -43,6 +44,7 @@ const config = {
     CharacterPickScene,
     MainScene,
     HintScene,
+    StatsScene,
   ],
 };
 

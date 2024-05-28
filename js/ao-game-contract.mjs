@@ -270,8 +270,6 @@ function pick(state, action) {
     return { player, picked: false };
   }
 
-  player.stats.ap.current -= 1;
-
   const gameObjectTile = state.gameObjectsTiles.find(
     (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
   );
@@ -302,6 +300,7 @@ function pick(state, action) {
       );
       return { player, picked: false };
     } else if (type === GameObject.treasure.type) {
+      player.stats.ap.current -= 1;
       const diggedTreasure = state.digged.find(
         (d) =>
           d.player == walletAddress &&
