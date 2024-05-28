@@ -293,7 +293,6 @@ function attack(state, action) {
     );
     return { player };
   }
-  player.stats.ap.current -= 1;
   const attackPos = step(player.pos, action.dir);
 
   if (state.playersOnTiles[attackPos[1]][attackPos[0]]) {
@@ -302,6 +301,7 @@ function attack(state, action) {
     console.log(`Player ${player.walletAddress} attacked ${opponent.name}`);
     opponent.stats.hp.current -= 10;
     player.stats.score += 10;
+    player.stats.ap.current -= 1;
     return { player, opponent };
   } else if (
     [2, 4, 6].includes(state.groundTilemap[attackPos[1]][attackPos[0]])
