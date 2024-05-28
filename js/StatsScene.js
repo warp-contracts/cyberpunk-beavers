@@ -34,8 +34,8 @@ export default class StatsScene extends Phaser.Scene {
   createStatsBox() {
     const beaverStatsBoxEl = document.createElement('div');
 
-    beaverStatsBoxEl.style = `  width: 250px;
-      height: 200px;
+    beaverStatsBoxEl.style = `  width: 350px;
+      height: 250px;
       border: 0;
       outline: none;
       background-color: #050a0e;
@@ -57,7 +57,7 @@ export default class StatsScene extends Phaser.Scene {
     background-color: #fcee09;
     font-family: 'Press Start 2P';
     font-size: 0.5rem;
-    padding: 10px;
+    padding: 30px;
     clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);">
     <div style="display: flex; justify-content: space-between; align-items: center;">
     <img
