@@ -2,6 +2,8 @@ import Player from './Player.js';
 import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
 import { initPubSub, subscribe } from 'warp-contracts-pubsub';
+import { EVENTS_NAME } from './utils/events.js';
+import { HINTS } from './utils/hints.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -268,13 +270,13 @@ export default class MainScene extends Phaser.Scene {
             localStorage.removeItem('player');
             self.scene.start('connect-wallet-scene');
           } else {
-            // localStorage.setItem(
-            //   'player',
-            //   JSON.stringify({
-            //     id: response.player.walletAddress,
-            //     beaverId: response.player.beaverId,
-            //   })
-            // );
+            localStorage.setItem(
+              'player',
+              JSON.stringify({
+                id: response.player.walletAddress,
+                beaverId: response.player.beaverId,
+              })
+            );
             self.round = response.state.round;
             if (response.player.walletAddress === this.walletAddress) {
               self.initMap(
@@ -347,16 +349,24 @@ export default class MainScene extends Phaser.Scene {
               )
             );
           }
+          this.game.events.emit(
+            EVENTS_NAME.displayHint,
+            HINTS.picked(response.picked.type)
+          );
         }
         break;
 
       case Const.Command.digged:
         {
-          if (response.digged == true) {
+          if (response.digged?.type == Const.GameObject.treasure.type) {
             console.log(`Player digged a game treasure.`);
             this.gameTreasuresLayer
               .getTileAt(response.player.pos[0], response.player.pos[1])
               .setVisible(true);
+            this.game.events.emit(
+              EVENTS_NAME.displayHint,
+              HINTS.digged(response.player.onGameTreasure.type)
+            );
           }
         }
         break;

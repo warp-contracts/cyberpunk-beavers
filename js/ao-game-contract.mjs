@@ -283,12 +283,14 @@ function pick(state, action) {
     player.stats.hp.current += 5;
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] =
       GameObject.none.tile;
+    return { player, picked: { type } };
   } else if (type === GameObject.ap.type) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += 5;
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] =
       GameObject.none.tile;
+    return { player, picked: { type } };
   } else if (type === GameObject.none.type) {
     const gameTreasureTile = state.gameTreasuresTiles.find(
       (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
@@ -317,10 +319,11 @@ function pick(state, action) {
 
       state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] =
         GameObject.hole.tile;
+      return { player, picked: { type } };
     }
   }
 
-  return { player, picked: true };
+  return { player, picked: false };
 }
 
 function attack(state, action) {
