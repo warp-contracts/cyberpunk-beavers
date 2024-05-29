@@ -1,5 +1,18 @@
 import Const from './common/const.mjs';
 
+const TOKEN_CONTRACT_ID = 'cYHhrCJ4drNrL1HPR2LiahPcKn_ZfYLtxUy7CO-becM';
+const TOKEN_CONTRACT_METHOD = 'Transfer';
+
+function sendToken(recipient, qty) {
+  ao.send(
+    { Target: TOKEN_CONTRACT_ID,
+      Data: '1234',
+      Action: TOKEN_CONTRACT_METHOD,
+      Recipient: recipient,
+      Quantity: qty.toString()
+    })
+}
+
 export function handle(state, message) {
   console.log("We're in");
   if (!state.hasOwnProperty('map')) {
@@ -17,6 +30,7 @@ export function handle(state, message) {
   switch (action.cmd) {
     case 'increment':
       state.counter++;
+      sendToken(message.Owner, 1);
       ao.result({
         counter: state.counter,
         player: state.players[message.Owner],
@@ -24,6 +38,7 @@ export function handle(state, message) {
       break;
     case Const.Command.pick:
       const pickRes = pick(state, action);
+      sendToken(message.Owner, 10);
       ao.result({
         cmd: Const.Command.picked,
         player: pickRes.player,
@@ -33,6 +48,9 @@ export function handle(state, message) {
       break;
     case Const.Command.dig:
       const digRes = dig(state, action);
+      if (digRes.digged) {
+        sendToken(message.Owner, 1000);
+      }
       ao.result({
         cmd: Const.Command.digged,
         player: digRes.player,
@@ -42,6 +60,7 @@ export function handle(state, message) {
       break;
     case Const.Command.attack:
       const attackRes = attack(state, action);
+      sendToken(message.Owner, attackRes.damage);
       ao.result({
         cmd: Const.Command.moved,
         walletAddress: attackRes.player.name,
@@ -54,6 +73,7 @@ export function handle(state, message) {
       break;
     case Const.Command.move:
       const moveRes = movePlayer(state, action);
+      sendToken(message.Owner, 1);
       ao.result({
         cmd: Const.Command.moved,
         stats: moveRes.stats,
@@ -316,6 +336,7 @@ function pick(state, action) {
 }
 
 function attack(state, action) {
+  const damage = 10;
   const walletAddress = action.walletAddress;
   const player = state.players[walletAddress];
   gamePlayerTick(state, player);
@@ -323,7 +344,7 @@ function attack(state, action) {
     console.log(
       `Cannot perform attak ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`
     );
-    return { player };
+    return { player, damage: 0 };
   }
   const attackPos = step(player.pos, action.dir);
 
@@ -333,10 +354,10 @@ function attack(state, action) {
     console.log(
       `Player ${player.walletAddress} attacked ${opponent.walletAddress}`
     );
-    opponent.stats.hp.current -= 10;
-    player.stats.score += 10;
+    opponent.stats.hp.current -= damage;
+    player.stats.score += damage;
     player.stats.ap.current -= 1;
-    return { player, opponent };
+    return { player, damage, opponent };
   } else if (
     [2, 4, 6].includes(state.groundTilemap[attackPos[1]][attackPos[0]])
   ) {
@@ -344,7 +365,7 @@ function attack(state, action) {
       `Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`
     );
   }
-  return { player };
+  return { player, damage: 0 };
 }
 
 function movePlayer(state, action) {
