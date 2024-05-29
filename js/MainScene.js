@@ -53,7 +53,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createMainPlayer(playerInfo) {
-    console.log(playerInfo.beaverId);
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
       stats: playerInfo.stats,
@@ -105,7 +104,7 @@ export default class MainScene extends Phaser.Scene {
       this.mainPlayer.nextRound();
     }
 
-    return `${currentRound} ${'◦'.repeat(left)}`;
+    return `${'◦'.repeat(left)} ${currentRound}`;
   }
 
   initWebSocket() {
@@ -113,7 +112,12 @@ export default class MainScene extends Phaser.Scene {
     const self = this;
     const mockDataOwner = (data) => {
       const withTags = window.warpAO.data(data);
-      return { ...withTags, Owner: self.walletAddress, Tags: withTags.tags, Timestamp: Date.now() };
+      return {
+        ...withTags,
+        Owner: self.walletAddress,
+        Tags: withTags.tags,
+        Timestamp: Date.now(),
+      };
     };
 
     ws.addEventListener('message', (event) => {

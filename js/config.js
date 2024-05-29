@@ -62,4 +62,4 @@ window.sizeChanged = () => {
 window.onresize = () => window.sizeChanged();
 
 window.game = new Phaser.Game(config);
-window.game.config.ao = false;
+window.game.config.ao = true;

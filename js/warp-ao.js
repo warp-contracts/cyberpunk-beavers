@@ -3,8 +3,8 @@ import { DataItem } from 'warp-arbundles';
 
 window.warpAO = {
   config: {
-    processId: 'uki2Io0G4iAbt8WtpKk7qLh8bI_Xxh950x83OkXcyq4',
-    moduleId: '4kmSEwouXDrB5vNbXQD2C1Rzx4pIkUg0_l4y1MmwDKY',
+    processId: 'kgmE4rmz9x5RBno-mC34aRnrEHHzVUGdOAYchA40ePQ',
+    moduleId: 'dDAEF37Zj4d_7lU12D-RicaVzeomQepvuoaRfO_hLaA',
     muAddress: 'http://34.89.142.6:3004',
   },
   messageTags: (message) => [
