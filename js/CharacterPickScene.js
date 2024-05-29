@@ -28,6 +28,9 @@ export default class CharacterPickScene extends Phaser.Scene {
       'post_apocalyptic_background',
       'assets/images/background_post_apocalyptic.png'
     );
+    this.load.image('hacker_beaver', 'assets/images/hacker_beaver_200px.png');
+    this.load.image('heavy_beaver', 'assets/images/heavy_beaver_200px.png');
+    this.load.image('speedy_beaver', 'assets/images/speedy_beaver_200px.png');
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
@@ -39,7 +42,7 @@ export default class CharacterPickScene extends Phaser.Scene {
     this.addAndPositionTitle();
     this.addBackground();
     this.addBeaverOptionPick({
-      imgName: 'beaver_runner',
+      imgName: 'heavy_beaver',
       x: (this.gameWidth / 12) * 3,
       y: 0,
       name: 'beaver tank',
@@ -48,7 +51,7 @@ export default class CharacterPickScene extends Phaser.Scene {
       tech: 1,
     });
     this.addBeaverOptionPick({
-      imgName: 'beaver_runner',
+      imgName: 'hacker_beaver',
       x: (this.gameWidth / 12) * 6,
       y: 0,
       name: 'techy beaver',
@@ -57,7 +60,7 @@ export default class CharacterPickScene extends Phaser.Scene {
       tech: 3,
     });
     this.addBeaverOptionPick({
-      imgName: 'beaver_runner',
+      imgName: 'speedy_beaver',
       x: (this.gameWidth / 12) * 9,
       y: 0,
       name: 'agile beaver',
@@ -68,6 +71,7 @@ export default class CharacterPickScene extends Phaser.Scene {
   }
 
   addBeaverOptionPick(option) {
+    console.log(option);
     const beaverSprite = this.add.image(option.x, option.y, option.imgName);
     beaverSprite.y = beaverSprite.height;
     beaverSprite.x = beaverSprite.x - beaverSprite.width / 2;
@@ -83,11 +87,11 @@ export default class CharacterPickScene extends Phaser.Scene {
 
     Phaser.Display.Bounds.SetTop(
       beaverStatsBox,
-      beaverSprite.y + 1.1 * beaverSprite.height
+      beaverSprite.y + 1.3 * beaverSprite.height
     );
     Phaser.Display.Bounds.SetCenterX(
       beaverStatsBox,
-      beaverSprite.x + (1.1 * beaverSprite.width) / 2
+      beaverSprite.x + (1.3 * beaverSprite.width) / 2
     );
 
     return beaverSprite
@@ -115,6 +119,7 @@ export default class CharacterPickScene extends Phaser.Scene {
         });
       })
       .on('pointerdown', () => {
+        console.log(option);
         this.scene.start('MainScene', {
           ...this.initData,
           beaverChoice: option.imgName,

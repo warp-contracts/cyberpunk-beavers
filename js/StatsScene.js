@@ -4,16 +4,30 @@ export default class StatsScene extends Phaser.Scene {
   walletAddress;
   stats;
   roundInfo;
+  beaverChoice;
   constructor() {
     super('stats-scene');
   }
 
-  init() {
-    console.log('Stats Scene - 1. Init');
+  init(data) {
+    console.log('Stats Scene - 1. Init', data);
+    this.beaverChoice = data.beaverChoice;
   }
 
   preload() {
     console.log('Stats Scene - 2. Preload');
+    this.load.image(
+      'hacker_beaver_portrait',
+      'assets/images/hacker_beaver_portrait.png'
+    );
+    this.load.image(
+      'heavy_beaver_portrait',
+      'assets/images/heavy_beaver_portrait.png'
+    );
+    this.load.image(
+      'speedy_beaver_portrait',
+      'assets/images/speedy_beaver_portrait.png'
+    );
   }
 
   create() {
@@ -61,7 +75,7 @@ export default class StatsScene extends Phaser.Scene {
     clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);">
     <div style="display: flex; justify-content: space-between; align-items: center;">
     <img
-src="assets/images/beaver_runner_head.png"
+src="assets/images/${this.beaverChoice}_portrait.png"
 width=96
 height=96/>
 <div>${this.walletAddress && this.walletAddress.substr(0, 3) + '...' + this.walletAddress.substr(this.walletAddress.length - 3)}</div>

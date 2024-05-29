@@ -83,7 +83,7 @@ const { GameObject, Direction } = Const;
 const SIZE = 30;
 let i = -1;
 let j = 0;
-const groundTiles = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6];
+const groundTiles = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2];
 
 function initState(message) {
   const result = {
@@ -113,19 +113,19 @@ function initState(message) {
         i++;
         j = 0;
         if (i === 0) {
-          return Array(SIZE).fill(7);
+          return Array(SIZE).fill(1);
         }
         if (i === SIZE - 1) {
-          return Array(SIZE).fill(8);
+          return Array(SIZE).fill(1);
         }
         return Array(SIZE)
           .fill(0)
           .map(() => {
             j++;
             if (j === 3 || j === 10 || j === 15) {
-              return 0;
+              return 1;
             }
-            return groundTiles[getRandomNumber(0, groundTiles.length - 1)];
+            return 0;
           });
       }),
   };
@@ -159,7 +159,7 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
 
   return state.groundTilemap.map((a) => {
     return a.map((b) => {
-      if ([1, 3, 5].includes(b)) {
+      if (b == 0) {
         return tilesToPropagate[getRandomNumber(0, tilesToPropagate.length - 1)]
           .tile;
       } else {

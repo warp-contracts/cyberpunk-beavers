@@ -20,7 +20,9 @@ export default class MainScene extends Phaser.Scene {
     this.beaverChoice = data.beaverChoice;
     this.walletAddress = data.walletAddress;
     this.scene.launch('hint-scene');
-    this.scene.launch('stats-scene');
+    this.scene.launch('stats-scene', {
+      beaverChoice: this.beaverChoice,
+    });
     this.statsScene = this.scene.get('stats-scene');
   }
 
@@ -28,32 +30,18 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 2. Preload');
     Player.preload(this);
     this.load.image('tiles', 'assets/images/dices.png');
-    this.load.image('cyberpunk_bg', 'assets/images/bg_tiles.png');
+    this.load.image('cyberpunk_bg', 'assets/images/sand_tiles.png');
     this.load.image('cyberpunk_game_objects', 'assets/images/bee.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
-    this.load.image('beaver_agile48', 'assets/images/beaver_agile48.png');
-    this.load.image('beaver_runner48', 'assets/images/beaver_runner48.png');
-    this.load.image('beaver_tank48', 'assets/images/beaver_tank48.png');
-    this.load.image(
-      'beaver_techy48',
-      'assets/images/beaver_player_techy48.png'
-    );
-    this.load.image(
-      'beaver_water_pistol48',
-      'assets/images/beaver_water_pistol48.png'
-    );
-    this.load.image('player_bat48', 'assets/images/idle_bat.png');
+    this.load.image('hacker_beaver_48', 'assets/images/hacker_beaver_48px.png');
+    this.load.image('heavy_beaver_48', 'assets/images/heavy_beaver_48px.png');
+    this.load.image('speedy_beaver_48', 'assets/images/speedy_beaver_48px.png');
   }
 
   async create() {
     console.log('Main Scene - 3. Create');
 
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
-    // this.pInfo = this.add
-    //   .text(10, 10, 'Playeroo')
-    //   .setOrigin(0)
-    //   .setStyle({ fontFamily: 'Arial' });
-    // this.pInfo.setDepth(10);
     this.allPlayers = {};
     if (!window.arweaveWallet) {
       this.scene.start('connect-wallet-scene');
@@ -65,13 +53,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createMainPlayer(playerInfo) {
+    console.log(playerInfo.beaverId);
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
       stats: playerInfo.stats,
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
-      texture: `${playerInfo.beaverId}48`,
+      texture: `${playerInfo.beaverId}_48`,
       animated: false,
       frame: 'walk-1',
     });
@@ -86,7 +75,7 @@ export default class MainScene extends Phaser.Scene {
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
-      texture: `${playerInfo.beaverId}48`,
+      texture: `${playerInfo.beaverId}_48px`,
       frame: 'walk-1',
     }));
   }
