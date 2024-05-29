@@ -1,6 +1,5 @@
 import { WebFontFile } from './WebFontFile.js';
 import { Text } from './Text.js';
-import { colors } from './utils/style.js';
 
 export default class CharacterPickScene extends Phaser.Scene {
   score;

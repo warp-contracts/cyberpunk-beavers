@@ -23,7 +23,9 @@ export default class MainScene extends Phaser.Scene {
     this.scene.launch('stats-scene', {
       beaverChoice: this.beaverChoice,
     });
+    this.scene.launch('main-scene-loading');
     this.statsScene = this.scene.get('stats-scene');
+    this.mainSceneLoading = this.scene.get('main-scene-loading');
   }
 
   preload() {
@@ -40,7 +42,6 @@ export default class MainScene extends Phaser.Scene {
 
   async create() {
     console.log('Main Scene - 3. Create');
-
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.allPlayers = {};
     if (!window.arweaveWallet) {
@@ -274,6 +275,7 @@ export default class MainScene extends Phaser.Scene {
               self.createMainPlayer(response.player);
               self.initCamera();
             }
+            this.scene.remove('main-scene-loading');
           }
         }
         break;
