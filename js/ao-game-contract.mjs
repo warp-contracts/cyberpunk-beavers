@@ -236,14 +236,24 @@ function dig(state, action) {
     return { player, digged: false };
   }
 
-  player.stats.ap.current -= 1;
-
   const tile = state.gameTreasuresTiles.find(
     (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
   );
   const { type } = tile;
-  if (type === GameObject.none.type || type === GameObject.hole.type) {
+
+  if (type === GameObject.hole.type) {
+    console.log(
+      `Player ${player.walletAddress} tried to dig already existing hole.`
+    );
+    return { player, digged: false };
+  }
+
+  player.stats.ap.current -= 1;
+
+  if (type === GameObject.none.type) {
     console.log(`Player ${player.walletAddress} digged nothing.`);
+    state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] =
+      GameObject.hole.tile;
     return { player, digged: false };
   }
 

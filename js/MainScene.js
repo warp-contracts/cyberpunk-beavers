@@ -360,6 +360,12 @@ export default class MainScene extends Phaser.Scene {
               EVENTS_NAME.displayHint,
               HINTS.digged(response.player.onGameTreasure.type)
             );
+          } else {
+            this.gameTreasuresLayer.putTileAt(
+              1,
+              response.player.pos[0],
+              response.player.pos[1]
+            );
           }
         }
         break;
