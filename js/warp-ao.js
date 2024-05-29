@@ -3,8 +3,8 @@ import { DataItem } from 'warp-arbundles';
 
 window.warpAO = {
   config: {
-    processId: 'kwb7QceAPTYbnL8Aiq5BcZJ_UOQxp00VxbPBcZRMGfc',
-    moduleId: 'jJpoLiX6AqfQomyObbH2djvwpuNvZxLG3BqhWqTIl-Y',
+    processId: '4ztcpcal40wuMN8qq74ACgBxVGRpFMy8qUekopHBV9E',
+    moduleId: 'P6GsqR5aIp7AZyETPh9XJQR32wOR95m4yUPE69ODgFo-Y',
     muAddress: 'http://34.89.142.6:3004',
   },
   messageTags: (message) => [
@@ -18,12 +18,13 @@ window.warpAO = {
     new Tag('Salt', '' + Date.now()),
   ],
   data: (message) => ({
-      tags: window.warpAO.messageTags(message),
-      data: '1234',
-      target: window.warpAO.config.processId,
+    tags: window.warpAO.messageTags(message),
+    data: '1234',
+    target: window.warpAO.config.processId,
   }),
   send: async (message) => {
-    window.arweaveWallet.signDataItem(window.warpAO.data(message))
+    window.arweaveWallet
+      .signDataItem(window.warpAO.data(message))
       .then((signed) => {
         const dataItem = new DataItem(signed);
         const messageResponse = fetch(window.warpAO.config.muAddress, {

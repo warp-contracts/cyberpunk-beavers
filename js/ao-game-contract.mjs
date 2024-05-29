@@ -28,12 +28,7 @@ export function handle(state, message) {
         cmd: Const.Command.picked,
         player: pickRes.player,
         picked: pickRes.picked,
-      });
-      ao.result({
-        cmd: Const.Command.stats,
-        walletAddress: pickRes.player.name,
         stats: pickRes.player.stats,
-        player: pickRes.player,
       });
       break;
     case Const.Command.dig:
@@ -41,41 +36,26 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.digged,
         player: digRes.player,
-        digged: digRes.digged,
-      });
-      ao.result({
-        cmd: Const.Command.stats,
-        walletAddress: digRes.player.name,
         stats: digRes.player.stats,
-        player: digRes.player,
+        digged: digRes.digged,
       });
       break;
     case Const.Command.attack:
       const attackRes = attack(state, action);
       ao.result({
-        cmd: Const.Command.stats,
+        cmd: Const.Command.moved,
         walletAddress: attackRes.player.name,
         stats: attackRes.player.stats,
         player: attackRes.player,
+        opponentWalletAddress: attackRes.opponent?.name,
+        opponentStats: attackRes.opponent?.stats,
+        opponentPlayer: attackRes.opponent,
       });
-      if (attackRes.opponent) {
-        ao.result({
-          cmd: Const.Command.stats,
-          walletAddress: attackRes.opponent.name,
-          stats: attackRes.opponent.stats,
-          player: attackRes.opponent,
-        });
-      }
       break;
     case Const.Command.move:
       const moveRes = movePlayer(state, action);
       ao.result({
         cmd: Const.Command.moved,
-        player: moveRes,
-      });
-      ao.result({
-        cmd: Const.Command.stats,
-        walletAddress: moveRes.name,
         stats: moveRes.stats,
         player: moveRes,
       });
@@ -350,7 +330,9 @@ function attack(state, action) {
   if (state.playersOnTiles[attackPos[1]][attackPos[0]]) {
     const opponent =
       state.players[state.playersOnTiles[attackPos[1]][attackPos[0]]];
-    console.log(`Player ${player.walletAddress} attacked ${opponent.name}`);
+    console.log(
+      `Player ${player.walletAddress} attacked ${opponent.walletAddress}`
+    );
     opponent.stats.hp.current -= 10;
     player.stats.score += 10;
     player.stats.ap.current -= 1;

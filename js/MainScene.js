@@ -313,39 +313,37 @@ export default class MainScene extends Phaser.Scene {
             );
             this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
           }
-        }
-        break;
 
-      case Const.Command.stats:
-        {
-          console.log('Player stats', response.player);
-          if (response.player.walletAddress === self.mainPlayer.walletAddress) {
-            console.log('Stats update', response.player.walletAddress);
-            self.mainPlayer.stats = response.stats;
-          }
+          this.updateStats(response.player, response.stats);
+          this.updateStats(response.opponentPlayer, response.opponentStats);
         }
         break;
 
       case Const.Command.picked:
         {
-          console.log(`Player picked a game object.`);
-          this.gameObjectsLayer.removeTileAt(
-            response.player.pos[0],
-            response.player.pos[1]
-          );
-          if (response.player.onGameTreasure.type == 'treasure') {
-            console.log(
+          if (response.picked) {
+            console.log(`Player picked a game object.`);
+            this.gameObjectsLayer.removeTileAt(
+              response.player.pos[0],
+              response.player.pos[1]
+            );
+            if (response.player.onGameTreasure.type == 'treasure') {
               this.gameTreasuresLayer.putTileAt(
                 1,
                 response.player.pos[0],
                 response.player.pos[1]
-              )
-            );
+              );
+            }
+            if (
+              response.player?.walletAddress === self.mainPlayer.walletAddress
+            ) {
+              this.game.events.emit(
+                EVENTS_NAME.displayHint,
+                HINTS.picked(response.picked.type)
+              );
+            }
           }
-          this.game.events.emit(
-            EVENTS_NAME.displayHint,
-            HINTS.picked(response.picked.type)
-          );
+          this.updateStats(response.player, response.stats);
         }
         break;
 
@@ -356,19 +354,40 @@ export default class MainScene extends Phaser.Scene {
             this.gameTreasuresLayer
               .getTileAt(response.player.pos[0], response.player.pos[1])
               .setVisible(true);
-            this.game.events.emit(
-              EVENTS_NAME.displayHint,
-              HINTS.digged(response.player.onGameTreasure.type)
-            );
+
+            if (
+              response.player?.walletAddress === self.mainPlayer.walletAddress
+            ) {
+              this.game.events.emit(
+                EVENTS_NAME.displayHint,
+                HINTS.digged(response.player.onGameTreasure.type)
+              );
+            }
           } else {
-            this.gameTreasuresLayer.putTileAt(
-              1,
+            const gameObjectTile = this.gameObjectsLayer.getTileAt(
               response.player.pos[0],
               response.player.pos[1]
-            );
+            )?.index;
+            if (gameObjectTile == 2 || gameObjectTile == null) {
+              this.gameTreasuresLayer.putTileAt(
+                1,
+                response.player.pos[0],
+                response.player.pos[1]
+              );
+            }
           }
         }
+        this.updateStats(response.player, response.stats);
         break;
+    }
+  }
+
+  updateStats(responsePlayer, responseStats) {
+    const self = this;
+    console.log('Player stats', responsePlayer);
+    if (responsePlayer?.walletAddress === self.mainPlayer.walletAddress) {
+      console.log('Stats update', responsePlayer?.walletAddress);
+      self.mainPlayer.stats = responseStats;
     }
   }
 }
