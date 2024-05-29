@@ -5,6 +5,7 @@ export default class LoadingScene extends Phaser.Scene {
 
   init() {
     console.log('Loading Scene - 1. Init');
+    localStorage.clear();
   }
 
   preload() {

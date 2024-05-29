@@ -100,8 +100,8 @@ function initState(message) {
     digged: [],
     round: {
       current: 0,
-      start: message.Timestamp * 1000,
-      interval: 50000,
+      start: message.Timestamp, //ms
+      interval: 10_000, //ms
     },
     players: {},
     playersOnTiles: Array(SIZE)
@@ -174,7 +174,7 @@ function getRandomNumber(min, max) {
 }
 
 function gameRoundTick(state, message) {
-  const tsNow = message.Timestamp * 1000;
+  const tsNow = message.Timestamp; //ms
   const tsChange = tsNow - state.round.start;
   const round = ~~(tsChange / state.round.interval);
   console.log('Last round ', state.round);
@@ -409,8 +409,8 @@ function registerPlayer(state, action) {
     beaverId,
     stats: {
       ap: {
-        current: 100,
-        max: 100,
+        current: 10,
+        max: 10,
       },
       hp: {
         current: 100,

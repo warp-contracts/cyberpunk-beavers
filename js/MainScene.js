@@ -124,7 +124,7 @@ export default class MainScene extends Phaser.Scene {
     const self = this;
     const mockDataOwner = (data) => {
       const withTags = window.warpAO.data(data);
-      return { ...withTags, Owner: self.walletAddress, Tags: withTags.tags };
+      return { ...withTags, Owner: self.walletAddress, Tags: withTags.tags, Timestamp: Date.now() };
     };
 
     ws.addEventListener('message', (event) => {
