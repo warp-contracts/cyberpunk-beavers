@@ -10,8 +10,7 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   init(data) {
-    console.log('Stats Scene - 1. Init', data);
-    this.beaverChoice = data.beaverChoice;
+    console.log('Stats Scene - 1. Init');
   }
 
   preload() {
@@ -37,11 +36,11 @@ export default class StatsScene extends Phaser.Scene {
   update() {
     if (this.walletAddress) {
       const beaverStatsBoxEl = this.createStatsBox();
-      this.add.dom(100, 100 + beaverStatsBoxEl.width, beaverStatsBoxEl);
-      // this.textures.addImage(
-      //   'beaver_runner_head',
-      //   document.getElementById('frame')
-      // );
+      this.beaverStatsBox = this.add.dom(
+        100,
+        100 + beaverStatsBoxEl.width,
+        beaverStatsBoxEl
+      );
     }
   }
 

@@ -85,6 +85,7 @@ export default class MainScene extends Phaser.Scene {
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
     this.statsScene.stats = this.mainPlayer?.stats;
     this.statsScene.roundInfo = roundInfo;
+    this.statsScene.beaverChoice = this.beaverChoice;
 
     this.mainPlayer?.update();
   }
