@@ -35,6 +35,12 @@ const GameObject = {
   none: { type: 'none', tile: 2 },
 };
 
+const Scores = {
+  hp: 'hp',
+  ap: 'ap',
+  coin: '$',
+};
+
 const Errors = {
   notRegistered: 'Player not registered',
   invalidWallet: 'Wallet address is invalid',
@@ -47,4 +53,5 @@ export default {
   Errors,
   Tile,
   GameObject,
+  Scores,
 };

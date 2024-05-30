@@ -1,5 +1,4 @@
 import { TextButton } from './TextButton.js';
-import { InjectedArweaveSigner } from 'warp-contracts-plugin-signature';
 import { Text } from './Text.js';
 import { colors } from './utils/style.js';
 

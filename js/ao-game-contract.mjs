@@ -4,13 +4,13 @@ const TOKEN_CONTRACT_ID = 'cYHhrCJ4drNrL1HPR2LiahPcKn_ZfYLtxUy7CO-becM';
 const TOKEN_CONTRACT_METHOD = 'Transfer';
 
 function sendToken(recipient, qty) {
-  ao.send(
-    { Target: TOKEN_CONTRACT_ID,
-      Data: '1234',
-      Action: TOKEN_CONTRACT_METHOD,
-      Recipient: recipient,
-      Quantity: qty.toString()
-    })
+  ao.send({
+    Target: TOKEN_CONTRACT_ID,
+    Data: '1234',
+    Action: TOKEN_CONTRACT_METHOD,
+    Recipient: recipient,
+    Quantity: qty.toString(),
+  });
 }
 
 export function handle(state, message) {
@@ -44,6 +44,7 @@ export function handle(state, message) {
         player: pickRes.player,
         picked: pickRes.picked,
         stats: pickRes.player.stats,
+        scoreToDisplay: pickRes.scoreToDisplay,
       });
       break;
     case Const.Command.dig:
@@ -56,6 +57,7 @@ export function handle(state, message) {
         player: digRes.player,
         stats: digRes.player.stats,
         digged: digRes.digged,
+        scoreToDisplay: digRes.scoreToDisplay,
       });
       break;
     case Const.Command.attack:
@@ -69,6 +71,8 @@ export function handle(state, message) {
         opponentWalletAddress: attackRes.opponent?.name,
         opponentStats: attackRes.opponent?.stats,
         opponentPlayer: attackRes.opponent,
+        scoreToDisplay: attackRes.scoreToDisplay,
+        opponentScoreToDisplay: attackRes.opponentScoreToDisplay,
       });
       break;
     case Const.Command.move:
@@ -76,8 +80,9 @@ export function handle(state, message) {
       sendToken(message.Owner, 1);
       ao.result({
         cmd: Const.Command.moved,
-        stats: moveRes.stats,
-        player: moveRes,
+        stats: moveRes.player.stats,
+        player: moveRes.player,
+        scoreToDisplay: moveRes.scoreToDisplay,
       });
       break;
     case Const.Command.register:
@@ -99,7 +104,7 @@ export function handle(state, message) {
   }
 }
 
-const { GameObject, Direction } = Const;
+const { GameObject, Direction, Scores } = Const;
 const SIZE = 30;
 let i = -1;
 let j = 0;
@@ -254,7 +259,11 @@ function dig(state, action) {
     console.log(`Player ${player.walletAddress} digged nothing.`);
     state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] =
       GameObject.hole.tile;
-    return { player, digged: false };
+    return {
+      player,
+      digged: false,
+      scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
+    };
   }
 
   if (type == GameObject.treasure.type) {
@@ -263,7 +272,11 @@ function dig(state, action) {
       player: walletAddress,
       pos: { x: player.pos[1], y: player.pos[0] },
     });
-    return { player, digged: { type } };
+    return {
+      player,
+      digged: { type },
+      scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
+    };
   }
 
   return { player, digged: false };
@@ -291,14 +304,28 @@ function pick(state, action) {
     player.stats.hp.current += 5;
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] =
       GameObject.none.tile;
-    return { player, picked: { type } };
+    return {
+      player,
+      picked: { type },
+      scoreToDisplay: scoreToDisplay([
+        { value: 5, type: Scores.hp },
+        { value: -1, type: Scores.ap },
+      ]),
+    };
   } else if (type === GameObject.ap.type) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += 5;
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] =
       GameObject.none.tile;
-    return { player, picked: { type } };
+    return {
+      player,
+      picked: { type },
+      scoreToDisplay: scoreToDisplay([
+        { value: 5, type: Scores.ap },
+        { value: -1, type: Scores.ap },
+      ]),
+    };
   } else if (type === GameObject.none.type) {
     const gameTreasureTile = state.gameTreasuresTiles.find(
       (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
@@ -328,7 +355,14 @@ function pick(state, action) {
 
       state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] =
         GameObject.hole.tile;
-      return { player, picked: { type } };
+      return {
+        player,
+        picked: { type },
+        scoreToDisplay: scoreToDisplay([
+          { value: 10, type: Scores.coin },
+          { value: -1, type: Scores.ap },
+        ]),
+      };
     }
   }
 
@@ -357,7 +391,18 @@ function attack(state, action) {
     opponent.stats.hp.current -= damage;
     player.stats.score += damage;
     player.stats.ap.current -= 1;
-    return { player, damage, opponent };
+    return {
+      player,
+      damage,
+      opponent,
+      scoreToDisplay: scoreToDisplay([
+        { value: -1, type: GameObject.ap.type },
+        { value: damage, type: null },
+      ]),
+      opponentScoreToDisplay: scoreToDisplay([
+        { value: -damage, type: GameObject.hp.type },
+      ]),
+    };
   } else if (
     [2, 4, 6].includes(state.groundTilemap[attackPos[1]][attackPos[0]])
   ) {
@@ -375,7 +420,7 @@ function movePlayer(state, action) {
   gamePlayerTick(state, player);
   if (player.stats.ap.current < 1) {
     console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
-    return player;
+    return { player };
   }
 
   const newPos = step(player.pos, dir);
@@ -389,19 +434,19 @@ function movePlayer(state, action) {
     console.log(
       `Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`
     );
-    return player;
+    return { player };
   } else if (state.playersOnTiles[newPos[1]][newPos[0]]) {
     console.log(
       `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${
         state.playersOnTiles[newPos[1]][newPos[0]]
       }`
     );
-    return player;
+    return { player };
   } else if ([2, 4, 6].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
     console.log(
       `Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`
     );
-    return player;
+    return { player };
   } else {
     player.onGameObject = state.gameObjectsTiles.find(
       (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]
@@ -415,7 +460,10 @@ function movePlayer(state, action) {
     state.playersOnTiles[newPos[1]][newPos[0]] = player.walletAddress;
     player.pos = newPos;
     player.stats.ap.current -= 1;
-    return player;
+    return {
+      player,
+      scoreToDisplay: scoreToDisplay([{ value: -1, type: GameObject.ap.type }]),
+    };
   }
 }
 
@@ -447,4 +495,15 @@ function registerPlayer(state, action) {
   };
   state.players[newPlayer.walletAddress] = newPlayer;
   return newPlayer;
+}
+
+function scoreToDisplay(scoreValues) {
+  return scoreValues.map((v) => {
+    const isValuePositive = v.value > 0;
+    return {
+      value: `${isValuePositive ? '+' : ''}${v.value}`,
+      type: v.type?.toUpperCase() || '',
+      sign: isValuePositive ? 'positive' : 'negative',
+    };
+  });
 }

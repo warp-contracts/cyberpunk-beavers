@@ -8,8 +8,8 @@ const WS_PORT = 8080;
 const wss = new WebSocketServer({ port: WS_PORT });
 
 gameContract.setGameObjectsTilesOnMap();
-const state = {}
-global.ao = { result: logAndBroadcast }
+const state = {};
+global.ao = { result: logAndBroadcast, send: console.log };
 
 // Event listener for WebSocket connections
 wss.on('connection', (ws) => {
@@ -28,7 +28,6 @@ wss.on('connection', (ws) => {
     console.log('Client disconnected');
   });
 });
-
 
 function logAndBroadcast(message) {
   console.log('WS RES:', message.cmd);

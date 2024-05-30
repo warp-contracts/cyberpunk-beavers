@@ -2,8 +2,7 @@ import Player from './Player.js';
 import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
 import { initPubSub, subscribe } from 'warp-contracts-pubsub';
-import { EVENTS_NAME } from './utils/events.js';
-import { HINTS } from './utils/hints.js';
+import { Text } from './Text.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -19,7 +18,6 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 1. Init', data);
     this.beaverChoice = data.beaverChoice;
     this.walletAddress = data.walletAddress;
-    this.scene.launch('hint-scene');
     this.scene.launch('stats-scene', {
       beaverChoice: this.beaverChoice,
     });
@@ -75,7 +73,7 @@ export default class MainScene extends Phaser.Scene {
       scene: this,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
-      texture: `${playerInfo.beaverId}_48px`,
+      texture: `${playerInfo.beaverId}_48`,
       frame: 'walk-1',
     }));
   }
@@ -312,6 +310,16 @@ export default class MainScene extends Phaser.Scene {
 
           this.updateStats(response.player, response.stats);
           this.updateStats(response.opponentPlayer, response.opponentStats);
+          this.displayPlayerScore(
+            response.scoreToDisplay,
+            response.player.walletAddress,
+            {
+              forOpponent: {
+                score: response.opponentScoreToDisplay,
+                walletAddress: response.opponentPlayer?.walletAddress,
+              },
+            }
+          );
         }
         break;
 
@@ -330,16 +338,13 @@ export default class MainScene extends Phaser.Scene {
                 response.player.pos[1]
               );
             }
-            if (
-              response.player?.walletAddress === self.mainPlayer.walletAddress
-            ) {
-              this.game.events.emit(
-                EVENTS_NAME.displayHint,
-                HINTS.picked(response.picked.type)
-              );
-            }
           }
           this.updateStats(response.player, response.stats);
+          response.picked &&
+            this.displayPlayerScore(
+              response.scoreToDisplay,
+              response.player.walletAddress
+            );
         }
         break;
 
@@ -354,10 +359,6 @@ export default class MainScene extends Phaser.Scene {
             if (
               response.player?.walletAddress === self.mainPlayer.walletAddress
             ) {
-              this.game.events.emit(
-                EVENTS_NAME.displayHint,
-                HINTS.digged(response.player.onGameTreasure.type)
-              );
             }
           } else {
             const gameObjectTile = this.gameObjectsLayer.getTileAt(
@@ -374,6 +375,10 @@ export default class MainScene extends Phaser.Scene {
           }
         }
         this.updateStats(response.player, response.stats);
+        this.displayPlayerScore(
+          response.scoreToDisplay,
+          response.player.walletAddress
+        );
         break;
     }
   }
@@ -385,5 +390,60 @@ export default class MainScene extends Phaser.Scene {
       console.log('Stats update', responsePlayer?.walletAddress);
       self.mainPlayer.stats = responseStats;
     }
+  }
+
+  displayPlayerScore(scores, walletAddress, options) {
+    if (!scores || scores.length == 0) return;
+    const isMainPlayer = this.mainPlayer.walletAddress == walletAddress;
+    const opponent = options?.forOpponent?.walletAddress;
+
+    if (
+      isMainPlayer ||
+      (opponent && this.mainPlayer.walletAddress == opponent)
+    ) {
+      scores.forEach((s) => {
+        const scoreText = this.createScoreText(this.mainPlayer, s);
+        this.createScoreTween(scoreText);
+      });
+    }
+
+    if (
+      opponent &&
+      (isMainPlayer || this.mainPlayer.walletAddress == opponent)
+    ) {
+      options?.forOpponent?.score.forEach((s) => {
+        const scoreText = this.createScoreText(
+          this.allPlayers[options?.forOpponent.walletAddress],
+          s
+        );
+        this.createScoreTween(scoreText);
+      });
+    }
+  }
+
+  createScoreText(player, score) {
+    return new Text(
+      this,
+      player.x + (score.sign == 'positive' ? 15 : -player.width),
+      player.y - 40,
+      `${score.value}${score.type}`,
+      {
+        fontFamily: '"Press Start 2P"',
+        fontSize: '12px',
+        textTransform: 'uppercase',
+        fill: score.sign == 'positive' ? 'white' : 'red',
+      }
+    ).setDepth(10);
+  }
+
+  createScoreTween(target) {
+    this.tweens.add({
+      targets: target,
+      alpha: { from: 0, to: 1 },
+      ease: 'Power2',
+      duration: 500,
+      repeat: 0,
+      yoyo: true,
+    });
   }
 }
