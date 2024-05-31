@@ -22,23 +22,17 @@ window.warpAO = {
     data: '1234',
     target: window.warpAO.config.processId,
   }),
-  send: async (message) => {
-    window.arweaveWallet
+  send: async (message) =>
+    await window.arweaveWallet
       .signDataItem(window.warpAO.data(message))
-      .then((signed) => {
-        const dataItem = new DataItem(signed);
-        const messageResponse = fetch(window.warpAO.config.muAddress, {
+      .then(async (signed) =>
+        fetch(window.warpAO.config.muAddress, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/octet-stream',
             Accept: 'application/json',
           },
-          body: dataItem.getRaw(),
-        }).then((res) =>
-          res.json().then((parsed) => {
-            console.log(parsed);
-          })
-        );
-      });
-  },
+          body: new DataItem(signed).getRaw(),
+        }))
+      .then(async (res) => res.json()),
 };

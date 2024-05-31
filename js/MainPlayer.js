@@ -36,9 +36,23 @@ export default class MainPlayer extends Player {
   nextRound() {
     this.stats.ap.current = this.stats.ap.max;
     this.scene.game.events.emit(EVENTS_NAME.updateStats, this.stats);
+    this.lockingDataItemId = undefined;
+  }
+
+  handleTx(txId) {
+    if (txId === this.lockingDataItemId) {
+      this.lockingDataItemId = undefined;
+      console.log('Actions unlocked', txId);
+    }
   }
 
   async send(message) {
-    await this.scene.server.send(message);
+    if (!this.lockingDataItemId) {
+      this.lockingDataItemId = 'locking...';
+      this.lockingDataItemId = (await this.scene.server.send(message)).id;
+      console.log('Locked actions until tx is resolved', this.lockingDataItemId);
+    } else {
+      console.log(`Action disabled until tx resolved `, this.lockingDataItemId);
+    }
   }
 }

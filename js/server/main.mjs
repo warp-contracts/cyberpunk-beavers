@@ -8,6 +8,7 @@ const wss = new WebSocketServer({ port: WS_PORT });
 
 const state = {};
 global.ao = { result: logAndBroadcast, send: console.log };
+let txId = null;
 
 // Event listener for WebSocket connections
 wss.on('connection', (ws) => {
@@ -18,6 +19,7 @@ wss.on('connection', (ws) => {
     console.log('------');
     console.log('WS REQ: %s', message);
     const req = JSON.parse(message);
+    txId = req.Id;
     handle(state, req);
   });
 
@@ -28,7 +30,8 @@ wss.on('connection', (ws) => {
 });
 
 function logAndBroadcast(message) {
-  console.log('WS RES:', message.cmd);
+  message.txId = txId;
+  console.log('WS RES:', message.txId, message.cmd);
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       setTimeout(() => {

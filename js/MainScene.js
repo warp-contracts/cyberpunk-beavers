@@ -111,11 +111,12 @@ export default class MainScene extends Phaser.Scene {
   initWebSocket() {
     const ws = new WebSocket('ws://localhost:8080');
     const self = this;
-    const mockDataOwner = (data) => {
+    const mockDataItem = (data) => {
       const withTags = window.warpAO.data(data);
       return {
         ...withTags,
         Owner: self.walletAddress,
+        Id: Math.random().toString(36).substring(2),
         Tags: withTags.tags,
         Timestamp: Date.now(),
       };
@@ -124,13 +125,16 @@ export default class MainScene extends Phaser.Scene {
     ws.addEventListener('message', (event) => {
       const response = JSON.parse(event.data);
       console.log(response.cmd);
+      if (response.txId && this.mainPlayer) {
+        this.mainPlayer.handleTx(response.txId);
+      }
       self.handleMessage(response);
     });
     ws.addEventListener('open', () => {
       const player = JSON.parse(localStorage.getItem('player'));
       console.log(`Found player info in local storage`, player);
       if (player) {
-        const data = mockDataOwner({
+        const data = mockDataItem({
           cmd: Const.Command.join,
         });
         console.log('data', data);
@@ -138,7 +142,7 @@ export default class MainScene extends Phaser.Scene {
       } else {
         ws.send(
           JSON.stringify(
-            mockDataOwner({
+            mockDataItem({
               cmd: Const.Command.register,
               beaverId: self.beaverChoice,
             })
@@ -148,8 +152,10 @@ export default class MainScene extends Phaser.Scene {
     });
     return {
       send: async (message) => {
-        ws.send(JSON.stringify(mockDataOwner(message)));
-      },
+        const di = mockDataItem(message);
+        ws.send(JSON.stringify(di));
+        return { id: di.Id };
+      }
     };
   }
 
@@ -212,6 +218,9 @@ export default class MainScene extends Phaser.Scene {
         console.log('\n ==== sent from CU ==== ', message.sent);
         console.log('\n ==== received     ==== ', new Date());
 
+        if (message.txId && this.mainPlayer) {
+          this.mainPlayer.handleTx(message.txId);
+        }
         if (message.output.cmd) {
           this.handleMessage(message.output);
         }
@@ -239,11 +248,7 @@ export default class MainScene extends Phaser.Scene {
       })
       .catch((e) => console.error(e));
 
-    return {
-      send: async (message) => {
-        await window.warpAO.send(message);
-      },
-    };
+    return { send: window.warpAO.send };
   }
 
   handleMessage(response) {
