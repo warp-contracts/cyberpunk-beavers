@@ -1,5 +1,4 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import gameContract from './game-contract.mjs';
 import { handle } from '../ao-game-contract.mjs';
 
 const WS_PORT = 8080;
@@ -7,7 +6,6 @@ const WS_PORT = 8080;
 // Create a WebSocket server
 const wss = new WebSocketServer({ port: WS_PORT });
 
-gameContract.setGameObjectsTilesOnMap();
 const state = {};
 global.ao = { result: logAndBroadcast, send: console.log };
 

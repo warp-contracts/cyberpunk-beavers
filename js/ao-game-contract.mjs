@@ -380,6 +380,7 @@ function attack(state, action) {
     );
     return { player, damage: 0 };
   }
+  player.stats.ap.current -= 1;
   const attackPos = step(player.pos, action.dir);
 
   if (state.playersOnTiles[attackPos[1]][attackPos[0]]) {
