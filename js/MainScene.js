@@ -3,6 +3,7 @@ import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
 import { initPubSub, subscribe } from 'warp-contracts-pubsub';
 import { Text } from './Text.js';
+import { EVENTS_NAME } from './utils/events.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -18,11 +19,7 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 1. Init', data);
     this.beaverChoice = data.beaverChoice;
     this.walletAddress = data.walletAddress;
-    this.scene.launch('stats-scene', {
-      beaverChoice: this.beaverChoice,
-    });
     this.scene.launch('main-scene-loading');
-    this.statsScene = this.scene.get('stats-scene');
     this.mainSceneLoading = this.scene.get('main-scene-loading');
   }
 
@@ -64,6 +61,14 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
+    this.scene.launch('stats-scene', {
+      beaverChoice: this.beaverChoice,
+    });
+    this.statsScene = this.scene.get('stats-scene');
+    this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
+    this.statsScene.beaverChoice = this.beaverChoice;
+    this.statsScene.stats = this.mainPlayer.stats;
+
     return this.mainPlayer;
   }
 
@@ -80,11 +85,7 @@ export default class MainScene extends Phaser.Scene {
 
   update() {
     const roundInfo = this.roundTick();
-
-    this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
-    this.statsScene.stats = this.mainPlayer?.stats;
-    this.statsScene.roundInfo = roundInfo;
-    this.statsScene.beaverChoice = this.beaverChoice;
+    this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
 
     this.mainPlayer?.update();
   }
@@ -389,6 +390,7 @@ export default class MainScene extends Phaser.Scene {
     if (responsePlayer?.walletAddress === self.mainPlayer.walletAddress) {
       console.log('Stats update', responsePlayer?.walletAddress);
       self.mainPlayer.stats = responseStats;
+      this.game.events.emit(EVENTS_NAME.updateStats, responseStats);
     }
   }
 
@@ -397,35 +399,73 @@ export default class MainScene extends Phaser.Scene {
     const isMainPlayer = this.mainPlayer.walletAddress == walletAddress;
     const opponent = options?.forOpponent?.walletAddress;
 
-    if (
-      isMainPlayer ||
-      (opponent && this.mainPlayer.walletAddress == opponent)
-    ) {
+    if (isMainPlayer && opponent) {
+      scores.forEach((s) => {
+        const scoreText = this.createScoreText(this.mainPlayer, s, {
+          opponent: this.allPlayers[options?.forOpponent.walletAddress],
+        });
+        this.createScoreTween(scoreText);
+      });
+    } else if (isMainPlayer) {
       scores.forEach((s) => {
         const scoreText = this.createScoreText(this.mainPlayer, s);
         this.createScoreTween(scoreText);
       });
     }
 
-    if (
-      opponent &&
-      (isMainPlayer || this.mainPlayer.walletAddress == opponent)
-    ) {
+    if (isMainPlayer && opponent) {
       options?.forOpponent?.score.forEach((s) => {
         const scoreText = this.createScoreText(
           this.allPlayers[options?.forOpponent.walletAddress],
-          s
+          s,
+          {
+            forOpponent: this.allPlayers[options?.forOpponent.walletAddress],
+            mainPlayer: this.mainPlayer,
+          }
         );
+        this.createScoreTween(scoreText);
+      });
+    }
+
+    if (this.mainPlayer.walletAddress == opponent) {
+      options?.forOpponent?.score.forEach((s) => {
+        const scoreText = this.createScoreText(
+          this.allPlayers[options?.forOpponent.walletAddress],
+          s,
+          {
+            forOpponent: this.allPlayers[options?.forOpponent.walletAddress],
+            mainPlayer: this.mainPlayer,
+          }
+        );
+        this.createScoreTween(scoreText);
+      });
+
+      scores.forEach((s) => {
+        const scoreText = this.createScoreText(this.mainPlayer, s, {
+          forFighter: this.allPlayers[walletAddress],
+        });
         this.createScoreTween(scoreText);
       });
     }
   }
 
-  createScoreText(player, score) {
+  createScoreText(player, score, options) {
     return new Text(
       this,
-      player.x + (score.sign == 'positive' ? 15 : -player.width),
-      player.y - 40,
+      options?.forFighter
+        ? options?.forFighter?.x > player.x
+          ? options?.forFighter?.x + 15
+          : options?.forFighter?.x - 60
+        : options?.forOpponent
+          ? player.x < options?.mainPlayer.x
+            ? player.x - 60
+            : player.x + 15
+          : options?.opponent
+            ? options?.opponent?.x < player.x
+              ? player.x + 15
+              : player.x - 30
+            : player.x + 15,
+      player.y - (score.sign == 'negative' ? 40 : 60),
       `${score.value}${score.type}`,
       {
         fontFamily: '"Press Start 2P"',

@@ -9,7 +9,7 @@ export default class StatsScene extends Phaser.Scene {
     super('stats-scene');
   }
 
-  init(data) {
+  init() {
     console.log('Stats Scene - 1. Init');
   }
 
@@ -31,9 +31,6 @@ export default class StatsScene extends Phaser.Scene {
 
   create() {
     console.log('Stats Scene - 3. Create');
-  }
-
-  update() {
     if (this.walletAddress) {
       const beaverStatsBoxEl = this.createStatsBox();
       this.beaverStatsBox = this.add.dom(
@@ -42,6 +39,21 @@ export default class StatsScene extends Phaser.Scene {
         beaverStatsBoxEl
       );
     }
+    this.initListeners();
+  }
+
+  initListeners() {
+    console.log('initial');
+    this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
+      document.getElementById('stats-scene-ap').innerText = stats?.ap?.current;
+      document.getElementById('stats-scene-hp').innerText = stats?.hp?.current;
+      document.getElementById('stats-scene-coins').innerText = stats?.coins;
+      document.getElementById('stats-scene-score').innerText = stats?.score;
+    });
+
+    this.game.events.on(EVENTS_NAME.updateRoundInfo, (roundInfo) => {
+      document.getElementById('stats-scene-round-info').innerText = roundInfo;
+    });
   }
 
   createStatsBox() {
@@ -77,31 +89,31 @@ export default class StatsScene extends Phaser.Scene {
 src="assets/images/${this.beaverChoice}_portrait.png"
 width=96
 height=96/>
-<div>${this.walletAddress && this.walletAddress.substr(0, 3) + '...' + this.walletAddress.substr(this.walletAddress.length - 3)}</div>
+<div id="stats-scene-wallet-address">${this.walletAddress && this.walletAddress.substr(0, 3) + '...' + this.walletAddress.substr(this.walletAddress.length - 3)}</div>
 </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;"><div>HP</div>
     <div style="display: flex; justify-content: space-between;">
-    <div>${this.stats?.hp.current}</div>
+    <div id="stats-scene-hp">${this.stats?.hp.current}</div>
     </div>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;"><div>AP</div>
     <div style="display: flex; justify-content: space-between;">
-    <div>${this.stats?.ap.current}</div>
+    <div id="stats-scene-ap">${this.stats?.ap.current}</div>
     </div>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;"><div>SCORE</div>
     <div style="display: flex; justify-content: space-between;">
-    <div>${this.stats?.score}</div>
+    <div id="stats-scene-score">${this.stats?.score}</div>
     </div>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;"><div>COINS</div>
     <div style="display: flex; justify-content: space-between;">
-    <div>${this.stats?.coins}</div>
+    <div id="stats-scene-coins">${this.stats?.coins}</div>
     </div>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;"><div>ROUND</div>
     <div style="display: flex; justify-content: space-between;">
-    <div>${this.roundInfo}</div>
+    <div id="stats-scene-round-info">${this.roundInfo}</div>
     </div>
     </div>
     </div>`;

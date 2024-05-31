@@ -1,7 +1,8 @@
 import Const from './common/const.mjs';
 import Player from './Player.js';
-import {Tag} from 'warp-contracts';
-import {createData} from 'warp-arbundles';
+import { Tag } from 'warp-contracts';
+import { createData } from 'warp-arbundles';
+import { EVENTS_NAME } from './utils/events.js';
 
 export default class MainPlayer extends Player {
   async update() {
@@ -34,6 +35,7 @@ export default class MainPlayer extends Player {
 
   nextRound() {
     this.stats.ap.current = this.stats.ap.max;
+    this.scene.game.events.emit(EVENTS_NAME.updateStats, this.stats);
   }
 
   async send(message) {
