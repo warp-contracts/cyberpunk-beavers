@@ -3,9 +3,10 @@ import { DataItem } from 'warp-arbundles';
 
 window.warpAO = {
   config: {
-    processId: 'np2KWujAtoof17XF6aDc7LmRem-h2ff5iQ-1evcv2_Q',
-    moduleId: '_iQjNdnfsInsWVrW7brxTpsNbilzE6a1b1SFMqFQ_p4',
-    muAddress: 'http://34.89.142.6:3004',
+    processId: 'dP01RXeCnps1ucqu4THK5pKVCoSCKgdxQfrRbARLbrc',
+    moduleId: 'A7on7LQxvIC3UtGoxtmDMn_hiCsO-LjJhI9PvAz50qQ',
+    muAddress: 'https://mu.warp.cc',
+    cuAddress: 'https://cu.warp.cc'
   },
   messageTags: (message) => [
     new Tag('Action', JSON.stringify(message)),

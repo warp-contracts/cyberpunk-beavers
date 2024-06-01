@@ -3,12 +3,12 @@ import {DeployPlugin, ArweaveSigner} from "warp-contracts-plugin-deploy";
 import {createData} from "warp-arbundles";
 import {readFileSync} from "fs";
 
-const jwk = JSON.parse(readFileSync('../.secrets/wallet.json', 'utf-8'));
+const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
 const warp = WarpFactory.forMainnet().use(new DeployPlugin());
 
 async function deploy() {
-    const module = readFileSync('../dist/output.js', 'utf-8');
+    const module = readFileSync('./dist/output.js', 'utf-8');
     const moduleTags = [
         new Tag('Data-Protocol', 'ao'),
         new Tag('Variant', 'ao.TN.1'),
@@ -32,7 +32,7 @@ async function spawn(moduleId) {
         new Tag('Variant', 'ao.TN.1'),
         new Tag('Type', 'Process'),
         new Tag('Module', moduleId),
-        new Tag('Scheduler', '_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA'),
+        new Tag('Scheduler', 'jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M'),
         new Tag('SDK', 'ao'),
         new Tag('Content-Type', 'text/plain'),
         new Tag('Name', 'asia')
@@ -42,7 +42,9 @@ async function spawn(moduleId) {
     const processDataItem = createData(data, signer, {tags: processTags});
     await processDataItem.sign(signer);
 
-    const processResponse = await fetch('http://34.89.142.6:3004', {
+    const muUrl = "https://mu.warp.cc";
+
+    const processResponse = await fetch(muUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/octet-stream',

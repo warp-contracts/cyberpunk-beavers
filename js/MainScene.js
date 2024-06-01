@@ -202,7 +202,6 @@ export default class MainScene extends Phaser.Scene {
     const self = this;
 
     console.log('processId', window.warpAO.config.processId);
-
     const subscription = subscribe(
       `results/ao/${window.warpAO.config.processId}`,
       ({ data }) => {
@@ -247,6 +246,64 @@ export default class MainScene extends Phaser.Scene {
         }
       })
       .catch((e) => console.error(e));
+
+    return { send: window.warpAO.send };
+
+/*    const sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.config.processId}`);
+    const beforeUnloadHandler = (event) => {
+      sse.close();
+      /!*!// Recommended
+      event.preventDefault();
+
+      // Included for legacy support, e.g. Chrome/Edge < 119
+      event.returnValue = true;*!/
+    };
+    window.addEventListener("beforeunload", beforeUnloadHandler);
+
+    sse.onerror = () => sse.close();
+    sse.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        console.log('\n ==== new message ==== ', message);
+        if (message.tags) {
+          const salt = message.tags.find((t) => t.name === 'Salt');
+          console.log(
+            '\n ==== created      ==== ',
+            new Date(parseInt(salt.value))
+          );
+        }
+        console.log('\n ==== sent from CU ==== ', message.sent);
+        console.log('\n ==== received     ==== ', new Date());
+
+        if (message.txId && this.mainPlayer) {
+          this.mainPlayer.handleTx(message.txId);
+        }
+        if (message.output.cmd) {
+          this.handleMessage(message.output);
+        }
+      } catch (e) {
+        console.log(event);
+      }
+    };
+
+    console.log('Subscription started...');
+    const player = JSON.parse(localStorage.getItem('player'));
+    console.log(`Found player info in local storage`, player);
+    if (player) {
+      console.log('Joining game...');
+      window.warpAO.send({
+        cmd: Const.Command.join,
+        walletAddress: this.walletAddress,
+      });
+    } else {
+      console.log('register player...');
+      window.warpAO.send({
+        cmd: Const.Command.register,
+        walletAddress: this.walletAddress,
+        beaverId: self.beaverChoice,
+      });
+    }*/
+
 
     return { send: window.warpAO.send };
   }
