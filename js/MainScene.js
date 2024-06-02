@@ -201,9 +201,9 @@ export default class MainScene extends Phaser.Scene {
     initPubSub();
     const self = this;
 
-    console.log('processId', window.warpAO.config.processId);
+    console.log('processId', window.warpAO.processId());
     const subscription = subscribe(
-      `results/ao/${window.warpAO.config.processId}`,
+      `results/ao/${window.warpAO.processId()}`,
       ({ data }) => {
         const message = JSON.parse(data);
         console.log('\n ==== new message ==== ', message);
@@ -249,7 +249,7 @@ export default class MainScene extends Phaser.Scene {
 
     return { send: window.warpAO.send };
 
-/*    const sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.config.processId}`);
+/*    const sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
     const beforeUnloadHandler = (event) => {
       sse.close();
       /!*!// Recommended

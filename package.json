@@ -3,8 +3,10 @@
   "type": "module",
   "scripts": {
     "dev": "yarn nodemon js/server/main.mjs",
-    "serve": "yarn live-server --port=9001",
-    "deploy-contract": "yarn build && node js/deploy-spawn.js",
+    "serve:local": "yarn live-server --port=9001 --open=index.html?env=local",
+    "serve:prod": "yarn live-server --port=9001 --open=index.html?env=prod",
+    "deploy-contract:local": "yarn build && node js/deploy-spawn.js --env local",
+    "deploy-contract:prod": "yarn build && node js/deploy-spawn.js --env prod",
     "test": "node build.js && vitest",
     "build": "node build.js"
   },
@@ -22,6 +24,7 @@
     "replace-in-file": "^7.1.0",
     "vitest": "^1.6.0",
     "warp-arbundles": "^1.0.4",
-    "warp-contracts-plugin-deploy": "^1.0.13"
+    "warp-contracts-plugin-deploy": "^1.0.13",
+    "replace-in-files": "^3.0.0"
   }
 }

@@ -1,27 +1,41 @@
-import { Tag } from 'warp-contracts';
-import { DataItem } from 'warp-arbundles';
+import {Tag} from 'warp-contracts';
+import {DataItem} from 'warp-arbundles';
+
+const urlParams = new URLSearchParams(window.location.search);
+const env = urlParams.get('env') || 'prod';
+
+console.log(`running in ${env} mode`);
 
 window.warpAO = {
   config: {
-    processId: 'dP01RXeCnps1ucqu4THK5pKVCoSCKgdxQfrRbARLbrc',
-    moduleId: 'A7on7LQxvIC3UtGoxtmDMn_hiCsO-LjJhI9PvAz50qQ',
-    muAddress: 'https://mu.warp.cc',
-    cuAddress: 'https://cu.warp.cc'
+    env,
+    processId_prod: 'dP01RXeCnps1ucqu4THK5pKVCoSCKgdxQfrRbARLbrc',
+    moduleId_prod: 'A7on7LQxvIC3UtGoxtmDMn_hiCsO',
+    processId_local: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
+    moduleId_local: 'ZGU4Q6U_XBOVRxkTz7cxYKC7-iWdYg7TVHWihel7z9I',
+    muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
+    cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc'
+  },
+  processId: () => {
+    return window.warpAO.config[`processId_${env}`];
+  },
+  moduleId: () => {
+    return window.warpAO.config[`moduleId_${env}`];
   },
   messageTags: (message) => [
     new Tag('Action', JSON.stringify(message)),
     new Tag('Data-Protocol', 'ao'),
     new Tag('Type', 'Message'),
     new Tag('Variant', 'ao.TN.1'),
-    { name: 'SDK', value: 'ao' },
-    new Tag('From-Process', window.warpAO.config.processId),
-    new Tag('From-Module', window.warpAO.config.moduleId),
+    {name: 'SDK', value: 'ao'},
+    new Tag('From-Process', window.warpAO.processId()),
+    new Tag('From-Module', window.warpAO.moduleId()),
     new Tag('Salt', '' + Date.now()),
   ],
   data: (message) => ({
     tags: window.warpAO.messageTags(message),
     data: '1234',
-    target: window.warpAO.config.processId,
+    target: window.warpAO.processId(),
   }),
   send: async (message) =>
     await window.arweaveWallet
