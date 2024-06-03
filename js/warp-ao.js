@@ -9,8 +9,8 @@ console.log(`running in ${env} mode`);
 window.warpAO = {
   config: {
     env,
-    processId_prod: 'heCmzHRCFeiWSc6vXb8O29LF6rNGBZMDGKts4gKvUjc',
-    moduleId_prod: 'p-9Y1IYkwmF4skpNP2xYQDJu7xTd6kve8my78slZE-s',
+    processId_prod: 'ccggeKA3AsgQ6gf1EsghrWjdDeT2YtVqWHkXgWMpH-E',
+    moduleId_prod: 'A1_XHaX-aNldZNVyBwD4PU90JfePOrfgx_Z-3zt5qt8',
     processId_local: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
     moduleId_local: 'ZGU4Q6U_XBOVRxkTz7cxYKC7-iWdYg7TVHWihel7z9I',
     processId_dev: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
@@ -18,6 +18,8 @@ window.warpAO = {
     muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
     cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc'
   },
+  nonce: 0,
+  subscribed: false,
   processId: () => {
     return window.warpAO.config[`processId_${env}`];
   },

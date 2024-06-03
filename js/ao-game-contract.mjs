@@ -168,7 +168,7 @@ function setVisibleGameObjects(state) {
     state.gameObjectsTiles,
     state.gameObjectsRarity
   );
-  console.log('game objects tilemap', state.gameObjectsTilemap);
+  //console.log('game objects tilemap', state.gameObjectsTilemap);
 }
 
 function setInvisibleGameObjects(state) {
@@ -188,16 +188,16 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
     tilesToPropagate.push(GameObject.none);
   }
 
-  console.log('tiles to propagate', tilesToPropagate);
-  console.log('ground tilemap', state.groundTilemap);
+  //console.log('tiles to propagate', tilesToPropagate);
+  //console.log('ground tilemap', state.groundTilemap);
   return state.groundTilemap.map((a) => {
-    console.log('ground tilemap row', a);
+    //console.log('ground tilemap row', a);
     return a.map((b) => {
-      console.log("b", b);
+      //console.log("b", b);
       if (b == 0) {
         state.randomCounter++;
         const randomValue = getRandomNumber(0, tilesToPropagate.length - 1, state.randomCounter);
-        console.log('randomValue', randomValue);
+        //console.log('randomValue', randomValue);
         return tilesToPropagate[randomValue]
           .tile;
       } else {
@@ -209,7 +209,7 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
 
 function getRandomNumber(min, max, randomCounter) {
   const randomValue = Math.random(randomCounter);
-  console.log(`Math.random(): ${randomCounter}, ${randomValue}`);
+  //console.log(`Math.random(): ${randomCounter}, ${randomValue}`);
   return Math.floor(randomValue * (max - min + 1)) + min;
 }
 

@@ -1,9 +1,9 @@
 import Player from './Player.js';
 import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
-import { initPubSub, subscribe } from 'warp-contracts-pubsub';
-import { Text } from './Text.js';
-import { EVENTS_NAME } from './utils/events.js';
+import {initPubSub, subscribe} from 'warp-contracts-pubsub';
+import {Text} from './Text.js';
+import {EVENTS_NAME} from './utils/events.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -11,6 +11,7 @@ export default class MainScene extends Phaser.Scene {
   pInfo;
   gameObjectsLayer;
   gameTreasuresLayer;
+
   constructor() {
     super('MainScene');
   }
@@ -44,7 +45,7 @@ export default class MainScene extends Phaser.Scene {
     } else {
       this.server = window.warpAO.config.env === 'dev'
         ? this.initWebSocket()
-        : this.initSubscription();
+        : await this.initSubscription();
     }
   }
 
@@ -99,7 +100,7 @@ export default class MainScene extends Phaser.Scene {
     const left = ~~(
       10 -
       (10 * (tsChange - currentRound * this.round.interval)) /
-        this.round.interval
+      this.round.interval
     );
     if (left === 9) {
       this.mainPlayer.nextRound();
@@ -154,7 +155,7 @@ export default class MainScene extends Phaser.Scene {
       send: async (message) => {
         const di = mockDataItem(message);
         ws.send(JSON.stringify(di));
-        return { id: di.Id };
+        return {id: di.Id};
       }
     };
   }
@@ -197,16 +198,22 @@ export default class MainScene extends Phaser.Scene {
     return layer;
   }
 
-  initSubscription() {
+  async initSubscription() {
     initPubSub();
     const self = this;
+    if (window.warpAO.subscribed) {
+      return;
+    }
 
     console.log('Subscribing for processId: ', window.warpAO.processId());
-    const subscription = subscribe(
+    const subscription = await subscribe(
       `results/ao/${window.warpAO.processId()}`,
-      ({ data }) => {
+      ({data}) => {
         const message = JSON.parse(data);
-        console.log('\n ==== new message ==== ', message);
+        if (message.nonce <= window.warpAO.nonce) {
+          console.warn(`Message with ${message.nonce} has been already handled.`);
+        }
+        console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
         if (message.tags) {
           const salt = message.tags.find((t) => t.name === 'Salt');
           if (salt) {
@@ -227,13 +234,71 @@ export default class MainScene extends Phaser.Scene {
         }
       },
       console.error
-    )
-      .then(() => {
+    );
+
+    console.log('Subscription started...');
+    window.warpAO.subscribed = true;
+    const player = JSON.parse(localStorage.getItem('player'));
+    console.log(`Found player info in local storage`, player);
+    if (player) {
+      console.log('Joinning game...');
+      await window.warpAO.send({
+        cmd: Const.Command.join,
+        walletAddress: this.walletAddress,
+      });
+    } else {
+      console.log('register player...');
+      await window.warpAO.send({
+        cmd: Const.Command.register,
+        walletAddress: this.walletAddress,
+        beaverId: self.beaverChoice,
+      });
+    }
+
+    return {send: window.warpAO.send};
+
+    /*    const sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
+        const beforeUnloadHandler = (event) => {
+          sse.close();
+          /!*!// Recommended
+          event.preventDefault();
+
+          // Included for legacy support, e.g. Chrome/Edge < 119
+          event.returnValue = true;*!/
+        };
+        window.addEventListener("beforeunload", beforeUnloadHandler);
+
+        sse.onerror = () => sse.close();
+        sse.onmessage = (event) => {
+          try {
+            const message = JSON.parse(event.data);
+            console.log('\n ==== new message ==== ', message);
+            if (message.tags) {
+              const salt = message.tags.find((t) => t.name === 'Salt');
+              console.log(
+                '\n ==== created      ==== ',
+                new Date(parseInt(salt.value))
+              );
+            }
+            console.log('\n ==== sent from CU ==== ', message.sent);
+            console.log('\n ==== received     ==== ', new Date());
+
+            if (message.txId && this.mainPlayer) {
+              this.mainPlayer.handleTx(message.txId);
+            }
+            if (message.output.cmd) {
+              this.handleMessage(message.output);
+            }
+          } catch (e) {
+            console.log(event);
+          }
+        };
+
         console.log('Subscription started...');
         const player = JSON.parse(localStorage.getItem('player'));
         console.log(`Found player info in local storage`, player);
         if (player) {
-          console.log('Joinning game...');
+          console.log('Joining game...');
           window.warpAO.send({
             cmd: Const.Command.join,
             walletAddress: this.walletAddress,
@@ -245,200 +310,137 @@ export default class MainScene extends Phaser.Scene {
             walletAddress: this.walletAddress,
             beaverId: self.beaverChoice,
           });
-        }
-      })
-      .catch((e) => console.error(e));
-
-    return { send: window.warpAO.send };
-
-/*    const sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
-    const beforeUnloadHandler = (event) => {
-      sse.close();
-      /!*!// Recommended
-      event.preventDefault();
-
-      // Included for legacy support, e.g. Chrome/Edge < 119
-      event.returnValue = true;*!/
-    };
-    window.addEventListener("beforeunload", beforeUnloadHandler);
-
-    sse.onerror = () => sse.close();
-    sse.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data);
-        console.log('\n ==== new message ==== ', message);
-        if (message.tags) {
-          const salt = message.tags.find((t) => t.name === 'Salt');
-          console.log(
-            '\n ==== created      ==== ',
-            new Date(parseInt(salt.value))
-          );
-        }
-        console.log('\n ==== sent from CU ==== ', message.sent);
-        console.log('\n ==== received     ==== ', new Date());
-
-        if (message.txId && this.mainPlayer) {
-          this.mainPlayer.handleTx(message.txId);
-        }
-        if (message.output.cmd) {
-          this.handleMessage(message.output);
-        }
-      } catch (e) {
-        console.log(event);
-      }
-    };
-
-    console.log('Subscription started...');
-    const player = JSON.parse(localStorage.getItem('player'));
-    console.log(`Found player info in local storage`, player);
-    if (player) {
-      console.log('Joining game...');
-      window.warpAO.send({
-        cmd: Const.Command.join,
-        walletAddress: this.walletAddress,
-      });
-    } else {
-      console.log('register player...');
-      window.warpAO.send({
-        cmd: Const.Command.register,
-        walletAddress: this.walletAddress,
-        beaverId: self.beaverChoice,
-      });
-    }*/
+        }*/
 
 
-    return { send: window.warpAO.send };
+    return {send: window.warpAO.send};
   }
 
   handleMessage(response) {
     const self = this;
     switch (response.cmd) {
-      case Const.Command.registered:
-        {
-          console.log('Registered player', response);
-          if (response.error) {
-            console.error('Failed to join the game', response.error);
-            localStorage.removeItem('player');
-            self.scene.start('connect-wallet-scene');
-          } else {
-            localStorage.setItem(
-              'player',
-              JSON.stringify({
-                id: response.player.walletAddress,
-                beaverId: response.player.beaverId,
-              })
+      case Const.Command.registered: {
+        console.log('Registered player', response);
+        if (response.error) {
+          console.error('Failed to join the game', response.error);
+          localStorage.removeItem('player');
+          self.scene.start('connect-wallet-scene');
+        } else {
+          localStorage.setItem(
+            'player',
+            JSON.stringify({
+              id: response.player.walletAddress,
+              beaverId: response.player.beaverId,
+            })
+          );
+          self.round = response.state.round;
+          if (response.player.walletAddress === this.walletAddress) {
+            self.initMap(
+              response.state.groundTilemap,
+              response.state.gameObjectsTilemap,
+              response.state.gameTreasuresTilemap
             );
-            self.round = response.state.round;
-            if (response.player.walletAddress === this.walletAddress) {
-              self.initMap(
-                response.state.groundTilemap,
-                response.state.gameObjectsTilemap,
-                response.state.gameTreasuresTilemap
-              );
-              self.createMainPlayer(response.player);
-              self.initCamera();
-            }
-            this.scene.remove('main-scene-loading');
+            self.createMainPlayer(response.player);
+            self.initCamera();
           }
+          this.scene.remove('main-scene-loading');
         }
+      }
         break;
 
-      case Const.Command.moved:
-        {
+      case Const.Command.moved: {
+        console.log(
+          'Player moved',
+          response.player.pos,
+          response.player.onGameObject
+        );
+        if (!self.allPlayers[response.player.walletAddress]) {
+          console.log('Setting up new player', response.player.walletAddress);
+          self.createPlayer(response.player);
+        } else {
+          self.allPlayers[response.player.walletAddress].moveTo(
+            response.player
+          );
+        }
+
+        if (response.player.onGameObject != null) {
           console.log(
-            'Player moved',
-            response.player.pos,
-            response.player.onGameObject
+            `Player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`
           );
-          if (!self.allPlayers[response.player.walletAddress]) {
-            console.log('Setting up new player', response.player.walletAddress);
-            self.createPlayer(response.player);
-          } else {
-            self.allPlayers[response.player.walletAddress].moveTo(
-              response.player
-            );
-          }
-
-          if (response.player.onGameObject != null) {
-            console.log(
-              `Player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`
-            );
-            this.mainPlayer.onGameObject = response.player.onGameObject;
-          }
-
-          if (response.player.onGameTreasure != null) {
-            console.log(
-              `Player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`
-            );
-            this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
-          }
-
-          this.updateStats(response.player, response.stats);
-          this.updateStats(response.opponentPlayer, response.opponentStats);
-          this.displayPlayerScore(
-            response.scoreToDisplay,
-            response.player.walletAddress,
-            {
-              forOpponent: {
-                score: response.opponentScoreToDisplay,
-                walletAddress: response.opponentPlayer?.walletAddress,
-              },
-            }
-          );
+          this.mainPlayer.onGameObject = response.player.onGameObject;
         }
+
+        if (response.player.onGameTreasure != null) {
+          console.log(
+            `Player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`
+          );
+          this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
+        }
+
+        this.updateStats(response.player, response.stats);
+        this.updateStats(response.opponentPlayer, response.opponentStats);
+        this.displayPlayerScore(
+          response.scoreToDisplay,
+          response.player.walletAddress,
+          {
+            forOpponent: {
+              score: response.opponentScoreToDisplay,
+              walletAddress: response.opponentPlayer?.walletAddress,
+            },
+          }
+        );
+      }
         break;
 
-      case Const.Command.picked:
-        {
-          if (response.picked) {
-            console.log(`Player picked a game object.`);
-            this.gameObjectsLayer.removeTileAt(
+      case Const.Command.picked: {
+        if (response.picked) {
+          console.log(`Player picked a game object.`);
+          this.gameObjectsLayer.removeTileAt(
+            response.player.pos[0],
+            response.player.pos[1]
+          );
+          if (response.player.onGameTreasure.type == 'treasure') {
+            this.gameTreasuresLayer.putTileAt(
+              1,
               response.player.pos[0],
               response.player.pos[1]
             );
-            if (response.player.onGameTreasure.type == 'treasure') {
-              this.gameTreasuresLayer.putTileAt(
-                1,
-                response.player.pos[0],
-                response.player.pos[1]
-              );
-            }
           }
-          this.updateStats(response.player, response.stats);
-          response.picked &&
-            this.displayPlayerScore(
-              response.scoreToDisplay,
-              response.player.walletAddress
-            );
         }
+        this.updateStats(response.player, response.stats);
+        response.picked &&
+        this.displayPlayerScore(
+          response.scoreToDisplay,
+          response.player.walletAddress
+        );
+      }
         break;
 
-      case Const.Command.digged:
-        {
-          if (response.digged?.type == Const.GameObject.treasure.type) {
-            console.log(`Player digged a game treasure.`);
-            this.gameTreasuresLayer
-              .getTileAt(response.player.pos[0], response.player.pos[1])
-              .setVisible(true);
+      case Const.Command.digged: {
+        if (response.digged?.type == Const.GameObject.treasure.type) {
+          console.log(`Player digged a game treasure.`);
+          this.gameTreasuresLayer
+            .getTileAt(response.player.pos[0], response.player.pos[1])
+            .setVisible(true);
 
-            if (
-              response.player?.walletAddress === self.mainPlayer.walletAddress
-            ) {
-            }
-          } else {
-            const gameObjectTile = this.gameObjectsLayer.getTileAt(
+          if (
+            response.player?.walletAddress === self.mainPlayer.walletAddress
+          ) {
+          }
+        } else {
+          const gameObjectTile = this.gameObjectsLayer.getTileAt(
+            response.player.pos[0],
+            response.player.pos[1]
+          )?.index;
+          if (gameObjectTile == 2 || gameObjectTile == null) {
+            this.gameTreasuresLayer.putTileAt(
+              1,
               response.player.pos[0],
               response.player.pos[1]
-            )?.index;
-            if (gameObjectTile == 2 || gameObjectTile == null) {
-              this.gameTreasuresLayer.putTileAt(
-                1,
-                response.player.pos[0],
-                response.player.pos[1]
-              );
-            }
+            );
           }
         }
+      }
         this.updateStats(response.player, response.stats);
         this.displayPlayerScore(
           response.scoreToDisplay,
@@ -543,7 +545,7 @@ export default class MainScene extends Phaser.Scene {
   createScoreTween(target) {
     this.tweens.add({
       targets: target,
-      alpha: { from: 0, to: 1 },
+      alpha: {from: 0, to: 1},
       ease: 'Power2',
       duration: 500,
       repeat: 0,
