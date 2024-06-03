@@ -97,16 +97,17 @@ export default class MainScene extends Phaser.Scene {
     }
     const tsChange = Date.now() - this.round.start;
     const currentRound = ~~(tsChange / this.round.interval);
-    const left = ~~(
-      10 -
+    const gone = ~~(
       (10 * (tsChange - currentRound * this.round.interval)) /
       this.round.interval
     );
-    if (left === 9) {
+    if (gone === 1) {
       this.mainPlayer.nextRound();
     }
-
-    return `${'◦'.repeat(left)} ${currentRound}`;
+    return {
+      gone,
+      currentRound,
+    };
   }
 
   initWebSocket() {
