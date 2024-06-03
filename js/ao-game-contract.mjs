@@ -2,7 +2,6 @@ import Const from './common/const.mjs';
 
 const TOKEN_CONTRACT_ID = 'cYHhrCJ4drNrL1HPR2LiahPcKn_ZfYLtxUy7CO-becM';
 const TOKEN_CONTRACT_METHOD = 'Transfer';
-const TOKEN_ACTIONS = ['Credit-Notice', 'Debit-Notice', 'Transfer-Error'];
 
 function sendToken(recipient, qty) {
   ao.send({
@@ -14,29 +13,19 @@ function sendToken(recipient, qty) {
   });
 }
 
-function handleMessageFromToken(action, message) {
-  return ao.result({
-    action,
-    data: message.Data,
-    tags: message.Tags
-  });
-}
-
 export function handle(state, message) {
   console.log("We're in");
   if (!state.hasOwnProperty('map')) {
     state = Object.assign(state, initState(message));
+    console.log('before setting visible game objects');
     setVisibleGameObjects(state);
+    console.log('after setting visible game objects');
     setInvisibleGameObjects(state);
   }
 
-  const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
-
-  if (TOKEN_ACTIONS.includes(actionTagValue)) {
-    return handleMessageFromToken(actionTagValue, message);
-  }
-
-  const action = JSON.parse(actionTagValue);
+  const action = JSON.parse(
+    message.Tags.find((t) => t.name === 'Action').value
+  );
   action.walletAddress = message.Owner;
   gameRoundTick(state, message);
 
@@ -177,6 +166,7 @@ function setVisibleGameObjects(state) {
     state.gameObjectsTiles,
     state.gameObjectsRarity
   );
+  console.log('game objects tilemap', state.gameObjectsTilemap);
 }
 
 function setInvisibleGameObjects(state) {
@@ -195,7 +185,10 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
     tilesToPropagate.push(GameObject.none);
   }
 
+  console.log('tiles to propagate', tilesToPropagate);
+  console.log('ground tilemap', state.groundTilemap);
   return state.groundTilemap.map((a) => {
+    console.log('ground tilemap row', a);
     return a.map((b) => {
       if (b == 0) {
         return tilesToPropagate[getRandomNumber(0, tilesToPropagate.length - 1)]
