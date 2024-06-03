@@ -2,17 +2,19 @@ import {Tag} from 'warp-contracts';
 import {DataItem} from 'warp-arbundles';
 
 const urlParams = new URLSearchParams(window.location.search);
-const env = urlParams.get('env') || 'prod';
+const env = urlParams.get('env') || 'dev';
 
 console.log(`running in ${env} mode`);
 
 window.warpAO = {
   config: {
     env,
-    processId_prod: 'dP01RXeCnps1ucqu4THK5pKVCoSCKgdxQfrRbARLbrc',
-    moduleId_prod: 'A7on7LQxvIC3UtGoxtmDMn_hiCsO',
+    processId_prod: 'ahEP4GmtKr_kncqC89loro1kkNbyyx6DnN-5yovk4H4',
+    moduleId_prod: 'KHvpn10c-w8XJ8VRCZq638fa3AleU1UrdMF6QdAR--4',
     processId_local: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
     moduleId_local: 'ZGU4Q6U_XBOVRxkTz7cxYKC7-iWdYg7TVHWihel7z9I',
+    processId_dev: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
+    moduleId_dev: 'ZGU4Q6U_XBOVRxkTz7cxYKC7-iWdYg7TVHWihel7z9I',
     muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
     cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc'
   },

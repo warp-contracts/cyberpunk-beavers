@@ -42,9 +42,9 @@ export default class MainScene extends Phaser.Scene {
     if (!window.arweaveWallet) {
       this.scene.start('connect-wallet-scene');
     } else {
-      this.server = window.game.config.ao
-        ? this.initSubscription()
-        : this.initWebSocket();
+      this.server = window.warpAO.config.env === 'dev'
+        ? this.initWebSocket()
+        : this.initSubscription();
     }
   }
 
@@ -201,7 +201,7 @@ export default class MainScene extends Phaser.Scene {
     initPubSub();
     const self = this;
 
-    console.log('processId', window.warpAO.processId());
+    console.log('Subscribing for processId: ', window.warpAO.processId());
     const subscription = subscribe(
       `results/ao/${window.warpAO.processId()}`,
       ({ data }) => {
@@ -209,10 +209,12 @@ export default class MainScene extends Phaser.Scene {
         console.log('\n ==== new message ==== ', message);
         if (message.tags) {
           const salt = message.tags.find((t) => t.name === 'Salt');
-          console.log(
-            '\n ==== created      ==== ',
-            new Date(parseInt(salt.value))
-          );
+          if (salt) {
+            console.log(
+              '\n ==== created      ==== ',
+              new Date(parseInt(salt.value))
+            );
+          }
         }
         console.log('\n ==== sent from CU ==== ', message.sent);
         console.log('\n ==== received     ==== ', new Date());
