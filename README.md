@@ -18,13 +18,21 @@ After a limited number of rounds, the game ends and a living beaver with the max
 
 4. Open the game at `http://localhost:9001/`
 
-# Game details
 
-### Starting battle 
+### Token
 
-After picking a character (or loading already attached beaver)
+#### Wallet
 
-- Add waiting room and trigger to start the battle
-- Add trigger to end the game and display results
+In order to use jnio wallet in aos update the `$HOME/.aos.json`
 
-The battle for survival starts when
+#### Deploy
+
+In lua directory run
+`aos CyberBeaverToken`
+`.load token.lua`
+
+#### Transfer 
+
+`Send({ Target = ao.id, Tags = { Action = "Transfer", Recipient = 'ksovq4pOatEoWzbxe8Iu8xeuhQshnoSpbKZ0TcDlMko', Quantity = '1000000' }})`
+
+`Send({ Target = ao.id, Tags = { Action = "Balances" }})`
