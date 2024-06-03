@@ -15,6 +15,7 @@ function sendToken(recipient, qty) {
 
 export function handle(state, message) {
   console.log("We're in");
+  state.randomCounter = 0;
   if (!state.hasOwnProperty('map')) {
     state = Object.assign(state, initState(message));
     console.log('before setting visible game objects');
@@ -161,6 +162,7 @@ function initState(message) {
 }
 
 function setVisibleGameObjects(state) {
+  console.log('setVisibleGameObjects');
   state.gameObjectsTilemap = setGameObjectsTilesOnMap(
     state,
     state.gameObjectsTiles,
@@ -181,6 +183,7 @@ function setInvisibleGameObjects(state) {
 }
 
 function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
+  console.log({tilesToPropagate, noneTileFrequency});
   for (let i = 0; i < noneTileFrequency; i++) {
     tilesToPropagate.push(GameObject.none);
   }
@@ -190,8 +193,12 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
   return state.groundTilemap.map((a) => {
     console.log('ground tilemap row', a);
     return a.map((b) => {
+      console.log("b", b);
       if (b == 0) {
-        return tilesToPropagate[getRandomNumber(0, tilesToPropagate.length - 1)]
+        state.randomCounter++;
+        const randomValue = getRandomNumber(0, tilesToPropagate.length - 1, state.randomCounter);
+        console.log('randomValue', randomValue);
+        return tilesToPropagate[randomValue]
           .tile;
       } else {
         return 2;
@@ -200,8 +207,10 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
   });
 }
 
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRandomNumber(min, max, randomCounter) {
+  const randomValue = Math.random(randomCounter);
+  console.log(`Math.random(): ${randomCounter}, ${randomValue}`);
+  return Math.floor(randomValue * (max - min + 1)) + min;
 }
 
 function gameRoundTick(state, message) {
