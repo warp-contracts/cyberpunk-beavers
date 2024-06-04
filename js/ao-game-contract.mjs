@@ -165,16 +165,13 @@ function initState(message, state) {
           .fill(0)
           .map(() => {
             j++;
+            state.randomCounter++;
             const randomValue = getRandomNumber(
               0,
               groundTiles.length - 1,
               state.randomCounter
             );
             return groundTiles[randomValue];
-            // if (j === 3 || j === 10 || j === 15) {
-            //   return 1;
-            // }
-            // return 0;
           });
       }),
   };
@@ -203,7 +200,6 @@ function setInvisibleGameObjects(state) {
 }
 
 function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
-  console.log({ tilesToPropagate, noneTileFrequency });
   for (let i = 0; i < noneTileFrequency; i++) {
     tilesToPropagate.push(GameObject.none);
   }
