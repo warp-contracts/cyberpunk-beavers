@@ -70,6 +70,8 @@ export default class MainScene extends Phaser.Scene {
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
     this.statsScene.beaverChoice = this.beaverChoice;
     this.statsScene.stats = this.mainPlayer.stats;
+    this.statsScene.allPlayers = this.allPlayers;
+    console.log(this.statsScene.allPlayers);
 
     return this.mainPlayer;
   }
@@ -365,6 +367,7 @@ export default class MainScene extends Phaser.Scene {
           if (!self.allPlayers[response.player.walletAddress]) {
             console.log('Setting up new player', response.player.walletAddress);
             self.createPlayer(response.player);
+            this.game.events.emit(EVENTS_NAME.updatePlayers, this.allPlayers);
           } else {
             self.allPlayers[response.player.walletAddress].moveTo(
               response.player

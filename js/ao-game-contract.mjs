@@ -165,6 +165,9 @@ function initState(message, state) {
           .fill(0)
           .map(() => {
             j++;
+            if (j == 1 || j == SIZE) {
+              return 1;
+            }
             state.randomCounter++;
             const randomValue = getRandomNumber(
               0,
@@ -262,7 +265,7 @@ function dig(state, action) {
   const walletAddress = action.walletAddress;
   const player = state.players[walletAddress];
 
-  if (player.stats.ap.current < 1) {
+  if (player.stats.ap.current < 2) {
     console.log(
       `Cannot perform dig ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`
     );
@@ -281,7 +284,7 @@ function dig(state, action) {
     return { player, digged: false };
   }
 
-  player.stats.ap.current -= 1;
+  player.stats.ap.current -= 2;
 
   if (type === GameObject.none.type) {
     console.log(`Player ${player.walletAddress} digged nothing.`);
@@ -290,7 +293,7 @@ function dig(state, action) {
     return {
       player,
       digged: { type },
-      scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
+      scoreToDisplay: scoreToDisplay([{ value: -2, type: Scores.ap }]),
     };
   }
 
@@ -303,7 +306,7 @@ function dig(state, action) {
     return {
       player,
       digged: { type },
-      scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
+      scoreToDisplay: scoreToDisplay([{ value: -2, type: Scores.ap }]),
     };
   }
 

@@ -7,6 +7,7 @@ export default class StatsScene extends Phaser.Scene {
   roundInfo;
   beaverChoice;
   processId;
+  allPlayers;
   constructor() {
     super('stats-scene');
   }
@@ -35,6 +36,7 @@ export default class StatsScene extends Phaser.Scene {
   create() {
     console.log('Stats Scene - 3. Create');
     this.gameWidth = window.innerWidth;
+    this.gameHeight = window.innerHeight;
     this.processId = window.warpAO.processId();
     if (this.walletAddress) {
       const beaverStatsBoxEl = this.createStatsBox();
@@ -48,6 +50,7 @@ export default class StatsScene extends Phaser.Scene {
     this.addTitle();
     this.addRoundBar();
     this.addSubtitle();
+    this.addPlayersModal(this.allPlayers);
   }
 
   addTitle() {
@@ -98,7 +101,6 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   initListeners() {
-    console.log('initial');
     this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
       document.getElementById('stats-scene-hp').innerText = stats?.hp?.current;
       document.getElementById('stats-scene-coins').innerText = stats?.coins;
@@ -111,13 +113,18 @@ export default class StatsScene extends Phaser.Scene {
         this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
       this.title.setText(`ROUND ${roundInfo.currentRound}`);
     });
+
+    this.game.events.on(EVENTS_NAME.updatePlayers, (players) => {
+      this.allPlayers = players;
+      document.getElementById('stats-scene-other-beavers').innerHTML =
+        this.addPlayersModal();
+    });
   }
 
   createStatsBox() {
     const beaverStatsBoxEl = document.createElement('div');
 
     beaverStatsBoxEl.style = `  width: 300px;
-      height: 210px;
       border: 0;
       outline: none;
       background-color: #050a0e;
@@ -131,11 +138,6 @@ export default class StatsScene extends Phaser.Scene {
     <div style="  display: flex;
     justify-content: center;
     flex-direction: column;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
     background-color: #fcee09;
     font-family: 'Press Start 2P';
     font-size: 0.5rem;
@@ -168,8 +170,48 @@ height=72/>
     <div id="stats-scene-coins">${this.stats?.coins}</div>
     </div>
     </div>
+    <div id="stats-scene-other-beavers">
+     ${this.addPlayersModal()}
+     </div>
     </div>`;
 
     return beaverStatsBoxEl;
+  }
+
+  addPlayersModal() {
+    if (Object.keys(this.allPlayers).length <= 1) return '';
+    return `
+    <div style="position: relative;">
+    <div style="display: flex; justify-content: center;"><div style="display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;">OTHER BEAVERS</div></div>
+      ${this.addPlayers()}
+    </div>
+    </div>
+`;
+  }
+
+  addPlayers() {
+    let playersBox = ``;
+    let playersAddresses = Object.keys(this.allPlayers);
+    playersAddresses = playersAddresses.filter((p) => p !== this.walletAddress);
+    for (let i = 0; i < playersAddresses.length; i++) {
+      playersBox += `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+      <img
+  src="assets/images/${this.allPlayers[playersAddresses[i]].texture.key.replace('_48', '_portrait')}.png"
+  width=48
+  height=48/>
+  <div id="stats-scene-wallet-address">${playersAddresses[i] && playersAddresses[i].substr(0, 3) + '...' + playersAddresses[i].substr(playersAddresses[i].length - 3)}</div>
+  </div>
+      `;
+    }
+    return playersBox;
   }
 }
