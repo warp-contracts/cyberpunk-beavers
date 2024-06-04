@@ -1,6 +1,6 @@
 import Const from './common/const.mjs';
 
-const TOKEN_CONTRACT_ID = 'cYHhrCJ4drNrL1HPR2LiahPcKn_ZfYLtxUy7CO-becM';
+const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
 const TOKEN_CONTRACT_METHOD = 'Transfer';
 const TOKEN_ACTIONS = ['Credit-Notice', 'Debit-Notice', 'Transfer-Error'];
 
