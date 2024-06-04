@@ -70,7 +70,6 @@ export default class CharacterPickScene extends Phaser.Scene {
   }
 
   addBeaverOptionPick(option) {
-    console.log(option);
     const beaverSprite = this.add.image(option.x, option.y, option.imgName);
     beaverSprite.y = beaverSprite.height;
     beaverSprite.x = beaverSprite.x - beaverSprite.width / 2;

@@ -31,6 +31,13 @@ export default class StatsScene extends Phaser.Scene {
       'assets/images/speedy_beaver_portrait.png'
     );
     this.load.image('time_bar', 'assets/images/time_bar.png');
+    this.load.image('D', 'assets/images/D.png');
+    this.load.image('P', 'assets/images/P.png');
+    this.load.image('SPACE', 'assets/images/SPACE.png');
+    this.load.image('ARROWDOWN', 'assets/images/ARROWDOWN.png');
+    this.load.image('ARROWLEFT', 'assets/images/ARROWLEFT.png');
+    this.load.image('ARROWRIGHT', 'assets/images/ARROWRIGHT.png');
+    this.load.image('ARROWUP', 'assets/images/ARROWUP.png');
   }
 
   create() {
@@ -51,6 +58,120 @@ export default class StatsScene extends Phaser.Scene {
     this.addRoundBar();
     this.addSubtitle();
     this.addPlayersModal(this.allPlayers);
+    this.addLegend();
+  }
+
+  addLegend() {
+    const height = 120;
+    const width = 300;
+    const moveKey = this.add
+      .image(this.gameWidth - width, this.gameHeight - 32 - height, 'ARROWLEFT')
+      .setScale(1.5);
+    const moveKey2 = this.add
+      .image(
+        this.gameWidth - width + moveKey.width * 2,
+        this.gameHeight - 32 - height,
+        'ARROWUP'
+      )
+      .setScale(1.5);
+    const moveKey3 = this.add
+      .image(
+        this.gameWidth - width + moveKey.width * 4,
+        this.gameHeight - 32 - height,
+        'ARROWDOWN'
+      )
+      .setScale(1.5);
+    const moveKey4 = this.add
+      .image(
+        this.gameWidth - width + moveKey.width * 6,
+        this.gameHeight - 32 - height,
+        'ARROWRIGHT'
+      )
+      .setScale(1.5);
+    const move = new Text(this, 0, 0, 'MOVE', {
+      fontFamily: '"Press Start 2P"',
+      fontSize: '18px',
+      textTransform: 'uppercase',
+      color: 'white',
+    });
+    Phaser.Display.Bounds.SetLeft(
+      move,
+      Phaser.Display.Bounds.GetCenterX(moveKey4) + moveKey4.width + 30
+    );
+
+    Phaser.Display.Bounds.SetCenterY(
+      move,
+      Phaser.Display.Bounds.GetCenterY(moveKey)
+    );
+    const digKey = this.add
+      .image(
+        this.gameWidth - width + moveKey.width * 6,
+        this.gameHeight - 32 - height + 40,
+        'D'
+      )
+      .setScale(1.5);
+    const dig = new Text(this, 0, 0, 'DIG', {
+      fontFamily: '"Press Start 2P"',
+      fontSize: '18px',
+      textTransform: 'uppercase',
+      color: 'white',
+    });
+    Phaser.Display.Bounds.SetLeft(
+      dig,
+      Phaser.Display.Bounds.GetCenterX(digKey) + digKey.width + 30
+    );
+
+    Phaser.Display.Bounds.SetCenterY(
+      dig,
+      Phaser.Display.Bounds.GetCenterY(digKey)
+    );
+
+    const pickKey = this.add
+      .image(
+        this.gameWidth - width + moveKey.width * 6,
+        this.gameHeight - 32 - height + 80,
+        'P'
+      )
+      .setScale(1.5);
+    const pick = new Text(this, 0, 0, 'PICK', {
+      fontFamily: '"Press Start 2P"',
+      fontSize: '18px',
+      textTransform: 'uppercase',
+      color: 'white',
+    });
+    Phaser.Display.Bounds.SetLeft(
+      pick,
+      Phaser.Display.Bounds.GetCenterX(pickKey) + pickKey.width + 30
+    );
+
+    Phaser.Display.Bounds.SetCenterY(
+      pick,
+      Phaser.Display.Bounds.GetCenterY(pickKey)
+    );
+
+    const attackKey = this.add
+      .image(
+        this.gameWidth - width + moveKey.width * 3,
+        this.gameHeight - 32 - height + 120,
+        'SPACE'
+      )
+      .setScale(1.5);
+
+    const attack = new Text(this, 0, 0, 'ATTACK', {
+      fontFamily: '"Press Start 2P"',
+      fontSize: '18px',
+      textTransform: 'uppercase',
+      color: 'white',
+    });
+    Phaser.Display.Bounds.SetLeft(
+      attack,
+      Phaser.Display.Bounds.GetCenterX(attackKey) + attackKey.width / 1.25 + 30
+    );
+
+    Phaser.Display.Bounds.SetCenterY(
+      attack,
+      Phaser.Display.Bounds.GetCenterY(attackKey)
+    );
   }
 
   addTitle() {
@@ -58,7 +179,7 @@ export default class StatsScene extends Phaser.Scene {
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
       textTransform: 'uppercase',
-      color: '#fcee09',
+      color: 'white',
     }).setDepth(1);
     this.title.x = this.gameWidth / 2 - this.title.width / 2;
   }
