@@ -218,6 +218,7 @@ export default class MainScene extends Phaser.Scene {
           console.warn(
             `Message with ${message.nonce} has been already handled.`
           );
+          return;
         }
         console.log(
           `\n ==== new message nonce ${message.nonce} ==== `,
