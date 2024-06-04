@@ -28,7 +28,7 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 2. Preload');
     Player.preload(this);
     this.load.image('tiles', 'assets/images/dices.png');
-    this.load.image('cyberpunk_bg', 'assets/images/sand_tiles.png');
+    this.load.image('cyberpunk_bg', 'assets/images/sand_map_tiles_min.png');
     this.load.image('cyberpunk_game_objects', 'assets/images/ap_hp.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
     this.load.image('hacker_beaver_48', 'assets/images/hacker_beaver_48px.png');

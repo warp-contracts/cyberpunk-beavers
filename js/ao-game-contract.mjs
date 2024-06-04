@@ -26,7 +26,7 @@ export function handle(state, message) {
   console.log("We're in");
   state.randomCounter = 0;
   if (!state.hasOwnProperty('map')) {
-    state = Object.assign(state, initState(message));
+    state = Object.assign(state, initState(message, state));
     console.log('before setting visible game objects');
     setVisibleGameObjects(state);
     console.log('after setting visible game objects');
@@ -124,9 +124,11 @@ const { GameObject, Direction, Scores } = Const;
 const SIZE = 30;
 let i = -1;
 let j = 0;
-const groundTiles = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2];
+const groundTiles = [
+  2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 3,
+];
 
-function initState(message) {
+function initState(message, state) {
   const result = {
     counter: 0,
     pos: 1,
@@ -163,10 +165,16 @@ function initState(message) {
           .fill(0)
           .map(() => {
             j++;
-            if (j === 3 || j === 10 || j === 15) {
-              return 1;
-            }
-            return 0;
+            const randomValue = getRandomNumber(
+              0,
+              groundTiles.length - 1,
+              state.randomCounter
+            );
+            return groundTiles[randomValue];
+            // if (j === 3 || j === 10 || j === 15) {
+            //   return 1;
+            // }
+            // return 0;
           });
       }),
   };
@@ -200,20 +208,15 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
     tilesToPropagate.push(GameObject.none);
   }
 
-  //console.log('tiles to propagate', tilesToPropagate);
-  //console.log('ground tilemap', state.groundTilemap);
   return state.groundTilemap.map((a) => {
-    //console.log('ground tilemap row', a);
     return a.map((b) => {
-      //console.log("b", b);
-      if (b == 0) {
+      if (b == 2) {
         state.randomCounter++;
         const randomValue = getRandomNumber(
           0,
           tilesToPropagate.length - 1,
           state.randomCounter
         );
-        //console.log('randomValue', randomValue);
         return tilesToPropagate[randomValue].tile;
       } else {
         return 2;
@@ -224,7 +227,6 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
 
 function getRandomNumber(min, max, randomCounter) {
   const randomValue = Math.random(randomCounter);
-  //console.log(`Math.random(): ${randomCounter}, ${randomValue}`);
   return Math.floor(randomValue * (max - min + 1)) + min;
 }
 
@@ -434,9 +436,7 @@ function attack(state, action) {
         { value: -damage, type: GameObject.hp.type },
       ]),
     };
-  } else if (
-    [2, 4, 6].includes(state.groundTilemap[attackPos[1]][attackPos[0]])
-  ) {
+  } else if ([1, 3].includes(state.groundTilemap[attackPos[1]][attackPos[0]])) {
     console.log(
       `Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`
     );
@@ -473,7 +473,7 @@ function movePlayer(state, action) {
       }`
     );
     return { player };
-  } else if ([2, 4, 6].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
+  } else if ([1, 3].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
     console.log(
       `Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`
     );
