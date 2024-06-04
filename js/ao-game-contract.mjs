@@ -18,7 +18,7 @@ function handleMessageFromToken(action, message) {
   return ao.result({
     action,
     data: message.Data,
-    tags: message.Tags
+    tags: message.Tags,
   });
 }
 
@@ -196,7 +196,7 @@ function setInvisibleGameObjects(state) {
 }
 
 function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
-  console.log({tilesToPropagate, noneTileFrequency});
+  console.log({ tilesToPropagate, noneTileFrequency });
   for (let i = 0; i < noneTileFrequency; i++) {
     tilesToPropagate.push(GameObject.none);
   }
@@ -209,10 +209,13 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
       //console.log("b", b);
       if (b == 0) {
         state.randomCounter++;
-        const randomValue = getRandomNumber(0, tilesToPropagate.length - 1, state.randomCounter);
+        const randomValue = getRandomNumber(
+          0,
+          tilesToPropagate.length - 1,
+          state.randomCounter
+        );
         //console.log('randomValue', randomValue);
-        return tilesToPropagate[randomValue]
-          .tile;
+        return tilesToPropagate[randomValue].tile;
       } else {
         return 2;
       }
@@ -289,7 +292,7 @@ function dig(state, action) {
       GameObject.hole.tile;
     return {
       player,
-      digged: false,
+      digged: { type },
       scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
     };
   }

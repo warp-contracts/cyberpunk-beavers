@@ -1,5 +1,5 @@
-import {Tag} from 'warp-contracts';
-import {DataItem} from 'warp-arbundles';
+import { Tag } from 'warp-contracts';
+import { DataItem } from 'warp-arbundles';
 
 const urlParams = new URLSearchParams(window.location.search);
 const env = urlParams.get('env') || 'dev';
@@ -16,7 +16,7 @@ window.warpAO = {
     processId_dev: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
     moduleId_dev: 'ZGU4Q6U_XBOVRxkTz7cxYKC7-iWdYg7TVHWihel7z9I',
     muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
-    cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc'
+    cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc',
   },
   nonce: 0,
   subscribed: false,
@@ -31,7 +31,7 @@ window.warpAO = {
     new Tag('Data-Protocol', 'ao'),
     new Tag('Type', 'Message'),
     new Tag('Variant', 'ao.TN.1'),
-    {name: 'SDK', value: 'ao'},
+    { name: 'SDK', value: 'ao' },
     new Tag('From-Process', window.warpAO.processId()),
     new Tag('From-Module', window.warpAO.moduleId()),
     new Tag('Salt', '' + Date.now()),
@@ -52,6 +52,7 @@ window.warpAO = {
             Accept: 'application/json',
           },
           body: new DataItem(signed).getRaw(),
-        }))
+        })
+      )
       .then(async (res) => res.json()),
 };
