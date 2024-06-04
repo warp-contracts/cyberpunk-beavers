@@ -7,7 +7,7 @@ const WS_PORT = 8080;
 const wss = new WebSocketServer({ port: WS_PORT });
 
 const state = {};
-global.ao = { result: logAndBroadcast, send: console.log };
+global.ao = { result: logAndBroadcast, send: sendResponse };
 let txId = null;
 
 // Event listener for WebSocket connections
@@ -39,6 +39,20 @@ function logAndBroadcast(message) {
       }, 150);
     }
   });
+}
+
+function sendResponse(message) {
+  console.log(message);
+  setTimeout(() => {
+    handle(state, {
+      Tags: [
+        {name: 'Action', value: 'Debit-Notice'},
+        {name: 'Message', value: '123123'},
+        {name: 'Quantity', value: message.Quantity},
+        {name: 'Recipient', value: message.Recipient},
+      ]
+    });
+  }, 600);
 }
 
 console.log(`WebSocket server is running on port ${WS_PORT}`);

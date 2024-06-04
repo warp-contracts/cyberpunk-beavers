@@ -14,6 +14,7 @@ const Command = {
   picked: 'picked',
   dig: 'dig',
   digged: 'digged',
+  token: 'token',
 };
 
 const Direction = {

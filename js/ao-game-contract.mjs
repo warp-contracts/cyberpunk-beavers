@@ -14,11 +14,24 @@ function sendToken(recipient, qty) {
   });
 }
 
-function handleMessageFromToken(action, message) {
+function handleMessageFromToken(state, action, message) {
+  const qty = message.Tags.find((t) => t.name === 'Quantity').value;
+  const recipient = message.Tags.find((t) => t.name === 'Recipient').value;
+  const txId = message.Tags.find((t) => t.name === 'Message').value;
+  const player = state.players[recipient];
+  player.stats.coins += Number(qty);
   return ao.result({
     action,
+    cmd: Const.Command.token,
     data: message.Data,
     tags: message.Tags,
+    stats: player.stats,
+    player: {
+      walletAddress: recipient
+    },
+    scoreToDisplay: scoreToDisplay([
+      { value: qty, type: Scores.coin, txId },
+    ]),
   });
 }
 
@@ -36,7 +49,7 @@ export function handle(state, message) {
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
 
   if (TOKEN_ACTIONS.includes(actionTagValue)) {
-    return handleMessageFromToken(actionTagValue, message);
+    return handleMessageFromToken(state, actionTagValue, message);
   }
 
   const action = JSON.parse(actionTagValue);

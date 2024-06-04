@@ -459,13 +459,22 @@ export default class MainScene extends Phaser.Scene {
               .getTileAt(response.player.pos[0], response.player.pos[1])
               .setVisible(true);
           }
+          this.updateStats(response.player, response.stats);
+          this.displayPlayerScore(
+            response.scoreToDisplay,
+            response.player.walletAddress
+          );
+          break;
         }
+      case Const.Command.token: {
         this.updateStats(response.player, response.stats);
         this.displayPlayerScore(
           response.scoreToDisplay,
           response.player.walletAddress
         );
         break;
+      }
+
     }
   }
 
