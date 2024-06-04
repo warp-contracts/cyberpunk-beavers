@@ -181,7 +181,6 @@ function setVisibleGameObjects(state) {
     state.gameObjectsTiles,
     state.gameObjectsRarity
   );
-  //console.log('game objects tilemap', state.gameObjectsTilemap);
 }
 
 function setInvisibleGameObjects(state) {

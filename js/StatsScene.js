@@ -6,6 +6,7 @@ export default class StatsScene extends Phaser.Scene {
   stats;
   roundInfo;
   beaverChoice;
+  processId;
   constructor() {
     super('stats-scene');
   }
@@ -34,6 +35,7 @@ export default class StatsScene extends Phaser.Scene {
   create() {
     console.log('Stats Scene - 3. Create');
     this.gameWidth = window.innerWidth;
+    this.processId = window.warpAO.processId();
     if (this.walletAddress) {
       const beaverStatsBoxEl = this.createStatsBox();
       this.beaverStatsBox = this.add.dom(
@@ -115,7 +117,7 @@ export default class StatsScene extends Phaser.Scene {
     const beaverStatsBoxEl = document.createElement('div');
 
     beaverStatsBoxEl.style = `  width: 300px;
-      height: 200px;
+      height: 210px;
       border: 0;
       outline: none;
       background-color: #050a0e;
@@ -142,21 +144,26 @@ export default class StatsScene extends Phaser.Scene {
     <div style="display: flex; justify-content: space-between; align-items: center;">
     <img
 src="assets/images/${this.beaverChoice}_portrait.png"
-width=96
-height=96/>
+width=72
+height=72/>
 <div id="stats-scene-wallet-address">${this.walletAddress && this.walletAddress.substr(0, 3) + '...' + this.walletAddress.substr(this.walletAddress.length - 3)}</div>
 </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;"><div>HP</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>PROCESS</div>
+    <div style="display: flex; justify-content: space-between;">
+    <div id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/entity/${this.processId}'>${this.processId.substr(0, 3) + '...' + this.processId.substr(this.processId.length - 3)}</a></div>
+    </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>HP</div>
     <div style="display: flex; justify-content: space-between;">
     <div id="stats-scene-hp">${this.stats?.hp.current}</div>
     </div>
     </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;"><div>SCORE</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>SCORE</div>
     <div style="display: flex; justify-content: space-between;">
     <div id="stats-scene-score">${this.stats?.score}</div>
     </div>
     </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;"><div>COINS</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>COINS</div>
     <div style="display: flex; justify-content: space-between;">
     <div id="stats-scene-coins">${this.stats?.coins}</div>
     </div>

@@ -174,7 +174,7 @@ export default class MainScene extends Phaser.Scene {
       'cyberpunk_game_treasures',
       1
     );
-    // this.gameTreasuresLayer.forEachTile((t) => t.setVisible(false));
+    this.gameTreasuresLayer.forEachTile((t) => t.setVisible(false));
   }
 
   initCamera() {
@@ -452,6 +452,9 @@ export default class MainScene extends Phaser.Scene {
                 response.player.pos[1]
               );
             }
+            this.gameTreasuresLayer
+              .getTileAt(response.player.pos[0], response.player.pos[1])
+              .setVisible(true);
           }
         }
         this.updateStats(response.player, response.stats);
