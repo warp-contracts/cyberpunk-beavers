@@ -102,7 +102,6 @@ export default class MainScene extends Phaser.Scene {
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
       texture: `${playerInfo.beaverId}_48`,
       animated: true,
-      // frame: 'walk-1',
       beaverChoice: playerInfo.beaverId,
     }));
   }
@@ -112,6 +111,9 @@ export default class MainScene extends Phaser.Scene {
     this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
 
     this.mainPlayer?.update();
+    Object.keys(this.allPlayers).forEach((p) => {
+      this.allPlayers[p].update();
+    });
   }
 
   roundTick() {

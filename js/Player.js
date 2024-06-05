@@ -43,6 +43,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.tweens.add({ ...movementTemplate, y: `+=${moveVertical}` });
   }
 
+  update() {
+    this.anims.play(`${this.beaverChoice}_idle`, true);
+  }
+
   initAnimations() {
     this.scene.anims.create({
       key: `${this.beaverChoice}_idle`,

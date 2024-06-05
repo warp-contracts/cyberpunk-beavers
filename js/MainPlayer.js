@@ -24,7 +24,10 @@ export default class MainPlayer extends Player {
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
       this.anims.isPlaying && this.anims.stop();
       if (this.lockingDataItemId) {
-        console.log(`Action disabled until tx resolved `, this.lockingDataItemId);
+        console.log(
+          `Action disabled until tx resolved `,
+          this.lockingDataItemId
+        );
       } else {
         await this.send({ cmd: attack, dir: down });
         this.lockingDataItemId = undefined;
