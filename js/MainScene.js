@@ -195,7 +195,9 @@ export default class MainScene extends Phaser.Scene {
       'cyberpunk_game_treasures',
       1
     );
-    this.gameTreasuresLayer.forEachTile((t) => t.setVisible(false));
+    this.gameTreasuresLayer.forEachTile((t) => {
+      if (t.index != 1) t.setVisible(false);
+    });
   }
 
   initCamera() {
