@@ -160,7 +160,7 @@ export default class StatsScene extends Phaser.Scene {
 
     const attackKey = this.add
       .image(
-        this.gameWidth - width + moveKey.width * 3,
+        this.gameWidth - width + moveKey.width * 3 - 2,
         this.gameHeight - 32 - height + 120,
         'SPACE'
       )
