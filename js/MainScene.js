@@ -101,6 +101,7 @@ export default class MainScene extends Phaser.Scene {
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
       texture: `${playerInfo.beaverId}_48`,
+      animated: true,
       // frame: 'walk-1',
       beaverChoice: playerInfo.beaverId,
     }));
