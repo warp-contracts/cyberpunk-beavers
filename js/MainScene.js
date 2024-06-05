@@ -48,10 +48,14 @@ export default class MainScene extends Phaser.Scene {
       'assets/images/hacker_beaver_anim.png',
       'assets/images/hacker_beaver_anim_atlas.json'
     );
+    this.load.audio('background_music', ['assets/audio/background_music.mp3']);
   }
 
   async create() {
     console.log('Main Scene - 3. Create');
+    this.backgroundMusic = this.sound.add('background_music');
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.play();
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.allPlayers = {};
     if (!window.arweaveWallet) {
