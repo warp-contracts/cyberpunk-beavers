@@ -9,8 +9,8 @@ console.log(`running in ${env} mode`);
 window.warpAO = {
   config: {
     env,
-    processId_prod:'MJkOKURs9mgjuaJ86sIshLsK40whkYImQm6uA0SELFQ',
-    moduleId_prod: '97LVMZWbkumV17x9SmTSjWIlxjpmUDt1I_jjnF6Dvrg',
+    processId_prod:'r02f_D-Os6zxzVaWbmfEeFeO86bMfm_KCI3cq_0z01Y',
+    moduleId_prod: 'YUJ5gt1eeBCP022u7dTeMWRFSEYbMA3VeH_cC_X_moU',
     processId_local: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
     moduleId_local: 'ZGU4Q6U_XBOVRxkTz7cxYKC7-iWdYg7TVHWihel7z9I',
     processId_dev: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
