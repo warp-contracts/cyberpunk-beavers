@@ -27,11 +27,9 @@ function handleMessageFromToken(state, action, message) {
     tags: message.Tags,
     stats: player.stats,
     player: {
-      walletAddress: recipient
+      walletAddress: recipient,
     },
-    scoreToDisplay: scoreToDisplay([
-      { value: qty, type: Scores.coin, txId },
-    ]),
+    scoreToDisplay: scoreToDisplay([{ value: qty, type: Scores.coin, txId }]),
   });
 }
 
@@ -534,10 +532,31 @@ function registerPlayer(state, action) {
       score: 0,
       coins: 0,
     },
-    pos: [Math.floor(Math.random() * SIZE), Math.floor(Math.random() * SIZE)],
+    pos: calculatePlayerRandomPos(state),
   };
   state.players[newPlayer.walletAddress] = newPlayer;
   return newPlayer;
+}
+
+function calculatePlayerRandomPos(state) {
+  let randomCounter = 0;
+  let onObstacle = true;
+  let pos;
+
+  while (onObstacle) {
+    const posVertical = Math.floor(Math.random(randomCounter) * SIZE);
+    randomCounter++;
+    const posHorizontal = Math.floor(Math.random(randomCounter) * SIZE);
+    pos = [posVertical, posHorizontal];
+
+    if ([1, 3].includes(state.groundTilemap[pos[1]][pos[0]])) {
+      randomCounter++;
+    } else {
+      onObstacle = false;
+    }
+  }
+
+  return pos;
 }
 
 function scoreToDisplay(scoreValues) {
