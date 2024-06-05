@@ -1,5 +1,6 @@
 import { EVENTS_NAME } from './utils/events.js';
 import { Text } from './Text.js';
+import Const from './common/const.mjs';
 
 export default class StatsScene extends Phaser.Scene {
   walletAddress;
@@ -8,6 +9,7 @@ export default class StatsScene extends Phaser.Scene {
   beaverChoice;
   processId;
   allPlayers;
+  interactionsQueue = [];
   constructor() {
     super('stats-scene');
   }
@@ -51,6 +53,12 @@ export default class StatsScene extends Phaser.Scene {
         100,
         100 + beaverStatsBoxEl.width,
         beaverStatsBoxEl
+      );
+      const interactionLogs = this.addInteractionLogs();
+      this.interactionLogsDiv = this.add.dom(
+        100,
+        100 + interactionLogs.width,
+        interactionLogs
       );
     }
     this.initListeners();
@@ -240,12 +248,25 @@ export default class StatsScene extends Phaser.Scene {
       document.getElementById('stats-scene-other-beavers').innerHTML =
         this.addPlayersModal();
     });
+
+    this.game.events.on(EVENTS_NAME.nextMessage, (interaction) => {
+      if (interaction.player.walletAddress === this.walletAddress) {
+        const newLen = this.interactionsQueue.push(interaction);
+        if (newLen > 4) {
+          this.interactionsQueue.shift();
+        }
+        console.log(`interaction element`, document.getElementById('stats-scene-interaction-logs'))
+        document.getElementById('stats-scene-interaction-logs').innerHTML =
+          this.interactionsFormatted();
+      }
+
+    });
   }
 
   createStatsBox() {
     const beaverStatsBoxEl = document.createElement('div');
 
-    beaverStatsBoxEl.style = `  width: 300px;
+    beaverStatsBoxEl.style = `  width: 350px;
       border: 0;
       outline: none;
       background-color: #050a0e;
@@ -335,4 +356,51 @@ height=72/>
     }
     return playersBox;
   }
+
+  addInteractionLogs() {
+    const resultDiv = document.createElement('div');
+    resultDiv.style = ` width: 400px; height: 150px;
+      border: 0; outline: none;
+      background-color: #fcee09;
+      position: absolute;
+      bottom: 10px;left: 0px;
+      font-size: 0.5rem;
+      clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);`;
+    resultDiv.innerHTML = `
+    <div style="font-family: 'Press Start 2P'">
+    <div style='margin: 18px 0 0 40px'>INCOMING MESSAGES</div>
+    <div id="stats-scene-interaction-logs">${this.interactionsFormatted()}</div>
+    </div>
+    `
+    return resultDiv;
+  }
+
+  interactionsFormatted() {
+    return this.interactionsQueue.map(this.formatInteraction).join('');
+  }
+
+  formatInteraction(i) {
+    let data = ``;
+    switch (i.cmd) {
+      case Const.Command.moved: {
+        data = `<div style='display: inline-block'>NEW POS ${i.player.pos}</div>`;
+        break;
+      }
+      case Const.Command.token:
+      case Const.Command.picked:
+      case Const.Command.digged: {
+        if (i.scoreToDisplay && i.scoreToDisplay.length > 0) {
+          const score = i.scoreToDisplay[0];
+          data = `<div style='display: inline-block'>${score.value}${score.type}</div>`;
+        }
+        break;
+      }
+    }
+    return `
+      <div id="stats-message" style='margin: 18px 0 0 40px'><span style='display: inline-block; width: 60px; text-transform: uppercase;'>${i.cmd}</span>
+      <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/message/${i.txId}'>${i.txId.substr(0, 5) + '...' + i.txId.substr(i.txId.length - 5)}</a>
+      ${data}
+      </div>`
+  }
+
 }

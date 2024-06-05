@@ -392,7 +392,6 @@ function pick(state, action) {
         );
         return { player, picked: false };
       }
-      player.stats.coins += 10;
       state.digged.splice(state.digged.indexOf(diggedTreasure), 1);
 
       state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] =

@@ -258,7 +258,8 @@ export default class MainScene extends Phaser.Scene {
         if (message.txId && this.mainPlayer) {
           this.mainPlayer.handleTx(message.txId);
         }
-        if (message.output.cmd) {
+        if (message.output && message.output.cmd) {
+          message.output.txId = message.txId; // FIXME: well..., no the best approach
           this.handleMessage(message.output);
         }
       },
@@ -346,6 +347,7 @@ export default class MainScene extends Phaser.Scene {
 
   handleMessage(response) {
     const self = this;
+    this.game.events.emit(EVENTS_NAME.nextMessage, response);
     switch (response.cmd) {
       case Const.Command.registered:
         {
