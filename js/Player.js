@@ -2,9 +2,11 @@ import Const from './common/const.mjs';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { walletAddress, stats, scene, x, y, texture, animated, frame } = data;
-    super(scene, x, y, texture, frame);
+    let { walletAddress, stats, scene, x, y, texture, animated, beaverChoice } =
+      data;
+    super(scene, x, y, texture);
     this.walletAddress = walletAddress;
+    this.beaverChoice = beaverChoice;
     this.stats = stats;
     this.animated = animated;
     scene.add.existing(this);
@@ -25,10 +27,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       repeat: 0, // -1: infinity
       yoyo: false,
       onStart: () => {
-        this.anims.play('walk', true);
+        this.anims.stop();
+        // this.anims.play(`${this.beaverChoice}_idle`, true);
       },
       onComplete: () => {
-        // this.anims.play('idle', true);
+        this.anims.play(`${this.beaverChoice}_idle`, true);
       },
     };
 
@@ -40,45 +43,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.tweens.add({ ...movementTemplate, y: `+=${moveVertical}` });
   }
 
-  static preload(scene) {
-    if (this.animated) {
-      scene.load.atlas(
-        'atlas',
-        'assets/images/atlas.png',
-        'assets/images/atlas.json'
-      );
-      scene.load.atlas(
-        'bat_idle_atlas',
-        'assets/images/idle_bat.png',
-        'assets/images/idle_bat_atlas.json'
-      );
-      scene.load.atlas(
-        'bat_move_atlas',
-        'assets/images/move_bat.png',
-        'assets/images/move_bat_atlas.json'
-      );
-      // scene.load.animation('atlas_anim', 'assets/images/atlas_anim.json');
-    }
-  }
-
   initAnimations() {
     this.scene.anims.create({
-      key: 'walk',
-      frames: this.scene.anims.generateFrameNames('bat_move_atlas', {
-        prefix: 'tile00',
+      key: `${this.beaverChoice}_idle`,
+      frames: this.scene.anims.generateFrameNames(`${this.beaverChoice}_anim`, {
+        prefix: 'frame-',
         start: 0,
-        end: 5,
+        end: 12,
       }),
-      frameRate: 8,
-    });
-    this.scene.anims.create({
-      key: 'idle',
-      frames: this.scene.anims.generateFrameNames('bat_idle_atlas', {
-        prefix: 'tile00',
-        start: 0,
-        end: 7,
-      }),
-      frameRate: 8,
+      frameRate: 24,
     });
   }
 

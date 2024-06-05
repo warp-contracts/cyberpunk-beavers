@@ -26,7 +26,6 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     console.log('Main Scene - 2. Preload');
-    Player.preload(this);
     this.load.image('tiles', 'assets/images/dices.png');
     this.load.image('cyberpunk_bg', 'assets/images/sand_map_tiles_min.png');
     this.load.image('cyberpunk_game_objects', 'assets/images/ap_hp.png');
@@ -34,6 +33,21 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('hacker_beaver_48', 'assets/images/hacker_beaver_48px.png');
     this.load.image('heavy_beaver_48', 'assets/images/heavy_beaver_48px.png');
     this.load.image('speedy_beaver_48', 'assets/images/speedy_beaver_48px.png');
+    this.load.atlas(
+      'heavy_beaver_anim',
+      'assets/images/heavy_beaver_anim.png',
+      'assets/images/heavy_beaver_anim_atlas.json'
+    );
+    this.load.atlas(
+      'speedy_beaver_anim',
+      'assets/images/speedy_beaver_anim.png',
+      'assets/images/speedy_beaver_anim_atlas.json'
+    );
+    this.load.atlas(
+      'hacker_beaver_anim',
+      'assets/images/hacker_beaver_anim.png',
+      'assets/images/hacker_beaver_anim_atlas.json'
+    );
   }
 
   async create() {
@@ -58,8 +72,8 @@ export default class MainScene extends Phaser.Scene {
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
       texture: `${playerInfo.beaverId}_48`,
-      animated: false,
-      frame: 'walk-1',
+      animated: true,
+      beaverChoice: playerInfo.beaverId,
     });
 
     this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
@@ -83,7 +97,8 @@ export default class MainScene extends Phaser.Scene {
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
       texture: `${playerInfo.beaverId}_48`,
-      frame: 'walk-1',
+      // frame: 'walk-1',
+      beaverChoice: playerInfo.beaverId,
     }));
   }
 
@@ -429,44 +444,43 @@ export default class MainScene extends Phaser.Scene {
         }
         break;
 
-      case Const.Command.digged:
-        {
-          if (!response.digged) {
-            return;
-          }
-          if (response.digged?.type == Const.GameObject.treasure.type) {
-            console.log(`Player digged a game treasure.`);
-            this.gameTreasuresLayer
-              .getTileAt(response.player.pos[0], response.player.pos[1])
-              .setVisible(true);
+      case Const.Command.digged: {
+        if (!response.digged) {
+          return;
+        }
+        if (response.digged?.type == Const.GameObject.treasure.type) {
+          console.log(`Player digged a game treasure.`);
+          this.gameTreasuresLayer
+            .getTileAt(response.player.pos[0], response.player.pos[1])
+            .setVisible(true);
 
-            if (
-              response.player?.walletAddress === self.mainPlayer.walletAddress
-            ) {
-            }
-          } else {
-            const gameObjectTile = this.gameObjectsLayer.getTileAt(
+          if (
+            response.player?.walletAddress === self.mainPlayer.walletAddress
+          ) {
+          }
+        } else {
+          const gameObjectTile = this.gameObjectsLayer.getTileAt(
+            response.player.pos[0],
+            response.player.pos[1]
+          )?.index;
+          if (gameObjectTile == 2 || gameObjectTile == null) {
+            this.gameTreasuresLayer.putTileAt(
+              1,
               response.player.pos[0],
               response.player.pos[1]
-            )?.index;
-            if (gameObjectTile == 2 || gameObjectTile == null) {
-              this.gameTreasuresLayer.putTileAt(
-                1,
-                response.player.pos[0],
-                response.player.pos[1]
-              );
-            }
-            this.gameTreasuresLayer
-              .getTileAt(response.player.pos[0], response.player.pos[1])
-              .setVisible(true);
+            );
           }
-          this.updateStats(response.player, response.stats);
-          this.displayPlayerScore(
-            response.scoreToDisplay,
-            response.player.walletAddress
-          );
-          break;
+          this.gameTreasuresLayer
+            .getTileAt(response.player.pos[0], response.player.pos[1])
+            .setVisible(true);
         }
+        this.updateStats(response.player, response.stats);
+        this.displayPlayerScore(
+          response.scoreToDisplay,
+          response.player.walletAddress
+        );
+        break;
+      }
       case Const.Command.token: {
         this.updateStats(response.player, response.stats);
         this.displayPlayerScore(
@@ -475,7 +489,6 @@ export default class MainScene extends Phaser.Scene {
         );
         break;
       }
-
     }
   }
 

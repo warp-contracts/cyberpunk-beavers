@@ -10,26 +10,33 @@ export default class MainPlayer extends Player {
     const { attack, move, pick, dig } = Const.Command;
 
     if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
+      this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: move, dir: left });
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
+      this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: move, dir: right });
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.up)) {
+      this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: move, dir: up });
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
+      this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: move, dir: down });
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
+      this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: attack, dir: down });
       await this.send({ cmd: attack, dir: up });
       await this.send({ cmd: attack, dir: left });
       await this.send({ cmd: attack, dir: right });
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.p)) {
+      this.anims.isPlaying && this.anims.stop();
       if (this.onGameObject) {
         await this.send({ cmd: pick });
       }
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.d)) {
+      this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: dig });
     } else {
-      // this.anims.play('idle', true)
+      this.anims.play(`${this.beaverChoice}_idle`, true);
     }
   }
 
@@ -50,7 +57,10 @@ export default class MainPlayer extends Player {
     if (!this.lockingDataItemId) {
       this.lockingDataItemId = 'locking...';
       this.lockingDataItemId = (await this.scene.server.send(message)).id;
-      console.log('Locked actions until tx is resolved', this.lockingDataItemId);
+      console.log(
+        'Locked actions until tx is resolved',
+        this.lockingDataItemId
+      );
     } else {
       console.log(`Action disabled until tx resolved `, this.lockingDataItemId);
     }
