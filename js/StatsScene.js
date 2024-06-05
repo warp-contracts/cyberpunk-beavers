@@ -1,6 +1,7 @@
 import { EVENTS_NAME } from './utils/events.js';
 import { Text } from './Text.js';
 import Const from './common/const.mjs';
+import { colors } from './utils/style.js';
 
 export default class StatsScene extends Phaser.Scene {
   walletAddress;
@@ -202,7 +203,7 @@ export default class StatsScene extends Phaser.Scene {
         fontFamily: '"Press Start 2P"',
         fontSize: '20px',
         textTransform: 'uppercase',
-        color: 'white',
+        color: color.white,
       }
     ).setDepth(1);
     this.subtitle.x = this.gameWidth / 2 - this.subtitle.width / 2;
@@ -235,6 +236,11 @@ export default class StatsScene extends Phaser.Scene {
       document.getElementById('stats-scene-coins').innerText = stats?.coins;
       document.getElementById('stats-scene-score').innerText = stats?.score;
       this.subtitle.setText(`AP: ${stats?.ap?.current}`);
+      if (stats?.ap?.current == 0) {
+        this.subtitle.setColor(colors.red);
+      } else {
+        this.subtitle.setColor(colors.white);
+      }
     });
 
     this.game.events.on(EVENTS_NAME.updateRoundInfo, (roundInfo) => {
@@ -255,11 +261,13 @@ export default class StatsScene extends Phaser.Scene {
         if (newLen > 4) {
           this.interactionsQueue.shift();
         }
-        console.log(`interaction element`, document.getElementById('stats-scene-interaction-logs'))
+        console.log(
+          `interaction element`,
+          document.getElementById('stats-scene-interaction-logs')
+        );
         document.getElementById('stats-scene-interaction-logs').innerHTML =
           this.interactionsFormatted();
       }
-
     });
   }
 
@@ -371,7 +379,7 @@ height=72/>
     <div style='margin: 18px 0 0 40px'>INCOMING MESSAGES</div>
     <div id="stats-scene-interaction-logs">${this.interactionsFormatted()}</div>
     </div>
-    `
+    `;
     return resultDiv;
   }
 
@@ -400,7 +408,6 @@ height=72/>
       <div id="stats-message" style='margin: 18px 0 0 40px'><span style='display: inline-block; width: 60px; text-transform: uppercase;'>${i.cmd}</span>
       <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/message/${i.txId}'>${i.txId.substr(0, 5) + '...' + i.txId.substr(i.txId.length - 5)}</a>
       ${data}
-      </div>`
+      </div>`;
   }
-
 }
