@@ -379,10 +379,12 @@ export default class MainScene extends Phaser.Scene {
         }
         break;
 
+      case Const.Command.attacked:
       case Const.Command.moved:
         {
           console.log(
-            'Player moved',
+            'Player',
+            response.cmd,
             response.player.pos,
             response.player.onGameObject
           );

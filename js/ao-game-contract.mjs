@@ -91,7 +91,8 @@ export function handle(state, message) {
       const attackRes = attack(state, action);
       sendToken(message.Owner, attackRes.damage);
       ao.result({
-        cmd: Const.Command.moved,
+        cmd: Const.Command.attacked,
+        pos: attackRes.attackPos,
         walletAddress: attackRes.player.name,
         stats: attackRes.player.stats,
         player: attackRes.player,
@@ -437,6 +438,7 @@ function attack(state, action) {
       player,
       damage,
       opponent,
+      attackPos,
       scoreToDisplay: scoreToDisplay([
         { value: -1, type: GameObject.ap.type },
         { value: damage, type: null },
@@ -450,7 +452,7 @@ function attack(state, action) {
       `Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`
     );
   }
-  return { player, damage: 0 };
+  return { player, attackPos, damage: 0 };
 }
 
 function movePlayer(state, action) {

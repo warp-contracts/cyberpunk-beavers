@@ -394,6 +394,11 @@ height=72/>
         data = `<div style='display: inline-block'>NEW POS ${i.player.pos}</div>`;
         break;
       }
+      case Const.Command.attacked: {
+        const info = i.pos ? `POS ${i.pos}` : `Failed`;
+        data = `<div style='display: inline-block'>${info}</div>`;
+        break;
+      }
       case Const.Command.token:
       case Const.Command.picked:
       case Const.Command.digged: {

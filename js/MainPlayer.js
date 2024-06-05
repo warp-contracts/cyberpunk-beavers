@@ -23,10 +23,17 @@ export default class MainPlayer extends Player {
       await this.send({ cmd: move, dir: down });
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
       this.anims.isPlaying && this.anims.stop();
-      await this.send({ cmd: attack, dir: down });
-      await this.send({ cmd: attack, dir: up });
-      await this.send({ cmd: attack, dir: left });
-      await this.send({ cmd: attack, dir: right });
+      if (this.lockingDataItemId) {
+        console.log(`Action disabled until tx resolved `, this.lockingDataItemId);
+      } else {
+        await this.send({ cmd: attack, dir: down });
+        this.lockingDataItemId = undefined;
+        await this.send({ cmd: attack, dir: up });
+        this.lockingDataItemId = undefined;
+        await this.send({ cmd: attack, dir: left });
+        this.lockingDataItemId = undefined;
+        await this.send({ cmd: attack, dir: right });
+      }
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.p)) {
       this.anims.isPlaying && this.anims.stop();
       if (this.onGameObject) {

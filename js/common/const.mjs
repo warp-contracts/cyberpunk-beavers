@@ -4,6 +4,7 @@ const EVENTS_NAME = {
 
 const Command = {
   attack: 'attack',
+  attacked: 'attacked',
   join: 'join',
   move: 'move',
   moved: 'moved',
