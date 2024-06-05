@@ -76,7 +76,7 @@ export function handle(state, message) {
       break;
     case Const.Command.dig:
       const digRes = dig(state, action);
-      if (digRes.digged) {
+      if (digRes.digged.type === GameObject.treasure.type) {
         sendToken(message.Owner, 1000);
       }
       ao.result({
