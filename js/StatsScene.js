@@ -203,7 +203,7 @@ export default class StatsScene extends Phaser.Scene {
         fontFamily: '"Press Start 2P"',
         fontSize: '20px',
         textTransform: 'uppercase',
-        color: color.white,
+        color: colors.white,
       }
     ).setDepth(1);
     this.subtitle.x = this.gameWidth / 2 - this.subtitle.width / 2;
