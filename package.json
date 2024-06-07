@@ -18,6 +18,7 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@permaweb/aoconnect": "^0.0.55",
     "live-server": "1.2.1",
     "esbuild": "^0.20.2",
     "nodemon": "^3.1.0",
