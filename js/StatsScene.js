@@ -348,7 +348,6 @@ height=72/>
   }
 
   addPlayers() {
-    console.log(this.allPlayers);
     let playersBox = ``;
     let playersAddresses = Object.keys(this.allPlayers);
     playersAddresses = playersAddresses.filter((p) => p !== this.walletAddress);
