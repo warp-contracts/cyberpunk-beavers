@@ -348,6 +348,7 @@ height=72/>
   }
 
   addPlayers() {
+    console.log(this.allPlayers);
     let playersBox = ``;
     let playersAddresses = Object.keys(this.allPlayers);
     playersAddresses = playersAddresses.filter((p) => p !== this.walletAddress);
@@ -355,7 +356,7 @@ height=72/>
       playersBox += `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
       <img
-  src="assets/images/${this.allPlayers[playersAddresses[i]].texture.key.replace('_48', '_portrait')}.png"
+  src="assets/images/${this.allPlayers[playersAddresses[i]].beaverChoice}_portrait.png"
   width=48
   height=48/>
   <div id="stats-scene-wallet-address">${playersAddresses[i] && playersAddresses[i].substr(0, 3) + '...' + playersAddresses[i].substr(playersAddresses[i].length - 3)}</div>
