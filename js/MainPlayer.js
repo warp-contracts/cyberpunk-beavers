@@ -64,15 +64,12 @@ export default class MainPlayer extends Player {
   }
 
   async send(message) {
-    if (!this.lockingDataItemId) {
+    //if (!this.lockingDataItemId) {
       this.lockingDataItemId = 'locking...';
       this.lockingDataItemId = (await this.scene.server.send(message)).id;
-      console.log(
-        'Locked actions until tx is resolved',
-        this.lockingDataItemId
-      );
-    } else {
+      console.log('Locked actions until tx is resolved', this.lockingDataItemId);
+    /*} else {
       console.log(`Action disabled until tx resolved `, this.lockingDataItemId);
-    }
+    }*/
   }
 }
