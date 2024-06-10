@@ -232,7 +232,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     console.log('Subscribing for processId: ', window.warpAO.processId());
-    const subscription = await subscribe(
+    /*const subscription = await subscribe(
       `results/ao/${window.warpAO.processId()}`,
       ({ data }) => {
         const message = JSON.parse(data);
@@ -280,16 +280,16 @@ export default class MainScene extends Phaser.Scene {
       });
     }
 
-    return { send: window.warpAO.send };
+    return { send: window.warpAO.send };*/
 
-    /*    const sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
+        const sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
         const beforeUnloadHandler = (event) => {
           sse.close();
-          /!*!// Recommended
+          /*!// Recommended
           event.preventDefault();
 
           // Included for legacy support, e.g. Chrome/Edge < 119
-          event.returnValue = true;*!/
+          event.returnValue = true;*/
         };
         window.addEventListener("beforeunload", beforeUnloadHandler);
 
@@ -335,7 +335,7 @@ export default class MainScene extends Phaser.Scene {
             walletAddress: this.walletAddress,
             beaverId: self.beaverChoice,
           });
-        }*/
+        }
 
     return { send: window.warpAO.send };
   }

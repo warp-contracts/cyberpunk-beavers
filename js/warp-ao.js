@@ -3,7 +3,7 @@ import { DataItem } from 'warp-arbundles';
 import ids from './warp-ao-ids.js';
 
 const urlParams = new URLSearchParams(window.location.search);
-const env = urlParams.get('env') || 'dev';
+const env = urlParams.get('env') || 'prod';
 
 console.log(`running in ${env} mode`);
 
