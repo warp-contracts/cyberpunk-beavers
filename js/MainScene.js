@@ -282,31 +282,32 @@ export default class MainScene extends Phaser.Scene {
 
     return { send: window.warpAO.send };*/
 
-        const sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
+        let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
         const beforeUnloadHandler = (event) => {
+          // todo: sent unregister event
           sse.close();
-          /*!// Recommended
-          event.preventDefault();
 
-          // Included for legacy support, e.g. Chrome/Edge < 119
-          event.returnValue = true;*/
         };
         window.addEventListener("beforeunload", beforeUnloadHandler);
 
-        sse.onerror = () => sse.close();
+        sse.onerror = (e) => {
+          sse.close();
+          console.error(e);
+          sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`)
+        };
         sse.onmessage = (event) => {
           try {
+            const now = Date.now();
             const message = JSON.parse(event.data);
-            console.log('\n ==== new message ==== ', message);
+            console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
             if (message.tags) {
               const salt = message.tags.find((t) => t.name === 'Salt');
-              console.log(
-                '\n ==== created      ==== ',
-                new Date(parseInt(salt.value))
-              );
+              if (salt) {
+                const saltInt = parseInt(salt.value);
+                const diff = now - saltInt;
+                console.log(`===== Lag: ${diff} ms`);
+              }
             }
-            console.log('\n ==== sent from CU ==== ', message.sent);
-            console.log('\n ==== received     ==== ', new Date());
 
             if (message.txId && this.mainPlayer) {
               this.mainPlayer.handleTx(message.txId);
