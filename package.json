@@ -5,7 +5,7 @@
     "dev": "yarn nodemon js/server/main.mjs",
     "serve:dev": "yarn live-server --port=9000 --open=index.html?env=dev",
     "serve:local": "yarn live-server --port=9001 --open=index.html?env=local",
-    "serve:prod": "yarn live-server --port=9001 --open=index.html?env=prod",
+    "serve:prod": "yarn live-server --port=9001 --open=index.html",
     "deploy-contract:local": "yarn build && node js/deploy-spawn.js --env local",
     "deploy-contract:prod": "yarn build && node js/deploy-spawn.js --env prod",
     "test": "node build.js && vitest",
