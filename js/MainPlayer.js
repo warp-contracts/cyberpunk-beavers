@@ -8,6 +8,7 @@ export default class MainPlayer extends Player {
   async update() {
     const { up, left, right, down } = Const.Direction;
     const { attack, move, pick, dig } = Const.Command;
+    // console.log("update");
 
     if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
       this.anims.isPlaying && this.anims.stop();
@@ -64,12 +65,12 @@ export default class MainPlayer extends Player {
   }
 
   async send(message) {
-    //if (!this.lockingDataItemId) {
+    if (!this.lockingDataItemId) {
       this.lockingDataItemId = 'locking...';
       this.lockingDataItemId = (await this.scene.server.send(message)).id;
       console.log('Locked actions until tx is resolved', this.lockingDataItemId);
-    /*} else {
+    } else {
       console.log(`Action disabled until tx resolved `, this.lockingDataItemId);
-    }*/
+    }
   }
 }

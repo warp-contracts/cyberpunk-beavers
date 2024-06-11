@@ -10,7 +10,7 @@ const config = {
   title: 'CyberBeavers',
   type: Phaser.WEBGL,
   parent: 'game',
-  antialias: false,
+  antialias: true,
   backgroundColor: '#000000',
   scale: {
     mode: Phaser.Scale.ScaleModes.None,

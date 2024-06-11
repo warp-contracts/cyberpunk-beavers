@@ -1,5 +1,5 @@
 import { Tag } from 'warp-contracts';
-import { DataItem } from 'warp-arbundles';
+import { DataItem, createData } from 'warp-arbundles';
 import ids from './warp-ao-ids.js';
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -14,6 +14,7 @@ window.warpAO = {
     muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
     cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc',
   },
+  generatedSigner: null,
   nonce: 0,
   subscribed: false,
   processId: () => {
@@ -27,7 +28,7 @@ window.warpAO = {
     new Tag('Data-Protocol', 'ao'),
     new Tag('Type', 'Message'),
     new Tag('Variant', 'ao.TN.1'),
-    { name: 'SDK', value: 'ao' },
+    {name: 'SDK', value: 'ao'},
     new Tag('From-Process', window.warpAO.processId()),
     new Tag('From-Module', window.warpAO.moduleId()),
     new Tag('Salt', '' + Date.now()),
@@ -37,19 +38,47 @@ window.warpAO = {
     data: '1234',
     target: window.warpAO.processId(),
   }),
-  send: async (message) =>
-    await window.arweaveWallet
-      .signDataItem(window.warpAO.data(message))
-      .then(async (signed) =>
-        fetch(window.warpAO.config.muAddress, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/octet-stream',
-            Accept: 'application/json',
-          },
-          body: new DataItem(signed).getRaw(),
-        })
-      )
-      .then(async (res) => res.json()),
+  send: async (message) => {
+    if (window.warpAO.generatedSigner) {
+      return sendUsingGeneratedWallet(message, window.warpAO.generatedSigner);
+    } else {
+      return sendUsingConnectedWallet(message);
+    }
+  },
   npc: env == 'dev' ? true : false,
 };
+
+
+async function sendUsingGeneratedWallet(message, signer) {
+  const dataItem = createData('1234', signer, {
+    tags: window.warpAO.messageTags(message),
+    target: window.warpAO.processId()
+  });
+  await dataItem.sign(signer);
+  return sendRawDataItem(dataItem.getRaw());
+}
+
+async function sendRawDataItem(rawData) {
+  const response = await fetch(window.warpAO.config.muAddress, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/octet-stream',
+      Accept: 'application/json',
+    },
+    body: rawData,
+  });
+
+  if (response.ok) {
+    return await response.json();
+  } else {
+    console.warn("Wrong response", {
+      code: response.statusCode,
+      message: response.statusText
+    });
+  }
+}
+
+async function sendUsingConnectedWallet(message) {
+  const signedDataItem = await window.arweaveWallet.signDataItem(window.warpAO.data(message));
+  return sendRawDataItem(signedDataItem);
+}

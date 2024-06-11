@@ -1,7 +1,7 @@
 import Player from './Player.js';
 import Const from './common/const.mjs';
 import MainPlayer from './MainPlayer.js';
-import { initPubSub, subscribe } from 'warp-contracts-pubsub';
+import { initPubSub } from 'warp-contracts-pubsub';
 import { Text } from './Text.js';
 import { EVENTS_NAME } from './utils/events.js';
 import runNpc from './npc.mjs';
@@ -55,7 +55,20 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 3. Create');
     this.backgroundMusic = this.sound.add('background_music');
     this.backgroundMusic.loop = true;
-    this.backgroundMusic.play();
+    if (window.warpAO.config.env !== 'local') {
+      this.backgroundMusic.play();
+    }
+    const musicKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+    musicKey.on('up', () => {
+      if (this.backgroundMusic.isPlaying) {
+        console.log("Music off");
+        this.backgroundMusic.stop();
+      } else {
+        console.log("Music on");
+        this.backgroundMusic.play();
+      }
+    });
+
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.allPlayers = {};
     if (!window.arweaveWallet) {
@@ -187,7 +200,7 @@ export default class MainScene extends Phaser.Scene {
       send: async (message) => {
         const di = mockDataItem(message);
         ws.send(JSON.stringify(di));
-        return { id: di.Id };
+        return {id: di.Id};
       },
     };
   }
@@ -232,23 +245,32 @@ export default class MainScene extends Phaser.Scene {
     }
 
     console.log('Subscribing for processId: ', window.warpAO.processId());
-    /*const subscription = await subscribe(
-      `results/ao/${window.warpAO.processId()}`,
-      ({ data }) => {
-        const message = JSON.parse(data);
-        if (message.nonce <= window.warpAO.nonce) {
-          console.warn(`Message with ${message.nonce} has been already handled.`);
-          return;
-        }
+
+    let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
+    const beforeUnloadHandler = (event) => {
+      // todo: sent unregister message
+      sse.close();
+    };
+    window.addEventListener("beforeunload", beforeUnloadHandler);
+
+    sse.onerror = (e) => {
+      sse.close();
+      console.error(e);
+      sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`)
+    };
+    sse.onmessage = (event) => {
+      try {
+        const now = Date.now();
+        const message = JSON.parse(event.data);
         console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
         if (message.tags) {
           const salt = message.tags.find((t) => t.name === 'Salt');
           if (salt) {
-            console.log('\n ==== created      ==== ', new Date(parseInt(salt.value)));
+            const saltInt = parseInt(salt.value);
+            const diff = now - saltInt;
+            console.log(`===== Lag: ${diff} ms`);
           }
         }
-        console.log('\n ==== sent from CU ==== ', message.sent);
-        console.log('\n ==== received     ==== ', new Date());
 
         if (message.txId && this.mainPlayer) {
           this.mainPlayer.handleTx(message.txId);
@@ -257,12 +279,12 @@ export default class MainScene extends Phaser.Scene {
           message.output.txId = message.txId; // FIXME: well..., no the best approach
           this.handleMessage(message.output);
         }
-      },
-      console.error
-    );
+      } catch (e) {
+        console.log(event);
+      }
+    };
 
     console.log('Subscription started...');
-    window.warpAO.subscribed = true;
     const player = JSON.parse(localStorage.getItem('player'));
     console.log(`Found player info in local storage`, player);
     if (player) {
@@ -280,99 +302,40 @@ export default class MainScene extends Phaser.Scene {
       });
     }
 
-    return { send: window.warpAO.send };*/
-
-        let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
-        const beforeUnloadHandler = (event) => {
-          // todo: sent unregister event
-          sse.close();
-
-        };
-        window.addEventListener("beforeunload", beforeUnloadHandler);
-
-        sse.onerror = (e) => {
-          sse.close();
-          console.error(e);
-          sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`)
-        };
-        sse.onmessage = (event) => {
-          try {
-            const now = Date.now();
-            const message = JSON.parse(event.data);
-            console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
-            if (message.tags) {
-              const salt = message.tags.find((t) => t.name === 'Salt');
-              if (salt) {
-                const saltInt = parseInt(salt.value);
-                const diff = now - saltInt;
-                console.log(`===== Lag: ${diff} ms`);
-              }
-            }
-
-            if (message.txId && this.mainPlayer) {
-              this.mainPlayer.handleTx(message.txId);
-            }
-            if (message.output.cmd) {
-              this.handleMessage(message.output);
-            }
-          } catch (e) {
-            console.log(event);
-          }
-        };
-
-        console.log('Subscription started...');
-        const player = JSON.parse(localStorage.getItem('player'));
-        console.log(`Found player info in local storage`, player);
-        if (player) {
-          console.log('Joining game...');
-          window.warpAO.send({
-            cmd: Const.Command.join,
-            walletAddress: this.walletAddress,
-          });
-        } else {
-          console.log('register player...');
-          window.warpAO.send({
-            cmd: Const.Command.register,
-            walletAddress: this.walletAddress,
-            beaverId: self.beaverChoice,
-          });
-        }
-
-    return { send: window.warpAO.send };
+    return {send: window.warpAO.send};
   }
 
   handleMessage(response) {
     const self = this;
     this.game.events.emit(EVENTS_NAME.nextMessage, response);
     switch (response.cmd) {
-      case Const.Command.registered:
-        {
-          console.log('Registered player', response);
-          if (response.error) {
-            console.error('Failed to join the game', response.error);
-            localStorage.removeItem('player');
-            self.scene.start('connect-wallet-scene');
-          } else {
-            localStorage.setItem(
-              'player',
-              JSON.stringify({
-                id: response.player.walletAddress,
-                beaverId: response.player.beaverId,
-              })
+      case Const.Command.registered: {
+        console.log('Registered player', response);
+        if (response.error) {
+          console.error('Failed to join the game', response.error);
+          localStorage.removeItem('player');
+          self.scene.start('connect-wallet-scene');
+        } else {
+          localStorage.setItem(
+            'player',
+            JSON.stringify({
+              id: response.player.walletAddress,
+              beaverId: response.player.beaverId,
+            })
+          );
+          self.round = response.state.round;
+          if (response.player.walletAddress === this.walletAddress) {
+            self.initMap(
+              response.state.groundTilemap,
+              response.state.gameObjectsTilemap,
+              response.state.gameTreasuresTilemap
             );
-            self.round = response.state.round;
-            if (response.player.walletAddress === this.walletAddress) {
-              self.initMap(
-                response.state.groundTilemap,
-                response.state.gameObjectsTilemap,
-                response.state.gameTreasuresTilemap
-              );
-              self.createMainPlayer(response.player);
-              self.initCamera();
-            }
-            this.scene.remove('main-scene-loading');
+            self.createMainPlayer(response.player);
+            self.initCamera();
           }
+          this.scene.remove('main-scene-loading');
         }
+      }
         break;
 
       case Const.Command.attacked:
@@ -544,7 +507,7 @@ export default class MainScene extends Phaser.Scene {
   createScoreTween(target) {
     this.tweens.add({
       targets: target,
-      alpha: { from: 0, to: 1 },
+      alpha: {from: 0, to: 1},
       ease: 'Power2',
       duration: 500,
       repeat: 0,
