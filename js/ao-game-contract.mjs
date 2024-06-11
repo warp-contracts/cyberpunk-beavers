@@ -113,7 +113,7 @@ export function handle(state, message) {
       break;
     case Const.Command.pick:
       const pickRes = pick(state, action);
-      if (pickRes.picked) {
+      if (pickRes.picked && pickRes.picked.token > 0) {
         sendToken(message.Owner, pickRes.picked.token);
       }
       ao.result({
@@ -154,7 +154,9 @@ export function handle(state, message) {
       break;
     case Const.Command.move:
       const moveRes = movePlayer(state, action);
-      sendToken(message.Owner, 1);
+      if (moveRes.moved) {
+        sendToken(message.Owner, 1);
+      }
       ao.result({
         cmd: Const.Command.moved,
         stats: moveRes.player.stats,
@@ -509,7 +511,7 @@ function movePlayer(state, action) {
   gamePlayerTick(state, player);
   if (player.stats.ap.current < 1) {
     console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
-    return { player };
+    return { player, moved: false };
   }
 
   const newPos = step(player.pos, dir);
@@ -523,19 +525,19 @@ function movePlayer(state, action) {
     console.log(
       `Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`
     );
-    return { player };
+    return { player, moved: false };
   } else if (state.playersOnTiles[newPos[1]][newPos[0]]) {
     console.log(
       `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${
         state.playersOnTiles[newPos[1]][newPos[0]]
       }`
     );
-    return { player };
+    return { player, moved: false };
   } else if ([1, 3].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
     console.log(
       `Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`
     );
-    return { player };
+    return { player, moved: false };
   } else {
     player.onGameObject = state.gameObjectsTiles.find(
       (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]
@@ -551,6 +553,7 @@ function movePlayer(state, action) {
     player.stats.ap.current -= 1;
     return {
       player,
+      moved: true,
       scoreToDisplay: scoreToDisplay([{ value: -1, type: GameObject.ap.type }]),
     };
   }
