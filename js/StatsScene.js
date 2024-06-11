@@ -260,10 +260,6 @@ export default class StatsScene extends Phaser.Scene {
         if (newLen > 4) {
           this.interactionsQueue.shift();
         }
-        console.log(
-          `interaction element`,
-          document.getElementById('stats-scene-interaction-logs')
-        );
         document.getElementById('stats-scene-interaction-logs').innerHTML =
           this.interactionsFormatted();
       }

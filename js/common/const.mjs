@@ -30,11 +30,11 @@ const Tile = {
 };
 
 const GameObject = {
-  hp: { type: 'hp', tile: 1 },
-  ap: { type: 'ap', tile: 0 },
-  treasure: { type: 'treasure', tile: 0 },
-  hole: { type: 'hole', tile: 1 },
-  none: { type: 'none', tile: 2 },
+  hp: { type: 'hp', tile: 1, value: 5 },
+  ap: { type: 'ap', tile: 0, value: 5 },
+  treasure: { type: 'treasure', tile: 0, value: 1000 },
+  hole: { type: 'hole', tile: 1, value: 0 },
+  none: { type: 'none', tile: 2, value: 0 },
 };
 
 const Scores = {

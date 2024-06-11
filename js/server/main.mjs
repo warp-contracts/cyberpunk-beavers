@@ -31,7 +31,7 @@ wss.on('connection', (ws) => {
 
 function logAndBroadcast(message) {
   message.txId = txId;
-  console.log('WS RES:', message.txId, message.cmd);
+  console.log('WS RES:', message.txId, message.cmd, message[message.cmd], message.scoreToDisplay);
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       setTimeout(() => {

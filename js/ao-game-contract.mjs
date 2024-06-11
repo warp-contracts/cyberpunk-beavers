@@ -1,8 +1,57 @@
 import Const from './common/const.mjs';
+const { GameObject, Direction, Scores } = Const;
 
+// ------- Token Contract Config
 const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
 const TOKEN_CONTRACT_METHOD = 'Transfer';
 const TOKEN_ACTIONS = ['Credit-Notice', 'Debit-Notice', 'Transfer-Error'];
+
+
+// ------- Beaver Config
+const BEAVER_TYPES = {
+  hacker_beaver: {
+    ap: {
+      current: 10,
+      max: 10,
+    },
+    hp: {
+      current: 100,
+      max: 100,
+    },
+    damage: 10,
+    bonus: {
+      [GameObject.treasure.type]: 200,
+    }
+  },
+  heavy_beaver: {
+    ap: {
+      current: 10,
+      max: 10,
+    },
+    hp: {
+      current: 200,
+      max: 200,
+    },
+    damage: 20,
+    bonus: {
+      [GameObject.treasure.type]: 0,
+    }
+  },
+  speedy_beaver: {
+    ap: {
+      current: 20,
+      max: 20,
+    },
+    hp: {
+      current: 100,
+      max: 100,
+    },
+    damage: 10,
+    bonus: {
+      [GameObject.treasure.type]: 40,
+    }
+  }
+}
 
 function sendToken(recipient, qty) {
   ao.send({
@@ -57,7 +106,6 @@ export function handle(state, message) {
   switch (action.cmd) {
     case 'increment':
       state.counter++;
-      sendToken(message.Owner, 1);
       ao.result({
         counter: state.counter,
         player: state.players[message.Owner],
@@ -65,7 +113,9 @@ export function handle(state, message) {
       break;
     case Const.Command.pick:
       const pickRes = pick(state, action);
-      sendToken(message.Owner, 10);
+      if (pickRes.picked) {
+        sendToken(message.Owner, pickRes.picked.token);
+      }
       ao.result({
         cmd: Const.Command.picked,
         player: pickRes.player,
@@ -76,9 +126,6 @@ export function handle(state, message) {
       break;
     case Const.Command.dig:
       const digRes = dig(state, action);
-      if (digRes.digged.type === GameObject.treasure.type) {
-        sendToken(message.Owner, 1000);
-      }
       ao.result({
         cmd: Const.Command.digged,
         player: digRes.player,
@@ -89,7 +136,9 @@ export function handle(state, message) {
       break;
     case Const.Command.attack:
       const attackRes = attack(state, action);
-      sendToken(message.Owner, attackRes.damage);
+      if (attackRes.damage > 0) {
+        sendToken(message.Owner, attackRes.damage);
+      }
       ao.result({
         cmd: Const.Command.attacked,
         pos: attackRes.attackPos,
@@ -132,7 +181,7 @@ export function handle(state, message) {
   }
 }
 
-const { GameObject, Direction, Scores } = Const;
+
 const SIZE = 30;
 let i = -1;
 let j = 0;
@@ -253,7 +302,7 @@ function gameRoundTick(state, message) {
 }
 
 function gamePlayerTick(state, player) {
-  console.log(player);
+  console.log(`Player tick - ${player.walletAddress}`);
   if (player.stats.round.last < state.round.current) {
     player.stats.ap.current = player.stats.ap.max;
     player.stats.round.last = state.round.current;
@@ -339,33 +388,33 @@ function pick(state, action) {
   const gameObjectTile = state.gameObjectsTiles.find(
     (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
   );
-  const { type } = gameObjectTile;
+  const { type, value } = gameObjectTile;
 
   if (type === GameObject.hp.type) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}.`);
-    player.stats.hp.current += 5;
+    player.stats.hp.current += value;
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] =
       GameObject.none.tile;
     return {
       player,
-      picked: { type },
+      picked: { type, token: value },
       scoreToDisplay: scoreToDisplay([
-        { value: 5, type: Scores.hp },
+        { value: value, type: Scores.hp },
         { value: -1, type: Scores.ap },
       ]),
     };
   } else if (type === GameObject.ap.type) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
-    player.stats.ap.current += 5;
+    player.stats.ap.current += value;
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] =
       GameObject.none.tile;
     return {
       player,
-      picked: { type },
+      picked: { type, token: value },
       scoreToDisplay: scoreToDisplay([
-        { value: 5, type: Scores.ap },
+        { value: value, type: Scores.ap },
         { value: -1, type: Scores.ap },
       ]),
     };
@@ -373,7 +422,7 @@ function pick(state, action) {
     const gameTreasureTile = state.gameTreasuresTiles.find(
       (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
     );
-    const { type } = gameTreasureTile;
+    const { type, value } = gameTreasureTile;
     if (type === GameObject.none.type) {
       console.log(
         `Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`
@@ -397,11 +446,12 @@ function pick(state, action) {
 
       state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] =
         GameObject.hole.tile;
+      const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
       return {
         player,
-        picked: { type },
+        picked: { type, token: valueWithBonus },
         scoreToDisplay: scoreToDisplay([
-          { value: 10, type: Scores.coin },
+          { value: valueWithBonus, type: Scores.coin },
           { value: -1, type: Scores.ap },
         ]),
       };
@@ -412,9 +462,7 @@ function pick(state, action) {
 }
 
 function attack(state, action) {
-  const damage = 10;
-  const walletAddress = action.walletAddress;
-  const player = state.players[walletAddress];
+  const player = state.players[action.walletAddress];
   gamePlayerTick(state, player);
   if (player.stats.ap.current < 1) {
     console.log(
@@ -431,19 +479,19 @@ function attack(state, action) {
     console.log(
       `Player ${player.walletAddress} attacked ${opponent.walletAddress}`
     );
-    opponent.stats.hp.current -= damage;
+    opponent.stats.hp.current -= player.stats.damage;
     player.stats.ap.current -= 1;
     return {
       player,
-      damage,
+      damage: player.stats.damage,
       opponent,
       attackPos,
       scoreToDisplay: scoreToDisplay([
         { value: -1, type: GameObject.ap.type },
-        { value: damage, type: null },
+        { value: player.stats.damage, type: null },
       ]),
       opponentScoreToDisplay: scoreToDisplay([
-        { value: -damage, type: GameObject.hp.type },
+        { value: -player.stats.damage, type: GameObject.hp.type },
       ]),
     };
   } else if ([1, 3].includes(state.groundTilemap[attackPos[1]][attackPos[0]])) {
@@ -514,18 +562,18 @@ function registerPlayer(state, action) {
   if (state.players[walletAddress]) {
     return state.players[walletAddress];
   }
+  if (!BEAVER_TYPES[beaverId]) {
+    const errorMsg = `No beaver of type ${beaverId}`;
+    console.error(errorMsg);
+    return {
+      error: errorMsg
+    }
+  }
   let newPlayer = {
     walletAddress,
     beaverId,
     stats: {
-      ap: {
-        current: 10,
-        max: 10,
-      },
-      hp: {
-        current: 100,
-        max: 100,
-      },
+      ...BEAVER_TYPES[beaverId],
       round: {
         last: 0,
       },
