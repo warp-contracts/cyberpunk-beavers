@@ -1,6 +1,8 @@
 import { TextButton } from './TextButton.js';
 import { Text } from './Text.js';
 import { colors } from './utils/style.js';
+import {ArweaveSigner} from "warp-arbundles";
+import {WarpFactory} from "warp-contracts";
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {
@@ -23,9 +25,11 @@ export default class ConnectWalletScene extends Phaser.Scene {
       font: '20px',
     });
 
-    await this.helloText.animateText();
+    const animationSpeed = window.warpAO.config.env !== 'prod' ? 1 : 50;
 
-    this.clickButton = new TextButton(
+    await this.helloText.animateText(animationSpeed);
+
+    this.connectWalletButton = new TextButton(
       this,
       100,
       200,
@@ -36,8 +40,33 @@ export default class ConnectWalletScene extends Phaser.Scene {
       },
       async () => await this.connectWallet()
     );
+    await this.connectWalletButton.animateText(animationSpeed);
 
-    await this.clickButton.animateText();
+    // remove in 'prod'?
+    this.generateWalletButton = new TextButton(
+      this,
+      100,
+      300,
+      'Generate wallet',
+      {
+        fill: colors.red,
+        font: '20px',
+      },
+      async () => await this.generateWallet()
+    );
+  }
+
+  async generateWallet() {
+    const warpInst = WarpFactory.forMainnet();
+    const { jwk, address } = await warpInst.generateWallet();
+    window.warpAO.generatedSigner = new ArweaveSigner(jwk);
+    console.log("Generated wallet address", address);
+    localStorage.setItem('wallet_address', address);
+    localStorage.removeItem('player');
+    this.scene.start('player-pick-scene', {
+      walletAddress: address,
+    });
+
   }
 
   async connectWallet() {
