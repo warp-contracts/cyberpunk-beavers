@@ -234,7 +234,6 @@ export default class StatsScene extends Phaser.Scene {
     this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
       document.getElementById('stats-scene-hp').innerText = stats?.hp?.current;
       document.getElementById('stats-scene-coins').innerText = stats?.coins;
-      document.getElementById('stats-scene-score').innerText = stats?.score;
       this.subtitle.setText(`AP: ${stats?.ap?.current}`);
       if (stats?.ap?.current == 0) {
         this.subtitle.setColor(colors.red);
@@ -308,11 +307,6 @@ height=72/>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>HP</div>
     <div style="display: flex; justify-content: space-between;">
     <div id="stats-scene-hp">${this.stats?.hp.current}</div>
-    </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>SCORE</div>
-    <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-score">${this.stats?.score}</div>
     </div>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>COINS</div>

@@ -432,7 +432,6 @@ function attack(state, action) {
       `Player ${player.walletAddress} attacked ${opponent.walletAddress}`
     );
     opponent.stats.hp.current -= damage;
-    player.stats.score += damage;
     player.stats.ap.current -= 1;
     return {
       player,
@@ -530,7 +529,6 @@ function registerPlayer(state, action) {
       round: {
         last: 0,
       },
-      score: 0,
       coins: 0,
     },
     pos: calculatePlayerRandomPos(state),
