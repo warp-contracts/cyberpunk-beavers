@@ -1,5 +1,7 @@
 import Const from './common/const.mjs';
-const { GameObject, Direction, Scores } = Const;
+import { attack } from './ao-game-contract-attack.mjs';
+import { step, scoreToDisplay } from './common/tools.mjs';
+const { GameObject, Scores } = Const;
 
 // ------- Token Contract Config
 const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
@@ -102,6 +104,7 @@ export function handle(state, message) {
   const action = JSON.parse(actionTagValue);
   action.walletAddress = message.Owner;
   gameRoundTick(state, message);
+  gamePlayerTick(state, action);
 
   switch (action.cmd) {
     case 'increment':
@@ -303,24 +306,12 @@ function gameRoundTick(state, message) {
   );
 }
 
-function gamePlayerTick(state, player) {
-  console.log(`Player tick - ${player.walletAddress}`);
-  if (player.stats.round.last < state.round.current) {
+function gamePlayerTick(state, action) {
+  const player = state.players[action.walletAddress];
+  console.log(`Player tick - ${player?.walletAddress}`);
+  if (player && player.stats.round.last < state.round.current) {
     player.stats.ap.current = player.stats.ap.max;
     player.stats.round.last = state.round.current;
-  }
-}
-
-function step(pos, dir) {
-  switch (dir) {
-    case Direction.left:
-      return [pos[0] - 1, pos[1]];
-    case Direction.right:
-      return [pos[0] + 1, pos[1]];
-    case Direction.up:
-      return [pos[0], pos[1] - 1];
-    case Direction.down:
-      return [pos[0], pos[1] + 1];
   }
 }
 
@@ -463,52 +454,11 @@ function pick(state, action) {
   return { player, picked: false };
 }
 
-function attack(state, action) {
-  const player = state.players[action.walletAddress];
-  gamePlayerTick(state, player);
-  if (player.stats.ap.current < 1) {
-    console.log(
-      `Cannot perform attak ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`
-    );
-    return { player, damage: 0 };
-  }
-  player.stats.ap.current -= 1;
-  const attackPos = step(player.pos, action.dir);
-
-  if (state.playersOnTiles[attackPos[1]][attackPos[0]]) {
-    const opponent =
-      state.players[state.playersOnTiles[attackPos[1]][attackPos[0]]];
-    console.log(
-      `Player ${player.walletAddress} attacked ${opponent.walletAddress}`
-    );
-    opponent.stats.hp.current -= player.stats.damage;
-    player.stats.ap.current -= 1;
-    return {
-      player,
-      damage: player.stats.damage,
-      opponent,
-      attackPos,
-      scoreToDisplay: scoreToDisplay([
-        { value: -1, type: GameObject.ap.type },
-        { value: player.stats.damage, type: null },
-      ]),
-      opponentScoreToDisplay: scoreToDisplay([
-        { value: -player.stats.damage, type: GameObject.hp.type },
-      ]),
-    };
-  } else if ([1, 3].includes(state.groundTilemap[attackPos[1]][attackPos[0]])) {
-    console.log(
-      `Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`
-    );
-  }
-  return { player, attackPos, damage: 0 };
-}
 
 function movePlayer(state, action) {
   const walletAddress = action.walletAddress;
   const dir = action.dir;
   const player = state.players[walletAddress];
-  gamePlayerTick(state, player);
   if (player.stats.ap.current < 1) {
     console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
     return { player, moved: false };
@@ -609,13 +559,4 @@ function calculatePlayerRandomPos(state) {
   return pos;
 }
 
-function scoreToDisplay(scoreValues) {
-  return scoreValues.map((v) => {
-    const isValuePositive = v.value > 0;
-    return {
-      value: `${isValuePositive ? '+' : ''}${v.value}`,
-      type: v.type?.toUpperCase() || '',
-      sign: isValuePositive ? 'positive' : 'negative',
-    };
-  });
-}
+

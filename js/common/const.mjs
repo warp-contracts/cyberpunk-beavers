@@ -48,7 +48,13 @@ const Errors = {
   invalidWallet: 'Wallet address is invalid',
 };
 
+// ------- Combat
+const Combat = {
+  Coins: 100 // Tokens that will be taken after the defeating the opponent.
+}
+
 export default {
+  Combat,
   Command,
   Direction,
   EVENTS_NAME,
