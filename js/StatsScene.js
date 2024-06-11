@@ -254,6 +254,15 @@ export default class StatsScene extends Phaser.Scene {
         this.addPlayersModal();
     });
 
+    this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => {
+      document.getElementById(
+        `stats-scene-hp-${player.walletAddress}`
+      ).innerText = player.hp.current;
+      document.getElementById(
+        `stats-scene-coins-${player.walletAddress}`
+      ).innerText = player.coins;
+    });
+
     this.game.events.on(EVENTS_NAME.nextMessage, (interaction) => {
       if (interaction.player.walletAddress === this.walletAddress) {
         const newLen = this.interactionsQueue.push(interaction);
@@ -286,26 +295,26 @@ export default class StatsScene extends Phaser.Scene {
     background-color: #fcee09;
     font-family: 'Press Start 2P';
     font-size: 0.5rem;
-    padding: 30px;
+    padding: 30px 20px 30px 30px;
     clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);">
     <div style="display: flex; justify-content: space-between; align-items: center;">
     <img
 src="assets/images/${this.beaverChoice}_portrait.png"
 width=72
 height=72/>
-<div id="stats-scene-wallet-address">${this.walletAddress && this.walletAddress.substr(0, 3) + '...' + this.walletAddress.substr(this.walletAddress.length - 3)}</div>
+<div style="padding-right: 10px;" id="stats-scene-wallet-address">${this.walletAddress && this.walletAddress.substr(0, 3) + '...' + this.walletAddress.substr(this.walletAddress.length - 3)}</div>
 </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>PROCESS</div>
     <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/entity/${this.processId}'>${this.processId.substr(0, 3) + '...' + this.processId.substr(this.processId.length - 3)}</a></div>
+    <div style="padding-right: 10px;" id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/entity/${this.processId}'>${this.processId.substr(0, 3) + '...' + this.processId.substr(this.processId.length - 3)}</a></div>
     </div>
     </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>HP</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-right: 10px;"><div>HP</div>
     <div style="display: flex; justify-content: space-between;">
     <div id="stats-scene-hp">${this.stats?.hp.current}</div>
     </div>
     </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>COINS</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-right: 10px;"><div>COINS</div>
     <div style="display: flex; justify-content: space-between;">
     <div id="stats-scene-coins">${this.stats?.coins}</div>
     </div>
@@ -331,7 +340,11 @@ height=72/>
     right: 0;
     text-align: center;
     font-size: 12px;">OTHER BEAVERS</div></div>
+    <div style="max-height: 300px;
+    overflow-y: scroll;
+    padding-right: 10px;">
       ${this.addPlayers()}
+    </div>
     </div>
     </div>
 `;
@@ -342,13 +355,31 @@ height=72/>
     let playersAddresses = Object.keys(this.allPlayers);
     playersAddresses = playersAddresses.filter((p) => p !== this.walletAddress);
     for (let i = 0; i < playersAddresses.length; i++) {
+      const player = this.allPlayers[playersAddresses[i]];
       playersBox += `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
       <img
-  src="assets/images/${this.allPlayers[playersAddresses[i]].beaverChoice}_portrait.png"
+  src="assets/images/${player.beaverChoice}_portrait.png"
   width=48
   height=48/>
-  <div id="stats-scene-wallet-address">${playersAddresses[i] && playersAddresses[i].substr(0, 3) + '...' + playersAddresses[i].substr(playersAddresses[i].length - 3)}</div>
+  <div style="display:flex; flex-grow: 1;"> </div>
+  <div style="display: flex;
+  flex-grow: 1;
+  flex-direction: column;">
+  <div style="align-self: flex-end;" id="stats-scene-wallet-address">${playersAddresses[i] && playersAddresses[i].substr(0, 3) + '...' + playersAddresses[i].substr(playersAddresses[i].length - 3)}</div>
+  <div style="display: flex; justify-content: space-between; flex-direction: column;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>HP</div>
+  <div style="display: flex; justify-content: space-between;">
+  <div id="stats-scene-hp-${player.walletAddress}">${player.stats.hp.current}</div>
+  </div>
+  </div>
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>COINS</div>
+  <div style="display: flex; justify-content: space-between;">
+  <div id="stats-scene-coins-${player.walletAddress}">${player.stats.coins}</div>
+  </div>
+  </div>
+  </div>
+  </div>
   </div>
       `;
     }

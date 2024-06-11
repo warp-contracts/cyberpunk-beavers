@@ -26,7 +26,6 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     console.log('Main Scene - 2. Preload');
-    this.load.image('tiles', 'assets/images/dices.png');
     this.load.image('cyberpunk_bg', 'assets/images/sand_map_tiles_min.png');
     this.load.image('cyberpunk_game_objects', 'assets/images/ap_hp.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
@@ -89,7 +88,6 @@ export default class MainScene extends Phaser.Scene {
     this.statsScene.beaverChoice = this.beaverChoice;
     this.statsScene.stats = this.mainPlayer.stats;
     this.statsScene.allPlayers = this.allPlayers;
-    console.log(this.statsScene.allPlayers);
 
     return this.mainPlayer;
   }
@@ -98,6 +96,7 @@ export default class MainScene extends Phaser.Scene {
     return (this.allPlayers[playerInfo.walletAddress] = new Player({
       walletAddress: playerInfo.walletAddress,
       scene: this,
+      stats: playerInfo.stats,
       x: 26 + playerInfo.pos[0] * Const.Tile.size,
       y: 26 + playerInfo.pos[1] * Const.Tile.size,
       texture: `${playerInfo.beaverId}_48`,
@@ -512,6 +511,13 @@ export default class MainScene extends Phaser.Scene {
       console.log('Stats update', responsePlayer?.walletAddress);
       self.mainPlayer.stats = responseStats;
       this.game.events.emit(EVENTS_NAME.updateStats, responseStats);
+    } else if (responsePlayer) {
+      this.allPlayers[responsePlayer?.walletAddress].stats =
+        responsePlayer.stats;
+      this.game.events.emit(EVENTS_NAME.updateOtherPlayerStats, {
+        ...responseStats,
+        walletAddress: responsePlayer.walletAddress,
+      });
     }
   }
 

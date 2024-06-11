@@ -3,5 +3,6 @@ export const EVENTS_NAME = {
   updateStats: 'updateStats',
   updateRoundInfo: 'updateRoundInfo',
   updatePlayers: 'updatePlayers',
+  updateOtherPlayerStats: 'updateOtherPlayerStats',
   nextMessage: 'nextMessage',
 };
