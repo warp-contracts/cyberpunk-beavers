@@ -114,13 +114,7 @@ export default class MainScene extends Phaser.Scene {
       animated: true,
       beaverChoice: playerInfo.beaverId,
     });
-    // not sure why but when there's more players sometimes this field gets erased
-    if (!player.stats) {
-      console.log('test');
-      player.stats = playerInfo.stats;
-    }
     this.allPlayers[playerInfo.walletAddress] = player;
-    console.log(this.allPlayers[playerInfo.walletAddress]);
     return player;
   }
 

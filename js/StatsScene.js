@@ -49,7 +49,6 @@ export default class StatsScene extends Phaser.Scene {
     this.addTitle();
     this.addRoundBar();
     this.addSubtitle();
-    // this.addPlayersModal(this.allPlayers);
     this.addLegend();
   }
 
