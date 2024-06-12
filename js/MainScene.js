@@ -71,10 +71,10 @@ export default class MainScene extends Phaser.Scene {
 
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.allPlayers = {};
-    if (!window.arweaveWallet) {
-      this.scene.start('connect-wallet-scene');
-    } else {
+    if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = window.warpAO.config.env === 'dev' ? await this.initWebSocket() : await this.initSubscription();
+    } else {
+      this.scene.start('connect-wallet-scene');
     }
   }
 

@@ -166,9 +166,12 @@ export default class StatsScene extends Phaser.Scene {
 
     this.game.events.on(EVENTS_NAME.updatePlayers, (player) => {
       this.allPlayers[player.walletAddress] = player;
-      if (Object.keys(this.allPlayers).length == 2) {
+      const totalPlayers = Object.keys(this.allPlayers).length;
+      if (totalPlayers == 2) {
         document.getElementById('stats-scene-other-beavers').innerHTML = this.addPlayersModal();
-      } else if (Object.keys(this.allPlayers).length > 2) {
+      } else if (totalPlayers > 2) {
+        const totalPlayersSpan = document.getElementsByClassName('total-players')[0];
+        totalPlayersSpan.textContent = "" + (totalPlayers - 1);
         const playerBoxes = document.querySelectorAll('[id="player-box"]');
         const lastPlayerBox = playerBoxes[playerBoxes.length - 1];
         lastPlayerBox.insertAdjacentHTML('afterend', this.addOtherPlayerBox(player));
@@ -244,6 +247,7 @@ height=72/>
   }
 
   addPlayersModal() {
+    const otherPlayersLength = Object.keys(this.allPlayers).length - 1;
     if (Object.keys(this.allPlayers).length <= 1) return '';
     return `
     <div style="position: relative;">
@@ -255,7 +259,7 @@ height=72/>
     left: 0;
     right: 0;
     text-align: center;
-    font-size: 12px;">OTHER BEAVERS</div></div>
+    font-size: 12px;">OTHER BEAVERS (<span class="total-players">${otherPlayersLength}</span>)</div></div>
     <div style="max-height: 300px;
     overflow-y: scroll;
     padding-right: 10px;">
