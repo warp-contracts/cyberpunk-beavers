@@ -40,7 +40,11 @@ export default class ConnectWalletScene extends Phaser.Scene {
         fill: colors.yellow,
         font: '20px',
       },
-      async () => await self.connectWallet()
+      async () =>  {
+        setTimeout(async () => {
+          await self.connectWallet();
+        });
+      }
     );
     await this.connectWalletButton.animateText(animationSpeed);
 
