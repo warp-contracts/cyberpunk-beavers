@@ -8,8 +8,11 @@ export default class MainPlayer extends Player {
   async update() {
     const { up, left, right, down } = Const.Direction;
     const { attack, move, pick, dig } = Const.Command;
-    // console.log("update");
 
+    if (this.stats.ap.current == 0)  {
+      this.anims.play(`${this.beaverChoice}_idle`, true);
+      return;
+    }
     if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
       this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: move, dir: left });
@@ -43,7 +46,7 @@ export default class MainPlayer extends Player {
       if (this.onGameObject) {
         await this.send({ cmd: pick });
       }
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.d)) {
+    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.d) && this.stats.ap.current >= 2) {
       this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: dig });
     } else {

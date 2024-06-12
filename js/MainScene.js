@@ -414,6 +414,8 @@ export default class MainScene extends Phaser.Scene {
     console.log('Player stats', responsePlayer);
     if (responsePlayer?.walletAddress === self.mainPlayer.walletAddress) {
       console.log('Stats update', responsePlayer?.walletAddress);
+      console.log('responseStats', responseStats);
+      //responseStats.ap = self.mainPlayer.stats.ap;
       self.mainPlayer.stats = responseStats;
       this.game.events.emit(EVENTS_NAME.updateStats, responseStats);
     } else if (responsePlayer) {
