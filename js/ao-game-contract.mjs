@@ -1,58 +1,14 @@
 import Const from './common/const.mjs';
 import { attack } from './ao-game-contract-attack.mjs';
-import { step, scoreToDisplay } from './common/tools.mjs';
-const { GameObject, Scores } = Const;
+import { movePlayer } from './ao-game-contract-move.mjs';
+import { scoreToDisplay } from './common/tools.mjs';
+const { BEAVER_TYPES, GameObject, Scores, Map } = Const;
 
 // ------- Token Contract Config
 const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
 const TOKEN_CONTRACT_METHOD = 'Transfer';
 const TOKEN_ACTIONS = ['Credit-Notice', 'Debit-Notice', 'Transfer-Error'];
-
-// ------- Beaver Config
-const BEAVER_TYPES = {
-  hacker_beaver: {
-    ap: {
-      current: 10,
-      max: 10,
-    },
-    hp: {
-      current: 100,
-      max: 100,
-    },
-    damage: 10,
-    bonus: {
-      [GameObject.treasure.type]: 200,
-    },
-  },
-  heavy_beaver: {
-    ap: {
-      current: 10,
-      max: 10,
-    },
-    hp: {
-      current: 200,
-      max: 200,
-    },
-    damage: 20,
-    bonus: {
-      [GameObject.treasure.type]: 0,
-    },
-  },
-  speedy_beaver: {
-    ap: {
-      current: 20,
-      max: 20,
-    },
-    hp: {
-      current: 100,
-      max: 100,
-    },
-    damage: 10,
-    bonus: {
-      [GameObject.treasure.type]: 40,
-    },
-  },
-};
+const TOKEN_GAME_LOCKED_AMOUNT = 100;
 
 function sendToken(recipient, qty) {
   ao.send({
@@ -69,7 +25,7 @@ function handleMessageFromToken(state, action, message) {
   const recipient = message.Tags.find((t) => t.name === 'Recipient').value;
   const txId = message.Tags.find((t) => t.name === 'Message').value;
   const player = state.players[recipient];
-  player.stats.coins += Number(qty);
+  player.stats.coins.transferred += Number(qty);
   return ao.result({
     action,
     cmd: Const.Command.token,
@@ -113,8 +69,8 @@ export function handle(state, message) {
       break;
     case Const.Command.pick:
       const pickRes = pick(state, action);
-      if (pickRes.picked && pickRes.picked.token > 0) {
-        sendToken(message.Owner, pickRes.picked.token);
+      if (pickRes.tokenTransfer > 0) {
+        sendToken(message.Owner, pickRes.tokenTransfer);
       }
       ao.result({
         cmd: Const.Command.picked,
@@ -136,8 +92,8 @@ export function handle(state, message) {
       break;
     case Const.Command.attack:
       const attackRes = attack(state, action);
-      if (attackRes.damage > 0) {
-        sendToken(message.Owner, attackRes.damage);
+      if (attackRes.tokenTransfer > 0) {
+        sendToken(message.Owner, attackRes.tokenTransfer);
       }
       ao.result({
         cmd: Const.Command.attacked,
@@ -154,9 +110,6 @@ export function handle(state, message) {
       break;
     case Const.Command.move:
       const moveRes = movePlayer(state, action);
-      if (moveRes.moved) {
-        sendToken(message.Owner, 1);
-      }
       ao.result({
         cmd: Const.Command.moved,
         stats: moveRes.player.stats,
@@ -183,7 +136,6 @@ export function handle(state, message) {
   }
 }
 
-const SIZE = 30;
 let i = -1;
 let j = 0;
 const groundTiles = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 3];
@@ -193,8 +145,8 @@ function initState(message, state) {
     counter: 0,
     pos: 1,
     map: {
-      width: SIZE,
-      height: SIZE,
+      width: Map.size,
+      height: Map.size,
     },
     gameObjectsTiles: [GameObject.ap, GameObject.hp, GameObject.none],
     gameObjectsRarity: 10,
@@ -207,25 +159,25 @@ function initState(message, state) {
       interval: 10_000, //ms
     },
     players: {},
-    playersOnTiles: Array(SIZE)
+    playersOnTiles: Array(Map.size)
       .fill([])
-      .map(() => Array(SIZE)),
-    groundTilemap: Array(SIZE)
+      .map(() => Array(Map.size)),
+    groundTilemap: Array(Map.size)
       .fill([])
       .map(() => {
         i++;
         j = 0;
         if (i === 0) {
-          return Array(SIZE).fill(1);
+          return Array(Map.size).fill(1);
         }
-        if (i === SIZE - 1) {
-          return Array(SIZE).fill(1);
+        if (i === Map.size - 1) {
+          return Array(Map.size).fill(1);
         }
-        return Array(SIZE)
+        return Array(Map.size)
           .fill(0)
           .map(() => {
             j++;
-            if (j == 1 || j == SIZE) {
+            if (j == 1 || j == Map.size) {
               return 1;
             }
             state.randomCounter++;
@@ -366,10 +318,12 @@ function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}.`);
     player.stats.hp.current += value;
+    const tokenTransfer = player.stats.coins.add(value);
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = GameObject.none.tile;
     return {
       player,
-      picked: { type, token: value },
+      picked: { type },
+      tokenTransfer,
       scoreToDisplay: scoreToDisplay([
         { value: value, type: Scores.hp },
         { value: -1, type: Scores.ap },
@@ -379,10 +333,12 @@ function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += value;
+    const tokenTransfer = player.stats.coins.add(value);
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = GameObject.none.tile;
     return {
       player,
-      picked: { type, token: value },
+      picked: { type },
+      tokenTransfer,
       scoreToDisplay: scoreToDisplay([
         { value: value, type: Scores.ap },
         { value: -1, type: Scores.ap },
@@ -409,9 +365,11 @@ function pick(state, action) {
 
       state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] = GameObject.hole.tile;
       const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
+      const tokenTransfer = player.stats.coins.add(valueWithBonus);
       return {
         player,
-        picked: { type, token: valueWithBonus },
+        picked: { type },
+        tokenTransfer,
         scoreToDisplay: scoreToDisplay([
           { value: valueWithBonus, type: Scores.coin },
           { value: -1, type: Scores.ap },
@@ -421,47 +379,6 @@ function pick(state, action) {
   }
 
   return { player, picked: false };
-}
-
-function movePlayer(state, action) {
-  const walletAddress = action.walletAddress;
-  const dir = action.dir;
-  const player = state.players[walletAddress];
-  if (player.stats.ap.current < 1) {
-    console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
-    return { player, moved: false };
-  }
-
-  const newPos = step(player.pos, dir);
-
-  if (newPos[0] < 0 || newPos[0] >= SIZE || newPos[1] < 0 || newPos[1] >= SIZE) {
-    console.log(`Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`);
-    return { player, moved: false };
-  } else if (state.playersOnTiles[newPos[1]][newPos[0]]) {
-    console.log(
-      `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${state.playersOnTiles[newPos[1]][newPos[0]]}`
-    );
-    return { player, moved: false };
-  } else if ([1, 3].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
-    console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
-    return { player, moved: false };
-  } else {
-    player.onGameObject = state.gameObjectsTiles.find((t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]);
-
-    player.onGameTreasure = state.gameTreasuresTiles.find(
-      (t) => t.tile === state.gameTreasuresTilemap[newPos[1]][newPos[0]]
-    );
-
-    state.playersOnTiles[player.pos[1]][player.pos[0]] = null;
-    state.playersOnTiles[newPos[1]][newPos[0]] = player.walletAddress;
-    player.pos = newPos;
-    player.stats.ap.current -= 1;
-    return {
-      player,
-      moved: true,
-      scoreToDisplay: scoreToDisplay([{ value: -1, type: GameObject.ap.type }]),
-    };
-  }
 }
 
 function registerPlayer(state, action) {
@@ -485,7 +402,23 @@ function registerPlayer(state, action) {
       round: {
         last: 0,
       },
-      coins: 0,
+      coins: {
+        available: 0, // tokens available for slashing
+        transferred: 0, // info of tokens received through transfer
+        add: function(amount) {
+          this.available += amount;
+          if (this.available > TOKEN_GAME_LOCKED_AMOUNT) {
+            const toBeTransferred = this.available - TOKEN_GAME_LOCKED_AMOUNT;
+            this.available = TOKEN_GAME_LOCKED_AMOUNT;
+            return toBeTransferred;
+          }
+        },
+        loot: function(amount) {
+          amount = Math.min(this.available, Const.Combat.DefaultLoot);
+          this.available -= amount;
+          return amount;
+        }
+      },
     },
     pos: calculatePlayerRandomPos(state),
   };
@@ -499,9 +432,9 @@ function calculatePlayerRandomPos(state) {
   let pos;
 
   while (onObstacle) {
-    const posVertical = Math.floor(Math.random(randomCounter) * SIZE);
+    const posVertical = Math.floor(Math.random(randomCounter) * Map.size);
     randomCounter++;
-    const posHorizontal = Math.floor(Math.random(randomCounter) * SIZE);
+    const posHorizontal = Math.floor(Math.random(randomCounter) * Map.size);
     pos = [posVertical, posHorizontal];
 
     if ([1, 3].includes(state.groundTilemap[pos[1]][pos[0]])) {

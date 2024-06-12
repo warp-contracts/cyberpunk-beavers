@@ -5,7 +5,7 @@ export function attack(state, action) {
   const player = state.players[action.walletAddress];
   if (player.stats.ap.current < 1) {
     console.log(`Cannot perform attack ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
-    return { player, damage: 0 };
+    return { player, tokenTransfer: 0 };
   }
   player.stats.ap.current -= 1;
   const attackPos = step(player.pos, action.dir);
@@ -13,10 +13,10 @@ export function attack(state, action) {
 
   if (opponent) {
     console.log(`Player ${player.walletAddress} attacked ${opponent.walletAddress}`);
-    const loot = finishHim(player, opponent);
+    const{ loot, tokenTransfer } = finishHim(player, opponent);
     return {
       player,
-      damage: player.stats.damage,
+      tokenTransfer,
       opponent,
       attackPos,
       scoreToDisplay: scoreToDisplay([
@@ -32,20 +32,23 @@ export function attack(state, action) {
   } else if ([1, 3].includes(state.groundTilemap[attackPos[1]][attackPos[0]])) {
     console.log(`Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`);
   }
-  return { player, attackPos, damage: 0 };
+  return { player, attackPos, tokenTransfer: 0 };
 }
 
 function finishHim(player, opponent) {
   opponent.stats.hp.current -= player.stats.damage;
   player.stats.ap.current -= 1;
   if (opponent.stats.hp.current <= 0) {
-    const loot = Math.min(opponent.stats.coins, Const.Combat.Coins);
+    const loot = opponent.stats.coins.loot();
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
     opponent.stats.hp.current = opponent.stats.hp.max;
-    opponent.stats.coins -= loot;
-    player.stats.coins += loot;
-    return loot;
+    const tokenTransfer = player.stats.coins.add(loot);
+    return {
+      loot, tokenTransfer
+    };
   }
-  return 0;
+  return {
+    loot: 0, tokenTransfer: 0
+  };
 }
 

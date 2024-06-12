@@ -25,6 +25,9 @@ const Direction = {
   down: 'down',
 };
 
+const Map = {
+  size: 30
+}
 const Tile = {
   size: 48,
 };
@@ -50,16 +53,66 @@ const Errors = {
 
 // ------- Combat
 const Combat = {
-  Coins: 100 // Tokens that will be taken after the defeating the opponent.
+  DefaultLoot: 100 // Tokens that will be taken after the defeating the opponent.
 }
 
+
+// ------- Beaver Config
+const BEAVER_TYPES = {
+  hacker_beaver: {
+    ap: {
+      current: 10,
+      max: 10,
+    },
+    hp: {
+      current: 100,
+      max: 100,
+    },
+    damage: 10,
+    bonus: {
+      [GameObject.treasure.type]: 200,
+    },
+  },
+  heavy_beaver: {
+    ap: {
+      current: 10,
+      max: 10,
+    },
+    hp: {
+      current: 200,
+      max: 200,
+    },
+    damage: 20,
+    bonus: {
+      [GameObject.treasure.type]: 0,
+    },
+  },
+  speedy_beaver: {
+    ap: {
+      current: 20,
+      max: 20,
+    },
+    hp: {
+      current: 100,
+      max: 100,
+    },
+    damage: 10,
+    bonus: {
+      [GameObject.treasure.type]: 40,
+    },
+  },
+};
+
+
 export default {
+  BEAVER_TYPES,
   Combat,
   Command,
   Direction,
   EVENTS_NAME,
   Errors,
-  Tile,
   GameObject,
+  Map,
   Scores,
+  Tile,
 };

@@ -150,7 +150,7 @@ export default class StatsScene extends Phaser.Scene {
   initListeners() {
     this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
       document.getElementById('stats-scene-hp').innerText = stats?.hp?.current;
-      document.getElementById('stats-scene-coins').innerText = stats?.coins;
+      document.getElementById('stats-scene-coins').innerText = stats?.coins.available + stats?.coins.transferred;
       this.subtitle.setText(`AP: ${stats?.ap?.current}`);
       if (stats?.ap?.current == 0) {
         this.subtitle.setColor(colors.red);
@@ -177,7 +177,7 @@ export default class StatsScene extends Phaser.Scene {
 
     this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => {
       document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
-      document.getElementById(`stats-scene-coins-${player.walletAddress}`).innerText = player.coins;
+      document.getElementById(`stats-scene-coins-${player.walletAddress}`).innerText = (player.coins.available + player.coins.transferred);
     });
 
     this.game.events.on(EVENTS_NAME.nextMessage, (interaction) => {
@@ -232,7 +232,7 @@ height=72/>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-right: 10px;"><div>COINS</div>
     <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-coins">${this.stats?.coins}</div>
+    <div id="stats-scene-coins">${this.stats?.coins.available + this.stats?.coins.transferred}</div>
     </div>
     </div>
     <div id="stats-scene-other-beavers">
@@ -297,7 +297,7 @@ height=72/>
   </div>
   <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>COINS</div>
   <div style="display: flex; justify-content: space-between;">
-  <div id="stats-scene-coins-${player.walletAddress}">${player.stats.coins}</div>
+  <div id="stats-scene-coins-${player.walletAddress}">${this.stats?.coins.available + this.stats?.coins.transferred}</div>
   </div>
   </div>
   </div>
