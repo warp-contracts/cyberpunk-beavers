@@ -16,6 +16,7 @@ const Command = {
   dig: 'dig',
   digged: 'digged',
   token: 'token',
+  leave: 'leave'
 };
 
 const Direction = {
@@ -103,6 +104,7 @@ const BEAVER_TYPES = {
   },
 };
 
+const MIN_ROUNDS_AFTER_ATTACK_TO_LEAVE = 6;
 
 export default {
   BEAVER_TYPES,
@@ -115,4 +117,5 @@ export default {
   Map,
   Scores,
   Tile,
+  MIN_ROUNDS_AFTER_ATTACK_TO_LEAVE
 };
