@@ -39,10 +39,10 @@ function finishHim(player, opponent) {
   opponent.stats.hp.current -= player.stats.damage;
   player.stats.ap.current -= 1;
   if (opponent.stats.hp.current <= 0) {
-    const loot = opponent.stats.coins.loot();
+    const loot = opponent.loot();
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
     opponent.stats.hp.current = opponent.stats.hp.max;
-    const tokenTransfer = player.stats.coins.add(loot);
+    const tokenTransfer = player.addCoins(loot);
     return {
       loot, tokenTransfer
     };
