@@ -1,5 +1,5 @@
 import Const from '../../common/const.mjs';
-import { step, scoreToDisplay } from '../../common/tools.mjs';
+import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 
 export function attack(state, action) {
   const player = state.players[action.walletAddress];
@@ -39,10 +39,10 @@ function finishHim(player, opponent) {
   opponent.stats.hp.current -= player.stats.damage;
   player.stats.ap.current -= 1;
   if (opponent.stats.hp.current <= 0) {
-    const loot = opponent.loot();
+    const loot = lootPlayer(opponent);
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
     opponent.stats.hp.current = opponent.stats.hp.max;
-    const tokenTransfer = player.addCoins(loot);
+    const tokenTransfer = addCoins(player, loot);
     return {
       loot, tokenTransfer
     };
@@ -50,5 +50,11 @@ function finishHim(player, opponent) {
   return {
     loot: 0, tokenTransfer: 0
   };
+}
+
+function lootPlayer(player) {
+  const amount = Math.min(player.stats.coins.available, Const.Combat.DefaultLoot);
+  player.stats.coins.available -= amount;
+  return amount;
 }
 

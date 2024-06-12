@@ -1,14 +1,13 @@
 import Const from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
-import { scoreToDisplay } from '../common/tools.mjs';
+import { addCoins, scoreToDisplay } from '../common/tools.mjs';
 const { BEAVER_TYPES, GameObject, Scores, Map } = Const;
 
 // ------- Token Contract Config
 const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
 const TOKEN_CONTRACT_METHOD = 'Transfer';
 const TOKEN_ACTIONS = ['Credit-Notice', 'Debit-Notice', 'Transfer-Error'];
-const TOKEN_GAME_LOCKED_AMOUNT = 100;
 
 function sendToken(recipient, qty) {
   ao.send({
@@ -318,7 +317,7 @@ function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}.`);
     player.stats.hp.current += value;
-    const tokenTransfer = player.addCoins(value);
+    const tokenTransfer = addCoins(player, value);
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = GameObject.none.tile;
     return {
       player,
@@ -333,7 +332,7 @@ function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += value;
-    const tokenTransfer = player.addCoins(value);
+    const tokenTransfer = addCoins(player, value);
     state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = GameObject.none.tile;
     return {
       player,
@@ -365,7 +364,7 @@ function pick(state, action) {
 
       state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] = GameObject.hole.tile;
       const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
-      const tokenTransfer = player.addCoins(valueWithBonus);
+      const tokenTransfer = addCoins(player, valueWithBonus);
       return {
         player,
         picked: { type },
@@ -409,19 +408,6 @@ function registerPlayer(state, action) {
     },
     pos: calculatePlayerRandomPos(state),
   };
-  newPlayer.addCoins = function(amount) {
-    newPlayer.stats.coins.available += amount;
-    if (newPlayer.stats.coins.available > TOKEN_GAME_LOCKED_AMOUNT) {
-      const toBeTransferred = newPlayer.stats.coins.available - TOKEN_GAME_LOCKED_AMOUNT;
-      newPlayer.stats.coins.available = TOKEN_GAME_LOCKED_AMOUNT;
-      return toBeTransferred;
-    }
-  }
-  newPlayer.loot = function(amount) {
-    amount = Math.min(newPlayer.stats.coins.available, Const.Combat.DefaultLoot);
-    newPlayer.stats.coins.available -= amount;
-    return amount;
-  }
   state.players[newPlayer.walletAddress] = newPlayer;
   return newPlayer;
 }
