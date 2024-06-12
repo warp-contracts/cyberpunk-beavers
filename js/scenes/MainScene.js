@@ -1,10 +1,10 @@
-import Player from './Player.js';
-import Const from './common/const.mjs';
-import MainPlayer from './MainPlayer.js';
+import Player from '../Player.js';
+import Const from '../common/const.mjs';
+import MainPlayer from '../MainPlayer.js';
 import { initPubSub } from 'warp-contracts-pubsub';
-import { Text } from './Text.js';
-import { EVENTS_NAME } from './utils/events.js';
-import runNpc from '../npc-dev.js';
+import { Text } from '../objects/Text.js';
+import { EVENTS_NAME } from '../utils/events.js';
+import runNpc from '../../npc-dev.js';
 
 export default class MainScene extends Phaser.Scene {
   round;

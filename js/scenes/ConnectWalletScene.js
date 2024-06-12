@@ -1,6 +1,6 @@
-import { TextButton } from './TextButton.js';
-import { Text } from './Text.js';
-import { colors } from './utils/style.js';
+import { TextButton } from '../objects/TextButton.js';
+import { Text } from '../objects/Text.js';
+import { colors } from '../utils/style.js';
 import {ArweaveSigner} from "warp-arbundles";
 import {WarpFactory} from "warp-contracts";
 

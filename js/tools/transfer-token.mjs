@@ -1,13 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
-import ids from './js/warp-ao-ids.js';
+import ids from '../config/warp-ao-ids.js';
 
 const envIdx = process.argv.indexOf('--env');
 if (envIdx < 0) {
     throw new Error("Specify 'env' flash with either 'local' or 'prod' value");
 }
 const env = process.argv[envIdx + 1];
-const wallet = JSON.parse(readFileSync('.secrets/wallet.json').toString());
+const wallet = JSON.parse(readFileSync('./.secrets/wallet.json').toString());
 
 await message({
   /*

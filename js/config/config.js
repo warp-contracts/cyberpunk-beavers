@@ -1,10 +1,9 @@
-import MainScene from './MainScene.js';
-import LoadingScene from './LoadingScene.js';
-import CharacterPickScene from './CharacterPickScene.js';
-import ConnectWalletScene from './ConnectWalletScene.js';
-import HintScene from './HintScene.js';
-import StatsScene from './StatsScene.js';
-import MainSceneLoading from './MainSceneLoading.js';
+import MainScene from '../scenes/MainScene.js';
+import LoadingScene from '../scenes/LoadingScene.js';
+import CharacterPickScene from '../scenes/CharacterPickScene.js';
+import ConnectWalletScene from '../scenes/ConnectWalletScene.js';
+import StatsScene from '../scenes/StatsScene.js';
+import MainSceneLoading from '../scenes/MainSceneLoading.js';
 
 const config = {
   title: 'CyberBeavers',

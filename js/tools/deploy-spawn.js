@@ -70,7 +70,7 @@ async function spawn(moduleId) {
 
 function replaceId(prefix, env, newValue) {
   replaceInFiles({
-    files: './js/warp-ao-ids.js',
+    files: './js/config/warp-ao-ids.js',
     from: new RegExp(`(${prefix}_${env}:\\s*')([^']+)(')`),
     to: `$1${newValue}$3`,
   })

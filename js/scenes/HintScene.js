@@ -1,4 +1,4 @@
-import { EVENTS_NAME } from './utils/events.js';
+import { EVENTS_NAME } from '../utils/events.js';
 
 export default class HintScene extends Phaser.Scene {
   constructor() {

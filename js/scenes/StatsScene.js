@@ -1,7 +1,7 @@
-import { EVENTS_NAME } from './utils/events.js';
-import { Text } from './Text.js';
-import Const from './common/const.mjs';
-import { colors } from './utils/style.js';
+import { EVENTS_NAME } from '../utils/events.js';
+import { Text } from '../objects/Text.js';
+import Const from '../common/const.mjs';
+import { colors } from '../utils/style.js';
 
 export default class StatsScene extends Phaser.Scene {
   walletAddress;

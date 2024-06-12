@@ -6,8 +6,8 @@
     "serve:dev": "yarn live-server --port=9000 --open=index.html?env=dev",
     "serve:local": "yarn live-server --port=9001 --open=index.html?env=local",
     "serve:prod": "yarn live-server --port=9001 --open=index.html",
-    "deploy-contract:local": "yarn build && node js/deploy-spawn.js --env local && node transfer-token.mjs --env local",
-    "deploy-contract:prod": "yarn build && node js/deploy-spawn.js --env prod && node transfer-token.mjs --env prod",
+    "deploy-contract:local": "yarn build && node js/tools/deploy-spawn.js --env local && node js/tools/transfer-token.mjs --env local",
+    "deploy-contract:prod": "yarn build && node js/tools/deploy-spawn.js --env prod && node js/tools/transfer-token.mjs --env prod",
     "test": "node build.js && vitest",
     "build": "node build.js"
   },

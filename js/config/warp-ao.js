@@ -1,5 +1,5 @@
 import { Tag } from 'warp-contracts';
-import { DataItem, createData } from 'warp-arbundles';
+import { createData } from 'warp-arbundles';
 import ids from './warp-ao-ids.js';
 
 const urlParams = new URLSearchParams(window.location.search);

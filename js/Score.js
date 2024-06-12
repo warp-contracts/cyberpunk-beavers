@@ -1,4 +1,4 @@
-import Text from './Text.js'
+import Text from './objects/Text.js'
 
 export default class Score extends Text {
   scoreValue
