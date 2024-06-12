@@ -4,7 +4,7 @@ import MainPlayer from './MainPlayer.js';
 import { initPubSub } from 'warp-contracts-pubsub';
 import { Text } from './Text.js';
 import { EVENTS_NAME } from './utils/events.js';
-import runNpc from './npc.mjs';
+import runNpc from '../npc-dev.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -61,10 +61,10 @@ export default class MainScene extends Phaser.Scene {
     const musicKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     musicKey.on('up', () => {
       if (this.backgroundMusic.isPlaying) {
-        console.log("Music off");
+        console.log('Music off');
         this.backgroundMusic.stop();
       } else {
-        console.log("Music on");
+        console.log('Music on');
         this.backgroundMusic.play();
       }
     });
@@ -194,7 +194,7 @@ export default class MainScene extends Phaser.Scene {
       send: async (message) => {
         const di = mockDataItem(message);
         ws.send(JSON.stringify(di));
-        return {id: di.Id};
+        return { id: di.Id };
       },
     };
   }
@@ -245,12 +245,12 @@ export default class MainScene extends Phaser.Scene {
       // todo: sent unregister message
       sse.close();
     };
-    window.addEventListener("beforeunload", beforeUnloadHandler);
+    window.addEventListener('beforeunload', beforeUnloadHandler);
 
     sse.onerror = (e) => {
       sse.close();
       console.error(e);
-      sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`)
+      sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
     };
     sse.onmessage = (event) => {
       try {
@@ -296,40 +296,41 @@ export default class MainScene extends Phaser.Scene {
       });
     }
 
-    return {send: window.warpAO.send};
+    return { send: window.warpAO.send };
   }
 
   handleMessage(response) {
     const self = this;
     this.game.events.emit(EVENTS_NAME.nextMessage, response);
     switch (response.cmd) {
-      case Const.Command.registered: {
-        console.log('Registered player', response);
-        if (response.error) {
-          console.error('Failed to join the game', response.error);
-          localStorage.removeItem('player');
-          self.scene.start('connect-wallet-scene');
-        } else {
-          localStorage.setItem(
-            'player',
-            JSON.stringify({
-              id: response.player.walletAddress,
-              beaverId: response.player.beaverId,
-            })
-          );
-          self.round = response.state.round;
-          if (response.player.walletAddress === this.walletAddress) {
-            self.initMap(
-              response.state.groundTilemap,
-              response.state.gameObjectsTilemap,
-              response.state.gameTreasuresTilemap
+      case Const.Command.registered:
+        {
+          console.log('Registered player', response);
+          if (response.error) {
+            console.error('Failed to join the game', response.error);
+            localStorage.removeItem('player');
+            self.scene.start('connect-wallet-scene');
+          } else {
+            localStorage.setItem(
+              'player',
+              JSON.stringify({
+                id: response.player.walletAddress,
+                beaverId: response.player.beaverId,
+              })
             );
-            self.createMainPlayer(response.player);
-            self.initCamera();
+            self.round = response.state.round;
+            if (response.player.walletAddress === this.walletAddress) {
+              self.initMap(
+                response.state.groundTilemap,
+                response.state.gameObjectsTilemap,
+                response.state.gameTreasuresTilemap
+              );
+              self.createMainPlayer(response.player);
+              self.initCamera();
+            }
+            this.scene.remove('main-scene-loading');
           }
-          this.scene.remove('main-scene-loading');
         }
-      }
         break;
 
       case Const.Command.attacked:
@@ -501,7 +502,7 @@ export default class MainScene extends Phaser.Scene {
   createScoreTween(target) {
     this.tweens.add({
       targets: target,
-      alpha: {from: 0, to: 1},
+      alpha: { from: 0, to: 1 },
       ease: 'Power2',
       duration: 500,
       repeat: 0,

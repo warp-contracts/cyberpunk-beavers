@@ -1,6 +1,6 @@
-import Const from './common/const.mjs';
+import Const from './js/common/const.mjs';
 import { Tag, WarpFactory } from 'warp-contracts';
-import ids from './warp-ao-ids.js';
+import ids from './js/warp-ao-ids.js';
 
 const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
