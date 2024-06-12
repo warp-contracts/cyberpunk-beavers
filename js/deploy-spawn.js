@@ -1,7 +1,7 @@
-import {Tag, WarpFactory} from "warp-contracts";
-import {ArweaveSigner, DeployPlugin} from "warp-contracts-plugin-deploy";
-import {createData} from "warp-arbundles";
-import {readFileSync} from "fs";
+import { Tag, WarpFactory } from 'warp-contracts';
+import { ArweaveSigner, DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { createData } from 'warp-arbundles';
+import { readFileSync } from 'fs';
 import pkg from 'replace-in-files';
 const replaceInFiles = pkg;
 
@@ -28,9 +28,9 @@ async function deploy() {
     new Tag('Output-Encoding', 'JSON-1'),
     new Tag('Memory-Limit', '500-mb'),
     new Tag('Compute-Limit', '9000000000000'),
-    new Tag('Salt', '' + Date.now())
+    new Tag('Salt', '' + Date.now()),
   ];
-  const srcTx = await warp.createSource({src: module, tags: moduleTags}, signer);
+  const srcTx = await warp.createSource({ src: module, tags: moduleTags }, signer);
   const srcTxId = await warp.saveSource(srcTx);
   console.log('MODULE_ID=', srcTxId);
   replaceId('moduleId', env, srcTxId);
@@ -46,38 +46,38 @@ async function spawn(moduleId) {
     new Tag('Scheduler', 'jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M'),
     new Tag('SDK', 'ao'),
     new Tag('Content-Type', 'text/plain'),
-    new Tag('Name', 'asia')
+    new Tag('Name', 'asia'),
   ];
 
-  const data = JSON.stringify({counter: {}});
-  const processDataItem = createData(data, signer, {tags: processTags});
+  const data = JSON.stringify({ counter: {} });
+  const processDataItem = createData(data, signer, { tags: processTags });
   await processDataItem.sign(signer);
 
-  const muUrl = env === 'local' ? "http://localhost:8080" : "https://mu.warp.cc";
+  const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
 
   const processResponse = await fetch(muUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/octet-stream',
-      Accept: 'application/json'
+      Accept: 'application/json',
     },
-    body: processDataItem.getRaw()
+    body: processDataItem.getRaw(),
   }).then((res) => res.json());
 
   console.log('PROCESS_ID=', processResponse.id);
   replaceId('processId', env, processResponse.id);
-};
+}
 
 function replaceId(prefix, env, newValue) {
   replaceInFiles({
-    files: './js/warp-ao.js',
+    files: './js/warp-ao-ids.js',
     from: new RegExp(`(${prefix}_${env}:\\s*')([^']+)(')`),
-    to: `$1${newValue}$3`
+    to: `$1${newValue}$3`,
   })
-    .then(({changedFiles, countOfMatchesByPaths}) => {
+    .then(({ changedFiles, countOfMatchesByPaths }) => {
       console.log('Count of matches by paths:', countOfMatchesByPaths);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Error occurred:', error);
     });
 }

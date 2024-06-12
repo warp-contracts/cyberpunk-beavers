@@ -21,18 +21,9 @@ export default class StatsScene extends Phaser.Scene {
 
   preload() {
     console.log('Stats Scene - 2. Preload');
-    this.load.image(
-      'hacker_beaver_portrait',
-      'assets/images/hacker_beaver_portrait.png'
-    );
-    this.load.image(
-      'heavy_beaver_portrait',
-      'assets/images/heavy_beaver_portrait.png'
-    );
-    this.load.image(
-      'speedy_beaver_portrait',
-      'assets/images/speedy_beaver_portrait.png'
-    );
+    this.load.image('hacker_beaver_portrait', 'assets/images/hacker_beaver_portrait.png');
+    this.load.image('heavy_beaver_portrait', 'assets/images/heavy_beaver_portrait.png');
+    this.load.image('speedy_beaver_portrait', 'assets/images/speedy_beaver_portrait.png');
     this.load.image('time_bar', 'assets/images/time_bar.png');
     this.load.image('D', 'assets/images/D.png');
     this.load.image('P', 'assets/images/P.png');
@@ -50,52 +41,30 @@ export default class StatsScene extends Phaser.Scene {
     this.processId = window.warpAO.processId();
     if (this.walletAddress) {
       const beaverStatsBoxEl = this.createStatsBox();
-      this.beaverStatsBox = this.add.dom(
-        100,
-        100 + beaverStatsBoxEl.width,
-        beaverStatsBoxEl
-      );
+      this.beaverStatsBox = this.add.dom(100, 100 + beaverStatsBoxEl.width, beaverStatsBoxEl);
       const interactionLogs = this.addInteractionLogs();
-      this.interactionLogsDiv = this.add.dom(
-        100,
-        100 + interactionLogs.width,
-        interactionLogs
-      );
+      this.interactionLogsDiv = this.add.dom(100, 100 + interactionLogs.width, interactionLogs);
     }
     this.initListeners();
     this.addTitle();
     this.addRoundBar();
     this.addSubtitle();
-    this.addPlayersModal(this.allPlayers);
+    // this.addPlayersModal(this.allPlayers);
     this.addLegend();
   }
 
   addLegend() {
     const height = 120;
     const width = 300;
-    const moveKey = this.add
-      .image(this.gameWidth - width, this.gameHeight - 32 - height, 'ARROWLEFT')
-      .setScale(1.5);
+    const moveKey = this.add.image(this.gameWidth - width, this.gameHeight - 32 - height, 'ARROWLEFT').setScale(1.5);
     const moveKey2 = this.add
-      .image(
-        this.gameWidth - width + moveKey.width * 2,
-        this.gameHeight - 32 - height,
-        'ARROWUP'
-      )
+      .image(this.gameWidth - width + moveKey.width * 2, this.gameHeight - 32 - height, 'ARROWUP')
       .setScale(1.5);
     const moveKey3 = this.add
-      .image(
-        this.gameWidth - width + moveKey.width * 4,
-        this.gameHeight - 32 - height,
-        'ARROWDOWN'
-      )
+      .image(this.gameWidth - width + moveKey.width * 4, this.gameHeight - 32 - height, 'ARROWDOWN')
       .setScale(1.5);
     const moveKey4 = this.add
-      .image(
-        this.gameWidth - width + moveKey.width * 6,
-        this.gameHeight - 32 - height,
-        'ARROWRIGHT'
-      )
+      .image(this.gameWidth - width + moveKey.width * 6, this.gameHeight - 32 - height, 'ARROWRIGHT')
       .setScale(1.5);
     const move = new Text(this, 0, 0, 'MOVE', {
       fontFamily: '"Press Start 2P"',
@@ -103,21 +72,11 @@ export default class StatsScene extends Phaser.Scene {
       textTransform: 'uppercase',
       color: 'white',
     });
-    Phaser.Display.Bounds.SetLeft(
-      move,
-      Phaser.Display.Bounds.GetCenterX(moveKey4) + moveKey4.width + 30
-    );
+    Phaser.Display.Bounds.SetLeft(move, Phaser.Display.Bounds.GetCenterX(moveKey4) + moveKey4.width + 30);
 
-    Phaser.Display.Bounds.SetCenterY(
-      move,
-      Phaser.Display.Bounds.GetCenterY(moveKey)
-    );
+    Phaser.Display.Bounds.SetCenterY(move, Phaser.Display.Bounds.GetCenterY(moveKey));
     const digKey = this.add
-      .image(
-        this.gameWidth - width + moveKey.width * 6,
-        this.gameHeight - 32 - height + 40,
-        'D'
-      )
+      .image(this.gameWidth - width + moveKey.width * 6, this.gameHeight - 32 - height + 40, 'D')
       .setScale(1.5);
     const dig = new Text(this, 0, 0, 'DIG', {
       fontFamily: '"Press Start 2P"',
@@ -125,22 +84,12 @@ export default class StatsScene extends Phaser.Scene {
       textTransform: 'uppercase',
       color: 'white',
     });
-    Phaser.Display.Bounds.SetLeft(
-      dig,
-      Phaser.Display.Bounds.GetCenterX(digKey) + digKey.width + 30
-    );
+    Phaser.Display.Bounds.SetLeft(dig, Phaser.Display.Bounds.GetCenterX(digKey) + digKey.width + 30);
 
-    Phaser.Display.Bounds.SetCenterY(
-      dig,
-      Phaser.Display.Bounds.GetCenterY(digKey)
-    );
+    Phaser.Display.Bounds.SetCenterY(dig, Phaser.Display.Bounds.GetCenterY(digKey));
 
     const pickKey = this.add
-      .image(
-        this.gameWidth - width + moveKey.width * 6,
-        this.gameHeight - 32 - height + 80,
-        'P'
-      )
+      .image(this.gameWidth - width + moveKey.width * 6, this.gameHeight - 32 - height + 80, 'P')
       .setScale(1.5);
     const pick = new Text(this, 0, 0, 'PICK', {
       fontFamily: '"Press Start 2P"',
@@ -148,22 +97,12 @@ export default class StatsScene extends Phaser.Scene {
       textTransform: 'uppercase',
       color: 'white',
     });
-    Phaser.Display.Bounds.SetLeft(
-      pick,
-      Phaser.Display.Bounds.GetCenterX(pickKey) + pickKey.width + 30
-    );
+    Phaser.Display.Bounds.SetLeft(pick, Phaser.Display.Bounds.GetCenterX(pickKey) + pickKey.width + 30);
 
-    Phaser.Display.Bounds.SetCenterY(
-      pick,
-      Phaser.Display.Bounds.GetCenterY(pickKey)
-    );
+    Phaser.Display.Bounds.SetCenterY(pick, Phaser.Display.Bounds.GetCenterY(pickKey));
 
     const attackKey = this.add
-      .image(
-        this.gameWidth - width + moveKey.width * 3 - 2,
-        this.gameHeight - 32 - height + 120,
-        'SPACE'
-      )
+      .image(this.gameWidth - width + moveKey.width * 3 - 2, this.gameHeight - 32 - height + 120, 'SPACE')
       .setScale(1.5);
 
     const attack = new Text(this, 0, 0, 'ATTACK', {
@@ -172,15 +111,9 @@ export default class StatsScene extends Phaser.Scene {
       textTransform: 'uppercase',
       color: 'white',
     });
-    Phaser.Display.Bounds.SetLeft(
-      attack,
-      Phaser.Display.Bounds.GetCenterX(attackKey) + attackKey.width / 1.25 + 30
-    );
+    Phaser.Display.Bounds.SetLeft(attack, Phaser.Display.Bounds.GetCenterX(attackKey) + attackKey.width / 1.25 + 30);
 
-    Phaser.Display.Bounds.SetCenterY(
-      attack,
-      Phaser.Display.Bounds.GetCenterY(attackKey)
-    );
+    Phaser.Display.Bounds.SetCenterY(attack, Phaser.Display.Bounds.GetCenterY(attackKey));
   }
 
   addTitle() {
@@ -194,39 +127,24 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   addSubtitle() {
-    this.subtitle = new Text(
-      this,
-      this.gameWidth / 2,
-      this.timeBar.y + this.timeBar.height,
-      'AP: 10',
-      {
-        fontFamily: '"Press Start 2P"',
-        fontSize: '20px',
-        textTransform: 'uppercase',
-        color: colors.white,
-      }
-    ).setDepth(1);
+    this.subtitle = new Text(this, this.gameWidth / 2, this.timeBar.y + this.timeBar.height, 'AP: 10', {
+      fontFamily: '"Press Start 2P"',
+      fontSize: '20px',
+      textTransform: 'uppercase',
+      color: colors.white,
+    }).setDepth(1);
     this.subtitle.x = this.gameWidth / 2 - this.subtitle.width / 2;
   }
 
   addRoundBar() {
     this.timeBar = this.add
-      .image(
-        window.innerWidth / 2,
-        this.title.y + this.title.height + 50,
-        'time_bar'
-      )
+      .image(window.innerWidth / 2, this.title.y + this.title.height + 50, 'time_bar')
       .setDepth(100);
 
-    this.timeMask = this.add
-      .sprite(this.timeBar.x, this.timeBar.y, 'time_bar')
-      .setDepth(100);
+    this.timeMask = this.add.sprite(this.timeBar.x, this.timeBar.y, 'time_bar').setDepth(100);
     this.timeMask.visible = false;
     this.initialtimeMaskPosition = this.timeMask.x;
-    this.timeBar.mask = new Phaser.Display.Masks.BitmapMask(
-      this,
-      this.timeMask
-    );
+    this.timeBar.mask = new Phaser.Display.Masks.BitmapMask(this, this.timeMask);
     this.stepWidth = this.timeMask.displayWidth / 10;
   }
 
@@ -243,24 +161,24 @@ export default class StatsScene extends Phaser.Scene {
     });
 
     this.game.events.on(EVENTS_NAME.updateRoundInfo, (roundInfo) => {
-      this.timeMask.x =
-        this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
+      this.timeMask.x = this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
       this.title.setText(`ROUND ${roundInfo.currentRound}`);
     });
 
-    this.game.events.on(EVENTS_NAME.updatePlayers, (players) => {
-      this.allPlayers = players;
-      document.getElementById('stats-scene-other-beavers').innerHTML =
-        this.addPlayersModal();
+    this.game.events.on(EVENTS_NAME.updatePlayers, (player) => {
+      this.allPlayers[player.walletAddress] = player;
+      if (Object.keys(this.allPlayers).length == 2) {
+        document.getElementById('stats-scene-other-beavers').innerHTML = this.addPlayersModal();
+      } else if (Object.keys(this.allPlayers).length > 2) {
+        const playerBoxes = document.querySelectorAll('[id="player-box"]');
+        const lastPlayerBox = playerBoxes[playerBoxes.length - 1];
+        lastPlayerBox.insertAdjacentHTML('afterend', this.addOtherPlayerBox(player));
+      }
     });
 
     this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => {
-      document.getElementById(
-        `stats-scene-hp-${player.walletAddress}`
-      ).innerText = player.hp.current;
-      document.getElementById(
-        `stats-scene-coins-${player.walletAddress}`
-      ).innerText = player.coins;
+      document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
+      document.getElementById(`stats-scene-coins-${player.walletAddress}`).innerText = player.coins;
     });
 
     this.game.events.on(EVENTS_NAME.nextMessage, (interaction) => {
@@ -269,8 +187,7 @@ export default class StatsScene extends Phaser.Scene {
         if (newLen > 4) {
           this.interactionsQueue.shift();
         }
-        document.getElementById('stats-scene-interaction-logs').innerHTML =
-          this.interactionsFormatted();
+        document.getElementById('stats-scene-interaction-logs').innerHTML = this.interactionsFormatted();
       }
     });
   }
@@ -356,8 +273,14 @@ height=72/>
     playersAddresses = playersAddresses.filter((p) => p !== this.walletAddress);
     for (let i = 0; i < playersAddresses.length; i++) {
       const player = this.allPlayers[playersAddresses[i]];
-      playersBox += `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+      playersBox += this.addOtherPlayerBox(player);
+    }
+    return playersBox;
+  }
+
+  addOtherPlayerBox(player) {
+    return `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;" id="player-box">
       <img
   src="assets/images/${player.beaverChoice}_portrait.png"
   width=48
@@ -366,7 +289,7 @@ height=72/>
   <div style="display: flex;
   flex-grow: 1;
   flex-direction: column;">
-  <div style="align-self: flex-end;" id="stats-scene-wallet-address">${playersAddresses[i] && playersAddresses[i].substr(0, 3) + '...' + playersAddresses[i].substr(playersAddresses[i].length - 3)}</div>
+  <div style="align-self: flex-end;" id="stats-scene-wallet-address">${player.walletAddress && player.walletAddress.substr(0, 3) + '...' + player.walletAddress.substr(player.walletAddress.length - 3)}</div>
   <div style="display: flex; justify-content: space-between; flex-direction: column;">
   <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>HP</div>
   <div style="display: flex; justify-content: space-between;">
@@ -382,8 +305,6 @@ height=72/>
   </div>
   </div>
       `;
-    }
-    return playersBox;
   }
 
   addInteractionLogs() {

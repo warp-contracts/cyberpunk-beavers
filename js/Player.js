@@ -2,8 +2,7 @@ import Const from './common/const.mjs';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { walletAddress, stats, scene, x, y, texture, animated, beaverChoice } =
-      data;
+    let { walletAddress, stats, scene, x, y, texture, animated, beaverChoice } = data;
     super(scene, x, y, texture);
     this.walletAddress = walletAddress;
     this.beaverChoice = beaverChoice;
