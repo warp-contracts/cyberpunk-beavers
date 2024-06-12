@@ -1,5 +1,5 @@
-import Const from './common/const.mjs';
-import { scoreToDisplay, step } from './common/tools.mjs';
+import Const from '../../common/const.mjs';
+import { scoreToDisplay, step } from '../../common/tools.mjs';
 const { GameObject, Map } = Const;
 
 export function movePlayer(state, action) {

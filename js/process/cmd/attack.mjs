@@ -1,5 +1,5 @@
-import Const from './common/const.mjs';
-import { step, scoreToDisplay } from './common/tools.mjs';
+import Const from '../../common/const.mjs';
+import { step, scoreToDisplay } from '../../common/tools.mjs';
 
 export function attack(state, action) {
   const player = state.players[action.walletAddress];

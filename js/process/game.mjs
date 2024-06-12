@@ -1,7 +1,7 @@
-import Const from './common/const.mjs';
-import { attack } from './ao-game-contract-attack.mjs';
-import { movePlayer } from './ao-game-contract-move.mjs';
-import { scoreToDisplay } from './common/tools.mjs';
+import Const from '../common/const.mjs';
+import { attack } from './cmd/attack.mjs';
+import { movePlayer } from './cmd/move.mjs';
+import { scoreToDisplay } from '../common/tools.mjs';
 const { BEAVER_TYPES, GameObject, Scores, Map } = Const;
 
 // ------- Token Contract Config

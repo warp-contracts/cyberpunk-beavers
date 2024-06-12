@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import { handle } from '../ao-game-contract.mjs';
+import { handle } from '../process/game.mjs';
 
 const WS_PORT = 8080;
 

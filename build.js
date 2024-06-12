@@ -3,7 +3,7 @@ import {writeFileSync} from "fs";
 
 
 esbuild.build({
-  entryPoints: ['js/ao-game-contract.mjs'], // Path to your entry file
+  entryPoints: ['js/process/game.mjs'], // Path to your entry file
   bundle: true,                  // Bundle all dependencies into one file
   outfile: 'dist/output.js',     // Path to the output file
   format: 'iife',                 // Output format
