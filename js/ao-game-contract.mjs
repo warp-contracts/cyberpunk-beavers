@@ -186,9 +186,7 @@ export function handle(state, message) {
 const SIZE = 30;
 let i = -1;
 let j = 0;
-const groundTiles = [
-  2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 3,
-];
+const groundTiles = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 3];
 
 function initState(message, state) {
   const result = {
@@ -231,11 +229,7 @@ function initState(message, state) {
               return 1;
             }
             state.randomCounter++;
-            const randomValue = getRandomNumber(
-              0,
-              groundTiles.length - 1,
-              state.randomCounter
-            );
+            const randomValue = getRandomNumber(0, groundTiles.length - 1, state.randomCounter);
             return groundTiles[randomValue];
           });
       }),
@@ -245,17 +239,11 @@ function initState(message, state) {
 }
 
 function setVisibleGameObjects(state) {
-  state.gameObjectsTilemap = setGameObjectsTilesOnMap(
-    state,
-    state.gameObjectsTiles,
-    state.gameObjectsRarity
-  );
+  state.gameObjectsTilemap = setGameObjectsTilesOnMap(state, state.gameObjectsTiles, state.gameObjectsRarity);
 }
 
 function setInvisibleGameObjects(state) {
-  const gameTreasuresTilesToPropagate = state.gameTreasuresTiles.filter(
-    (t) => t != GameObject.hole
-  );
+  const gameTreasuresTilesToPropagate = state.gameTreasuresTiles.filter((t) => t != GameObject.hole);
   state.gameTreasuresTilemap = setGameObjectsTilesOnMap(
     state,
     gameTreasuresTilesToPropagate,
@@ -272,11 +260,7 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
     return a.map((b) => {
       if (b == 2) {
         state.randomCounter++;
-        const randomValue = getRandomNumber(
-          0,
-          tilesToPropagate.length - 1,
-          state.randomCounter
-        );
+        const randomValue = getRandomNumber(0, tilesToPropagate.length - 1, state.randomCounter);
         return tilesToPropagate[randomValue].tile;
       } else {
         return 2;
@@ -296,9 +280,7 @@ function gameRoundTick(state, message) {
   const round = ~~(tsChange / state.round.interval);
   console.log('Last round ', state.round);
   state.round.current = round;
-  console.log(
-    `new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`
-  );
+  console.log(`new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`);
 }
 
 function gamePlayerTick(state, action) {
@@ -314,9 +296,7 @@ function dig(state, action) {
   const walletAddress = action.walletAddress;
   const player = state.players[walletAddress];
   if (player.stats.ap.current < 2) {
-    console.log(
-      `Cannot perform dig ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`
-    );
+    console.log(`Cannot perform dig ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
     return { player, digged: false };
   }
 
@@ -324,10 +304,9 @@ function dig(state, action) {
     (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
   );
   let { type: objectTile } = gameObjectTile;
-  if (objectTile != GameObject.none) {
-    console.log(
-      `Cannot perform dig ${player.walletAddress}. Player stands on a game object.`
-    );
+  console.log(objectTile);
+  if (objectTile != GameObject.none.type) {
+    console.log(`Cannot perform dig ${player.walletAddress}. Player stands on a game object.`);
     return { player, digged: false };
   }
 
@@ -337,9 +316,7 @@ function dig(state, action) {
   const { type } = tile;
 
   if (type === GameObject.hole.type) {
-    console.log(
-      `Player ${player.walletAddress} tried to dig already existing hole.`
-    );
+    console.log(`Player ${player.walletAddress} tried to dig already existing hole.`);
     return { player, digged: false };
   }
 
@@ -347,8 +324,7 @@ function dig(state, action) {
 
   if (type === GameObject.none.type) {
     console.log(`Player ${player.walletAddress} digged nothing.`);
-    state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] =
-      GameObject.hole.tile;
+    state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] = GameObject.hole.tile;
     return {
       player,
       digged: { type },
@@ -377,9 +353,7 @@ function pick(state, action) {
   const player = state.players[walletAddress];
 
   if (player.stats.ap.current < 1) {
-    console.log(
-      `Cannot perform pick ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`
-    );
+    console.log(`Cannot perform pick ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
     return { player, picked: false };
   }
 
@@ -392,8 +366,7 @@ function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}.`);
     player.stats.hp.current += value;
-    state.gameObjectsTilemap[player.pos[1]][player.pos[0]] =
-      GameObject.none.tile;
+    state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = GameObject.none.tile;
     return {
       player,
       picked: { type, token: value },
@@ -406,8 +379,7 @@ function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += value;
-    state.gameObjectsTilemap[player.pos[1]][player.pos[0]] =
-      GameObject.none.tile;
+    state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = GameObject.none.tile;
     return {
       player,
       picked: { type, token: value },
@@ -422,30 +394,21 @@ function pick(state, action) {
     );
     const { type, value } = gameTreasureTile;
     if (type === GameObject.none.type) {
-      console.log(
-        `Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`
-      );
+      console.log(`Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`);
       return { player, picked: false };
     } else if (type === GameObject.treasure.type) {
       player.stats.ap.current -= 1;
       const diggedTreasure = state.digged.find(
-        (d) =>
-          d.player == walletAddress &&
-          d.pos.x == player.pos[1] &&
-          d.pos.y == player.pos[0]
+        (d) => d.player == walletAddress && d.pos.x == player.pos[1] && d.pos.y == player.pos[0]
       );
       if (!diggedTreasure) {
-        console.log(
-          `Player ${walletAddress} does not stand on the treasure digged by them.`
-        );
+        console.log(`Player ${walletAddress} does not stand on the treasure digged by them.`);
         return { player, picked: false };
       }
       state.digged.splice(state.digged.indexOf(diggedTreasure), 1);
 
-      state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] =
-        GameObject.hole.tile;
-      const valueWithBonus =
-        value + player.stats.bonus[GameObject.treasure.type];
+      state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] = GameObject.hole.tile;
+      const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
       return {
         player,
         picked: { type, token: valueWithBonus },
@@ -460,7 +423,6 @@ function pick(state, action) {
   return { player, picked: false };
 }
 
-
 function movePlayer(state, action) {
   const walletAddress = action.walletAddress;
   const dir = action.dir;
@@ -472,32 +434,19 @@ function movePlayer(state, action) {
 
   const newPos = step(player.pos, dir);
 
-  if (
-    newPos[0] < 0 ||
-    newPos[0] >= SIZE ||
-    newPos[1] < 0 ||
-    newPos[1] >= SIZE
-  ) {
-    console.log(
-      `Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`
-    );
+  if (newPos[0] < 0 || newPos[0] >= SIZE || newPos[1] < 0 || newPos[1] >= SIZE) {
+    console.log(`Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`);
     return { player, moved: false };
   } else if (state.playersOnTiles[newPos[1]][newPos[0]]) {
     console.log(
-      `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${
-        state.playersOnTiles[newPos[1]][newPos[0]]
-      }`
+      `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${state.playersOnTiles[newPos[1]][newPos[0]]}`
     );
     return { player, moved: false };
   } else if ([1, 3].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
-    console.log(
-      `Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`
-    );
+    console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
     return { player, moved: false };
   } else {
-    player.onGameObject = state.gameObjectsTiles.find(
-      (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]
-    );
+    player.onGameObject = state.gameObjectsTiles.find((t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]);
 
     player.onGameTreasure = state.gameTreasuresTiles.find(
       (t) => t.tile === state.gameTreasuresTilemap[newPos[1]][newPos[0]]
@@ -564,5 +513,3 @@ function calculatePlayerRandomPos(state) {
 
   return pos;
 }
-
-

@@ -1,6 +1,6 @@
 export default {
-  processId_prod: 'lgyduEJOkWwXfqShAMyssFfJsZuCzqeN97eCJgX1210',
-  moduleId_prod: 'k5dZkiqQGkRKU-7uxE-OhfHdSio8qEuFXe2cS2C325M',
+  $17xPlIRro17U4ccXN9uWT8oFbLaEJfij3AQa12koWAvY',
+  moduleId_prod: 'AAmM9M_yr0Ik0VYTFB37wWNuxPBnusw2ngdJ723FpIk',
   processId_local: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
   moduleId_local: 'ZGU4Q6U_XBOVRxkTz7cxYKC7-iWdYg7TVHWihel7z9I',
   processId_dev: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
