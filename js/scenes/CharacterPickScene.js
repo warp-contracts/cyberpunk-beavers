@@ -14,7 +14,7 @@ export default class CharacterPickScene extends Phaser.Scene {
     this.initData = data;
     const player = JSON.parse(localStorage.getItem('player'));
     if (player?.beaverId) {
-      this.scene.start('MainScene', {
+      this.scene.start('main-scene', {
         ...this.initData,
         beaverChoice: player.beaverId,
       });
@@ -23,10 +23,7 @@ export default class CharacterPickScene extends Phaser.Scene {
 
   preload() {
     console.log('Player Pick Scene - 2. Preload');
-    this.load.image(
-      'post_apocalyptic_background',
-      'assets/images/background_post_apocalyptic.png'
-    );
+    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.png');
     this.load.image('hacker_beaver', 'assets/images/hacker_beaver_200px.png');
     this.load.image('heavy_beaver', 'assets/images/heavy_beaver_200px.png');
     this.load.image('speedy_beaver', 'assets/images/speedy_beaver_200px.png');
@@ -83,14 +80,8 @@ export default class CharacterPickScene extends Phaser.Scene {
     );
     const beaverStatsBox = this.add.dom(0, 0, beaverStatsBoxEl);
 
-    Phaser.Display.Bounds.SetTop(
-      beaverStatsBox,
-      beaverSprite.y + 1.3 * beaverSprite.height
-    );
-    Phaser.Display.Bounds.SetCenterX(
-      beaverStatsBox,
-      beaverSprite.x + (1.3 * beaverSprite.width) / 2
-    );
+    Phaser.Display.Bounds.SetTop(beaverStatsBox, beaverSprite.y + 1.3 * beaverSprite.height);
+    Phaser.Display.Bounds.SetCenterX(beaverStatsBox, beaverSprite.x + (1.3 * beaverSprite.width) / 2);
 
     return beaverSprite
       .setInteractive({ useHandCursor: true })
@@ -118,7 +109,7 @@ export default class CharacterPickScene extends Phaser.Scene {
       })
       .on('pointerdown', () => {
         console.log(option);
-        this.scene.start('MainScene', {
+        this.scene.start('main-scene', {
           ...this.initData,
           beaverChoice: option.imgName,
         });
@@ -126,27 +117,17 @@ export default class CharacterPickScene extends Phaser.Scene {
   }
 
   addBackground() {
-    this.background = this.add.image(
-      this.gameWidth / 2,
-      this.gameHeight / 2,
-      'post_apocalyptic_background'
-    );
+    this.background = this.add.image(this.gameWidth / 2, this.gameHeight / 2, 'post_apocalyptic_background');
     this.background.setDisplaySize(this.gameWidth, this.gameHeight);
   }
 
   addAndPositionTitle() {
-    this.title = new Text(
-      this,
-      this.gameWidth / 2,
-      100,
-      'PICK YOUR CHARACTER',
-      {
-        fontFamily: '"Press Start 2P"',
-        fontSize: '50px',
-        textTransform: 'uppercase',
-        color: '#fcee09',
-      }
-    ).setDepth(1);
+    this.title = new Text(this, this.gameWidth / 2, 100, 'PICK YOUR CHARACTER', {
+      fontFamily: '"Press Start 2P"',
+      fontSize: '50px',
+      textTransform: 'uppercase',
+      color: '#fcee09',
+    }).setDepth(1);
     this.title.x = this.gameWidth / 2 - this.title.width / 2;
     this.title.blinkText();
   }

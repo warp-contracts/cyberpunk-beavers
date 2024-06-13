@@ -1,8 +1,8 @@
 import { TextButton } from '../objects/TextButton.js';
 import { Text } from '../objects/Text.js';
 import { colors } from '../utils/style.js';
-import {ArweaveSigner} from "warp-arbundles";
-import {WarpFactory} from "warp-contracts";
+import { ArweaveSigner } from 'warp-arbundles';
+import { WarpFactory } from 'warp-contracts';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {
@@ -40,7 +40,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
         fill: colors.yellow,
         font: '20px',
       },
-      async () =>  {
+      async () => {
         setTimeout(async () => {
           await self.connectWallet();
         });
@@ -66,13 +66,12 @@ export default class ConnectWalletScene extends Phaser.Scene {
     const warpInst = WarpFactory.forMainnet();
     const { jwk, address } = await warpInst.generateWallet();
     window.warpAO.generatedSigner = new ArweaveSigner(jwk);
-    console.log("Generated wallet address", address);
+    console.log('Generated wallet address', address);
     localStorage.setItem('wallet_address', address);
     localStorage.removeItem('player');
     this.scene.start('player-pick-scene', {
       walletAddress: address,
     });
-
   }
 
   async connectWallet() {
@@ -93,13 +92,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
         walletAddress,
       });
     } else {
-      new Text(
-        this,
-        100,
-        300,
-        'No wallet detected. Please install ArConnect.',
-        { fill: '#FF0000' }
-      );
+      new Text(this, 100, 300, 'No wallet detected. Please install ArConnect.', { fill: '#FF0000' });
     }
   }
 }

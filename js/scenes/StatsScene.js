@@ -1,5 +1,6 @@
 import { EVENTS_NAME } from '../utils/events.js';
 import { Text } from '../objects/Text.js';
+import { TextButton } from '../objects/TextButton.js';
 import Const from '../common/const.mjs';
 import { colors } from '../utils/style.js';
 
@@ -17,6 +18,7 @@ export default class StatsScene extends Phaser.Scene {
 
   init() {
     console.log('Stats Scene - 1. Init');
+    this.mainScene = this.scene.get('main-scene');
   }
 
   preload() {
@@ -50,6 +52,23 @@ export default class StatsScene extends Phaser.Scene {
     this.addRoundBar();
     this.addSubtitle();
     this.addLegend();
+    this.leaderboardButton = new TextButton(
+      this,
+      this.gameWidth - 200,
+      50,
+      'Leaderboard',
+      {
+        fill: colors.white,
+        font: '20px',
+      },
+      () => {
+        document.getElementById('stats-box').style.display = 'none';
+        document.getElementById('incoming-messages-box').style.display = 'none';
+        this.scene.setVisible(false);
+        this.mainScene.scene.pause();
+        this.scene.launch('leaderboard-scene', { players: this.allPlayers });
+      }
+    );
   }
 
   addLegend() {
@@ -171,7 +190,7 @@ export default class StatsScene extends Phaser.Scene {
         document.getElementById('stats-scene-other-beavers').innerHTML = this.addPlayersModal();
       } else if (totalPlayers > 2) {
         const totalPlayersSpan = document.getElementsByClassName('total-players')[0];
-        totalPlayersSpan.textContent = "" + (totalPlayers - 1);
+        totalPlayersSpan.textContent = '' + (totalPlayers - 1);
         const playerBoxes = document.querySelectorAll('[id="player-box"]');
         const lastPlayerBox = playerBoxes[playerBoxes.length - 1];
         lastPlayerBox.insertAdjacentHTML('afterend', this.addOtherPlayerBox(player));
@@ -180,7 +199,8 @@ export default class StatsScene extends Phaser.Scene {
 
     this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => {
       document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
-      document.getElementById(`stats-scene-coins-${player.walletAddress}`).innerText = (player.coins.available + player.coins.transferred);
+      document.getElementById(`stats-scene-coins-${player.walletAddress}`).innerText =
+        player.coins.available + player.coins.transferred;
     });
 
     this.game.events.on(EVENTS_NAME.nextMessage, (interaction) => {
@@ -196,6 +216,7 @@ export default class StatsScene extends Phaser.Scene {
 
   createStatsBox() {
     const beaverStatsBoxEl = document.createElement('div');
+    beaverStatsBoxEl.id = 'stats-box';
 
     beaverStatsBoxEl.style = `  width: 350px;
       border: 0;
@@ -312,6 +333,7 @@ height=72/>
 
   addInteractionLogs() {
     const resultDiv = document.createElement('div');
+    resultDiv.id = 'incoming-messages-box';
     resultDiv.style = ` width: 400px; height: 150px;
       border: 0; outline: none;
       background-color: #fcee09;

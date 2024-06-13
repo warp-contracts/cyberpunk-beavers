@@ -5,6 +5,7 @@ import { initPubSub } from 'warp-contracts-pubsub';
 import { Text } from '../objects/Text.js';
 import { TextButton } from '../objects/TextButton.js';
 import { EVENTS_NAME } from '../utils/events.js';
+import { colors } from '../utils/style.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -14,7 +15,7 @@ export default class MainScene extends Phaser.Scene {
   gameTreasuresLayer;
 
   constructor() {
-    super('MainScene');
+    super('main-scene');
   }
 
   init(data) {
