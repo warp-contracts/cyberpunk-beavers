@@ -84,8 +84,8 @@ export default class MainScene extends Phaser.Scene {
       walletAddress: playerInfo.walletAddress,
       stats: playerInfo.stats,
       scene: this,
-      x: 26 + playerInfo.pos[0] * Const.Tile.size,
-      y: 26 + playerInfo.pos[1] * Const.Tile.size,
+      x: 26 + playerInfo.pos.x * Const.Tile.size,
+      y: 26 + playerInfo.pos.y * Const.Tile.size,
       texture: `${playerInfo.beaverId}_48`,
       animated: true,
       beaverChoice: playerInfo.beaverId,
@@ -109,8 +109,8 @@ export default class MainScene extends Phaser.Scene {
       walletAddress: playerInfo.walletAddress,
       scene: this,
       stats: playerInfo.stats,
-      x: 26 + playerInfo.pos[0] * Const.Tile.size,
-      y: 26 + playerInfo.pos[1] * Const.Tile.size,
+      x: 26 + playerInfo.pos.x * Const.Tile.size,
+      y: 26 + playerInfo.pos.y * Const.Tile.size,
       texture: `${playerInfo.beaverId}_48`,
       animated: true,
       beaverChoice: playerInfo.beaverId,
@@ -368,9 +368,9 @@ export default class MainScene extends Phaser.Scene {
         {
           if (response.picked) {
             console.log(`Player picked a game object.`);
-            this.gameObjectsLayer.removeTileAt(response.player.pos[0], response.player.pos[1]);
+            this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
             if (response.player.onGameTreasure.type == 'treasure') {
-              this.gameTreasuresLayer.putTileAt(1, response.player.pos[0], response.player.pos[1]);
+              this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
             }
           }
           this.updateStats(response.player, response.stats);
@@ -384,16 +384,16 @@ export default class MainScene extends Phaser.Scene {
         }
         if (response.digged?.type == Const.GameObject.treasure.type) {
           console.log(`Player digged a game treasure.`);
-          this.gameTreasuresLayer.getTileAt(response.player.pos[0], response.player.pos[1]).setVisible(true);
+          this.gameTreasuresLayer.getTileAt(response.player.pos.x, response.player.pos.y).setVisible(true);
 
           if (response.player?.walletAddress === self.mainPlayer.walletAddress) {
           }
         } else {
-          const gameObjectTile = this.gameObjectsLayer.getTileAt(response.player.pos[0], response.player.pos[1])?.index;
+          const gameObjectTile = this.gameObjectsLayer.getTileAt(response.player.pos.x, response.player.pos.y)?.index;
           if (gameObjectTile == 2 || gameObjectTile == null) {
-            this.gameTreasuresLayer.putTileAt(1, response.player.pos[0], response.player.pos[1]);
+            this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
           }
-          this.gameTreasuresLayer.getTileAt(response.player.pos[0], response.player.pos[1]).setVisible(true);
+          this.gameTreasuresLayer.getTileAt(response.player.pos.x, response.player.pos.y).setVisible(true);
         }
         this.updateStats(response.player, response.stats);
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);

@@ -34,8 +34,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       },
     };
 
-    const moveHorizontal = 26 + response.pos[0] * Const.Tile.size - this.x;
-    const moveVertical = 26 + response.pos[1] * Const.Tile.size - this.y;
+    const moveHorizontal = 26 + response.pos.x * Const.Tile.size - this.x;
+    const moveVertical = 26 + response.pos.y * Const.Tile.size - this.y;
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
     this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}` });

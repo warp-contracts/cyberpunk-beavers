@@ -14,30 +14,30 @@ export function movePlayer(state, action) {
   const newPos = step(player.pos, dir);
 
   if (
-    newPos[0] < 0 ||
-    newPos[0] >= Map.size ||
-    newPos[1] < 0 ||
-    newPos[1] >= Map.size
+    newPos.x < 0 ||
+    newPos.x >= Map.size ||
+    newPos.y < 0 ||
+    newPos.y >= Map.size
   ) {
     console.log(`Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`);
     return { player };
-  } else if (state.playersOnTiles[newPos[1]][newPos[0]]) {
-    console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${state.playersOnTiles[newPos[1]][newPos[0]]}`);
+  } else if (state.playersOnTiles[newPos.y][newPos.x]) {
+    console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${state.playersOnTiles[newPos.y][newPos.x]}`);
     return { player };
-  } else if ([1, 3].includes(state.groundTilemap[newPos[1]][newPos[0]])) {
+  } else if ([1, 3].includes(state.groundTilemap[newPos.y][newPos.x])) {
     console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
     return { player };
   } else {
     player.onGameObject = state.gameObjectsTiles.find(
-      (t) => t.tile === state.gameObjectsTilemap[newPos[1]][newPos[0]]
+      (t) => t.tile === state.gameObjectsTilemap[newPos.y][newPos.x]
     );
 
     player.onGameTreasure = state.gameTreasuresTiles.find(
-      (t) => t.tile === state.gameTreasuresTilemap[newPos[1]][newPos[0]]
+      (t) => t.tile === state.gameTreasuresTilemap[newPos.y][newPos.x]
     );
 
-    state.playersOnTiles[player.pos[1]][player.pos[0]] = null;
-    state.playersOnTiles[newPos[1]][newPos[0]] = player.walletAddress;
+    state.playersOnTiles[player.pos.y][player.pos.x] = null;
+    state.playersOnTiles[newPos.y][newPos.x] = player.walletAddress;
     player.pos = newPos;
     player.stats.ap.current -= 1;
     return {

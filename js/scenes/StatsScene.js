@@ -358,11 +358,11 @@ height=72/>
     let data = ``;
     switch (i.cmd) {
       case Const.Command.moved: {
-        data = `<div style='display: inline-block'>NEW POS ${i.player.pos}</div>`;
+        data = `<div style='display: inline-block'>NEW POS ${i.player.pos.x},${i.player.pos.y}</div>`;
         break;
       }
       case Const.Command.attacked: {
-        const info = i.pos ? `POS ${i.pos}` : `Failed`;
+        const info = i.pos ? `POS ${i.pos.x},${i.pos.y}` : `Failed`;
         data = `<div style='display: inline-block'>${info}</div>`;
         break;
       }

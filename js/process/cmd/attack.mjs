@@ -9,7 +9,7 @@ export function attack(state, action) {
   }
   player.stats.ap.current -= 1;
   const attackPos = step(player.pos, action.dir);
-  const opponent = state.players[state.playersOnTiles[attackPos[1]][attackPos[0]]];
+  const opponent = state.players[state.playersOnTiles[attackPos.y][attackPos.x]];
 
   if (opponent) {
     console.log(`Player ${player.walletAddress} attacked ${opponent.walletAddress}`);
@@ -29,7 +29,7 @@ export function attack(state, action) {
         { value: -loot, type: Const.Scores.coin },
       ]),
     };
-  } else if ([1, 3].includes(state.groundTilemap[attackPos[1]][attackPos[0]])) {
+  } else if ([1, 3].includes(state.groundTilemap[attackPos.y][attackPos.x])) {
     console.log(`Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`);
   }
   return { player, attackPos, tokenTransfer: 0 };

@@ -252,7 +252,7 @@ function dig(state, action) {
   }
 
   const gameObjectTile = state.gameObjectsTiles.find(
-    (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
+    (t) => t.tile === state.gameObjectsTilemap[player.pos.y][player.pos.x]
   );
   let { type: objectTile } = gameObjectTile;
   console.log(objectTile);
@@ -262,7 +262,7 @@ function dig(state, action) {
   }
 
   const tile = state.gameTreasuresTiles.find(
-    (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
+    (t) => t.tile === state.gameTreasuresTilemap[player.pos.y][player.pos.x]
   );
   const { type } = tile;
 
@@ -275,7 +275,7 @@ function dig(state, action) {
 
   if (type === GameObject.none.type) {
     console.log(`Player ${player.walletAddress} digged nothing.`);
-    state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] = GameObject.hole.tile;
+    state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
     return {
       player,
       digged: { type },
@@ -287,7 +287,7 @@ function dig(state, action) {
     console.log(`Player stands on a game treasure: ${type}.`);
     state.digged.push({
       player: walletAddress,
-      pos: { x: player.pos[1], y: player.pos[0] },
+      pos: { x: player.pos.x, y: player.pos.y },
     });
     return {
       player,
@@ -309,7 +309,7 @@ function pick(state, action) {
   }
 
   const gameObjectTile = state.gameObjectsTiles.find(
-    (t) => t.tile === state.gameObjectsTilemap[player.pos[1]][player.pos[0]]
+    (t) => t.tile === state.gameObjectsTilemap[player.pos.y][player.pos.x]
   );
   const { type, value } = gameObjectTile;
 
@@ -318,7 +318,7 @@ function pick(state, action) {
     console.log(`Player stands on a game object, increasing ${type}.`);
     player.stats.hp.current += value;
     const tokenTransfer = addCoins(player, value);
-    state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = GameObject.none.tile;
+    state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
     return {
       player,
       picked: { type },
@@ -333,7 +333,7 @@ function pick(state, action) {
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += value;
     const tokenTransfer = addCoins(player, value);
-    state.gameObjectsTilemap[player.pos[1]][player.pos[0]] = GameObject.none.tile;
+    state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
     return {
       player,
       picked: { type },
@@ -345,7 +345,7 @@ function pick(state, action) {
     };
   } else if (type === GameObject.none.type) {
     const gameTreasureTile = state.gameTreasuresTiles.find(
-      (t) => t.tile === state.gameTreasuresTilemap[player.pos[1]][player.pos[0]]
+      (t) => t.tile === state.gameTreasuresTilemap[player.pos.y][player.pos.x]
     );
     const { type, value } = gameTreasureTile;
     if (type === GameObject.none.type) {
@@ -354,7 +354,7 @@ function pick(state, action) {
     } else if (type === GameObject.treasure.type) {
       player.stats.ap.current -= 1;
       const diggedTreasure = state.digged.find(
-        (d) => d.player == walletAddress && d.pos.x == player.pos[1] && d.pos.y == player.pos[0]
+        (d) => d.player === walletAddress && d.pos.x === player.pos.x && d.pos.y === player.pos.y
       );
       if (!diggedTreasure) {
         console.log(`Player ${walletAddress} does not stand on the treasure digged by them.`);
@@ -362,7 +362,7 @@ function pick(state, action) {
       }
       state.digged.splice(state.digged.indexOf(diggedTreasure), 1);
 
-      state.gameTreasuresTilemap[player.pos[1]][player.pos[0]] = GameObject.hole.tile;
+      state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
       const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
       const tokenTransfer = addCoins(player, valueWithBonus);
       return {
@@ -418,12 +418,12 @@ function calculatePlayerRandomPos(state) {
   let pos;
 
   while (onObstacle) {
-    const posVertical = Math.floor(Math.random(randomCounter) * Map.size);
+    const x = Math.floor(Math.random(randomCounter) * Map.size);
     randomCounter++;
-    const posHorizontal = Math.floor(Math.random(randomCounter) * Map.size);
-    pos = [posVertical, posHorizontal];
+    const y = Math.floor(Math.random(randomCounter) * Map.size);
+    pos = { x, y };
 
-    if ([1, 3].includes(state.groundTilemap[pos[1]][pos[0]])) {
+    if ([1, 3].includes(state.groundTilemap[pos.y][pos.x])) {
       randomCounter++;
     } else {
       onObstacle = false;
