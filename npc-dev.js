@@ -1,3 +1,4 @@
+import { WebSocket } from 'ws';
 import Const from './js/common/const.mjs';
 import { Tag, WarpFactory } from 'warp-contracts';
 import ids from './js/config/warp-ao-ids.js';
@@ -59,3 +60,5 @@ export default async function runNpc() {
     }
   });
 }
+
+runNpc().catch((e) => console.error(e));

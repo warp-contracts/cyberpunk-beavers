@@ -28,7 +28,7 @@ window.warpAO = {
     new Tag('Data-Protocol', 'ao'),
     new Tag('Type', 'Message'),
     new Tag('Variant', 'ao.TN.1'),
-    {name: 'SDK', value: 'ao'},
+    { name: 'SDK', value: 'ao' },
     new Tag('From-Process', window.warpAO.processId()),
     new Tag('From-Module', window.warpAO.moduleId()),
     new Tag('Salt', '' + Date.now()),
@@ -45,14 +45,12 @@ window.warpAO = {
       return sendUsingConnectedWallet(message);
     }
   },
-  npc: env == 'dev' ? true : false,
 };
-
 
 async function sendUsingGeneratedWallet(message, signer) {
   const dataItem = createData('1234', signer, {
     tags: window.warpAO.messageTags(message),
-    target: window.warpAO.processId()
+    target: window.warpAO.processId(),
   });
   await dataItem.sign(signer);
   return sendRawDataItem(dataItem.getRaw());
@@ -71,9 +69,9 @@ async function sendRawDataItem(rawData) {
   if (response.ok) {
     return await response.json();
   } else {
-    console.warn("Wrong response", {
+    console.warn('Wrong response', {
       code: response.statusCode,
-      message: response.statusText
+      message: response.statusText,
     });
   }
 }

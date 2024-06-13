@@ -3,8 +3,8 @@ import Const from '../common/const.mjs';
 import MainPlayer from '../MainPlayer.js';
 import { initPubSub } from 'warp-contracts-pubsub';
 import { Text } from '../objects/Text.js';
+import { TextButton } from '../objects/TextButton.js';
 import { EVENTS_NAME } from '../utils/events.js';
-import runNpc from '../../npc-dev.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -187,9 +187,6 @@ export default class MainScene extends Phaser.Scene {
       }
     });
 
-    if (window.warpAO.npc) {
-      await runNpc();
-    }
     return {
       send: async (message) => {
         const di = mockDataItem(message);
