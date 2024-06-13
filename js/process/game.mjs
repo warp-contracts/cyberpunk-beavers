@@ -2,6 +2,7 @@ import Const from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
 import { addCoins, scoreToDisplay } from '../common/tools.mjs';
+import {leave} from "./cmd/leave.mjs";
 const { BEAVER_TYPES, GameObject, Scores, Map } = Const;
 
 // ------- Token Contract Config
@@ -128,6 +129,16 @@ export function handle(state, message) {
         cmd: Const.Command.registered,
         player: state.players[message.Owner],
         state,
+      });
+      break;
+    case Const.Command.leave:
+      const leaveRes = leave(state, action);
+      if (leaveRes.tokenTransfer > 0) {
+        sendToken(leaveRes.transferTo, leaveRes.tokenTransfer);
+      }
+      ao.result({
+        cmd: Const.Command.leave,
+        playerAddress: action.walletAddress,
       });
       break;
     default:
@@ -413,19 +424,17 @@ function registerPlayer(state, action) {
 }
 
 function calculatePlayerRandomPos(state) {
-  let randomCounter = 0;
   let onObstacle = true;
   let pos;
 
   while (onObstacle) {
+    state.randomCounter++;
     const x = Math.floor(Math.random(randomCounter) * Map.size);
-    randomCounter++;
+    state.randomCounter++;
     const y = Math.floor(Math.random(randomCounter) * Map.size);
     pos = { x, y };
 
-    if ([1, 3].includes(state.groundTilemap[pos.y][pos.x])) {
-      randomCounter++;
-    } else {
+    if (![1, 3].includes(state.groundTilemap[pos.y][pos.x])) {
       onObstacle = false;
     }
   }

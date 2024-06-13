@@ -184,7 +184,12 @@ export default class StatsScene extends Phaser.Scene {
     });
 
     this.game.events.on(EVENTS_NAME.updatePlayers, (player) => {
-      this.allPlayers[player.walletAddress] = player;
+      if (player.action == 'remove') {
+        // note: this should also remove the player from tha MainScene, as it is passed here by ref.
+        delete this.allPlayers[player.walletAddress];
+      } else {
+        this.allPlayers[player.walletAddress] = player;
+      }
       const totalPlayers = Object.keys(this.allPlayers).length;
       if (totalPlayers == 2) {
         document.getElementById('stats-scene-other-beavers').innerHTML = this.addPlayersModal();

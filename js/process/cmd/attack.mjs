@@ -13,7 +13,7 @@ export function attack(state, action) {
 
   if (opponent) {
     console.log(`Player ${player.walletAddress} attacked ${opponent.walletAddress}`);
-    const{ loot, tokenTransfer } = finishHim(player, opponent);
+    const{ loot, tokenTransfer } = finishHim(player, opponent, state.round);
     return {
       player,
       tokenTransfer,
@@ -35,8 +35,12 @@ export function attack(state, action) {
   return { player, attackPos, tokenTransfer: 0 };
 }
 
-function finishHim(player, opponent) {
+function finishHim(player, opponent, round) {
   opponent.stats.hp.current -= player.stats.damage;
+  opponent.stats.hp.lastDamage = {
+    round: round.current,
+    from: player.walletAddress,
+  };
   player.stats.ap.current -= 1;
   if (opponent.stats.hp.current <= 0) {
     const loot = lootPlayer(opponent);
@@ -52,7 +56,7 @@ function finishHim(player, opponent) {
   };
 }
 
-function lootPlayer(player) {
+export function lootPlayer(player) {
   const amount = Math.min(player.stats.coins.available, Const.Combat.DefaultLoot);
   player.stats.coins.available -= amount;
   return amount;

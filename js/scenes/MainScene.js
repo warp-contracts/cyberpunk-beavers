@@ -1,7 +1,6 @@
 import Player from '../Player.js';
 import Const from '../common/const.mjs';
 import MainPlayer from '../MainPlayer.js';
-import { initPubSub } from 'warp-contracts-pubsub';
 import { Text } from '../objects/Text.js';
 import { TextButton } from '../objects/TextButton.js';
 import { EVENTS_NAME } from '../utils/events.js';
@@ -230,7 +229,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async initSubscription() {
-    initPubSub();
     const self = this;
     if (window.warpAO.subscribed) {
       return;
@@ -240,10 +238,29 @@ export default class MainScene extends Phaser.Scene {
 
     let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
     const beforeUnloadHandler = (event) => {
-      // todo: sent unregister message
+      //event.preventDefault();
+      window.warpAO.send({
+        cmd: Const.Command.leave,
+        beacon: true
+      }).finally();
       sse.close();
+
     };
     window.addEventListener('beforeunload', beforeUnloadHandler);
+
+    /*document.addEventListener("visibilitychange", async () => {
+      if (document.hidden) {
+        sse.close();
+        await window.warpAO.send({
+          cmd: Const.Command.leave,
+          beacon: true
+        });
+        window.warpAO.subscribed = false;
+      } else {
+        await this.initSubscription();
+      }
+
+    });*/
 
     sse.onerror = (e) => {
       sse.close();
@@ -254,15 +271,7 @@ export default class MainScene extends Phaser.Scene {
       try {
         const now = Date.now();
         const message = JSON.parse(event.data);
-        console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
-        if (message.tags) {
-          const salt = message.tags.find((t) => t.name === 'Salt');
-          if (salt) {
-            const saltInt = parseInt(salt.value);
-            const diff = now - saltInt;
-            console.log(`===== Lag: ${diff} ms`);
-          }
-        }
+        this.traceNewMessage(message, now);
 
         if (message.txId && this.mainPlayer) {
           this.mainPlayer.handleTx(message.txId);
@@ -280,21 +289,31 @@ export default class MainScene extends Phaser.Scene {
     const player = JSON.parse(localStorage.getItem('player'));
     console.log(`Found player info in local storage`, player);
     if (player) {
-      console.log('Joinning game...');
+      console.log('Joining game...');
       await window.warpAO.send({
-        cmd: Const.Command.join,
-        walletAddress: this.walletAddress,
+        cmd: Const.Command.join
       });
     } else {
       console.log('register player...');
       await window.warpAO.send({
         cmd: Const.Command.register,
-        walletAddress: this.walletAddress,
         beaverId: self.beaverChoice,
       });
     }
 
     return { send: window.warpAO.send };
+  }
+
+  traceNewMessage(message, now) {
+    console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
+    if (message.tags) {
+      const salt = message.tags.find((t) => t.name === 'Salt');
+      if (salt) {
+        const saltInt = parseInt(salt.value);
+        const diff = now - saltInt;
+        console.log(`===== Lag: ${diff} ms`);
+      }
+    }
   }
 
   handleMessage(response) {
@@ -327,6 +346,16 @@ export default class MainScene extends Phaser.Scene {
               self.initCamera();
             }
             this.scene.remove('main-scene-loading');
+          }
+        }
+        break;
+      case Const.Command.leave:
+        {
+          console.log('Player left', response);
+          if (response.error) {
+            console.error('Failed to leave the game', response.error);
+          } else {
+            this.game.events.emit(EVENTS_NAME.updatePlayers, { walletAddress: response.playerAddress, action: 'remove' });
           }
         }
         break;
@@ -385,9 +414,6 @@ export default class MainScene extends Phaser.Scene {
         if (response.digged?.type == Const.GameObject.treasure.type) {
           console.log(`Player digged a game treasure.`);
           this.gameTreasuresLayer.getTileAt(response.player.pos.x, response.player.pos.y).setVisible(true);
-
-          if (response.player?.walletAddress === self.mainPlayer.walletAddress) {
-          }
         } else {
           const gameObjectTile = this.gameObjectsLayer.getTileAt(response.player.pos.x, response.player.pos.y)?.index;
           if (gameObjectTile == 2 || gameObjectTile == null) {

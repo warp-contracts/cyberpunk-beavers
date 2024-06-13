@@ -53,18 +53,24 @@ async function sendUsingGeneratedWallet(message, signer) {
     target: window.warpAO.processId(),
   });
   await dataItem.sign(signer);
-  return sendRawDataItem(dataItem.getRaw());
+  return sendRawDataItem(dataItem.getRaw(), message.beacon);
 }
 
-async function sendRawDataItem(rawData) {
-  const response = await fetch(window.warpAO.config.muAddress, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/octet-stream',
-      Accept: 'application/json',
-    },
-    body: rawData,
-  });
+async function sendRawDataItem(rawData, beacon) {
+  if (beacon) {
+    const arrayBuffer = rawData.buffer.slice(rawData.byteOffset, rawData.byteOffset + rawData.byteLength);
+    const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
+
+    navigator.sendBeacon(window.warpAO.config.muAddress, blob);
+  } else {
+    const response = await fetch(window.warpAO.config.muAddress, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        Accept: 'application/json',
+      },
+      body: rawData,
+    });
 
   if (response.ok) {
     return await response.json();
@@ -78,5 +84,5 @@ async function sendRawDataItem(rawData) {
 
 async function sendUsingConnectedWallet(message) {
   const signedDataItem = await window.arweaveWallet.signDataItem(window.warpAO.data(message));
-  return sendRawDataItem(signedDataItem);
+  return sendRawDataItem(signedDataItem, message.beacon);
 }
