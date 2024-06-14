@@ -2,12 +2,14 @@ import Const from './js/common/const.mjs';
 import { Tag, WarpFactory } from 'warp-contracts';
 import ids from './js/config/warp-ao-ids.js';
 import { ArweaveSigner, createData } from 'warp-arbundles/build/node/esm/index.js';
+import { initPubSub } from 'warp-contracts-pubsub';
+import EventSource from 'eventsource';
 
 const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
 
 export default async function runNpc() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 30; i++) {
     const warp = WarpFactory.forMainnet();
     const { address, jwk } = await warp.generateWallet();
     const signer = new ArweaveSigner(jwk);
@@ -21,15 +23,44 @@ export default async function runNpc() {
       signer
     );
 
-    setTimeout(() => {
+    setTimeout(async () => {
+      await initSubscription();
       setInterval(async () => {
         const randomDirection = Math.floor(Math.random() * direction.length);
         await sendDataItem({ cmd: 'move', dir: direction[randomDirection] }, signer);
-      }, 4000);
+      }, 1000);
+      console.log(`NPC ${address} in the game.`);
     }, i * 1000);
-
-    console.log(`NPC ${address} in the game.`);
   }
+}
+
+async function initSubscription() {
+  initPubSub();
+  console.log('Subscribing for processId: ', ids.processId_prod);
+
+  let sse = new EventSource(`https://cu.warp.cc/subscribe/${ids.processId_prod}`);
+  sse.onerror = (e) => {
+    sse.close();
+    console.error(e);
+    sse = new EventSource(`https://cu.warp.cc/subscribe/${ids.processId_prod}`);
+  };
+  sse.onmessage = (event) => {
+    try {
+      const now = Date.now();
+      const message = JSON.parse(event.data);
+      console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
+      if (message.tags) {
+        const salt = message.tags.find((t) => t.name === 'Salt');
+        if (salt) {
+          const saltInt = parseInt(salt.value);
+          const diff = now - saltInt;
+          console.log(`===== Lag: ${diff} ms`);
+        }
+      }
+    } catch (e) {
+      console.log(event);
+    }
+  };
 }
 
 const sendDataItem = async (message, signer) => {
@@ -40,16 +71,20 @@ const sendDataItem = async (message, signer) => {
   });
   await dataItem.sign(signer);
 
-  const messageResponse = await fetch('https://mu.warp.cc', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/octet-stream',
-      Accept: 'application/json',
-    },
-    body: dataItem.getRaw(),
-  }).then((res) => res.json());
+  try {
+    const messageResponse = await fetch('https://mu.warp.cc', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        Accept: 'application/json',
+      },
+      body: dataItem.getRaw(),
+    }).then((res) => res.json());
 
-  return messageResponse;
+    return messageResponse;
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const createMessageWithTags = (message, processId, moduleId) => {

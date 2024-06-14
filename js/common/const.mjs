@@ -26,8 +26,8 @@ const Direction = {
 };
 
 const Map = {
-  size: 30
-}
+  size: 40,
+};
 const Tile = {
   size: 48,
 };
@@ -53,9 +53,8 @@ const Errors = {
 
 // ------- Combat
 const Combat = {
-  DefaultLoot: 100 // Tokens that will be taken after the defeating the opponent.
-}
-
+  DefaultLoot: 100, // Tokens that will be taken after the defeating the opponent.
+};
 
 // ------- Beaver Config
 const BEAVER_TYPES = {
@@ -102,7 +101,6 @@ const BEAVER_TYPES = {
     },
   },
 };
-
 
 export default {
   BEAVER_TYPES,
