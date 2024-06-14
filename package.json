@@ -13,20 +13,22 @@
   },
   "dependencies": {
     "warp-contracts": "^1.4.45",
-    "warp-contracts-plugin-signature": "^1.0.20",
     "warp-contracts-plugin-quickjs": "^1.1.5",
+    "warp-contracts-plugin-signature": "^1.0.20",
     "ws": "^8.16.0"
   },
   "devDependencies": {
     "@permaweb/aoconnect": "^0.0.55",
-    "live-server": "1.2.1",
     "esbuild": "^0.20.2",
+    "eventsource": "^2.0.2",
+    "live-server": "1.2.1",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
     "replace-in-file": "^7.1.0",
+    "replace-in-files": "^3.0.0",
     "vitest": "^1.6.0",
     "warp-arbundles": "^1.0.4",
     "warp-contracts-plugin-deploy": "^1.0.13",
-    "replace-in-files": "^3.0.0"
+    "warp-contracts-pubsub": "^1.0.8"
   }
 }
