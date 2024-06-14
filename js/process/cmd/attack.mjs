@@ -13,21 +13,22 @@ export function attack(state, action) {
 
   if (opponent) {
     console.log(`Player ${player.walletAddress} attacked ${opponent.walletAddress}`);
-    const{ loot, tokenTransfer } = finishHim(player, opponent);
+    const { loot, tokenTransfer } = finishHim(player, opponent);
+    const playerScores = [{ value: -1, type: Const.GameObject.ap.type }];
+
+    const opponentScores = [{ value: -player.stats.damage, type: Const.GameObject.hp.type }];
+
+    if (parseInt(loot) > 0) {
+      playerScores.push({ value: loot, type: Const.Scores.coin });
+      opponentScores.push({ value: -loot, type: Const.Scores.coin });
+    }
     return {
       player,
       tokenTransfer,
       opponent,
       attackPos,
-      scoreToDisplay: scoreToDisplay([
-        { value: -1, type: Const.GameObject.ap.type },
-        { value: loot, type: Const.Scores.coin },
-        { value: player.stats.damage, type: null },
-      ]),
-      opponentScoreToDisplay: scoreToDisplay([
-        { value: -player.stats.damage, type: Const.GameObject.hp.type },
-        { value: -loot, type: Const.Scores.coin },
-      ]),
+      scoreToDisplay: scoreToDisplay(playerScores),
+      opponentScoreToDisplay: scoreToDisplay(opponentScores),
     };
   } else if ([1, 3].includes(state.groundTilemap[attackPos.y][attackPos.x])) {
     console.log(`Attack found obstacle ${player.walletAddress}. Tile ${attackPos} has obstacle`);
@@ -44,11 +45,13 @@ function finishHim(player, opponent) {
     opponent.stats.hp.current = opponent.stats.hp.max;
     const tokenTransfer = addCoins(player, loot);
     return {
-      loot, tokenTransfer
+      loot,
+      tokenTransfer,
     };
   }
   return {
-    loot: 0, tokenTransfer: 0
+    loot: 0,
+    tokenTransfer: 0,
   };
 }
 
@@ -57,4 +60,3 @@ function lootPlayer(player) {
   player.stats.coins.available -= amount;
   return amount;
 }
-
