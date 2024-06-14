@@ -1,6 +1,8 @@
 import Const from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
+import { dig } from './cmd/dig.mjs';
+import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { addCoins, scoreToDisplay } from '../common/tools.mjs';
 const { BEAVER_TYPES, GameObject, Scores, Map } = Const;
 
@@ -45,6 +47,7 @@ export function handle(state, message) {
     state = Object.assign(state, initState(message, state));
     setVisibleGameObjects(state);
     setInvisibleGameObjects(state);
+    setInvisibleGameObjectsForClient(state);
   }
 
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
@@ -120,14 +123,24 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.registered,
         player: registerPlayer(state, action),
-        state,
+        map: {
+          groundTilemap: state.groundTilemap,
+          gameObjectsTilemap: state.gameObjectsTilemap,
+          gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
+        },
+        round: state.round,
       });
       break;
     case Const.Command.join:
       ao.result({
         cmd: Const.Command.registered,
         player: state.players[message.Owner],
-        state,
+        map: {
+          groundTilemap: state.groundTilemap,
+          gameObjectsTilemap: state.gameObjectsTilemap,
+          gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
+        },
+        round: state.round,
       });
       break;
     default:
@@ -150,8 +163,8 @@ function initState(message, state) {
     gameObjectsTiles: [GameObject.ap, GameObject.hp, GameObject.none],
     gameObjectsRarity: 10,
     gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],
+    gameTreasuresTilesForClient: [GameObject.none],
     gameTreasuresRarity: 50,
-    digged: [],
     round: {
       current: 0,
       start: message.Timestamp, //ms
@@ -202,6 +215,10 @@ function setInvisibleGameObjects(state) {
   );
 }
 
+function setInvisibleGameObjectsForClient(state) {
+  state.gameTreasuresTilemapForClient = setGameObjectsTilesOnMap(state, state.gameTreasuresTilesForClient, 0);
+}
+
 function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
   for (let i = 0; i < noneTileFrequency; i++) {
     tilesToPropagate.push(GameObject.none);
@@ -241,62 +258,6 @@ function gamePlayerTick(state, action) {
     player.stats.ap.current = player.stats.ap.max;
     player.stats.round.last = state.round.current;
   }
-}
-
-function dig(state, action) {
-  const walletAddress = action.walletAddress;
-  const player = state.players[walletAddress];
-  if (player.stats.ap.current < 2) {
-    console.log(`Cannot perform dig ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
-    return { player, digged: false };
-  }
-
-  const gameObjectTile = state.gameObjectsTiles.find(
-    (t) => t.tile === state.gameObjectsTilemap[player.pos.y][player.pos.x]
-  );
-  let { type: objectTile } = gameObjectTile;
-  console.log(objectTile);
-  if (objectTile != GameObject.none.type) {
-    console.log(`Cannot perform dig ${player.walletAddress}. Player stands on a game object.`);
-    return { player, digged: false };
-  }
-
-  const tile = state.gameTreasuresTiles.find(
-    (t) => t.tile === state.gameTreasuresTilemap[player.pos.y][player.pos.x]
-  );
-  const { type } = tile;
-
-  if (type === GameObject.hole.type) {
-    console.log(`Player ${player.walletAddress} tried to dig already existing hole.`);
-    return { player, digged: false };
-  }
-
-  player.stats.ap.current -= 2;
-
-  if (type === GameObject.none.type) {
-    console.log(`Player ${player.walletAddress} digged nothing.`);
-    state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
-    return {
-      player,
-      digged: { type },
-      scoreToDisplay: scoreToDisplay([{ value: -2, type: Scores.ap }]),
-    };
-  }
-
-  if (type == GameObject.treasure.type) {
-    console.log(`Player stands on a game treasure: ${type}.`);
-    state.digged.push({
-      player: walletAddress,
-      pos: { x: player.pos.x, y: player.pos.y },
-    });
-    return {
-      player,
-      digged: { type },
-      scoreToDisplay: scoreToDisplay([{ value: -2, type: Scores.ap }]),
-    };
-  }
-
-  return { player, digged: false };
 }
 
 function pick(state, action) {
@@ -378,57 +339,4 @@ function pick(state, action) {
   }
 
   return { player, picked: false };
-}
-
-function registerPlayer(state, action) {
-  const walletAddress = action.walletAddress;
-  const beaverId = action.beaverId;
-  if (state.players[walletAddress]) {
-    return state.players[walletAddress];
-  }
-  if (!BEAVER_TYPES[beaverId]) {
-    const errorMsg = `No beaver of type ${beaverId}`;
-    console.error(errorMsg);
-    return {
-      error: errorMsg,
-    };
-  }
-  let newPlayer = {
-    walletAddress,
-    beaverId,
-    stats: {
-      ...BEAVER_TYPES[beaverId],
-      round: {
-        last: 0,
-      },
-      coins: {
-        available: 0, // tokens available for slashing
-        transferred: 0, // info of tokens received through transfer
-      },
-    },
-    pos: calculatePlayerRandomPos(state),
-  };
-  state.players[newPlayer.walletAddress] = newPlayer;
-  return newPlayer;
-}
-
-function calculatePlayerRandomPos(state) {
-  let randomCounter = 0;
-  let onObstacle = true;
-  let pos;
-
-  while (onObstacle) {
-    const x = Math.floor(Math.random(randomCounter) * Map.size);
-    randomCounter++;
-    const y = Math.floor(Math.random(randomCounter) * Map.size);
-    pos = { x, y };
-
-    if ([1, 3].includes(state.groundTilemap[pos.y][pos.x])) {
-      randomCounter++;
-    } else {
-      onObstacle = false;
-    }
-  }
-
-  return pos;
 }

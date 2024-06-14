@@ -85,7 +85,7 @@ export default class MainScene extends Phaser.Scene {
     console.log(`Found player info in local storage`, player);
     if (player) {
       console.log('Joinning game...');
-      await this.server.send({cmd: Const.Command.join});
+      await this.server.send({ cmd: Const.Command.join });
     } else {
       console.log('register player...');
       await this.server.send({
@@ -165,9 +165,6 @@ export default class MainScene extends Phaser.Scene {
     this.groundLayer = this.createLayer(level1, 'cyberpunk_bg', 0);
     this.gameObjectsLayer = this.createLayer(level2, 'cyberpunk_game_objects', 2);
     this.gameTreasuresLayer = this.createLayer(level3, 'cyberpunk_game_treasures', 1);
-    this.gameTreasuresLayer.forEachTile((t) => {
-      if (t.index != 1) t.setVisible(false);
-    });
   }
 
   initCamera() {
@@ -218,12 +215,12 @@ export default class MainScene extends Phaser.Scene {
                 beaverId: response.player.beaverId,
               })
             );
-            self.round = response.state.round;
+            self.round = response.round;
             if (response.player.walletAddress === this.walletAddress) {
               self.initMap(
-                response.state.groundTilemap,
-                response.state.gameObjectsTilemap,
-                response.state.gameTreasuresTilemap
+                response.map.groundTilemap,
+                response.map.gameObjectsTilemap,
+                response.map.gameTreasuresTilemapForClient
               );
               self.createMainPlayer(response.player);
               self.initCamera();
@@ -286,16 +283,13 @@ export default class MainScene extends Phaser.Scene {
         }
         if (response.digged?.type == Const.GameObject.treasure.type) {
           console.log(`Player digged a game treasure.`);
-          this.gameTreasuresLayer.getTileAt(response.player.pos.x, response.player.pos.y).setVisible(true);
-
-          if (response.player?.walletAddress === self.mainPlayer.walletAddress) {
-          }
+          this.gameTreasuresLayer.putTileAt(0, response.player.pos.x, response.player.pos.y);
         } else {
           const gameObjectTile = this.gameObjectsLayer.getTileAt(response.player.pos.x, response.player.pos.y)?.index;
           if (gameObjectTile == 2 || gameObjectTile == null) {
             this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
           }
-          this.gameTreasuresLayer.getTileAt(response.player.pos.x, response.player.pos.y).setVisible(true);
+          this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
         }
         this.updateStats(response.player, response.stats);
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
