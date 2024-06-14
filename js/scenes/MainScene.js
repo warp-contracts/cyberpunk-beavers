@@ -1,11 +1,10 @@
 import Player from '../Player.js';
 import Const from '../common/const.mjs';
 import MainPlayer from '../MainPlayer.js';
-import { initPubSub } from 'warp-contracts-pubsub';
 import { Text } from '../objects/Text.js';
-import { TextButton } from '../objects/TextButton.js';
 import { EVENTS_NAME } from '../utils/events.js';
 import { colors } from '../utils/style.js';
+import { serverConnection } from '../lib/serverConnection.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -73,9 +72,26 @@ export default class MainScene extends Phaser.Scene {
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.allPlayers = {};
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
-      this.server = window.warpAO.config.env === 'dev' ? await this.initWebSocket() : await this.initSubscription();
+      this.server = serverConnection;
+      this.server.subscribe(this);
+      await this.registerPlayer();
     } else {
       this.scene.start('connect-wallet-scene');
+    }
+  }
+
+  async registerPlayer() {
+    const player = JSON.parse(localStorage.getItem('player'));
+    console.log(`Found player info in local storage`, player);
+    if (player) {
+      console.log('Joinning game...');
+      await this.server.send({cmd: Const.Command.join});
+    } else {
+      console.log('register player...');
+      await this.server.send({
+        cmd: Const.Command.register,
+        beaverId: this.beaverChoice,
+      });
     }
   }
 
@@ -137,63 +153,11 @@ export default class MainScene extends Phaser.Scene {
     const currentRound = ~~(tsChange / this.round.interval);
     const gone = ~~((10 * (tsChange - currentRound * this.round.interval)) / this.round.interval);
     if (gone === 1) {
-      this.mainPlayer.nextRound();
+      this.mainPlayer?.nextRound();
     }
     return {
       gone,
       currentRound,
-    };
-  }
-
-  async initWebSocket() {
-    const ws = new WebSocket('ws://localhost:8080');
-    const self = this;
-    const mockDataItem = (data) => {
-      const withTags = window.warpAO.data(data);
-      return {
-        ...withTags,
-        Owner: self.walletAddress,
-        Id: Math.random().toString(36).substring(2),
-        Tags: withTags.tags,
-        Timestamp: Date.now(),
-      };
-    };
-
-    ws.addEventListener('message', (event) => {
-      const response = JSON.parse(event.data);
-      console.log(response.cmd);
-      if (response.txId && this.mainPlayer) {
-        this.mainPlayer.handleTx(response.txId);
-      }
-      self.handleMessage(response);
-    });
-    ws.addEventListener('open', () => {
-      const player = JSON.parse(localStorage.getItem('player'));
-      console.log(`Found player info in local storage`, player);
-      if (player) {
-        const data = mockDataItem({
-          cmd: Const.Command.join,
-        });
-        console.log('data', data);
-        ws.send(JSON.stringify(data));
-      } else {
-        ws.send(
-          JSON.stringify(
-            mockDataItem({
-              cmd: Const.Command.register,
-              beaverId: self.beaverChoice,
-            })
-          )
-        );
-      }
-    });
-
-    return {
-      send: async (message) => {
-        const di = mockDataItem(message);
-        ws.send(JSON.stringify(di));
-        return { id: di.Id };
-      },
     };
   }
 
@@ -229,72 +193,10 @@ export default class MainScene extends Phaser.Scene {
     return layer;
   }
 
-  async initSubscription() {
-    initPubSub();
-    const self = this;
-    if (window.warpAO.subscribed) {
-      return;
+  handleTx(id) {
+    if (id && this.mainPlayer) {
+      this.mainPlayer.handleTx(id);
     }
-
-    console.log('Subscribing for processId: ', window.warpAO.processId());
-
-    let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
-    const beforeUnloadHandler = (event) => {
-      // todo: sent unregister message
-      sse.close();
-    };
-    window.addEventListener('beforeunload', beforeUnloadHandler);
-
-    sse.onerror = (e) => {
-      sse.close();
-      console.error(e);
-      sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
-    };
-    sse.onmessage = (event) => {
-      try {
-        const now = Date.now();
-        const message = JSON.parse(event.data);
-        console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
-        if (message.tags) {
-          const salt = message.tags.find((t) => t.name === 'Salt');
-          if (salt) {
-            const saltInt = parseInt(salt.value);
-            const diff = now - saltInt;
-            console.log(`===== Lag: ${diff} ms`);
-          }
-        }
-
-        if (message.txId && this.mainPlayer) {
-          this.mainPlayer.handleTx(message.txId);
-        }
-        if (message.output && message.output.cmd) {
-          message.output.txId = message.txId; // FIXME: well..., no the best approach
-          this.handleMessage(message.output);
-        }
-      } catch (e) {
-        console.log(event);
-      }
-    };
-
-    console.log('Subscription started...');
-    const player = JSON.parse(localStorage.getItem('player'));
-    console.log(`Found player info in local storage`, player);
-    if (player) {
-      console.log('Joinning game...');
-      await window.warpAO.send({
-        cmd: Const.Command.join,
-        walletAddress: this.walletAddress,
-      });
-    } else {
-      console.log('register player...');
-      await window.warpAO.send({
-        cmd: Const.Command.register,
-        walletAddress: this.walletAddress,
-        beaverId: self.beaverChoice,
-      });
-    }
-
-    return { send: window.warpAO.send };
   }
 
   handleMessage(response) {
