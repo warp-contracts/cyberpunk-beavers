@@ -1,7 +1,7 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { handle } from '../process/game.mjs';
 
-const WS_PORT = 8080;
+const WS_PORT = 8097;
 
 // Create a WebSocket server
 const wss = new WebSocketServer({ port: WS_PORT });

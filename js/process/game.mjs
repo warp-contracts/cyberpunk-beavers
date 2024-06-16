@@ -4,6 +4,7 @@ import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { addCoins, scoreToDisplay } from '../common/tools.mjs';
+import { gameInfo, gameInfoAfterEnd, gameInfoBeforeStart } from './cmd/info.mjs';
 const { BEAVER_TYPES, GameObject, Scores, Map } = Const;
 
 // ------- Token Contract Config
@@ -50,6 +51,22 @@ export function handle(state, message) {
     setInvisibleGameObjectsForClient(state);
   }
 
+  if (Date.now() < state.start) {
+    console.log(`The game has not started yet`)
+    ao.result({
+      cmd: Const.Command.stats,
+      ...gameInfoBeforeStart(state)
+    })
+    return;
+  }
+  if (Date.now() > state.end) {
+    ao.result({
+      cmd: Const.Command.stats,
+      ...gameInfoAfterEnd(state, message.Owner)
+    })
+    return ;
+  }
+
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
 
   if (TOKEN_ACTIONS.includes(actionTagValue)) {
@@ -68,6 +85,12 @@ export function handle(state, message) {
         counter: state.counter,
         player: state.players[message.Owner],
       });
+      break;
+    case Const.Command.info:
+      ao.result({
+        cmd: Const.Command.stats,
+        ...gameInfo(state, message.Owner)
+      })
       break;
     case Const.Command.pick:
       const pickRes = pick(state, action);
@@ -153,9 +176,12 @@ let j = 0;
 const groundTiles = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 3];
 
 function initState(message, state) {
+  const tick = Date.now();
   const result = {
     counter: 0,
     pos: 1,
+    start: tick + 2 * 1000, // 2 seconds after init
+    end: tick + 62 * 1000, // lasts for 60 seconds after start
     map: {
       width: Map.size,
       height: Map.size,

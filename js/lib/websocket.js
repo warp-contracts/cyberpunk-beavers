@@ -1,6 +1,6 @@
 
 export async function initWebSocket() {
-  const ws = new WebSocket('ws://localhost:8080');
+  const ws = new WebSocket('ws://localhost:8097');
 
   let currentListener = null;
   const unsubscribe = () => {
@@ -27,8 +27,12 @@ const messageListener = (target) => {
   return (event) => {
     const response = JSON.parse(event.data);
     console.log(`Got message`, response.txId, response.cmd);
-    target.handleTx(response.txId);
-    target.handleMessage(response);
+    if (target.handleTx) {
+      target.handleTx(response.txId);
+    }
+    if (target.handleMessage) {
+      target.handleMessage(response);
+    }
   }
 }
 

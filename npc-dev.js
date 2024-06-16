@@ -7,7 +7,7 @@ const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
 
 export default async function runNpc() {
-  const ws = new WebSocket('ws://localhost:8080');
+  const ws = new WebSocket('ws://localhost:8097');
   const mockDataItem = (data, owner) => {
     const withTags = {
       tags: [

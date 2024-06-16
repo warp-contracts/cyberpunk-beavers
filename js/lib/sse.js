@@ -47,10 +47,14 @@ function messageListener(target) {
         }
       }
 
-      target.handleTx(message.txId);
+      if (target.handleTx) {
+        target.handleTx(message.txId);
+      }
       if (message.output && message.output.cmd) {
         message.output.txId = message.txId; // FIXME: well..., no the best approach
-        target.handleMessage(message.output);
+        if (target.handleMessage) {
+          target.handleMessage(message.output);
+        }
       }
     } catch (e) {
       console.log(event);

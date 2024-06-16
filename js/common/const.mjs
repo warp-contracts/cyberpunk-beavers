@@ -10,6 +10,7 @@ const Command = {
   moved: 'moved',
   register: 'register',
   registered: 'registered',
+  info: 'info',
   stats: 'stats',
   pick: 'pick',
   picked: 'picked',

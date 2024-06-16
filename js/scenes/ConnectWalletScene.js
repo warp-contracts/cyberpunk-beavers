@@ -69,7 +69,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
     console.log('Generated wallet address', address);
     localStorage.setItem('wallet_address', address);
     localStorage.removeItem('player');
-    this.scene.start('player-pick-scene', {
+    this.scene.start('lounge-area-scene', {
       walletAddress: address,
     });
   }
@@ -88,7 +88,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
         fill: '#ADD8E6',
       });
       localStorage.setItem('wallet_address', walletAddress);
-      this.scene.start('player-pick-scene', {
+      this.scene.start('lounge-area-scene', {
         walletAddress,
       });
     } else {
