@@ -1,6 +1,6 @@
 export default {
-  processId_prod: 'ci2exgWQUn0qlbT6C_xMxos_MmvSSIB6ijt4T2a9GTM',
-  moduleId_prod: 'QeJBKV_Ux0Xbi7sNMuJb43e_AYyr1_ILZEL0Fz7w5MA',
+  processId_prod: 'qYvTQc8UkgldxYFgE5u1uLSWM99RhqLdDEhaL9AxhYc',
+  moduleId_prod: 'XJv9XKqWncx8wH3iWRssBuO-YCnDmOnhn7TuHkM81YM',
   processId_local: '_MalCC-2Hj5_sKxFrAjBiMf4Eqk6m70OJ0eP15sPsbY',
   moduleId_local: '_MalCC-2Hj5_sKxFrAjBiMf4Eqk6m70OJ0eP15sPsbY',
   processId_dev: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',

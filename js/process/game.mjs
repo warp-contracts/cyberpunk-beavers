@@ -51,7 +51,7 @@ export function handle(state, message) {
     setInvisibleGameObjectsForClient(state);
   }
 
-  if (Date.now() < state.start) {
+  if (message.Timestamp < state.start) {
     console.log(`The game has not started yet`)
     ao.result({
       cmd: Const.Command.stats,
@@ -59,7 +59,7 @@ export function handle(state, message) {
     })
     return;
   }
-  if (Date.now() > state.end) {
+  if (message.Timestamp > state.end) {
     ao.result({
       cmd: Const.Command.stats,
       ...gameInfoAfterEnd(state, message.Owner)
@@ -176,12 +176,11 @@ let j = 0;
 const groundTiles = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 3];
 
 function initState(message, state) {
-  const tick = Date.now();
   const result = {
     counter: 0,
     pos: 1,
-    start: tick + 2 * 1000, // 2 seconds after init
-    end: tick + 62 * 1000, // lasts for 60 seconds after start
+    start: message.Timestamp + 2 * 1000, // 2 seconds after init
+    end: message.Timestamp + 62 * 1000, // lasts for 60 seconds after start
     map: {
       width: Map.size,
       height: Map.size,
