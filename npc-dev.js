@@ -33,7 +33,7 @@ export default async function runNpc() {
   };
 
   ws.addEventListener('open', async () => {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 1; i++) {
       const warp = WarpFactory.forMainnet();
       const { address } = await warp.generateWallet();
       ws.send(
@@ -49,11 +49,11 @@ export default async function runNpc() {
       );
 
       setTimeout(() => {
-        setInterval(() => {
-          const randomDirection = Math.floor(Math.random() * direction.length);
-          const di = mockDataItem({ cmd: 'move', dir: direction[randomDirection] }, address);
-          ws.send(JSON.stringify(di));
-        }, 2000);
+        // setInterval(() => {
+        const randomDirection = Math.floor(Math.random() * direction.length);
+        const di = mockDataItem({ cmd: 'move', dir: direction[randomDirection] }, address);
+        ws.send(JSON.stringify(di));
+        // }, 2000);
       }, i * 1000);
 
       console.log(`NPC ${address} in the game.`);

@@ -28,8 +28,8 @@ const Direction = {
 };
 
 const Map = {
-  size: 30
-}
+  size: 30,
+};
 const Tile = {
   size: 48,
 };
@@ -55,13 +55,13 @@ const Errors = {
 
 // ------- Combat
 const Combat = {
-  DefaultLoot: 100 // Tokens that will be taken after the defeating the opponent.
-}
-
+  DefaultLoot: 100, // Tokens that will be taken after the defeating the opponent.
+};
 
 // ------- Beaver Config
-const BEAVER_TYPES = {
+export const BEAVER_TYPES = {
   hacker_beaver: {
+    name: 'hacker_beaver',
     ap: {
       current: 10,
       max: 10,
@@ -76,6 +76,7 @@ const BEAVER_TYPES = {
     },
   },
   heavy_beaver: {
+    name: 'heavy_beaver',
     ap: {
       current: 10,
       max: 10,
@@ -90,6 +91,7 @@ const BEAVER_TYPES = {
     },
   },
   speedy_beaver: {
+    name: 'speedy_beaver',
     ap: {
       current: 20,
       max: 20,
@@ -104,7 +106,6 @@ const BEAVER_TYPES = {
     },
   },
 };
-
 
 export default {
   BEAVER_TYPES,

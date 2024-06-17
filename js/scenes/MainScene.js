@@ -1,5 +1,5 @@
 import Player from '../Player.js';
-import Const from '../common/const.mjs';
+import Const, { BEAVER_TYPES } from '../common/const.mjs';
 import MainPlayer from '../MainPlayer.js';
 import { Text } from '../objects/Text.js';
 import { EVENTS_NAME } from '../utils/events.js';
@@ -49,25 +49,17 @@ export default class MainScene extends Phaser.Scene {
       'assets/images/hacker_beaver_anim_atlas.json'
     );
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
+    this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
+    this.load.audio('dig_sound', ['assets/audio/dig.wav']);
+    this.load.audio('treasure_sound', ['assets/audio/treasure_arcade.wav']);
+    this.load.audio('attack_heavy_beaver_sound', ['assets/audio/attack_heavy_beaver.wav']);
+    this.load.audio('attack_speedy_beaver_sound', ['assets/audio/attack_speedy_beaver.mp3']);
+    this.load.audio('attack_hacker_beaver_sound', ['assets/audio/attack_hacker_beaver.wav']);
   }
 
   async create() {
     console.log('Main Scene - 3. Create');
-    this.backgroundMusic = this.sound.add('background_music');
-    this.backgroundMusic.loop = true;
-    if (window.warpAO.config.env !== 'local') {
-      this.backgroundMusic.play();
-    }
-    const musicKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
-    musicKey.on('up', () => {
-      if (this.backgroundMusic.isPlaying) {
-        console.log('Music off');
-        this.backgroundMusic.stop();
-      } else {
-        console.log('Music on');
-        this.backgroundMusic.play();
-      }
-    });
+    this.addSounds();
 
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.allPlayers = {};
@@ -233,6 +225,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.attacked:
       case Const.Command.moved:
         {
+          console.log(response);
           console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
           if (!self.allPlayers[response.player.walletAddress]) {
             console.log('Setting up new player', response.player.walletAddress);
@@ -252,6 +245,26 @@ export default class MainScene extends Phaser.Scene {
             this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
           }
 
+          if (
+            response.opponentPlayer &&
+            (response.player.walletAddress == self.mainPlayer.walletAddress ||
+              response.opponentPlayer.walletAddress == self.mainPlayer.walletAddress)
+          ) {
+            switch (response.player.beaverId) {
+              case BEAVER_TYPES.heavy_beaver.name:
+                this.attackHeavyBeaverSound.play();
+                break;
+              case BEAVER_TYPES.hacker_beaver.name:
+                this.attackHackerBeaverSound.play();
+                break;
+              case BEAVER_TYPES.speedy_beaver.name:
+                this.attackSpeedyBeaverSound.play();
+                break;
+              default:
+                console.log('Beaver type not found');
+            }
+          }
+
           this.updateStats(response.player, response.stats);
           this.updateStats(response.opponentPlayer, response.opponentStats);
           this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
@@ -267,6 +280,7 @@ export default class MainScene extends Phaser.Scene {
         {
           if (response.picked) {
             console.log(`Player picked a game object.`);
+            this.pickUpSound.play();
             this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
             if (response.player.onGameTreasure.type == 'treasure') {
               this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
@@ -283,8 +297,10 @@ export default class MainScene extends Phaser.Scene {
         }
         if (response.digged?.type == Const.GameObject.treasure.type) {
           console.log(`Player digged a game treasure.`);
+          this.treasureSound.play();
           this.gameTreasuresLayer.putTileAt(0, response.player.pos.x, response.player.pos.y);
         } else {
+          this.digSound.play();
           const gameObjectTile = this.gameObjectsLayer.getTileAt(response.player.pos.x, response.player.pos.y)?.index;
           if (gameObjectTile == 2 || gameObjectTile == null) {
             this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
@@ -403,6 +419,30 @@ export default class MainScene extends Phaser.Scene {
       duration: 500,
       repeat: 0,
       yoyo: true,
+    });
+  }
+
+  addSounds() {
+    this.backgroundMusic = this.sound.add('background_music', { loop: true, volume: 0.25 });
+    this.pickUpSound = this.sound.add('pick_up_sound', { loop: false, volume: 3 });
+    this.digSound = this.sound.add('dig_sound', { loop: false, volume: 0.5 });
+    this.treasureSound = this.sound.add('treasure_sound', { loop: false, volume: 0.5 });
+    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', { loop: false, volume: 0.5 });
+    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 0.5 });
+    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 0.5 });
+
+    if (window.warpAO.config.env !== 'local') {
+      this.backgroundMusic.play();
+    }
+    const musicKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+    musicKey.on('up', () => {
+      if (this.backgroundMusic.isPlaying) {
+        console.log('Music off');
+        this.backgroundMusic.stop();
+      } else {
+        console.log('Music on');
+        this.backgroundMusic.play();
+      }
     });
   }
 }
