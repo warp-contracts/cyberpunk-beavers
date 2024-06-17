@@ -1,7 +1,4 @@
-import { initPubSub } from 'warp-contracts-pubsub';
-
 export async function initSubscription() {
-  initPubSub();
   if (window.warpAO.subscribed) {
     return;
   }
