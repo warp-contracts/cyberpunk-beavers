@@ -50,11 +50,11 @@ export default class MainScene extends Phaser.Scene {
     );
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
-    this.load.audio('dig_sound', ['assets/audio/dig.wav']);
-    this.load.audio('treasure_sound', ['assets/audio/treasure_arcade.wav']);
-    this.load.audio('attack_heavy_beaver_sound', ['assets/audio/attack_heavy_beaver.wav']);
+    this.load.audio('dig_sound', ['assets/audio/dig.mp3']);
+    this.load.audio('treasure_sound', ['assets/audio/treasure_arcade.mp3']);
+    this.load.audio('attack_heavy_beaver_sound', ['assets/audio/attack_heavy_beaver.mp3']);
     this.load.audio('attack_speedy_beaver_sound', ['assets/audio/attack_speedy_beaver.mp3']);
-    this.load.audio('attack_hacker_beaver_sound', ['assets/audio/attack_hacker_beaver.wav']);
+    this.load.audio('attack_hacker_beaver_sound', ['assets/audio/attack_hacker_beaver.mp3']);
   }
 
   async create() {
@@ -225,7 +225,6 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.attacked:
       case Const.Command.moved:
         {
-          console.log(response);
           console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
           if (!self.allPlayers[response.player.walletAddress]) {
             console.log('Setting up new player', response.player.walletAddress);
@@ -246,7 +245,7 @@ export default class MainScene extends Phaser.Scene {
           }
 
           if (
-            response.opponentPlayer &&
+            response.cmd == 'attacked' &&
             (response.player.walletAddress == self.mainPlayer.walletAddress ||
               response.opponentPlayer.walletAddress == self.mainPlayer.walletAddress)
           ) {
