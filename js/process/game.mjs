@@ -5,7 +5,9 @@ import { dig } from './cmd/dig.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { addCoins, scoreToDisplay } from '../common/tools.mjs';
 import { gameInfo, gameInfoAfterEnd, gameInfoBeforeStart } from './cmd/info.mjs';
-const { BEAVER_TYPES, GameObject, Scores, Map } = Const;
+import { setup } from './cmd/setup.mjs';
+
+const { GameObject, Scores, Map } = Const;
 
 // ------- Token Contract Config
 const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
@@ -51,22 +53,6 @@ export function handle(state, message) {
     setInvisibleGameObjectsForClient(state);
   }
 
-  if (message.Timestamp < state.start) {
-    console.log(`The game has not started yet`)
-    ao.result({
-      cmd: Const.Command.stats,
-      ...gameInfoBeforeStart(state)
-    })
-    return;
-  }
-  if (message.Timestamp > state.end) {
-    ao.result({
-      cmd: Const.Command.stats,
-      ...gameInfoAfterEnd(state, message.Owner)
-    })
-    return ;
-  }
-
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
 
   if (TOKEN_ACTIONS.includes(actionTagValue)) {
@@ -75,6 +61,27 @@ export function handle(state, message) {
 
   const action = JSON.parse(actionTagValue);
   action.walletAddress = message.Owner;
+
+  if (action.cmd !== Const.Command.setup &&
+    state.playWindow.begin &&
+    message.Timestamp < state.playWindow.begin) {
+    console.log(`The game has not started yet`)
+    ao.result({
+      cmd: Const.Command.stats,
+      ...gameInfoBeforeStart(state)
+    })
+    return;
+  }
+  if (action.cmd !== Const.Command.setup &&
+    state.playWindow.end &&
+    message.Timestamp > state.playWindow.end) {
+    ao.result({
+      cmd: Const.Command.stats,
+      ...gameInfoAfterEnd(state, message.Owner)
+    })
+    return;
+  }
+
   gameRoundTick(state, message);
   gamePlayerTick(state, action);
 
@@ -91,6 +98,12 @@ export function handle(state, message) {
         cmd: Const.Command.stats,
         ...gameInfo(state, message.Owner)
       })
+      break;
+    case Const.Command.setup:
+      ao.result({
+        cmd: Const.Command.info,
+        ...setup(state, action, message)
+      });
       break;
     case Const.Command.pick:
       const pickRes = pick(state, action);
@@ -179,8 +192,7 @@ function initState(message, state) {
   const result = {
     counter: 0,
     pos: 1,
-    start: message.Timestamp + 2 * 1000, // 2 seconds after init
-    end: message.Timestamp + 62 * 1000, // lasts for 60 seconds after start
+    playWindow: {},
     map: {
       width: Map.size,
       height: Map.size,

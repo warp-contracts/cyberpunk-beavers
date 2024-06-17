@@ -11,6 +11,7 @@ const Command = {
   register: 'register',
   registered: 'registered',
   info: 'info',
+  setup: 'setup',
   stats: 'stats',
   pick: 'pick',
   picked: 'picked',

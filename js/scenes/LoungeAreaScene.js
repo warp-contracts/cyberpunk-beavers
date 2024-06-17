@@ -30,7 +30,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.scene.start('connect-wallet-scene');
     }
 
-    this.header = this.add.text(100, 100, 'Please, have a seat and relax...', {
+    this.header = this.add.text(100, 100, 'Please, have a seat and relax... The game will start in', {
       fill: colors.yellow,
       font: '20px',
     });
@@ -67,7 +67,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
   handleMessage(response) {
     this.game.events.emit(EVENTS_NAME.nextMessage, response);
-    console.log(response);
     switch (response.cmd) {
       case Const.Command.stats:
         {
