@@ -2,7 +2,7 @@
   "name": "cyberpunk-beavers",
   "type": "module",
   "scripts": {
-    "dev": "yarn nodemon js/backend/main.mjs",
+    "dev": "yarn build && yarn nodemon js/backend/main.mjs",
     "serve:dev": "yarn live-server --port=9000 --open=index.html?env=dev",
     "serve:local": "yarn live-server --port=9001 --open=index.html?env=local",
     "serve:prod": "yarn live-server --port=9001 --open=index.html",
@@ -14,7 +14,7 @@
   "dependencies": {
     "warp-contracts": "^1.4.45",
     "warp-contracts-plugin-signature": "^1.0.20",
-    "warp-contracts-plugin-quickjs": "^1.1.5",
+    "warp-contracts-plugin-quickjs": "^1.1.10",
     "ws": "^8.16.0"
   },
   "devDependencies": {

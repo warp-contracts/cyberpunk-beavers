@@ -53,7 +53,9 @@ export function handle(state, message) {
     setInvisibleGameObjectsForClient(state);
   }
 
+  console.log(message);
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
+
 
   if (TOKEN_ACTIONS.includes(actionTagValue)) {
     return handleMessageFromToken(state, actionTagValue, message);

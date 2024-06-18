@@ -39,7 +39,6 @@ const messageListener = (target) => {
 function mockDataItem(data) {
   const withTags = window.warpAO.data(data);
   return {
-    ...withTags,
     Owner: localStorage.getItem('wallet_address'),
     Id: Math.random().toString(36).substring(2),
     Tags: withTags.tags,

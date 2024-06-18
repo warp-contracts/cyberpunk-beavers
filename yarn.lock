@@ -4640,10 +4640,10 @@ warp-contracts-plugin-deploy@^1.0.13:
     node-pre-gyp "^0.17.0"
     node-stdlib-browser "^1.2.0"
 
-warp-contracts-plugin-quickjs@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/warp-contracts-plugin-quickjs/-/warp-contracts-plugin-quickjs-1.1.5.tgz#ca3f10621868f5ea136f5373d749bb3a05d67abc"
-  integrity sha512-aB/kRea+Qp6UeHbL1gawt8dHnFhYgk2Con1sOXL4DAC8UHgCkfc+u2oIYBZ4aAFPXf7/sU6RmuLbSUcVwxxtQg==
+warp-contracts-plugin-quickjs@^1.1.10:
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/warp-contracts-plugin-quickjs/-/warp-contracts-plugin-quickjs-1.1.10.tgz#7182ecdd02ac05303c7da36c5abec31f4d9fe00a"
+  integrity sha512-m9iwwizlIr5ETIA0O/MEv5FJ9CBjFVXXp2J45Djj5Jse5bZvsYddDElU00yHeRT8Loyyo6HPiZ/EUhdSW1bImg==
   dependencies:
     pngjs "7.0.0"
     quickjs-emscripten "^0.29.1"
