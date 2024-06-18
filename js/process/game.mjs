@@ -4,7 +4,7 @@ import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { addCoins, scoreToDisplay } from '../common/tools.mjs';
-import { gameInfo, gameInfoAfterEnd, gameInfoBeforeStart } from './cmd/info.mjs';
+import { gameInfo, gameInfoAfterEnd, gameInfoBeforeStart, standInQueue } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
 
 const { GameObject, Scores, Map } = Const;
@@ -53,7 +53,6 @@ export function handle(state, message) {
     setInvisibleGameObjectsForClient(state);
   }
 
-  console.log(message);
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
 
 
@@ -70,6 +69,7 @@ export function handle(state, message) {
     console.log(`The game has not started yet`)
     ao.result({
       cmd: Const.Command.stats,
+      walletsQueue: standInQueue(state, action),
       ...gameInfoBeforeStart(state)
     })
     return;

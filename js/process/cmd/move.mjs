@@ -6,6 +6,10 @@ export function movePlayer(state, action) {
   const walletAddress = action.walletAddress;
   const dir = action.dir;
   const player = state.players[walletAddress];
+  if (!player) {
+    console.log(`Cannot move ${walletAddress} Player not registered`)
+    return { player: { error: 'Player not registered' } }
+  }
   if (player.stats.ap.current < 1) {
     console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
     return { player, moved: false };

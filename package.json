@@ -8,6 +8,7 @@
     "serve:prod": "yarn live-server --port=9001 --open=index.html",
     "deploy-contract:local": "yarn build && node js/tools/deploy-spawn.js --env local && node js/tools/transfer-token.mjs --env local",
     "deploy-contract:prod": "yarn build && node js/tools/deploy-spawn.js --env prod && node js/tools/transfer-token.mjs --env prod",
+    "deploy-contract:prod-halfHour": "yarn build && node js/tools/deploy-spawn.js --env prod && node js/tools/transfer-token.mjs --env prod && node js/tools/setup-game-contract.mjs --env prod",
     "test": "node build.js && vitest",
     "build": "node build.js"
   },

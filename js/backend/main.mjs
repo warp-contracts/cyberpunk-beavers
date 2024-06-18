@@ -39,8 +39,6 @@ wss.on('connection', (ws) => {
   ws.on('message', async (req) => {
     // console.log('WS REQ: %s', message);
     const message = JSON.parse(req);
-    console.log(`------ ${message.Id}`);
-    console.log(message);
     txId = message.Id;
     const result = await quickJs.handle(message, processEnv, state);
     state = result.State;

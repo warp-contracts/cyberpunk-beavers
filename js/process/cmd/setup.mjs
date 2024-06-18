@@ -1,29 +1,47 @@
+const MilisecondsOf = {
+  'nextFullHour': 60 * 60 * 1000,
+  'nextHalfHour': 30 * 60 * 1000,
+};
+
+const SetupTimes = {
+  nextFullHour: 'nextFullHour',
+  nextHalfHour: 'nextHalfHour',
+  custom: 'custom',
+};
+
 export function setup(state, action, message) {
-  console.log(`setup`, action);
-  console.log(`ao`, ao.env.Process);
+  console.log(`Setup`, action);
   if (ao.env.Process.Owner !== message.Owner) {
     console.log(`Unauthorized setup attempt by`, message.Owner);
     return {
-      playWindow: state.playWindow
-    }
+      playWindow: state.playWindow,
+    };
   }
 
-  if (action.type === 'nextFullHour') {
-    const nextFullHour = (Math.floor(message.Timestamp/3600000) + 1) * 3600000;
-    state.playWindow = {
-      begin: nextFullHour,
-      end: nextFullHour + (5 * 60 * 1000)
-    }
-    console.log(`Setup nextFullHour`, state.playWindow);
-  } else {
-    if (!state.playWindow.begin) {
+  switch (action.type) {
+    case SetupTimes.nextFullHour:
+    case SetupTimes.nextHalfHour:
+      const ms = MilisecondsOf[action.type];
+      const nextFullHour = (Math.floor(message.Timestamp / ms) + 1) * ms;
+      const duration = action.duration || (5 * 60 * 1000);
+      state.playWindow = {
+        begin: nextFullHour,
+        end: nextFullHour + duration,
+      };
+      console.log(`Setup ${action.type}`, state.playWindow);
+      break;
+
+    case SetupTimes.custom:
       state.playWindow.begin = action.start;
-    }
-    if (!state.playWindow.end) {
       state.playWindow.end = action.end;
-    }
+      console.log(`Setup custom`, state.playWindow);
+      break;
+
+    default:
+      console.log(`Unknown setup type`, action.type, state.playWindow);
+      break;
   }
   return {
-    playWindow: state.playWindow
-  }
+    playWindow: state.playWindow,
+  };
 }

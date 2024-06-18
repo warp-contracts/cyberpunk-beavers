@@ -4,7 +4,6 @@ import { colors } from '../utils/style.js';
 import { serverConnection } from '../lib/serverConnection.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
-  round;
 
   constructor() {
     super('lounge-area-scene');
@@ -36,6 +35,11 @@ export default class LoungeAreaScene extends Phaser.Scene {
     });
 
     this.tt = this.add.text(100, 200, '--:--:--', {
+      fill: colors.yellow,
+      font: '20px',
+    });
+
+    this.wallets = this.add.text(100, 300, 'Queue is empty', {
       fill: colors.yellow,
       font: '20px',
     });
@@ -84,6 +88,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
               }
             } else if (Date.now() < response.start) {
               this.gameStart = response.start;
+              this.displayWaitingList(response);
               this.countdown();
             } else {
               this.displayFinalResult(response);
@@ -102,5 +107,11 @@ export default class LoungeAreaScene extends Phaser.Scene {
     TOKEN ${st?.coins.transferred}\n
     Round ${st?.round.last}\n
     HP: ${st?.hp.current}\n`);
+  }
+
+  displayWaitingList(response) {
+    console.log(`Waiting queue`, response.walletsQueue)
+    const walletQueue = response.walletsQueue.join('\n\n');
+    this.wallets.setText(`Waiting list:\n\n${walletQueue}`);
   }
 }
