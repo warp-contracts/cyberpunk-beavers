@@ -2,6 +2,9 @@ const EVENTS_NAME = {
   currentMove: 'currentMove',
 };
 
+const EMPTY_TILE = -1;
+
+
 const Command = {
   attack: 'attack',
   attacked: 'attacked',
@@ -126,4 +129,5 @@ export default {
   Queue,
   Scores,
   Tile,
+  EMPTY_TILE
 };

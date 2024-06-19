@@ -20,14 +20,16 @@
   },
   "devDependencies": {
     "@permaweb/aoconnect": "^0.0.55",
-    "live-server": "1.2.1",
+    "arweave": "^1.15.1",
     "esbuild": "^0.20.2",
+    "live-server": "1.2.1",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
     "replace-in-file": "^7.1.0",
+    "replace-in-files": "^3.0.0",
     "vitest": "^1.6.0",
     "warp-arbundles": "^1.0.4",
     "warp-contracts-plugin-deploy": "^1.0.13",
-    "replace-in-files": "^3.0.0"
+    "@ardrive/turbo-sdk": "latest"
   }
 }

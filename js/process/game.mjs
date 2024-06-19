@@ -7,8 +7,9 @@ import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { scoreToDisplay } from '../common/tools.mjs';
 import { gameFinished, gameInfo, gameNotStarted, standInQueue } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
+import {__init} from "./cmd/__init.js";
 
-const { GameObject, Scores, Map } = Const;
+const { GameObject, Scores, Map, AllowedTiles, GroundTilesDef } = Const;
 
 // ------- Token Contract Config
 const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
@@ -52,11 +53,8 @@ function restrictedAccess(state, action, ts) {
 export function handle(state, message) {
   console.log("We're in");
   state.randomCounter = 0;
-  if (!state.hasOwnProperty('map')) {
-    state = Object.assign(state, initState(message, state));
-    setVisibleGameObjects(state);
-    setInvisibleGameObjects(state);
-    setInvisibleGameObjectsForClient(state);
+  if (state.hasOwnProperty('rawMap')) {
+    __init(state, message);
   }
 
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
@@ -164,6 +162,8 @@ export function handle(state, message) {
         ...registerPlayer(state, action),
         map: {
           groundTilemap: state.groundTilemap,
+          decorationTilemap: state.decorationTilemap,
+          obstaclesTilemap: state.obstaclesTilemap,
           gameObjectsTilemap: state.gameObjectsTilemap,
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
@@ -176,6 +176,8 @@ export function handle(state, message) {
         player: state.players[message.Owner],
         map: {
           groundTilemap: state.groundTilemap,
+          decorationTilemap: state.decorationTilemap,
+          obstaclesTilemap: state.obstaclesTilemap,
           gameObjectsTilemap: state.gameObjectsTilemap,
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
@@ -185,103 +187,6 @@ export function handle(state, message) {
     default:
       throw new ProcessError(`Unknown action: ${action.cmd}`);
   }
-}
-
-let i = -1;
-let j = 0;
-const groundTiles = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 3];
-
-function initState(message, state) {
-  const result = {
-    counter: 0,
-    pos: 1,
-    playWindow: {},
-    map: {
-      width: Map.size,
-      height: Map.size,
-    },
-    gameObjectsTiles: [GameObject.ap, GameObject.hp, GameObject.none],
-    gameObjectsRarity: 10,
-    gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],
-    gameTreasuresTilesForClient: [GameObject.none],
-    gameTreasuresRarity: 50,
-    round: {
-      current: 0,
-      start: message.Timestamp, //ms
-      interval: 10_000, //ms
-    },
-    walletsQueue: [],
-    walletsBench: [],
-    players: {},
-    playersOnTiles: Array(Map.size)
-      .fill([])
-      .map(() => Array(Map.size)),
-    groundTilemap: Array(Map.size)
-      .fill([])
-      .map(() => {
-        i++;
-        j = 0;
-        if (i === 0) {
-          return Array(Map.size).fill(1);
-        }
-        if (i === Map.size - 1) {
-          return Array(Map.size).fill(1);
-        }
-        return Array(Map.size)
-          .fill(0)
-          .map(() => {
-            j++;
-            if (j == 1 || j == Map.size) {
-              return 1;
-            }
-            state.randomCounter++;
-            const randomValue = getRandomNumber(0, groundTiles.length - 1, state.randomCounter);
-            return groundTiles[randomValue];
-          });
-      }),
-  };
-
-  return result;
-}
-
-function setVisibleGameObjects(state) {
-  state.gameObjectsTilemap = setGameObjectsTilesOnMap(state, state.gameObjectsTiles, state.gameObjectsRarity);
-}
-
-function setInvisibleGameObjects(state) {
-  const gameTreasuresTilesToPropagate = state.gameTreasuresTiles.filter((t) => t != GameObject.hole);
-  state.gameTreasuresTilemap = setGameObjectsTilesOnMap(
-    state,
-    gameTreasuresTilesToPropagate,
-    state.gameTreasuresRarity
-  );
-}
-
-function setInvisibleGameObjectsForClient(state) {
-  state.gameTreasuresTilemapForClient = setGameObjectsTilesOnMap(state, state.gameTreasuresTilesForClient, 0);
-}
-
-function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
-  for (let i = 0; i < noneTileFrequency; i++) {
-    tilesToPropagate.push(GameObject.none);
-  }
-
-  return state.groundTilemap.map((a) => {
-    return a.map((b) => {
-      if (b == 2) {
-        state.randomCounter++;
-        const randomValue = getRandomNumber(0, tilesToPropagate.length - 1, state.randomCounter);
-        return tilesToPropagate[randomValue].tile;
-      } else {
-        return 2;
-      }
-    });
-  });
-}
-
-function getRandomNumber(min, max, randomCounter) {
-  const randomValue = Math.random(randomCounter);
-  return Math.floor(randomValue * (max - min + 1)) + min;
 }
 
 function gameRoundTick(state, message) {

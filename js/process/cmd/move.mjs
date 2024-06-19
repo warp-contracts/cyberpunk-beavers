@@ -1,6 +1,6 @@
 import Const from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
-const { GameObject, Map } = Const;
+const { GameObject, Map, ObstacleTiles } = Const;
 
 export function movePlayer(state, action) {
   const walletAddress = action.walletAddress;
@@ -28,7 +28,7 @@ export function movePlayer(state, action) {
   } else if (state.playersOnTiles[newPos.y][newPos.x]) {
     console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${state.playersOnTiles[newPos.y][newPos.x]}`);
     return { player };
-  } else if ([1, 3].includes(state.groundTilemap[newPos.y][newPos.x])) {
+  } else if (state.obstaclesTilemap[newPos.y][newPos.x] >= 0) {
     console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
     return { player };
   } else {
