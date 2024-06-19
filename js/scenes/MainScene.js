@@ -1,10 +1,9 @@
 import Player from '../Player.js';
-import Const, { BEAVER_TYPES } from '../common/const.mjs';
+import Const, {BEAVER_TYPES} from '../common/const.mjs';
 import MainPlayer from '../MainPlayer.js';
-import { Text } from '../objects/Text.js';
-import { EVENTS_NAME } from '../utils/events.js';
-import { colors } from '../utils/style.js';
-import { serverConnection } from '../lib/serverConnection.js';
+import {Text} from '../objects/Text.js';
+import {EVENTS_NAME} from '../utils/events.js';
+import {serverConnection} from '../lib/serverConnection.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -28,26 +27,30 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     console.log('Main Scene - 2. Preload');
-    this.load.image('cyberpunk_bg', 'assets/images/sand_map_tiles_min.png');
+    this.load.image('map_layer_ground', 'assets/maps/tilemaps/ground_tilemap.png');
+    this.load.image('map_layer_decoration', 'assets/maps/tilemaps/decorations_tilemap.png');
+    this.load.image('map_layer_obstacles', 'assets/maps/tilemaps/obstacles_tilemap.png');
+
     this.load.image('cyberpunk_game_objects', 'assets/images/ap_hp.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
-    this.load.image('hacker_beaver_48', 'assets/images/hacker_beaver_48px.png');
-    this.load.image('heavy_beaver_48', 'assets/images/heavy_beaver_48px.png');
-    this.load.image('speedy_beaver_48', 'assets/images/speedy_beaver_48px.png');
+
+    this.load.image('hacker_beaver_48', 'assets/images/beavers/hacker_beaver_48px.png');
+    this.load.image('heavy_beaver_48', 'assets/images/beavers/heavy_beaver_48px.png');
+    this.load.image('speedy_beaver_48', 'assets/images/beavers/speedy_beaver_48px.png');
     this.load.atlas(
       'heavy_beaver_anim',
-      'assets/images/heavy_beaver_anim.png',
-      'assets/images/heavy_beaver_anim_atlas.json'
+      'assets/images/beavers/heavy_beaver_anim.png',
+      'assets/images/beavers/heavy_beaver_anim_atlas.json'
     );
     this.load.atlas(
       'speedy_beaver_anim',
-      'assets/images/speedy_beaver_anim.png',
-      'assets/images/speedy_beaver_anim_atlas.json'
+      'assets/images/beavers/speedy_beaver_anim.png',
+      'assets/images/beavers/speedy_beaver_anim_atlas.json'
     );
     this.load.atlas(
       'hacker_beaver_anim',
-      'assets/images/hacker_beaver_anim.png',
-      'assets/images/hacker_beaver_anim_atlas.json'
+      'assets/images/beavers/hacker_beaver_anim.png',
+      'assets/images/beavers/hacker_beaver_anim_atlas.json'
     );
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
@@ -152,10 +155,13 @@ export default class MainScene extends Phaser.Scene {
     };
   }
 
-  initMap(level1, level2, level3) {
-    this.groundLayer = this.createLayer(level1, 'cyberpunk_bg', 0);
-    this.gameObjectsLayer = this.createLayer(level2, 'cyberpunk_game_objects', 2);
-    this.gameTreasuresLayer = this.createLayer(level3, 'cyberpunk_game_treasures', 1);
+  initMap({groundLayer, decorationLayer, obstaclesLayer, treasuresLayer, objectsLayer}) {
+    console.log(obstaclesLayer);
+    this.groundLayer = this.createLayer(groundLayer, 'map_layer_ground', 0);
+    this.decorationLayer = this.createLayer(decorationLayer, 'map_layer_decoration', 1);
+    this.obstaclesLayer = this.createLayer(obstaclesLayer, 'map_layer_obstacles', 2);
+    this.gameTreasuresLayer = this.createLayer(treasuresLayer, 'cyberpunk_game_treasures', 3);
+    this.gameObjectsLayer = this.createLayer(objectsLayer, 'cyberpunk_game_objects', 4);
   }
 
   initCamera() {
@@ -201,11 +207,13 @@ export default class MainScene extends Phaser.Scene {
             this.beaverId = response.player.beaverId;
             self.round = response.round;
             if (response.player.walletAddress === this.walletAddress) {
-              self.initMap(
-                response.map.groundTilemap,
-                response.map.gameObjectsTilemap,
-                response.map.gameTreasuresTilemapForClient
-              );
+              self.initMap({
+                groundLayer: response.map.groundTilemap,
+                decorationLayer: response.map.decorationTilemap,
+                obstaclesLayer: response.map.obstaclesTilemap,
+                treasuresLayer: response.map.gameTreasuresTilemapForClient,
+                objectsLayer: response.map.gameObjectsTilemap,
+              });
               self.createMainPlayer(response.player);
               self.initCamera();
             }
@@ -215,71 +223,69 @@ export default class MainScene extends Phaser.Scene {
         break;
 
       case Const.Command.attacked:
-      case Const.Command.moved:
-        {
-          console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
-          if (!self.allPlayers[response.player.walletAddress]) {
-            console.log('Setting up new player', response.player.walletAddress);
-            const player = self.createPlayer(response.player);
-            this.game.events.emit(EVENTS_NAME.updatePlayers, player);
-          } else {
-            self.allPlayers[response.player.walletAddress].moveTo(response.player);
-          }
-
-          if (response.player.onGameObject != null) {
-            console.log(`Player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
-            this.mainPlayer.onGameObject = response.player.onGameObject;
-          }
-
-          if (response.player.onGameTreasure != null) {
-            console.log(`Player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
-            this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
-          }
-
-          if (
-            response.cmd == 'attacked' &&
-            (response.player.walletAddress == self.mainPlayer.walletAddress ||
-              response.opponentPlayer.walletAddress == self.mainPlayer.walletAddress)
-          ) {
-            switch (response.player.beaverId) {
-              case BEAVER_TYPES.heavy_beaver.name:
-                this.attackHeavyBeaverSound.play();
-                break;
-              case BEAVER_TYPES.hacker_beaver.name:
-                this.attackHackerBeaverSound.play();
-                break;
-              case BEAVER_TYPES.speedy_beaver.name:
-                this.attackSpeedyBeaverSound.play();
-                break;
-              default:
-                console.log('Beaver type not found');
-            }
-          }
-
-          this.updateStats(response.player, response.stats);
-          this.updateStats(response.opponentPlayer, response.opponentStats);
-          this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
-            forOpponent: {
-              score: response.opponentScoreToDisplay,
-              walletAddress: response.opponentPlayer?.walletAddress,
-            },
-          });
+      case Const.Command.moved: {
+        console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
+        if (!self.allPlayers[response.player.walletAddress]) {
+          console.log('Setting up new player', response.player.walletAddress);
+          const player = self.createPlayer(response.player);
+          this.game.events.emit(EVENTS_NAME.updatePlayers, player);
+        } else {
+          self.allPlayers[response.player.walletAddress].moveTo(response.player);
         }
+
+        if (response.player.onGameObject != null) {
+          console.log(`Player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
+          this.mainPlayer.onGameObject = response.player.onGameObject;
+        }
+
+        if (response.player.onGameTreasure != null) {
+          console.log(`Player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
+          this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
+        }
+
+        if (
+          response.cmd == 'attacked' &&
+          (response.player.walletAddress == self.mainPlayer.walletAddress ||
+            response.opponentPlayer.walletAddress == self.mainPlayer.walletAddress)
+        ) {
+          switch (response.player.beaverId) {
+            case BEAVER_TYPES.heavy_beaver.name:
+              this.attackHeavyBeaverSound.play();
+              break;
+            case BEAVER_TYPES.hacker_beaver.name:
+              this.attackHackerBeaverSound.play();
+              break;
+            case BEAVER_TYPES.speedy_beaver.name:
+              this.attackSpeedyBeaverSound.play();
+              break;
+            default:
+              console.log('Beaver type not found');
+          }
+        }
+
+        this.updateStats(response.player, response.stats);
+        this.updateStats(response.opponentPlayer, response.opponentStats);
+        this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
+          forOpponent: {
+            score: response.opponentScoreToDisplay,
+            walletAddress: response.opponentPlayer?.walletAddress,
+          },
+        });
+      }
         break;
 
-      case Const.Command.picked:
-        {
-          if (response.picked) {
-            console.log(`Player picked a game object.`);
-            this.pickUpSound.play();
-            this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
-            if (response.player.onGameTreasure.type == 'treasure') {
-              this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
-            }
+      case Const.Command.picked: {
+        if (response.picked) {
+          console.log(`Player picked a game object.`);
+          this.pickUpSound.play();
+          this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
+          if (response.player.onGameTreasure.type == 'treasure') {
+            this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
           }
-          this.updateStats(response.player, response.stats);
-          response.picked && this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         }
+        this.updateStats(response.player, response.stats);
+        response.picked && this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+      }
         break;
 
       case Const.Command.digged: {
@@ -405,7 +411,7 @@ export default class MainScene extends Phaser.Scene {
   createScoreTween(target) {
     this.tweens.add({
       targets: target,
-      alpha: { from: 0, to: 1 },
+      alpha: {from: 0, to: 1},
       ease: 'Power2',
       duration: 500,
       repeat: 0,
@@ -414,13 +420,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   addSounds() {
-    this.backgroundMusic = this.sound.add('background_music', { loop: true, volume: 0.25 });
-    this.pickUpSound = this.sound.add('pick_up_sound', { loop: false, volume: 3 });
-    this.digSound = this.sound.add('dig_sound', { loop: false, volume: 0.5 });
-    this.treasureSound = this.sound.add('treasure_sound', { loop: false, volume: 0.5 });
-    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', { loop: false, volume: 0.5 });
-    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 0.5 });
-    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 0.5 });
+    this.backgroundMusic = this.sound.add('background_music', {loop: true, volume: 0.25});
+    this.pickUpSound = this.sound.add('pick_up_sound', {loop: false, volume: 3});
+    this.digSound = this.sound.add('dig_sound', {loop: false, volume: 0.5});
+    this.treasureSound = this.sound.add('treasure_sound', {loop: false, volume: 0.5});
+    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', {loop: false, volume: 0.5});
+    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', {loop: false, volume: 0.5});
+    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', {loop: false, volume: 0.5});
 
     if (window.warpAO.config.env !== 'local') {
       this.backgroundMusic.play();

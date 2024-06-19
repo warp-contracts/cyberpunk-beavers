@@ -1,7 +1,5 @@
 import Const from './common/const.mjs';
 import Player from './Player.js';
-import { Tag } from 'warp-contracts';
-import { createData } from 'warp-arbundles';
 import { EVENTS_NAME } from './utils/events.js';
 
 export default class MainPlayer extends Player {

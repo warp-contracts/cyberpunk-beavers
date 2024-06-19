@@ -1,8 +1,11 @@
 export default {
-  processId_prod: 'oPdiM0JkyyiKAUagtZGjBa42oEdT_IOtVWRAHph08tM',
-  moduleId_prod: 'pXAcMt_4LK95YFiyzkC5uV-cqfITJgMj1k3oHoB7r2s',
-  processId_local: 'q6r7exgHSKMDekqj_NsyP1A31uZuXThaS9WCcepJ_l0',
-  moduleId_local: 'rLHOtbhoJ2T6SLurj8Ms_IhNS8hkPeLGZkBbB8UWJBo',
+  processId_prod: 'X-_osKXY5f3ToiFGIAJuNNl7NzvlHh1onX1pLu3NCUQ',
+  moduleId_prod: 'uoj9VUcHGiNyGHtfHUmWEFjTxNUW9Db2Qlfqve0XDfU',
+  mapId_prod: 'RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U',
+  processId_local: 'agZYrTM1X9pMixnUg3JazWrdsOtjE2fmE6GMcIsWaZ4',
+  moduleId_local: 'qNYSmt7eTn8CkOeKG_D-QlLQ1DGoIUexrZC58LMKeEY',
+  mapId_local: 'RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U',
   processId_dev: 'N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU',
   moduleId_dev: 'ZGU4Q6U_XBOVRxkTz7cxYKC7-iWdYg7TVHWihel7z9I',
+  mapId_dev: 'RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U',
 };

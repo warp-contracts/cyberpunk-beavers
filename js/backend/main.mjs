@@ -28,8 +28,9 @@ const processEnv = {
   }
 }
 
-let state = {};
 let txId = null;
+const map = JSON.parse(fs.readFileSync('./assets/maps/map-2-30x30.json', 'utf-8'));
+let state = { rawMap: map };
 
 // Event listener for WebSocket connections
 wss.on('connection', (ws) => {

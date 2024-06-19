@@ -23,17 +23,18 @@ export default class StatsScene extends Phaser.Scene {
 
   preload() {
     console.log('Stats Scene - 2. Preload');
-    this.load.image('hacker_beaver_portrait', 'assets/images/hacker_beaver_portrait.png');
-    this.load.image('heavy_beaver_portrait', 'assets/images/heavy_beaver_portrait.png');
-    this.load.image('speedy_beaver_portrait', 'assets/images/speedy_beaver_portrait.png');
+    this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver_portrait.png');
+    this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver_portrait.png');
+    this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver_portrait.png');
     this.load.image('time_bar', 'assets/images/time_bar.png');
-    this.load.image('D', 'assets/images/D.png');
-    this.load.image('P', 'assets/images/P.png');
-    this.load.image('SPACE', 'assets/images/SPACE.png');
-    this.load.image('ARROWDOWN', 'assets/images/ARROWDOWN.png');
-    this.load.image('ARROWLEFT', 'assets/images/ARROWLEFT.png');
-    this.load.image('ARROWRIGHT', 'assets/images/ARROWRIGHT.png');
-    this.load.image('ARROWUP', 'assets/images/ARROWUP.png');
+
+    this.load.image('ARROWDOWN', 'assets/images/keys/ARROWDOWN.png');
+    this.load.image('ARROWLEFT', 'assets/images/keys/ARROWLEFT.png');
+    this.load.image('ARROWRIGHT', 'assets/images/keys/ARROWRIGHT.png');
+    this.load.image('ARROWUP', 'assets/images/keys/ARROWUP.png');
+    this.load.image('D', 'assets/images/keys/D.png');
+    this.load.image('P', 'assets/images/keys/P.png');
+    this.load.image('SPACE', 'assets/images/keys/SPACE.png');
   }
 
   create() {
@@ -239,7 +240,7 @@ export default class StatsScene extends Phaser.Scene {
     clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);">
     <div style="display: flex; justify-content: space-between; align-items: center;">
     <img
-src="assets/images/${this.beaverChoice}_portrait.png"
+src="assets/images/beavers/${this.beaverChoice}_portrait.png"
 width=72
 height=72/>
 <div style="padding-right: 10px;" id="stats-scene-wallet-address">${this.walletAddress && this.walletAddress.substr(0, 3) + '...' + this.walletAddress.substr(this.walletAddress.length - 3)}</div>
@@ -306,7 +307,7 @@ height=72/>
     return `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;" id="player-box">
       <img
-  src="assets/images/${player.beaverChoice}_portrait.png"
+  src="assets/images/beavers/${player.beaverChoice}_portrait.png"
   width=48
   height=48/>
   <div style="display:flex; flex-grow: 1;"> </div>

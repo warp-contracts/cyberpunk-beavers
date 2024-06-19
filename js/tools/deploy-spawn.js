@@ -2,8 +2,8 @@ import { Tag, WarpFactory } from 'warp-contracts';
 import { ArweaveSigner, DeployPlugin } from 'warp-contracts-plugin-deploy';
 import { createData } from 'warp-arbundles';
 import { readFileSync } from 'fs';
-import pkg from 'replace-in-files';
-const replaceInFiles = pkg;
+import { replaceId } from './replace-id.js';
+import Arweave from 'arweave';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
@@ -16,6 +16,22 @@ if (envIdx < 0) {
 const env = process.argv[envIdx + 1];
 
 console.info(`Deploying for ${env} env.`);
+
+const mapTxId = 'RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U';
+
+async function readMapFromArweave() {
+  const arweave = Arweave.init({
+    host: 'arweave.net',
+    port: 443,
+    protocol: 'https',
+  });
+  try {
+    const txData = await arweave.transactions.getData(mapTxId,{decode: true, string: true});
+    return JSON.parse(txData);
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 async function deploy() {
   const module = readFileSync('./dist/output.js', 'utf-8');
@@ -33,11 +49,11 @@ async function deploy() {
   const srcTx = await warp.createSource({ src: module, tags: moduleTags }, signer);
   const srcTxId = await warp.saveSource(srcTx);
   console.log('MODULE_ID=', srcTxId);
-  replaceId('moduleId', env, srcTxId);
+  replaceId(`moduleId_${env}`, srcTxId);
   return srcTxId;
 }
 
-async function spawn(moduleId) {
+async function spawn(moduleId, mapJson) {
   const processTags = [
     new Tag('Data-Protocol', 'ao'),
     new Tag('Variant', 'ao.TN.1'),
@@ -46,10 +62,10 @@ async function spawn(moduleId) {
     new Tag('Scheduler', 'jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M'),
     new Tag('SDK', 'ao'),
     new Tag('Content-Type', 'text/plain'),
-    new Tag('Name', 'asia'),
+    new Tag('Map-From-Tx', 'RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U'),
   ];
 
-  const data = JSON.stringify({ counter: {} });
+  const data = JSON.stringify({rawMap: mapJson, mapApi: "v1"}, );
   const processDataItem = createData(data, signer, { tags: processTags });
   await processDataItem.sign(signer);
 
@@ -65,23 +81,9 @@ async function spawn(moduleId) {
   }).then((res) => res.json());
 
   console.log('PROCESS_ID=', processResponse.id);
-  replaceId('processId', env, processResponse.id);
+  replaceId(`processId_${env}`, processResponse.id);
 }
 
-function replaceId(prefix, env, newValue) {
-  replaceInFiles({
-    files: './js/config/warp-ao-ids.js',
-    from: new RegExp(`(${prefix}_${env}:\\s*')([^']+)(')`),
-    to: `$1${newValue}$3`,
-  })
-    .then(({ changedFiles, countOfMatchesByPaths }) => {
-      console.log('Count of matches by paths:', countOfMatchesByPaths);
-    })
-    .catch((error) => {
-      console.error('Error occurred:', error);
-    });
-}
-
-deploy()
-  .then(spawn)
+Promise.all([deploy(), readMapFromArweave()])
+  .then(([srcId, mapJson]) => spawn(srcId, mapJson))
   .then(() => console.log(``));
