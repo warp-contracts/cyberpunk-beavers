@@ -68,7 +68,6 @@ export default class ConnectWalletScene extends Phaser.Scene {
     window.warpAO.generatedSigner = new ArweaveSigner(jwk);
     console.log('Generated wallet address', address);
     localStorage.setItem('wallet_address', address);
-    localStorage.removeItem('player');
     this.scene.start('lounge-area-scene', {
       walletAddress: address,
     });

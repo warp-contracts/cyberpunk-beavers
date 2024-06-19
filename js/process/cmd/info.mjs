@@ -19,10 +19,11 @@ export function gameInfo(state, owner) {
   }
 }
 
-export function gameInfoBeforeStart(state) {
+export function gameInfoBeforeStart(state, owner) {
   return {
     stats: {},
     active: false,
+    beaverId: state.players[owner]?.beaverId,
     start: state.playWindow.begin,
     end: state.playWindow.end
   }

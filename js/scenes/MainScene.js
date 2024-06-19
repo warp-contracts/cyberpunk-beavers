@@ -19,6 +19,7 @@ export default class MainScene extends Phaser.Scene {
 
   init(data) {
     console.log('Main Scene - 1. Init', data);
+    this.beaverId = data.beaverId;
     this.beaverChoice = data.beaverChoice;
     this.walletAddress = data.walletAddress;
     this.scene.launch('main-scene-loading');
@@ -73,13 +74,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async registerPlayer() {
-    const player = JSON.parse(localStorage.getItem('player'));
-    console.log(`Found player info in local storage`, player);
-    if (player) {
-      console.log('Joinning game...');
+    if (this.beaverId) {
+      console.log(`Beaver has already been previously, Joinning game...`, this.beaverId);
       await this.server.send({ cmd: Const.Command.join });
     } else {
-      console.log('register player...');
+      console.log('Register player...');
       await this.server.send({
         cmd: Const.Command.register,
         beaverId: this.beaverChoice,
@@ -105,7 +104,7 @@ export default class MainScene extends Phaser.Scene {
     });
     this.statsScene = this.scene.get('stats-scene');
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
-    this.statsScene.beaverChoice = this.beaverChoice;
+    this.statsScene.beaverChoice = this.beaverId || this.beaverChoice;
     this.statsScene.stats = this.mainPlayer.stats;
     this.statsScene.allPlayers = this.allPlayers;
 
@@ -197,16 +196,9 @@ export default class MainScene extends Phaser.Scene {
           console.log('Registered player', response);
           if (response.error) {
             console.error('Failed to join the game', response.error);
-            localStorage.removeItem('player');
             self.scene.start('connect-wallet-scene');
           } else {
-            localStorage.setItem(
-              'player',
-              JSON.stringify({
-                id: response.player.walletAddress,
-                beaverId: response.player.beaverId,
-              })
-            );
+            this.beaverId = response.player.beaverId;
             self.round = response.round;
             if (response.player.walletAddress === this.walletAddress) {
               self.initMap(

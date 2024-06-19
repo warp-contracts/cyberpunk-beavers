@@ -12,13 +12,6 @@ export default class CharacterPickScene extends Phaser.Scene {
   init(data) {
     console.log(`Player Pick Scene - 1. Init`, data);
     this.initData = data;
-    const player = JSON.parse(localStorage.getItem('player'));
-    if (player?.beaverId) {
-      this.scene.start('main-scene', {
-        ...this.initData,
-        beaverChoice: player.beaverId,
-      });
-    }
   }
 
   preload() {

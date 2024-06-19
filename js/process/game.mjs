@@ -70,7 +70,7 @@ export function handle(state, message) {
     ao.result({
       cmd: Const.Command.stats,
       walletsQueue: standInQueue(state, action),
-      ...gameInfoBeforeStart(state)
+      ...gameInfoBeforeStart(state, message.Owner)
     })
     return;
   }

@@ -4,6 +4,7 @@ import { colors } from '../utils/style.js';
 import { serverConnection } from '../lib/serverConnection.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
+  beaverId
 
   constructor() {
     super('lounge-area-scene');
@@ -58,7 +59,11 @@ export default class LoungeAreaScene extends Phaser.Scene {
     const now = new Date();
     let diff = Math.round((this.gameStart - now)/1000);
     if (diff <= 0) {
-      this.scene.start('player-pick-scene', { walletAddress: this.walletAddress });
+      if (this.beaverId) {
+        this.scene.start('main-scene', { walletAddress: this.walletAddress, beaverId: this.beaverId });
+      } else {
+        this.scene.start('player-pick-scene', { walletAddress: this.walletAddress });
+      }
     } else {
       const hour = Math.floor(diff / 3600);
       diff -= hour * 3600;
@@ -78,11 +83,12 @@ export default class LoungeAreaScene extends Phaser.Scene {
             console.error('Failed to fetch game info', response.error);
             this.scene.start('connect-wallet-scene');
           } else {
+            this.beaverId = response.beaverId;
             if (response.active) {
               if (response.beaverId) {
                 this.scene.start('main-scene', {
                   walletAddress: this.walletAddress,
-                  beaverChoice: response.beaverId });
+                  beaverId: response.beaverId });
               } else {
                 this.scene.start('player-pick-scene', { walletAddress: this.walletAddress });
               }
