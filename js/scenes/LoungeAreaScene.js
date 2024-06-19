@@ -2,9 +2,11 @@ import Const from '../common/const.mjs';
 import { EVENTS_NAME } from '../utils/events.js';
 import { colors } from '../utils/style.js';
 import { serverConnection } from '../lib/serverConnection.js';
+import { TextButton } from '../objects/TextButton.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId
+  enqueueButton
 
   constructor() {
     super('lounge-area-scene');
@@ -25,17 +27,17 @@ export default class LoungeAreaScene extends Phaser.Scene {
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnection;
       this.server.subscribe(this);
-      this.server.send({ cmd: Const.Command.info })
+      this.server.send({ cmd: Const.Command.info });
     } else {
       this.scene.start('connect-wallet-scene');
     }
 
-    this.header = this.add.text(100, 100, 'Please, have a seat and relax... The game will start in', {
+    this.header = this.add.text(100, 100, 'Please, have a seat and relax... The game will start when the time comes..\n\n', {
       fill: colors.yellow,
       font: '20px',
     });
 
-    this.tt = this.add.text(100, 200, '--:--:--', {
+    this.tt = this.add.text(100, 150, '--:--:--', {
       fill: colors.yellow,
       font: '20px',
     });
@@ -76,6 +78,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
   handleMessage(response) {
     this.game.events.emit(EVENTS_NAME.nextMessage, response);
+    console.log(response);
     switch (response.cmd) {
       case Const.Command.stats:
         {
@@ -93,6 +96,12 @@ export default class LoungeAreaScene extends Phaser.Scene {
                 this.scene.start('player-pick-scene', { walletAddress: this.walletAddress });
               }
             } else if (Date.now() < response.start) {
+              if (!response.walletsQueue.includes(this.walletAddress) &&
+                !response.walletsBench.includes(this.walletAddress)) {
+                this.displayEnqueueButton();
+              } else if (this.enqueueButton) {
+                this.enqueueButton.destroy();
+              }
               this.gameStart = response.start;
               this.displayWaitingList(response);
               this.countdown();
@@ -103,6 +112,25 @@ export default class LoungeAreaScene extends Phaser.Scene {
         }
         break;
     }
+  }
+
+  displayEnqueueButton() {
+    const self = this;
+    this.enqueueButton = new TextButton(
+      this,
+      100,
+      200,
+      'Would you date to join?',
+      {
+        fill: colors.red,
+        font: '20px',
+      },
+      async () => {
+        setTimeout(async () => {
+          await self.server.send({ cmd: Const.Command.enqueue })
+        });
+      }
+    );
   }
 
   displayFinalResult(result) {
@@ -118,6 +146,11 @@ export default class LoungeAreaScene extends Phaser.Scene {
   displayWaitingList(response) {
     console.log(`Waiting queue`, response.walletsQueue)
     const walletQueue = response.walletsQueue.join('\n\n');
-    this.wallets.setText(`Waiting list:\n\n${walletQueue}`);
+    const walletBench = response.walletsBench.join('\n\n');
+    this.wallets.setText(
+      `Waiting list:\n
+      \n${walletQueue}\n
+      \nWaiting for next games:\n
+      \n${walletBench}`);
   }
 }

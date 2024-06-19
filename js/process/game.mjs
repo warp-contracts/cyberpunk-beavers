@@ -2,9 +2,10 @@ import Const from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
+import { pick } from './cmd/pick.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
-import { addCoins, scoreToDisplay } from '../common/tools.mjs';
-import { gameInfo, gameInfoAfterEnd, gameInfoBeforeStart, standInQueue } from './cmd/info.mjs';
+import { scoreToDisplay } from '../common/tools.mjs';
+import { gameFinished, gameInfo, gameNotStarted, standInQueue } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
 
 const { GameObject, Scores, Map } = Const;
@@ -43,6 +44,11 @@ function handleMessageFromToken(state, action, message) {
   });
 }
 
+function restrictedAccess(state, action, ts) {
+  return (gameNotStarted(state, ts) && ![Const.Command.setup, Const.Command.enqueue].includes(action.cmd)) ||
+    (gameFinished(state, ts) && ![Const.Command.setup].includes(action.cmd))
+}
+
 export function handle(state, message) {
   console.log("We're in");
   state.randomCounter = 0;
@@ -63,23 +69,11 @@ export function handle(state, message) {
   const action = JSON.parse(actionTagValue);
   action.walletAddress = message.Owner;
 
-  if (action.cmd !== Const.Command.setup &&
-    state.playWindow.begin &&
-    message.Timestamp < state.playWindow.begin) {
+  if (restrictedAccess(state, action, message.Timestamp)) {
     console.log(`The game has not started yet`)
     ao.result({
       cmd: Const.Command.stats,
-      walletsQueue: standInQueue(state, action),
-      ...gameInfoBeforeStart(state, message.Owner)
-    })
-    return;
-  }
-  if (action.cmd !== Const.Command.setup &&
-    state.playWindow.end &&
-    message.Timestamp > state.playWindow.end) {
-    ao.result({
-      cmd: Const.Command.stats,
-      ...gameInfoAfterEnd(state, message.Owner)
+      ...gameInfo(state, message.Owner, message.Timestamp)
     })
     return;
   }
@@ -98,7 +92,14 @@ export function handle(state, message) {
     case Const.Command.info:
       ao.result({
         cmd: Const.Command.stats,
-        ...gameInfo(state, message.Owner)
+        ...gameInfo(state, message.Owner, message.Timestamp)
+      })
+      break;
+    case Const.Command.enqueue:
+      standInQueue(state, action);
+      ao.result({
+        cmd: Const.Command.stats,
+        ...gameInfo(state, message.Owner, message.Timestamp)
       })
       break;
     case Const.Command.setup:
@@ -160,7 +161,7 @@ export function handle(state, message) {
     case Const.Command.register:
       ao.result({
         cmd: Const.Command.registered,
-        player: registerPlayer(state, action),
+        ...registerPlayer(state, action),
         map: {
           groundTilemap: state.groundTilemap,
           gameObjectsTilemap: state.gameObjectsTilemap,
@@ -209,6 +210,8 @@ function initState(message, state) {
       start: message.Timestamp, //ms
       interval: 10_000, //ms
     },
+    walletsQueue: [],
+    walletsBench: [],
     players: {},
     playersOnTiles: Array(Map.size)
       .fill([])
@@ -297,85 +300,4 @@ function gamePlayerTick(state, action) {
     player.stats.ap.current = player.stats.ap.max;
     player.stats.round.last = state.round.current;
   }
-}
-
-function pick(state, action) {
-  const walletAddress = action.walletAddress;
-  const player = state.players[walletAddress];
-
-  if (player.stats.ap.current < 1) {
-    console.log(`Cannot perform pick ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
-    return { player, picked: false };
-  }
-
-  const gameObjectTile = state.gameObjectsTiles.find(
-    (t) => t.tile === state.gameObjectsTilemap[player.pos.y][player.pos.x]
-  );
-  const { type, value } = gameObjectTile;
-
-  if (type === GameObject.hp.type) {
-    player.stats.ap.current -= 1;
-    console.log(`Player stands on a game object, increasing ${type}.`);
-    player.stats.hp.current += value;
-    const tokenTransfer = addCoins(player, value);
-    state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-    return {
-      player,
-      picked: { type },
-      tokenTransfer,
-      scoreToDisplay: scoreToDisplay([
-        { value: value, type: Scores.hp },
-        { value: -1, type: Scores.ap },
-      ]),
-    };
-  } else if (type === GameObject.ap.type) {
-    player.stats.ap.current -= 1;
-    console.log(`Player stands on a game object, increasing ${type}. `);
-    player.stats.ap.current += value;
-    const tokenTransfer = addCoins(player, value);
-    state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-    return {
-      player,
-      picked: { type },
-      tokenTransfer,
-      scoreToDisplay: scoreToDisplay([
-        { value: value, type: Scores.ap },
-        { value: -1, type: Scores.ap },
-      ]),
-    };
-  } else if (type === GameObject.none.type) {
-    const gameTreasureTile = state.gameTreasuresTiles.find(
-      (t) => t.tile === state.gameTreasuresTilemap[player.pos.y][player.pos.x]
-    );
-    const { type, value } = gameTreasureTile;
-    if (type === GameObject.none.type) {
-      console.log(`Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`);
-      return { player, picked: false };
-    } else if (type === GameObject.treasure.type) {
-      player.stats.ap.current -= 1;
-      const diggedTreasure = state.digged.find(
-        (d) => d.player === walletAddress && d.pos.x === player.pos.x && d.pos.y === player.pos.y
-      );
-      if (!diggedTreasure) {
-        console.log(`Player ${walletAddress} does not stand on the treasure digged by them.`);
-        return { player, picked: false };
-      }
-      state.digged.splice(state.digged.indexOf(diggedTreasure), 1);
-
-      state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
-      const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
-      const tokenTransfer = addCoins(player, valueWithBonus);
-      return {
-        player,
-        picked: { type },
-        tokenTransfer,
-        scoreToDisplay: scoreToDisplay([
-          { value: valueWithBonus, type: Scores.coin },
-          { value: -1, type: Scores.ap },
-        ]),
-      };
-    }
-  }
-
-  return { player, picked: false };
 }

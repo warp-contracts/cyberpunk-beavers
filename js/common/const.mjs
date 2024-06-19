@@ -5,6 +5,7 @@ const EVENTS_NAME = {
 const Command = {
   attack: 'attack',
   attacked: 'attacked',
+  enqueue: 'enqueue',
   join: 'join',
   move: 'move',
   moved: 'moved',
@@ -107,6 +108,12 @@ export const BEAVER_TYPES = {
   },
 };
 
+
+// ------- Queue Config
+const Queue = {
+  limit: 15
+}
+
 export default {
   BEAVER_TYPES,
   Combat,
@@ -116,6 +123,7 @@ export default {
   Errors,
   GameObject,
   Map,
+  Queue,
   Scores,
   Tile,
 };

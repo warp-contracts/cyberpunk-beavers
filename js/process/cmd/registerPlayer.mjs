@@ -3,18 +3,32 @@ import Const from '../../common/const.mjs';
 const { BEAVER_TYPES, Map } = Const;
 
 export function registerPlayer(state, action) {
-  const walletAddress = action.walletAddress;
-  const beaverId = action.beaverId;
-  if (state.players[walletAddress]) {
-    return state.players[walletAddress];
+  const { beaverId, walletAddress } = action;
+  const { players, walletsQueue } = state;
+
+  // Player already registered, move along
+  if (players[walletAddress]) {
+    return players[walletAddress];
   }
+
+  if (!walletsQueue.includes(walletAddress)) {
+    // List is full, forget about it
+    if (walletsQueue.length >= Const.Queue.limit) {
+      const error = `Failed to register ${action.walletAddress}. Not on the list amd the list reached its limit ${walletsQueue.length}`;
+      console.log(error);
+      return { error };
+    }
+    // Register on the list after the game started
+    walletsQueue.push(walletAddress);
+  }
+
+
   if (!BEAVER_TYPES[beaverId]) {
-    const errorMsg = `No beaver of type ${beaverId}`;
-    console.error(errorMsg);
-    return {
-      error: errorMsg,
-    };
+    const error = `No beaver of type ${beaverId}`;
+    console.error(error);
+    return { error, };
   }
+
   let newPlayer = {
     walletAddress,
     beaverId,
@@ -30,8 +44,8 @@ export function registerPlayer(state, action) {
     },
     pos: calculatePlayerRandomPos(state),
   };
-  state.players[newPlayer.walletAddress] = newPlayer;
-  return newPlayer;
+  players[walletAddress] = newPlayer;
+  return { player: newPlayer };
 }
 
 function calculatePlayerRandomPos(state) {
