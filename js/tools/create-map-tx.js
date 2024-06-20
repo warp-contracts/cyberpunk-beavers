@@ -4,6 +4,10 @@ import {
 } from "@ardrive/turbo-sdk/node";
 import fs from "fs";
 
+const file = "./../../assets/maps/map-2-30x30.json";
+const mapName = "map-2-30x30.json";
+
+
 (async () => {
   /**
    * Generate a key from the arweave wallet.
@@ -27,7 +31,7 @@ import fs from "fs";
    * Post local files to the Turbo service.
    */
   console.log("Posting raw file to Turbo service...");
-  const filePath = new URL("./../../assets/maps/map-2-30x30.json", import.meta.url).pathname;
+  const filePath = new URL(file, import.meta.url).pathname;
   const fileSize = fs.statSync(filePath).size;
   const uploadResult = await turboAuthClient.uploadFile({
     fileStreamFactory: () => fs.createReadStream(filePath),
@@ -41,7 +45,11 @@ import fs from "fs";
         },
         {
           "name": "Name",
-          "value": "map-2-30x30.json"
+          "value": mapName
+        },
+        {
+          "name": "Map-Api-Version",
+          "value": "v1"
         },
         {
           "name": "Terrain",
