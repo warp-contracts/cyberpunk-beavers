@@ -28,7 +28,7 @@ async function readMapFromArweave() {
     protocol: 'https',
   });
   try {
-    const txData = await arweave.transactions.getData(mapTxId,{decode: true, string: true});
+    const txData = await arweave.transactions.getData(mapTxId, { decode: true, string: true });
     return JSON.parse(txData);
   } catch (e) {
     console.error(e);
@@ -56,6 +56,7 @@ async function deploy() {
 }
 
 async function spawn(moduleId, mapJson) {
+  console.log(mapJson);
   const processTags = [
     new Tag('Data-Protocol', 'ao'),
     new Tag('Variant', 'ao.TN.1'),
@@ -67,7 +68,7 @@ async function spawn(moduleId, mapJson) {
     new Tag('Map-From-Tx', 'RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U'),
   ];
 
-  const data = JSON.stringify({rawMap: mapJson, mapApi: "v1"}, );
+  const data = JSON.stringify({ rawMap: mapJson, mapApi: 'v1' });
   const processDataItem = createData(data, signer, { tags: processTags });
   await processDataItem.sign(signer);
 

@@ -60,23 +60,23 @@ export default class StatsScene extends Phaser.Scene {
     this.addRoundBar();
     this.addSubtitle();
     this.addLegend();
-    this.leaderboardButton = new TextButton(
-      this,
-      this.gameWidth - 200,
-      50,
-      'Leaderboard',
-      {
-        fill: colors.white,
-        font: '20px',
-      },
-      () => {
-        document.getElementById('stats-box').style.display = 'none';
-        document.getElementById('incoming-messages-box').style.display = 'none';
-        this.scene.setVisible(false);
-        this.mainScene.scene.pause();
-        this.scene.launch('leaderboard-scene', { players: this.allPlayers });
-      }
-    );
+    // this.leaderboardButton = new TextButton(
+    //   this,
+    //   this.gameWidth - 200,
+    //   50,
+    //   'Leaderboard',
+    //   {
+    //     fill: colors.white,
+    //     font: '20px',
+    //   },
+    //   () => {
+    //     document.getElementById('stats-box').style.display = 'none';
+    //     document.getElementById('incoming-messages-box').style.display = 'none';
+    //     this.scene.setVisible(false);
+    //     this.mainScene.scene.pause();
+    //     this.scene.launch('leaderboard-scene', { players: this.allPlayers });
+    //   }
+    // );
   }
 
   addLegend() {

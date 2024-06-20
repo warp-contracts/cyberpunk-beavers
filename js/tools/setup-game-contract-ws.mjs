@@ -1,10 +1,9 @@
 /*
-* In order to setup game start in 10 seconds for 70 seconds run
-*
-* `node js/tools/setup-game-contract-ws.mjs`
-*
-* */
-
+ * In order to setup game start in 10 seconds for 70 seconds run
+ *
+ * `node js/tools/setup-game-contract-ws.mjs`
+ *
+ * */
 
 import { WebSocket } from 'ws';
 import { mockDataItem } from './common.mjs';
@@ -36,5 +35,3 @@ ws.addEventListener('message', async (event) => {
 ws.addEventListener('open', async () => {
   ws.send(JSON.stringify(mockDataItem(customConfig, 'stefan')));
 });
-
-

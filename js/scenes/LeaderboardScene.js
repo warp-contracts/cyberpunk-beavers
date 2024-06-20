@@ -11,6 +11,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     console.log('Leaderboard Scene - 1. Init');
     this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.png');
     this.allPlayers = data.players;
+    this.mainPlayer = data.mainPlayer;
     this.gameWidth = window.innerWidth;
     this.gameHeight = window.innerHeight;
     this.mainScene = this.scene.get('main-scene');
@@ -31,23 +32,23 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.addBackground();
     this.addAndPositionTitle();
     this.createGridTable(this);
-    this.closeButton = new TextButton(
-      this,
-      this.gameWidth - 200,
-      50,
-      'Close',
-      {
-        fill: colors.white,
-        font: '20px',
-      },
-      () => {
-        this.statsScene.scene.setVisible(true);
-        document.getElementById('stats-box').style.display = 'block';
-        document.getElementById('incoming-messages-box').style.display = 'block';
-        this.mainScene.scene.resume();
-        this.scene.stop();
-      }
-    ).setDepth(13);
+    // this.closeButton = new TextButton(
+    //   this,
+    //   this.gameWidth - 200,
+    //   50,
+    //   'Close',
+    //   {
+    //     fill: colors.white,
+    //     font: '20px',
+    //   },
+    //   () => {
+    //     this.statsScene.scene.setVisible(true);
+    //     document.getElementById('stats-box').style.display = 'block';
+    //     document.getElementById('incoming-messages-box').style.display = 'block';
+    //     this.mainScene.scene.resume();
+    //     this.scene.stop();
+    //   }
+    // ).setDepth(13);
   }
 
   addBackground() {
@@ -69,30 +70,12 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   createGridTable() {
     const self = this;
-    const cells = [['RANK', 'PLAYER', 'SCORE']];
-
-    let allPlayersKeys = Object.keys(this.allPlayers);
-    allPlayersKeys.sort(
-      (a, b) => this.allPlayers[b].stats.coins?.available - this.allPlayers[a].stats.coins?.available
-    );
-    for (let i = 0; i < allPlayersKeys.length; i++) {
-      const key = allPlayersKeys[i];
-      cells.push([
-        i + 1,
-        {
-          img: this.allPlayers[key].beaverChoice,
-          address: key.substr(0, 3) + '...' + key.substr(key.length - 3),
-        },
-        this.allPlayers[key].stats.coins?.available,
-      ]);
-    }
-    const cellsFlattened = cells.flat(1);
-
+    const cells = this.prepareCellsData();
     const newCellObject = function (scene, cell) {
       let input;
-      if (cellsFlattened[cell.index].img) {
-        const img = self.add.image(5, 5, `${cellsFlattened[cell.index].img}_portrait`);
-        const txt = new Text(self, 5, 5, cellsFlattened[cell.index].address, {
+      if (cells[cell.index].img) {
+        const img = self.add.image(5, 5, `${cells[cell.index].img}_portrait`);
+        const txt = new Text(self, 5, 5, cells[cell.index].address, {
           fontFamily: '"Press Start 2P"',
           fontSize: '20px',
           textTransform: 'uppercase',
@@ -103,7 +86,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         container.sendToBack(txt);
         input = container;
       } else {
-        input = new Text(self, 5, 5, cellsFlattened[cell.index], {
+        input = new Text(self, 5, 5, cells[cell.index], {
           fontFamily: '"Press Start 2P"',
           fontSize: '20px',
           textTransform: 'uppercase',
@@ -125,7 +108,7 @@ export default class LeaderboardScene extends Phaser.Scene {
       {
         cellHeight: 105,
         cellWidth: (this.gameWidth - this.gameWidth / 5) / 3,
-        cellsCount: cellsFlattened.length,
+        cellsCount: cells.length,
         columns: 3,
         cellVisibleCallback: onCellVisible.bind(this),
       }
@@ -153,5 +136,36 @@ export default class LeaderboardScene extends Phaser.Scene {
         self.table.setTableOYByPercentage(newValue).updateTable().setDepth(12);
       },
     });
+  }
+
+  prepareCellsData() {
+    const cells = [['RANK', 'PLAYER', 'SCORE']];
+
+    let allPlayersKeys = Object.keys(this.allPlayers);
+    allPlayersKeys.sort(
+      (a, b) => this.allPlayers[b].stats.coins?.available - this.allPlayers[a].stats.coins?.available
+    );
+    for (let i = 0; i < allPlayersKeys.length; i++) {
+      const key = allPlayersKeys[i];
+      cells.push([
+        i + 1,
+        {
+          img: this.allPlayers[key].beaverChoice,
+          address: key.substr(0, 3) + '...' + key.substr(key.length - 3),
+        },
+        this.allPlayers[key].stats.coins?.available,
+      ]);
+    }
+    const mainPlayerCell = cells.find(
+      (c) =>
+        c[1].address ==
+        this.mainPlayer.walletAddress.substr(0, 3) +
+          '...' +
+          this.mainPlayer.walletAddress.substr(this.mainPlayer.walletAddress.length - 3)
+    );
+    const mainPlayerIndex = cells.indexOf(mainPlayerCell);
+    cells.splice(mainPlayerIndex, 1);
+    cells.splice(1, 0, mainPlayerCell);
+    return cells.flat(1);
   }
 }

@@ -1,9 +1,9 @@
 import Player from '../Player.js';
-import Const, {BEAVER_TYPES} from '../common/const.mjs';
+import Const, { BEAVER_TYPES } from '../common/const.mjs';
 import MainPlayer from '../MainPlayer.js';
-import {Text} from '../objects/Text.js';
-import {EVENTS_NAME} from '../utils/events.js';
-import {serverConnection} from '../lib/serverConnection.js';
+import { Text } from '../objects/Text.js';
+import { EVENTS_NAME } from '../utils/events.js';
+import { serverConnection } from '../lib/serverConnection.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -23,6 +23,8 @@ export default class MainScene extends Phaser.Scene {
     this.walletAddress = data.walletAddress;
     this.scene.launch('main-scene-loading');
     this.mainSceneLoading = this.scene.get('main-scene-loading');
+    this.gameStart = data.gameStart;
+    this.gameEnd = data.gameEnd;
   }
 
   preload() {
@@ -130,6 +132,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
+    if (this.gameEnd && this.gameEnd < Date.now()) {
+      this.backgroundMusic.stop();
+      this.scene.stop('stats-scene');
+      this.scene.start('leaderboard-scene', { players: this.allPlayers, mainPlayer: this.mainPlayer });
+    }
     const roundInfo = this.roundTick();
     this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
 
@@ -155,8 +162,7 @@ export default class MainScene extends Phaser.Scene {
     };
   }
 
-  initMap({groundLayer, decorationLayer, obstaclesLayer, treasuresLayer, objectsLayer}) {
-    console.log(obstaclesLayer);
+  initMap({ groundLayer, decorationLayer, obstaclesLayer, treasuresLayer, objectsLayer }) {
     this.groundLayer = this.createLayer(groundLayer, 'map_layer_ground', 0);
     this.decorationLayer = this.createLayer(decorationLayer, 'map_layer_decoration', 1);
     this.obstaclesLayer = this.createLayer(obstaclesLayer, 'map_layer_obstacles', 2);
@@ -199,7 +205,6 @@ export default class MainScene extends Phaser.Scene {
       camera.scrollX -= newWorldPoint.x - worldPoint.x;
       camera.scrollY -= newWorldPoint.y - worldPoint.y;
     });
-
   }
 
   createLayer(data, image, depth) {
@@ -255,8 +260,10 @@ export default class MainScene extends Phaser.Scene {
         break;
 
       case Const.Command.attacked:
-        if (response.player.walletAddress === self.mainPlayer.walletAddress ||
-            response.opponentPlayer.walletAddress === self.mainPlayer.walletAddress) {
+        if (
+          response.player.walletAddress === self.mainPlayer.walletAddress ||
+          response.opponentPlayer.walletAddress === self.mainPlayer.walletAddress
+        ) {
           switch (response.player.beaverId) {
             case BEAVER_TYPES.heavy_beaver.name:
               this.attackHeavyBeaverSound.play();
@@ -280,43 +287,45 @@ export default class MainScene extends Phaser.Scene {
           },
         });
         break;
-      case Const.Command.moved: {
-        console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
-        if (!self.allPlayers[response.player.walletAddress]) {
-          console.log('Setting up new player', response.player.walletAddress);
-          const player = self.createPlayer(response.player);
-          this.game.events.emit(EVENTS_NAME.updatePlayers, player);
-        } else {
-          self.allPlayers[response.player.walletAddress].moveTo(response.player);
-        }
+      case Const.Command.moved:
+        {
+          console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
+          if (!self.allPlayers[response.player.walletAddress]) {
+            console.log('Setting up new player', response.player.walletAddress);
+            const player = self.createPlayer(response.player);
+            this.game.events.emit(EVENTS_NAME.updatePlayers, player);
+          } else {
+            self.allPlayers[response.player.walletAddress].moveTo(response.player);
+          }
 
-        if (response.player.onGameObject != null) {
-          console.log(`Player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
-          this.mainPlayer.onGameObject = response.player.onGameObject;
-        }
+          if (response.player.onGameObject != null) {
+            console.log(`Player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
+            this.mainPlayer.onGameObject = response.player.onGameObject;
+          }
 
-        if (response.player.onGameTreasure != null) {
-          console.log(`Player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
-          this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
-        }
+          if (response.player.onGameTreasure != null) {
+            console.log(`Player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
+            this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
+          }
 
-        this.updateStats(response.player, response.stats);
-        this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-      }
+          this.updateStats(response.player, response.stats);
+          this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+        }
         break;
 
-      case Const.Command.picked: {
-        if (response.picked) {
-          console.log(`Player picked a game object.`);
-          this.pickUpSound.play();
-          this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
-          if (response.player.onGameTreasure.type == 'treasure') {
-            this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
+      case Const.Command.picked:
+        {
+          if (response.picked) {
+            console.log(`Player picked a game object.`);
+            this.pickUpSound.play();
+            this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
+            if (response.player.onGameTreasure.type == 'treasure') {
+              this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
+            }
           }
+          this.updateStats(response.player, response.stats);
+          response.picked && this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         }
-        this.updateStats(response.player, response.stats);
-        response.picked && this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-      }
         break;
 
       case Const.Command.digged: {
@@ -442,7 +451,7 @@ export default class MainScene extends Phaser.Scene {
   createScoreTween(target) {
     this.tweens.add({
       targets: target,
-      alpha: {from: 0, to: 1},
+      alpha: { from: 0, to: 1 },
       ease: 'Power2',
       duration: 500,
       repeat: 0,
@@ -451,13 +460,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   addSounds() {
-    this.backgroundMusic = this.sound.add('background_music', {loop: true, volume: 0.25});
-    this.pickUpSound = this.sound.add('pick_up_sound', {loop: false, volume: 3});
-    this.digSound = this.sound.add('dig_sound', {loop: false, volume: 0.5});
-    this.treasureSound = this.sound.add('treasure_sound', {loop: false, volume: 0.5});
-    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', {loop: false, volume: 0.5});
-    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', {loop: false, volume: 0.5});
-    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', {loop: false, volume: 0.5});
+    this.backgroundMusic = this.sound.add('background_music', { loop: true, volume: 0.25 });
+    this.pickUpSound = this.sound.add('pick_up_sound', { loop: false, volume: 3 });
+    this.digSound = this.sound.add('dig_sound', { loop: false, volume: 0.5 });
+    this.treasureSound = this.sound.add('treasure_sound', { loop: false, volume: 0.5 });
+    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', { loop: false, volume: 0.5 });
+    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 0.5 });
+    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 0.5 });
 
     if (window.warpAO.config.env !== 'local') {
       this.backgroundMusic.play();

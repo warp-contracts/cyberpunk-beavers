@@ -5,8 +5,8 @@ import { serverConnection } from '../lib/serverConnection.js';
 import { TextButton } from '../objects/TextButton.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
-  beaverId
-  enqueueButton
+  beaverId;
+  enqueueButton;
 
   constructor() {
     super('lounge-area-scene');
@@ -32,10 +32,15 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.scene.start('connect-wallet-scene');
     }
 
-    this.header = this.add.text(100, 100, 'Please, have a seat and relax... The game will start when the time comes..\n\n', {
-      fill: colors.yellow,
-      font: '20px',
-    });
+    this.header = this.add.text(
+      100,
+      100,
+      'Please, have a seat and relax... The game will start when the time comes..\n\n',
+      {
+        fill: colors.yellow,
+        font: '20px',
+      }
+    );
 
     this.tt = this.add.text(100, 150, '--:--:--', {
       fill: colors.yellow,
@@ -47,7 +52,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
       font: '20px',
     });
   }
-  
 
   update() {
     this.countdown();
@@ -59,12 +63,21 @@ export default class LoungeAreaScene extends Phaser.Scene {
     }
 
     const now = new Date();
-    let diff = Math.round((this.gameStart - now)/1000);
+    let diff = Math.round((this.gameStart - now) / 1000);
     if (diff <= 0) {
       if (this.beaverId) {
-        this.scene.start('main-scene', { walletAddress: this.walletAddress, beaverId: this.beaverId });
+        this.scene.start('main-scene', {
+          walletAddress: this.walletAddress,
+          beaverId: this.beaverId,
+          gameStart: this.gameStart,
+          gameEnd: this.gameEnd,
+        });
       } else {
-        this.scene.start('player-pick-scene', { walletAddress: this.walletAddress });
+        this.scene.start('player-pick-scene', {
+          walletAddress: this.walletAddress,
+          gameStart: this.gameStart,
+          gameEnd: this.gameEnd,
+        });
       }
     } else {
       const hour = Math.floor(diff / 3600);
@@ -91,18 +104,28 @@ export default class LoungeAreaScene extends Phaser.Scene {
               if (response.beaverId) {
                 this.scene.start('main-scene', {
                   walletAddress: this.walletAddress,
-                  beaverId: response.beaverId });
+                  beaverId: response.beaverId,
+                  gameStart: response.start,
+                  gameEnd: response.end,
+                });
               } else {
-                this.scene.start('player-pick-scene', { walletAddress: this.walletAddress });
+                this.scene.start('player-pick-scene', {
+                  walletAddress: this.walletAddress,
+                  gameStart: response.start,
+                  gameEnd: response.end,
+                });
               }
             } else if (Date.now() < response.start) {
-              if (!response.walletsQueue.includes(this.walletAddress) &&
-                !response.walletsBench.includes(this.walletAddress)) {
+              if (
+                !response.walletsQueue.includes(this.walletAddress) &&
+                !response.walletsBench.includes(this.walletAddress)
+              ) {
                 this.displayEnqueueButton();
               } else if (this.enqueueButton) {
                 this.enqueueButton.destroy();
               }
               this.gameStart = response.start;
+              this.gameEnd = response.end;
               this.displayWaitingList(response);
               this.countdown();
             } else {
@@ -127,7 +150,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       },
       async () => {
         setTimeout(async () => {
-          await self.server.send({ cmd: Const.Command.enqueue })
+          await self.server.send({ cmd: Const.Command.enqueue });
         });
       }
     );
@@ -144,13 +167,14 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   displayWaitingList(response) {
-    console.log(`Waiting queue`, response.walletsQueue)
+    console.log(`Waiting queue`, response.walletsQueue);
     const walletQueue = response.walletsQueue.join('\n\n');
     const walletBench = response.walletsBench.join('\n\n');
     this.wallets.setText(
       `Waiting list:\n
       \n${walletQueue}\n
       \nWaiting for next games:\n
-      \n${walletBench}`);
+      \n${walletBench}`
+    );
   }
 }
