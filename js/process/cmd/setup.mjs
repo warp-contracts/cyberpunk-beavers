@@ -6,6 +6,7 @@ const MilisecondsOf = {
 const SetupTimes = {
   nextFullHour: 'nextFullHour',
   nextHalfHour: 'nextHalfHour',
+  nextSlot: 'nextSlot',
   custom: 'custom',
 };
 
@@ -19,6 +20,18 @@ export function setup(state, action, message) {
   }
 
   switch (action.type) {
+    case SetupTimes.nextSlot: {
+      const nextMS = action.slotMinutes * 60 * 1000;
+      const nextFull = (Math.floor(message.Timestamp / nextMS) + 1) * nextMS;
+      const duration = (action.playMinutes * 60 * 1000) || (5 * 60 * 1000);
+      state.playWindow = {
+        begin: nextFull,
+        end: nextFull + duration,
+      };
+      console.log(`Setup ${action.type}`, state.playWindow);
+      break;
+    }
+
     case SetupTimes.nextFullHour:
     case SetupTimes.nextHalfHour:
       const ms = MilisecondsOf[action.type];
