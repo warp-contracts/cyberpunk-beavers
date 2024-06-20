@@ -18,8 +18,9 @@ const env = process.argv[envIdx + 1];
 console.info(`Deploying for ${env} env.`);
 // RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U - 'default' map
 // fI8pyDeSd3SqpKbxZUviFRgH2IryEbIiRGEdAJRFA0Y - ao 'tutorial' map
-// TBIU0X-FkFu-KPdboiQgbVkkVyVPPsW73rbjX6aIGYg - Greg map 1
-const mapTxId = 'TBIU0X-FkFu-KPdboiQgbVkkVyVPPsW73rbjX6aIGYg';
+// TBIU0X-FkFu-KPdboiQgbVkkVyVPPsW73rbjX6aIGYg - Greg map 1 - BROKEN obstacles layer!!
+// 3JwZKHRqBRJ98Y4arUilHLgwiyCMqWuCyACXwfEB9Ec - Greg map 1 fixed
+const mapTxId = '3JwZKHRqBRJ98Y4arUilHLgwiyCMqWuCyACXwfEB9Ec';
 
 async function readMapFromArweave() {
   const arweave = Arweave.init({
