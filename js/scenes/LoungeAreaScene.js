@@ -129,7 +129,12 @@ export default class LoungeAreaScene extends Phaser.Scene {
               this.displayWaitingList(response);
               this.countdown();
             } else {
-              this.displayFinalResult(response);
+              this.scene.start('leaderboard-scene', {
+                players: response.players,
+                mainPlayer: {
+                  walletAddress: response.walletAddress,
+                },
+              });
             }
           }
         }
@@ -154,16 +159,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
         });
       }
     );
-  }
-
-  displayFinalResult(result) {
-    const st = result.stats;
-    this.header.setText(`Game Finished`);
-    this.tt.setText(`
-    Beaver ${result?.beaverId}\n
-    TOKEN ${st?.coins.transferred}\n
-    Round ${st?.round.last}\n
-    HP: ${st?.hp.current}\n`);
   }
 
   displayWaitingList(response) {

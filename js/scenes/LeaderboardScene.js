@@ -1,6 +1,7 @@
 import { Text } from '../objects/Text.js';
 import { TextButton } from '../objects/TextButton.js';
 import { colors } from '../utils/style.js';
+import { WebFontFile } from '../WebFontFile.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -9,7 +10,6 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   init(data) {
     console.log('Leaderboard Scene - 1. Init');
-    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.png');
     this.allPlayers = data.players;
     this.mainPlayer = data.mainPlayer;
     this.gameWidth = window.innerWidth;
@@ -25,6 +25,11 @@ export default class LeaderboardScene extends Phaser.Scene {
     const sliderUrl =
       'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexsliderplugin.min.js';
     this.load.plugin('rexsliderplugin', sliderUrl, true);
+    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.png');
+    this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver_portrait.png');
+    this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver_portrait.png');
+    this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver_portrait.png');
+    this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
   create() {
@@ -107,9 +112,9 @@ export default class LeaderboardScene extends Phaser.Scene {
       this.gameHeight / 2,
       {
         cellHeight: 105,
-        cellWidth: (this.gameWidth - this.gameWidth / 5) / 3,
+        cellWidth: (this.gameWidth - this.gameWidth / 5) / 4,
         cellsCount: cells.length,
-        columns: 3,
+        columns: 4,
         cellVisibleCallback: onCellVisible.bind(this),
       }
     );
@@ -139,8 +144,8 @@ export default class LeaderboardScene extends Phaser.Scene {
   }
 
   prepareCellsData() {
-    const cells = [['RANK', 'PLAYER', 'SCORE']];
-
+    const cells = [['RANK', 'PLAYER', 'SCORE', 'HP']];
+    console.log(this.allPlayers);
     let allPlayersKeys = Object.keys(this.allPlayers);
     allPlayersKeys.sort(
       (a, b) => this.allPlayers[b].stats.coins?.available - this.allPlayers[a].stats.coins?.available
@@ -150,10 +155,11 @@ export default class LeaderboardScene extends Phaser.Scene {
       cells.push([
         i + 1,
         {
-          img: this.allPlayers[key].beaverChoice,
+          img: this.allPlayers[key].beaverChoice || this.allPlayers[key].beaverId,
           address: key.substr(0, 3) + '...' + key.substr(key.length - 3),
         },
         this.allPlayers[key].stats.coins?.available,
+        this.allPlayers[key].stats.hp?.current,
       ]);
     }
     const mainPlayerCell = cells.find(

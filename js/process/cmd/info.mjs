@@ -1,16 +1,16 @@
 import Const from '../../common/const.mjs';
 
 /*
-* walletsQueue will join the game
-* walletsBench will be moved to the next game
-* */
+ * walletsQueue will join the game
+ * walletsBench will be moved to the next game
+ * */
 
 export function standInQueue(state, action) {
   const { walletAddress } = action;
   const { walletsQueue, walletsBench } = state;
 
   if (walletsQueue.includes(walletAddress) || walletsBench.includes(walletAddress)) {
-    return { walletsQueue, walletsBench }
+    return { walletsQueue, walletsBench };
   }
 
   if (walletsQueue.length >= Const.Queue.limit) {
@@ -18,26 +18,27 @@ export function standInQueue(state, action) {
   } else {
     walletsQueue.push(walletAddress);
   }
-  return { walletsQueue, walletsBench } ;
+  return { walletsQueue, walletsBench };
 }
 
 export function gameInfo(state, owner, ts) {
   const { walletsQueue, walletsBench, players, playWindow } = state;
   const player = players[owner];
   return {
+    walletAddress: player?.walletAddress,
     stats: player?.stats,
     active: isGameActive(state, ts),
     walletsQueue,
     walletsBench,
     beaverId: player?.beaverId,
     start: playWindow.begin,
-    end: playWindow.end
-  }
+    end: playWindow.end,
+    players: state.players,
+  };
 }
 
-
 export function isGameActive(state, ts) {
-  console.log(ts, state.playWindow)
+  console.log(ts, state.playWindow);
   return !gameNotStarted(state, ts) && !gameFinished(state, ts);
 }
 
