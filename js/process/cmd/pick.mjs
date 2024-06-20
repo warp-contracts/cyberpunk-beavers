@@ -57,14 +57,6 @@ export function pick(state, action) {
       return { player, picked: false };
     } else if (type === GameObject.treasure.type) {
       player.stats.ap.current -= 1;
-      const diggedTreasure = state.digged.find(
-        (d) => d.player === walletAddress && d.pos.x === player.pos.x && d.pos.y === player.pos.y
-      );
-      if (!diggedTreasure) {
-        console.log(`Player ${walletAddress} does not stand on the treasure digged by them.`);
-        return { player, picked: false };
-      }
-      state.digged.splice(state.digged.indexOf(diggedTreasure), 1);
 
       state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
       const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
