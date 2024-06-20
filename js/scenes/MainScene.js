@@ -40,19 +40,24 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('heavy_beaver_48', 'assets/images/beavers/heavy_beaver_48px.png');
     this.load.image('speedy_beaver_48', 'assets/images/beavers/speedy_beaver_48px.png');
     this.load.atlas(
-      'heavy_beaver_anim',
-      'assets/images/beavers/heavy_beaver_anim.png',
-      'assets/images/beavers/heavy_beaver_anim_atlas.json'
+      'heavy_beaver_anim_idle',
+      'assets/images/beavers/heavy_beaver_anim_idle.png',
+      'assets/images/beavers/heavy_beaver_anim_atlas_idle.json'
     );
     this.load.atlas(
-      'speedy_beaver_anim',
-      'assets/images/beavers/speedy_beaver_anim.png',
-      'assets/images/beavers/speedy_beaver_anim_atlas.json'
+      'speedy_beaver_anim_idle',
+      'assets/images/beavers/speedy_beaver_anim_idle.png',
+      'assets/images/beavers/speedy_beaver_anim_atlas_idle.json'
     );
     this.load.atlas(
-      'hacker_beaver_anim',
-      'assets/images/beavers/hacker_beaver_anim.png',
-      'assets/images/beavers/hacker_beaver_anim_atlas.json'
+      'hacker_beaver_anim_idle',
+      'assets/images/beavers/hacker_beaver_anim_idle.png',
+      'assets/images/beavers/hacker_beaver_anim_atlas_idle.json'
+    );
+    this.load.atlas(
+      'hacker_beaver_anim_walk',
+      'assets/images/beavers/hacker_beaver_anim_walk.png',
+      'assets/images/beavers/hacker_beaver_anim_atlas_walk.json'
     );
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);

@@ -9,8 +9,8 @@ export default class MainPlayer extends Player {
   combatMode = false;
 
   async update() {
-    if (this.stats.ap.current === 0)  {
-      this.anims.play(`${this.beaverChoice}_idle`, true);
+    if (this.stats.ap.current === 0) {
+      if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
       return;
     }
 
@@ -27,20 +27,17 @@ export default class MainPlayer extends Player {
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
       this.combatMode = false;
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.p)) {
-      this.anims.isPlaying && this.anims.stop();
       if (this.onGameObject) {
         await this.send({ cmd: pick });
       }
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.d) && this.stats.ap.current >= 2) {
-      this.anims.isPlaying && this.anims.stop();
       await this.send({ cmd: dig });
     } else {
-      this.anims.play(`${this.beaverChoice}_idle`, true);
+      if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
     }
   }
 
   async action(dir) {
-    this.anims.isPlaying && this.anims.stop();
     if (this.combatMode) {
       await this.send({ cmd: attack, dir });
     } else {

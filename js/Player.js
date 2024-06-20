@@ -27,9 +27,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       yoyo: false,
       onStart: () => {
         this.anims.stop();
-        // this.anims.play(`${this.beaverChoice}_idle`, true);
+        this.anims.play(`${this.beaverChoice}_walk`, true);
       },
       onComplete: () => {
+        this.anims.stop();
         this.anims.play(`${this.beaverChoice}_idle`, true);
       },
     };
@@ -43,18 +44,28 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    this.anims.play(`${this.beaverChoice}_idle`, true);
+    if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_walk`, true);
   }
 
   initAnimations() {
     this.scene.anims.create({
       key: `${this.beaverChoice}_idle`,
-      frames: this.scene.anims.generateFrameNames(`${this.beaverChoice}_anim`, {
+      frames: this.scene.anims.generateFrameNames(`${this.beaverChoice}_anim_idle`, {
         prefix: 'frame-',
         start: 0,
         end: 12,
       }),
       frameRate: 24,
+    });
+
+    this.scene.anims.create({
+      key: `${this.beaverChoice}_walk`,
+      frames: this.scene.anims.generateFrameNames(`${this.beaverChoice}_anim_walk`, {
+        prefix: 'frame-',
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 8,
     });
   }
 
