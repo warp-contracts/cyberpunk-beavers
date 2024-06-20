@@ -2,11 +2,11 @@ import Const from './common/const.mjs';
 import Player from './Player.js';
 import { EVENTS_NAME } from './utils/events.js';
 
-const { up, left, right, down, every } = Const.Direction;
+const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig } = Const.Command;
 
 export default class MainPlayer extends Player {
-  combatDir = false;
+  combatMode = false;
 
   async update() {
     if (this.stats.ap.current === 0)  {
@@ -15,15 +15,7 @@ export default class MainPlayer extends Player {
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.inputKeys.space)) {
-      this.combatDir = every;
-    } else if  (Phaser.Input.Keyboard.JustDown(this.inputKeys.left) && this.combatDir) {
-      this.combatDir = left;
-    } else if  (Phaser.Input.Keyboard.JustDown(this.inputKeys.right) && this.combatDir) {
-      this.combatDir = right;
-    } else if  (Phaser.Input.Keyboard.JustDown(this.inputKeys.up) && this.combatDir) {
-      this.combatDir = up;
-    } else if  (Phaser.Input.Keyboard.JustDown(this.inputKeys.down) && this.combatDir) {
-      this.combatDir = down;
+      this.combatMode = true;
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
       await this.action(left);
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
@@ -32,14 +24,8 @@ export default class MainPlayer extends Player {
       await this.action(up);
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
       await this.action(down);
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space) && this.combatDir) {
-      this.anims.isPlaying && this.anims.stop();
-      if (this.combatDir === every) {
-        await this.attackEverywhere();
-      } else {
-        await this.send({ cmd: attack, dir: this.combatDir });
-      }
-      this.combatDir = false;
+    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
+      this.combatMode = false;
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.p)) {
       this.anims.isPlaying && this.anims.stop();
       if (this.onGameObject) {
@@ -53,28 +39,13 @@ export default class MainPlayer extends Player {
     }
   }
 
-  async attackEverywhere() {
-    if (this.lockingDataItemId) {
-      console.log(`Action disabled until tx resolved `, this.lockingDataItemId);
-    } else {
-      await this.send({ cmd: attack, dir: down });
-      this.lockingDataItemId = undefined;
-      await this.send({ cmd: attack, dir: up });
-      this.lockingDataItemId = undefined;
-      await this.send({ cmd: attack, dir: left });
-      this.lockingDataItemId = undefined;
-      await this.send({ cmd: attack, dir: right });
-    }
-  }
-
   async action(dir) {
     this.anims.isPlaying && this.anims.stop();
-    if (this.combatDir) {
+    if (this.combatMode) {
       await this.send({ cmd: attack, dir });
     } else {
       await this.send({ cmd: move, dir });
     }
-    this.combatDir = false;
   }
 
   nextRound() {

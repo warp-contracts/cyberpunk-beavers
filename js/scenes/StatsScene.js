@@ -4,6 +4,13 @@ import { TextButton } from '../objects/TextButton.js';
 import Const from '../common/const.mjs';
 import { colors } from '../utils/style.js';
 
+const defaultStyle = {
+  fontFamily: '"Press Start 2P"',
+  fontSize: '18px',
+  textTransform: 'uppercase',
+  color: 'white',
+};
+
 export default class StatsScene extends Phaser.Scene {
   walletAddress;
   stats;
@@ -73,66 +80,40 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   addLegend() {
-    const height = 120;
+    const self = this;
+    const height = 200;
     const width = 300;
-    const moveKey = this.add.image(this.gameWidth - width, this.gameHeight - 32 - height, 'ARROWLEFT').setScale(1.5);
-    const moveKey2 = this.add
-      .image(this.gameWidth - width + moveKey.width * 2, this.gameHeight - 32 - height, 'ARROWUP')
-      .setScale(1.5);
-    const moveKey3 = this.add
-      .image(this.gameWidth - width + moveKey.width * 4, this.gameHeight - 32 - height, 'ARROWDOWN')
-      .setScale(1.5);
-    const moveKey4 = this.add
-      .image(this.gameWidth - width + moveKey.width * 6, this.gameHeight - 32 - height, 'ARROWRIGHT')
-      .setScale(1.5);
-    const move = new Text(this, 0, 0, 'MOVE', {
-      fontFamily: '"Press Start 2P"',
-      fontSize: '18px',
-      textTransform: 'uppercase',
-      color: 'white',
-    });
-    Phaser.Display.Bounds.SetLeft(move, Phaser.Display.Bounds.GetCenterX(moveKey4) + moveKey4.width + 30);
+    const baseHeight = this.gameHeight - 32 - height;
+    const baseWidth = this.gameWidth - width;
+    const addImage = (w, h, t) => this.add.image(baseWidth + w, baseHeight + h, t).setScale(1.5);
+    const addLabelRight = (key, t) => {
+      const text = new Text(self, 0, 0, t, defaultStyle);
+      Phaser.Display.Bounds.SetLeft(text, Phaser.Display.Bounds.GetCenterX(key) + key.width + 30);
+      Phaser.Display.Bounds.SetCenterY(text, Phaser.Display.Bounds.GetCenterY(key));
+    }
 
-    Phaser.Display.Bounds.SetCenterY(move, Phaser.Display.Bounds.GetCenterY(moveKey));
-    const digKey = this.add
-      .image(this.gameWidth - width + moveKey.width * 6, this.gameHeight - 32 - height + 40, 'D')
-      .setScale(1.5);
-    const dig = new Text(this, 0, 0, 'DIG', {
-      fontFamily: '"Press Start 2P"',
-      fontSize: '18px',
-      textTransform: 'uppercase',
-      color: 'white',
-    });
-    Phaser.Display.Bounds.SetLeft(dig, Phaser.Display.Bounds.GetCenterX(digKey) + digKey.width + 30);
+    const moveL = addImage(0, 0, 'ARROWLEFT');
+    const moveU = addImage(moveL.width * 2, 0, 'ARROWUP');
+    const moveD = addImage(moveL.width * 4, 0, 'ARROWDOWN');
+    const moveR = addImage(moveL.width * 6, 0, 'ARROWRIGHT');
+    addLabelRight(moveR, 'MOVE');
 
-    Phaser.Display.Bounds.SetCenterY(dig, Phaser.Display.Bounds.GetCenterY(digKey));
+    const digKey = addImage(moveL.width * 6, 40, 'D');
+    addLabelRight(digKey, 'DIG');
 
-    const pickKey = this.add
-      .image(this.gameWidth - width + moveKey.width * 6, this.gameHeight - 32 - height + 80, 'P')
-      .setScale(1.5);
-    const pick = new Text(this, 0, 0, 'PICK', {
-      fontFamily: '"Press Start 2P"',
-      fontSize: '18px',
-      textTransform: 'uppercase',
-      color: 'white',
-    });
-    Phaser.Display.Bounds.SetLeft(pick, Phaser.Display.Bounds.GetCenterX(pickKey) + pickKey.width + 30);
+    const pickKey = addImage(moveL.width * 6, 80, 'P');
+    addLabelRight(pickKey, 'PICK');
 
-    Phaser.Display.Bounds.SetCenterY(pick, Phaser.Display.Bounds.GetCenterY(pickKey));
+    const attackKey = addImage(moveL.width * 3 - 2, 120, 'SPACE');
+    const plus = this.add.text(baseWidth + moveL.width * 3 - 2, baseHeight + 135, '+', defaultStyle);
+    addImage(0, 170, 'ARROWLEFT');
+    addImage(moveL.width * 2, 170, 'ARROWUP');
+    addImage(moveL.width * 4, 170, 'ARROWDOWN');
+    addImage(moveL.width * 6, 170, 'ARROWRIGHT');
 
-    const attackKey = this.add
-      .image(this.gameWidth - width + moveKey.width * 3 - 2, this.gameHeight - 32 - height + 120, 'SPACE')
-      .setScale(1.5);
-
-    const attack = new Text(this, 0, 0, 'ATTACK', {
-      fontFamily: '"Press Start 2P"',
-      fontSize: '18px',
-      textTransform: 'uppercase',
-      color: 'white',
-    });
+    const attack = new Text(this, 0, 0, 'ATTACK', defaultStyle);
     Phaser.Display.Bounds.SetLeft(attack, Phaser.Display.Bounds.GetCenterX(attackKey) + attackKey.width / 1.25 + 30);
-
-    Phaser.Display.Bounds.SetCenterY(attack, Phaser.Display.Bounds.GetCenterY(attackKey));
+    Phaser.Display.Bounds.SetCenterY(attack, Phaser.Display.Bounds.GetCenterY(plus));
   }
 
   addTitle() {

@@ -28,8 +28,7 @@ const Direction = {
   left: 'left',
   right: 'right',
   up: 'up',
-  down: 'down',
-  every: 'every'
+  down: 'down'
 };
 
 const Map = {
