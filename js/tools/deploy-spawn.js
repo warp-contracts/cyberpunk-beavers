@@ -16,8 +16,10 @@ if (envIdx < 0) {
 const env = process.argv[envIdx + 1];
 
 console.info(`Deploying for ${env} env.`);
-
-const mapTxId = 'RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U';
+// RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U - 'default' map
+// fI8pyDeSd3SqpKbxZUviFRgH2IryEbIiRGEdAJRFA0Y - ao 'tutorial' map
+// TBIU0X-FkFu-KPdboiQgbVkkVyVPPsW73rbjX6aIGYg - Greg map 1
+const mapTxId = 'TBIU0X-FkFu-KPdboiQgbVkkVyVPPsW73rbjX6aIGYg';
 
 async function readMapFromArweave() {
   const arweave = Arweave.init({

@@ -165,9 +165,41 @@ export default class MainScene extends Phaser.Scene {
   }
 
   initCamera() {
-    this.cameras.main.setSize(this.game.scale.width, this.game.scale.height);
-    this.cameras.main.startFollow(this.mainPlayer, true, 0.09, 0.09);
-    this.cameras.main.setZoom(1);
+    const camera = this.cameras.main;
+
+    camera.setSize(this.game.scale.width, this.game.scale.height);
+    camera.startFollow(this.mainPlayer, true, 0.09, 0.09);
+    camera.setZoom(1);
+
+    let cameraDragStartX;
+    let cameraDragStartY;
+
+    this.input.on('pointerdown', () => {
+      cameraDragStartX = camera.scrollX;
+      cameraDragStartY = camera.scrollY;
+    });
+
+    this.input.on('pointermove', (pointer) => {
+      if (pointer.isDown) {
+        camera.scrollX = cameraDragStartX + (pointer.downX - pointer.x) / camera.zoom;
+        camera.scrollY = cameraDragStartY + (pointer.downY - pointer.y) / camera.zoom;
+      }
+    });
+
+    this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+      // Get the current world point under pointer.
+      const worldPoint = camera.getWorldPoint(pointer.x, pointer.y);
+      const newZoom = camera.zoom - camera.zoom * 0.001 * deltaY;
+      camera.zoom = Phaser.Math.Clamp(newZoom, 0.25, 2);
+
+      // Update camera matrix, so `getWorldPoint` returns zoom-adjusted coordinates.
+      camera.preRender();
+      const newWorldPoint = camera.getWorldPoint(pointer.x, pointer.y);
+      // Scroll the camera to keep the pointer under the same world point.
+      camera.scrollX -= newWorldPoint.x - worldPoint.x;
+      camera.scrollY -= newWorldPoint.y - worldPoint.y;
+    });
+
   }
 
   createLayer(data, image, depth) {
