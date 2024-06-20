@@ -29,6 +29,7 @@ const Direction = {
   right: 'right',
   up: 'up',
   down: 'down',
+  every: 'every'
 };
 
 const Map = {

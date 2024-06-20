@@ -120,7 +120,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this,
       100,
       200,
-      'Would you date to join?',
+      'Click here to join',
       {
         fill: colors.red,
         font: '20px',
