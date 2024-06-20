@@ -228,7 +228,7 @@ height=72/>
 </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>PROCESS</div>
     <div style="display: flex; justify-content: space-between;">
-    <div style="padding-right: 10px;" id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/entity/${this.processId}'>${this.processId.substr(0, 3) + '...' + this.processId.substr(this.processId.length - 3)}</a></div>
+    <div style="padding-right: 10px;" id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${this.processId.substr(0, 3) + '...' + this.processId.substr(this.processId.length - 3)}</a></div>
     </div>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-right: 10px;"><div>HP</div>
@@ -360,7 +360,7 @@ height=72/>
     }
     return `
       <div id="stats-message" style='margin: 18px 0 0 40px'><span style='display: inline-block; width: 60px; text-transform: uppercase;'>${i.cmd}</span>
-      <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/message/${i.txId}'>${i.txId.substr(0, 5) + '...' + i.txId.substr(i.txId.length - 5)}</a>
+      <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/#/message/${i.txId}'>${i.txId.substr(0, 5) + '...' + i.txId.substr(i.txId.length - 5)}</a>
       ${data}
       </div>`;
   }
