@@ -38,7 +38,6 @@ export function attack(state, action) {
 
 function finishHim(player, opponent) {
   opponent.stats.hp.current -= player.stats.damage;
-  player.stats.ap.current -= 1;
   if (opponent.stats.hp.current <= 0) {
     const loot = lootPlayer(opponent);
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);

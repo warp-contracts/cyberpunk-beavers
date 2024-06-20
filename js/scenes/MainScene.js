@@ -255,6 +255,31 @@ export default class MainScene extends Phaser.Scene {
         break;
 
       case Const.Command.attacked:
+        if (response.player.walletAddress === self.mainPlayer.walletAddress ||
+            response.opponentPlayer.walletAddress === self.mainPlayer.walletAddress) {
+          switch (response.player.beaverId) {
+            case BEAVER_TYPES.heavy_beaver.name:
+              this.attackHeavyBeaverSound.play();
+              break;
+            case BEAVER_TYPES.hacker_beaver.name:
+              this.attackHackerBeaverSound.play();
+              break;
+            case BEAVER_TYPES.speedy_beaver.name:
+              this.attackSpeedyBeaverSound.play();
+              break;
+            default:
+              console.log('Beaver type not found');
+          }
+        }
+        this.updateStats(response.player, response.stats);
+        this.updateStats(response.opponentPlayer, response.opponentStats);
+        this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
+          forOpponent: {
+            score: response.opponentScoreToDisplay,
+            walletAddress: response.opponentPlayer?.walletAddress,
+          },
+        });
+        break;
       case Const.Command.moved: {
         console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
         if (!self.allPlayers[response.player.walletAddress]) {
@@ -275,34 +300,8 @@ export default class MainScene extends Phaser.Scene {
           this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
         }
 
-        if (
-          response.cmd == 'attacked' &&
-          (response.player.walletAddress == self.mainPlayer.walletAddress ||
-            response.opponentPlayer.walletAddress == self.mainPlayer.walletAddress)
-        ) {
-          switch (response.player.beaverId) {
-            case BEAVER_TYPES.heavy_beaver.name:
-              this.attackHeavyBeaverSound.play();
-              break;
-            case BEAVER_TYPES.hacker_beaver.name:
-              this.attackHackerBeaverSound.play();
-              break;
-            case BEAVER_TYPES.speedy_beaver.name:
-              this.attackSpeedyBeaverSound.play();
-              break;
-            default:
-              console.log('Beaver type not found');
-          }
-        }
-
         this.updateStats(response.player, response.stats);
-        this.updateStats(response.opponentPlayer, response.opponentStats);
-        this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
-          forOpponent: {
-            score: response.opponentScoreToDisplay,
-            walletAddress: response.opponentPlayer?.walletAddress,
-          },
-        });
+        this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
       }
         break;
 
