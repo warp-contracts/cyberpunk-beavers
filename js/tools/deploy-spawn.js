@@ -67,7 +67,7 @@ async function spawn(moduleId, mapJson) {
     new Tag('Scheduler', 'jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M'),
     new Tag('SDK', 'ao'),
     new Tag('Content-Type', 'text/plain'),
-    new Tag('Map-From-Tx', 'RZrD8U6MsN48I5Z2lkBM4biSiVehB0eVbOA3pcXI_9U'),
+    new Tag('Map-From-Tx', mapTxId),
   ];
 
   const data = JSON.stringify({ rawMap: mapJson, mapApi: 'v1' });
