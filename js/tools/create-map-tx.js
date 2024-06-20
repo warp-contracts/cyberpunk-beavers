@@ -4,8 +4,8 @@ import {
 } from "@ardrive/turbo-sdk/node";
 import fs from "fs";
 
-const file = "./../../assets/maps/map_g_1.json";
-const mapName = "map_g_1.json";
+const file = "./../../assets/maps/map-2-30x30.json";
+const mapName = "map-2-30x30.json";
 
 
 (async () => {
