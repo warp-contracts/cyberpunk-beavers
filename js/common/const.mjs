@@ -27,7 +27,7 @@ const HIGH_AP_DECO_TILES = [
   5
 ]
 
-const NO_AP_COST = 0;
+const NO_AP_COST = 1; // because fuck logic and naming :)
 const LOW_AP_COST = 1;
 const MED_AP_COST = 2;
 const HIGH_AP_COST = 3;

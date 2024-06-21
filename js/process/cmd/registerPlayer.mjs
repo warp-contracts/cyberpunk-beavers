@@ -49,21 +49,17 @@ export function registerPlayer(state, action) {
 }
 
 function calculatePlayerRandomPos(state) {
-  let randomCounter = 0;
-  let onObstacle = true;
+  let isAllowedPosition = false;
   let pos;
 
-  while (onObstacle) {
-    const x = Math.floor(Math.random(randomCounter) * Map.size);
-    randomCounter++;
-    const y = Math.floor(Math.random(randomCounter) * Map.size);
+  while (!isAllowedPosition) {
+    state.randomCounter++;
+    const x = Math.floor(Math.random(state.randomCounter) * Map.size);
+    state.randomCounter++;
+    const y = Math.floor(Math.random(state.randomCounter) * Map.size);
     pos = { x, y };
 
-    if ([1, 3].includes(state.groundTilemap[pos.y][pos.x])) {
-      randomCounter++;
-    } else {
-      onObstacle = false;
-    }
+    isAllowedPosition = !(state.playersOnTiles[pos.y][pos.x] || state.obstaclesTilemap[pos.y][pos.x] >= 0);
   }
 
   return pos;

@@ -91,4 +91,4 @@ async function spawn(moduleId, mapJson) {
 
 Promise.all([deploy(), readMapFromArweave()])
   .then(([srcId, mapJson]) => spawn(srcId, mapJson))
-  .then(() => console.log(``));
+  .then(() => console.log('done'));
