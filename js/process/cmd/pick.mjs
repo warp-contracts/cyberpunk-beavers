@@ -49,7 +49,7 @@ export function pick(state, action) {
     };
   } else if (type === GameObject.none.type) {
     const gameTreasureTile = state.gameTreasuresTiles.find(
-      (t) => t.tile === state.gameTreasuresTilemap[player.pos.y][player.pos.x]
+      (t) => t.tile === state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x]
     );
     const { type, value } = gameTreasureTile;
     if (type === GameObject.none.type) {
@@ -59,6 +59,7 @@ export function pick(state, action) {
       player.stats.ap.current -= 1;
 
       state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
+      state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameObject.hole.tile;
       const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
       const tokenTransfer = addCoins(player, valueWithBonus);
       return {
