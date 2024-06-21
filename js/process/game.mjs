@@ -9,7 +9,7 @@ import { gameFinished, gameInfo, gameNotStarted, standInQueue } from './cmd/info
 import { setup } from './cmd/setup.mjs';
 import {__init} from "./cmd/__init.js";
 
-const { GameObject, Scores, Map, AllowedTiles, GroundTilesDef } = Const;
+const { Scores } = Const;
 
 // ------- Token Contract Config
 const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
@@ -157,9 +157,10 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.register:
+      registerPlayer(state, action)
       ao.result({
         cmd: Const.Command.registered,
-        ...registerPlayer(state, action),
+        players: state.players,
         map: {
           groundTilemap: state.groundTilemap,
           decorationTilemap: state.decorationTilemap,
@@ -173,7 +174,7 @@ export function handle(state, message) {
     case Const.Command.join:
       ao.result({
         cmd: Const.Command.registered,
-        player: state.players[message.Owner],
+        players: state.players,
         map: {
           groundTilemap: state.groundTilemap,
           decorationTilemap: state.decorationTilemap,

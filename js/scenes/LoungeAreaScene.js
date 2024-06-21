@@ -90,8 +90,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   handleMessage(response) {
-    this.game.events.emit(EVENTS_NAME.nextMessage, response);
-    console.log(response);
     switch (response.cmd) {
       case Const.Command.stats:
         {

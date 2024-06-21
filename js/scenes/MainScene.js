@@ -8,7 +8,6 @@ import { serverConnection } from '../lib/serverConnection.js';
 export default class MainScene extends Phaser.Scene {
   round;
   obstacle;
-  pInfo;
   gameObjectsLayer;
   gameTreasuresLayer;
 
@@ -246,19 +245,24 @@ export default class MainScene extends Phaser.Scene {
             console.error('Failed to join the game', response.error);
             self.scene.start('connect-wallet-scene');
           } else {
-            this.beaverId = response.player.beaverId;
             self.round = response.round;
-            if (response.player.walletAddress === this.walletAddress) {
-              self.initMap({
-                groundLayer: response.map.groundTilemap,
-                decorationLayer: response.map.decorationTilemap,
-                obstaclesLayer: response.map.obstaclesTilemap,
-                treasuresLayer: response.map.gameTreasuresTilemapForClient,
-                objectsLayer: response.map.gameObjectsTilemap,
-              });
-              self.createMainPlayer(response.player);
-              self.initCamera();
+            for (const [wallet, player] of Object.entries(response.players)) {
+              if (wallet === this.walletAddress && !this.mainPlayer) {
+                this.beaverId = player.beaverId;
+                self.initMap({
+                  groundLayer: response.map.groundTilemap,
+                  decorationLayer: response.map.decorationTilemap,
+                  obstaclesLayer: response.map.obstaclesTilemap,
+                  treasuresLayer: response.map.gameTreasuresTilemapForClient,
+                  objectsLayer: response.map.gameObjectsTilemap,
+                });
+                self.createMainPlayer(player);
+                self.initCamera();
+              } else {
+                self.addOtherPlayer(player);
+              }
             }
+
             this.scene.remove('main-scene-loading');
           }
         }
@@ -296,9 +300,7 @@ export default class MainScene extends Phaser.Scene {
         {
           console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
           if (!self.allPlayers[response.player.walletAddress]) {
-            console.log('Setting up new player', response.player.walletAddress);
-            const player = self.createPlayer(response.player);
-            this.game.events.emit(EVENTS_NAME.updatePlayers, player);
+            self.addOtherPlayer(response.player);
           } else {
             self.allPlayers[response.player.walletAddress].moveTo(response.player);
           }
@@ -359,6 +361,15 @@ export default class MainScene extends Phaser.Scene {
         break;
       }
     }
+  }
+
+  addOtherPlayer(pInfo) {
+    if (!this.allPlayers[pInfo.walletAddress]) {
+      console.log('Setting up new player', pInfo.walletAddress);
+      const player = this.createPlayer(pInfo);
+      this.game.events.emit(EVENTS_NAME.updatePlayers, player);
+    }
+    return this.allPlayers[pInfo.walletAddress];
   }
 
   updateStats(responsePlayer, responseStats) {

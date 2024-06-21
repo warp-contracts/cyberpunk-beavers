@@ -18,7 +18,7 @@ export default class StatsScene extends Phaser.Scene {
   beaverChoice;
   processId;
   allPlayers;
-  interactionsQueue = [];
+  messageLogQueue = [];
   constructor() {
     super('stats-scene');
   }
@@ -185,15 +185,30 @@ export default class StatsScene extends Phaser.Scene {
         player.coins.available + player.coins.transferred;
     });
 
-    this.game.events.on(EVENTS_NAME.nextMessage, (interaction) => {
-      if (interaction.player.walletAddress === this.walletAddress) {
-        const newLen = this.interactionsQueue.push(interaction);
+    this.game.events.on(EVENTS_NAME.nextMessage, (message) => {
+      console.log(message);
+      const player = this.me(message);
+      if (player) {
+        const messageLog = {
+          player,
+          ...message
+        }
+        const newLen = this.messageLogQueue.push(messageLog);
         if (newLen > 4) {
-          this.interactionsQueue.shift();
+          this.messageLogQueue.shift();
         }
         document.getElementById('stats-scene-interaction-logs').innerHTML = this.interactionsFormatted();
       }
     });
+  }
+
+  me(interaction) {
+    if (interaction.players && interaction.players[this.walletAddress]) {
+      return interaction.players[this.walletAddress]
+    }
+    if (interaction.player && interaction.player.walletAddress === this.walletAddress) {
+      return interaction.player;
+    }
   }
 
   createStatsBox() {
@@ -333,34 +348,34 @@ height=72/>
   }
 
   interactionsFormatted() {
-    return this.interactionsQueue.map(this.formatInteraction).join('');
+    return this.messageLogQueue.map(this.formatMessageLog).join('');
   }
 
-  formatInteraction(i) {
+  formatMessageLog(ml) {
     let data = ``;
-    switch (i.cmd) {
+    switch (ml.cmd) {
       case Const.Command.moved: {
-        data = `<div style='display: inline-block'>NEW POS ${i.player.pos.x},${i.player.pos.y}</div>`;
+        data = `<div style='display: inline-block'>NEW POS ${ml.player.pos.x},${ml.player.pos.y}</div>`;
         break;
       }
       case Const.Command.attacked: {
-        const info = i.pos ? `POS ${i.pos.x},${i.pos.y}` : `Failed`;
+        const info = ml.pos ? `POS ${ml.pos.x},${ml.pos.y}` : `Failed`;
         data = `<div style='display: inline-block'>${info}</div>`;
         break;
       }
       case Const.Command.token:
       case Const.Command.picked:
       case Const.Command.digged: {
-        if (i.scoreToDisplay && i.scoreToDisplay.length > 0) {
-          const score = i.scoreToDisplay[0];
+        if (ml.scoreToDisplay && ml.scoreToDisplay.length > 0) {
+          const score = ml.scoreToDisplay[0];
           data = `<div style='display: inline-block'>${score.value}${score.type}</div>`;
         }
         break;
       }
     }
     return `
-      <div id="stats-message" style='margin: 18px 0 0 40px'><span style='display: inline-block; width: 60px; text-transform: uppercase;'>${i.cmd}</span>
-      <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/#/message/${i.txId}'>${i.txId.substr(0, 5) + '...' + i.txId.substr(i.txId.length - 5)}</a>
+      <div id="stats-message" style='margin: 18px 0 0 40px'><span style='display: inline-block; width: 60px; text-transform: uppercase;'>${ml.cmd}</span>
+      <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/#/message/${ml.txId}'>${ml.txId.substr(0, 5) + '...' + ml.txId.substr(ml.txId.length - 5)}</a>
       ${data}
       </div>`;
   }
