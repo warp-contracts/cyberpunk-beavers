@@ -3,7 +3,7 @@ import Const, { BEAVER_TYPES } from '../common/const.mjs';
 import MainPlayer from '../MainPlayer.js';
 import { Text } from '../objects/Text.js';
 import { EVENTS_NAME } from '../utils/events.js';
-import { serverConnection } from '../lib/serverConnection.js';
+import { serverConnectionGame } from '../lib/serverConnection.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -74,7 +74,7 @@ export default class MainScene extends Phaser.Scene {
     this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.allPlayers = {};
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
-      this.server = serverConnection;
+      this.server = serverConnectionGame;
       this.server.subscribe(this);
       await this.registerPlayer();
     } else {
@@ -111,6 +111,7 @@ export default class MainScene extends Phaser.Scene {
     this.scene.launch('stats-scene', {
       beaverChoice: this.beaverChoice,
     });
+    this.scene.launch('chat-scene');
     this.statsScene = this.scene.get('stats-scene');
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
     this.statsScene.beaverChoice = this.beaverId || this.beaverChoice;

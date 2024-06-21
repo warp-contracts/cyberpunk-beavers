@@ -50,6 +50,7 @@ const Command = {
   dig: 'dig',
   digged: 'digged',
   token: 'token',
+  msg: 'msg'
 };
 
 const Direction = {

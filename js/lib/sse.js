@@ -1,11 +1,7 @@
-export async function initSubscription() {
-  if (window.warpAO.subscribed) {
-    return;
-  }
+export async function initSubscription(moduleId, processId) {
+  console.log('Subscribing for processId: ', processId);
 
-  console.log('Subscribing for processId: ', window.warpAO.processId());
-
-  let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
+  let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${processId}`);
   const beforeUnloadHandler = (event) => {
     // todo: sent unregister message
     sse.close();
@@ -15,7 +11,7 @@ export async function initSubscription() {
   sse.onerror = (e) => {
     sse.close();
     console.error(e);
-    sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${window.warpAO.processId()}`);
+    sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${processId}`);
   };
 
   return {
@@ -23,18 +19,18 @@ export async function initSubscription() {
       sse.onmessage = () => {}
     },
     subscribe: (target) => {
-      sse.onmessage = messageListener(target);
+      sse.onmessage = messageListener(target, processId);
     },
-    send: window.warpAO.send
+    send: window.warpAO.send.bind(null, moduleId, processId)
   };
 }
 
-function messageListener(target) {
+function messageListener(target, processId) {
   return (event) => {
     try {
       const now = Date.now();
       const message = JSON.parse(event.data);
-      console.log(`\n ==== new message nonce ${message.nonce} ==== `, message);
+      console.log(`\n ==== new message ${processId}:${message.nonce} ==== `, message);
       if (message.tags) {
         const salt = message.tags.find((t) => t.name === 'Salt');
         if (salt) {
@@ -54,7 +50,7 @@ function messageListener(target) {
         }
       }
     } catch (e) {
-      console.log(event);
+      console.error(e);
     }
   }
 }

@@ -6,6 +6,7 @@ import StatsScene from '../scenes/StatsScene.js';
 import MainSceneLoading from '../scenes/MainSceneLoading.js';
 import LeaderboardScene from '../scenes/LeaderboardScene.js';
 import LoungeAreaScene from '../scenes/LoungeAreaScene.js';
+import ChatScene from "../scenes/ChatScene.js";
 
 const config = {
   title: 'CyberBeavers',
@@ -48,6 +49,7 @@ const config = {
     CharacterPickScene,
     MainScene,
     StatsScene,
+    ChatScene,
     MainSceneLoading,
     LeaderboardScene,
   ],
