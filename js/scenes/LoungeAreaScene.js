@@ -1,7 +1,7 @@
 import Const from '../common/const.mjs';
 import { EVENTS_NAME } from '../utils/events.js';
 import { colors } from '../utils/style.js';
-import { serverConnection } from '../lib/serverConnection.js';
+import { serverConnectionGame } from '../lib/serverConnection.js';
 import { TextButton } from '../objects/TextButton.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
@@ -25,7 +25,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
     console.log('Lounge Area - 3. Create');
 
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
-      this.server = serverConnection;
+      this.server = serverConnectionGame;
       this.server.subscribe(this);
       this.server.send({ cmd: Const.Command.info });
     } else {

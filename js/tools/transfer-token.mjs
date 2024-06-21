@@ -17,10 +17,10 @@ await message({
   process: 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk',
   // Tags that the process will use as input.
   tags: [
-    { name: 'From-Process', value: 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk' }, // ;)
-    { name: 'Recipient', value: ids[`processId_${env}`] }, // game contract
-    { name: 'Action', value: 'Transfer' },
-    { name: 'Quantity', value: '1000000' },
+    {name: 'From-Process', value: 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk'}, // ;)
+    {name: 'Recipient', value: ids[`processId_${env}`]}, // game contract
+    {name: 'Action', value: 'Transfer'},
+    {name: 'Quantity', value: '1000000'},
   ],
   // A signer function used to build the message "signature"
   signer: createDataItemSigner(wallet),
@@ -30,5 +30,5 @@ await message({
     */
   data: 'any data',
 })
-  .then(console.log)
+  .then(s => console.log(`Token transfer id: ${s}`))
   .catch(console.error);

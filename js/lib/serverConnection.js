@@ -1,16 +1,19 @@
 import { initWebSocket } from './websocket.js';
 import { initSubscription } from './sse.js';
 
-
-export const serverConnection = await (async () => {
-  return await initServerConnection();
+export const serverConnectionGame = await (async () => {
+  return initServerConnection(window.warpAO.moduleId(), window.warpAO.processId());
 })();
 
-async function initServerConnection() {
+export const serverConnectionChat = await (async () => {
+  return initServerConnection(window.warpAO.chatModuleId(), window.warpAO.chatProcessId());
+})();
+
+async function initServerConnection(moduleId, processId) {
   if (window.warpAO.config.env === 'dev') {
-    return await initWebSocket();
+    return initWebSocket(moduleId, processId);
   } else {
-    return await initSubscription();
+    return initSubscription(moduleId, processId);
   }
 }
 

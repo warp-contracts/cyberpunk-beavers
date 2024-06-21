@@ -6,7 +6,7 @@ const filePath = './js/config/warp-ao-ids.js';
 export function replaceId(key, txId) {
   const currentConfig = warpAoIds;
   if (!currentConfig.hasOwnProperty(key)) {
-    throw new Error(`Unkownn config key ${key}`);
+    throw new Error(`Unknown config key ${key}`);
   }
   currentConfig[key] = txId;
   fs.writeFileSync(filePath, generateTemplate(currentConfig), 'utf8');

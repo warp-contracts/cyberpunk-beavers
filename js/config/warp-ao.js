@@ -16,41 +16,52 @@ window.warpAO = {
   },
   generatedSigner: null,
   nonce: 0,
-  subscribed: false,
   processId: () => {
     return window.warpAO.config[`processId_${env}`];
   },
   moduleId: () => {
     return window.warpAO.config[`moduleId_${env}`];
   },
-  messageTags: (message) => [
+  chatProcessId: () => {
+    return window.warpAO.config[`chat_processId_${env}`];
+  },
+  chatModuleId: () => {
+    return window.warpAO.config[`chat_moduleId_${env}`];
+  },
+  messageTags: (moduleId, processId, message) => [
     new Tag('Action', JSON.stringify(message)),
     new Tag('Data-Protocol', 'ao'),
     new Tag('Type', 'Message'),
     new Tag('Variant', 'ao.TN.1'),
     { name: 'SDK', value: 'ao' },
-    new Tag('From-Process', window.warpAO.processId()),
-    new Tag('From-Module', window.warpAO.moduleId()),
+    new Tag('From-Module', moduleId),
+    new Tag('From-Process', processId),
     new Tag('Salt', '' + Date.now()),
   ],
-  data: (message) => ({
-    tags: window.warpAO.messageTags(message),
+  data: (moduleId, processId, message) => ({
+    tags: window.warpAO.messageTags(moduleId, processId, message),
     data: '1234',
-    target: window.warpAO.processId(),
+    target: processId,
   }),
-  send: async (message) => {
+  send: async (moduleId, processId, message) => {
+    if (!moduleId) {
+      throw new Error('moduleId not set');
+    }
+    if (!processId) {
+      throw new Error('processId not set');
+    }
     if (window.warpAO.generatedSigner) {
-      return sendUsingGeneratedWallet(message, window.warpAO.generatedSigner);
+      return sendUsingGeneratedWallet(moduleId, processId, message, window.warpAO.generatedSigner);
     } else {
-      return sendUsingConnectedWallet(message);
+      return sendUsingConnectedWallet(moduleId, processId, message);
     }
   },
 };
 
-async function sendUsingGeneratedWallet(message, signer) {
+async function sendUsingGeneratedWallet(moduleId, processId, message, signer) {
   const dataItem = createData('1234', signer, {
-    tags: window.warpAO.messageTags(message),
-    target: window.warpAO.processId(),
+    tags: window.warpAO.messageTags(moduleId, processId, message),
+    target: processId,
   });
   await dataItem.sign(signer);
   return sendRawDataItem(dataItem.getRaw());
@@ -76,7 +87,7 @@ async function sendRawDataItem(rawData) {
   }
 }
 
-async function sendUsingConnectedWallet(message) {
-  const signedDataItem = await window.arweaveWallet.signDataItem(window.warpAO.data(message));
+async function sendUsingConnectedWallet(moduleId, processId, message) {
+  const signedDataItem = await window.arweaveWallet.signDataItem(window.warpAO.data(moduleId, processId, message));
   return sendRawDataItem(signedDataItem);
 }
