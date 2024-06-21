@@ -76,6 +76,7 @@ export default class LeaderboardScene extends Phaser.Scene {
   createGridTable() {
     const self = this;
     const cells = this.prepareCellsData();
+
     const newCellObject = function (scene, cell) {
       let input;
       if (cells[cell.index].img) {
@@ -145,7 +146,9 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   prepareCellsData() {
     const cells = [['RANK', 'PLAYER', 'SCORE', 'HP']];
-    console.log(this.allPlayers);
+    if (this.allPlayers.length == 0) {
+      return cells;
+    }
     let allPlayersKeys = Object.keys(this.allPlayers);
     allPlayersKeys.sort(
       (a, b) => this.allPlayers[b].stats.coins?.available - this.allPlayers[a].stats.coins?.available
@@ -162,16 +165,18 @@ export default class LeaderboardScene extends Phaser.Scene {
         this.allPlayers[key].stats.hp?.current,
       ]);
     }
-    const mainPlayerCell = cells.find(
-      (c) =>
-        c[1].address ==
-        this.mainPlayer.walletAddress.substr(0, 3) +
-          '...' +
-          this.mainPlayer.walletAddress.substr(this.mainPlayer.walletAddress.length - 3)
-    );
-    const mainPlayerIndex = cells.indexOf(mainPlayerCell);
-    cells.splice(mainPlayerIndex, 1);
-    cells.splice(1, 0, mainPlayerCell);
+    if (this.mainPlayer?.walletAddress) {
+      const mainPlayerCell = cells.find(
+        (c) =>
+          c[1].address ==
+          this.mainPlayer.walletAddress.substr(0, 3) +
+            '...' +
+            this.mainPlayer.walletAddress.substr(this.mainPlayer.walletAddress.length - 3)
+      );
+      const mainPlayerIndex = cells.indexOf(mainPlayerCell);
+      cells.splice(mainPlayerIndex, 1);
+      cells.splice(1, 0, mainPlayerCell);
+    }
     return cells.flat(1);
   }
 }
