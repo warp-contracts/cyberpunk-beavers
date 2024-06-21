@@ -58,7 +58,6 @@ async function deploy() {
 }
 
 async function spawn(moduleId, mapJson) {
-  console.log(mapJson);
   const processTags = [
     new Tag('Data-Protocol', 'ao'),
     new Tag('Variant', 'ao.TN.1'),
