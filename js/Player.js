@@ -44,7 +44,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_walk`, true);
+    if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
   }
 
   initAnimations() {
