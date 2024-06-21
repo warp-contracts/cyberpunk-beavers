@@ -427,6 +427,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createScoreText(player, score, options) {
+    if (!score || !parseInt(score.value)) {
+      return '';
+    }
     return new Text(
       this,
       options?.forFighter
