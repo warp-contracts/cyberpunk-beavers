@@ -1,8 +1,10 @@
-import {Tag, WarpFactory} from 'warp-contracts';
-import {ArweaveSigner, DeployPlugin} from 'warp-contracts-plugin-deploy';
-import {createData} from 'warp-arbundles';
-import {readFileSync} from 'fs';
-import {replaceId} from './replace-id.js';
+import { Tag, WarpFactory } from 'warp-contracts';
+import { ArweaveSigner, DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { createData } from 'warp-arbundles';
+import { readFileSync } from 'fs';
+import { replaceId } from './replace-id.js';
+import Arweave from 'arweave';
+import ids from '../../js/config/warp-ao-ids.js';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
@@ -45,14 +47,15 @@ async function deploy(processName) {
     new Tag('Compute-Limit', '9000000000000'),
     new Tag('Salt', '' + Date.now()),
   ];
-  const srcTx = await warp.createSource({src: module, tags: moduleTags}, signer);
+  const srcTx = await warp.createSource({ src: module, tags: moduleTags }, signer);
   const srcTxId = await warp.saveSource(srcTx);
   const keyPrefix = processName == 'game' ? '' : `${processName}_`;
+  replaceId(`${keyPrefix}previousModuleId_${env}`, ids[`${keyPrefix}moduleId_${env}`]);
   replaceId(`${keyPrefix}moduleId_${env}`, srcTxId);
   return srcTxId;
 }
 
-async function spawn({processName, moduleId, chatProcessId, mapJson}) {
+async function spawn({ processName, moduleId, chatProcessId, mapJson }) {
   console.log(`Spawning ${processName}`);
   const processTags = [
     new Tag('Data-Protocol', 'ao'),
@@ -68,11 +71,11 @@ async function spawn({processName, moduleId, chatProcessId, mapJson}) {
     processTags.push(new Tag('Map-From-Tx', mapTxId));
   }
   if (chatProcessId) {
-    processTags.push(new Tag('Chat-Process-Tx', chatProcessId))
+    processTags.push(new Tag('Chat-Process-Tx', chatProcessId));
   }
 
-  const data = mapJson ? JSON.stringify({rawMap: mapJson, mapApi: 'v1'}) : '{}';
-  const processDataItem = createData(data, signer, {tags: processTags});
+  const data = mapJson ? JSON.stringify({ rawMap: mapJson, mapApi: 'v1' }) : '{}';
+  const processDataItem = createData(data, signer, { tags: processTags });
   await processDataItem.sign(signer);
 
   const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
@@ -87,6 +90,7 @@ async function spawn({processName, moduleId, chatProcessId, mapJson}) {
   }).then((res) => res.json());
 
   const keyPrefix = processName == 'game' ? '' : `${processName}_`;
+  replaceId(`${keyPrefix}previousProcessId_${env}`, ids[`${keyPrefix}processId_${env}`]);
   replaceId(`${keyPrefix}processId_${env}`, processResponse.id);
   return processResponse.id;
 }
@@ -94,10 +98,14 @@ async function spawn({processName, moduleId, chatProcessId, mapJson}) {
 async function doIt() {
   const [gameSrcId, chatSrcId, mapJson] = await Promise.all([deploy('game'), deploy('chat'), readMapFromArweave()]);
   const chatProcessId = await spawn({
-    processName: 'chat', moduleId: chatSrcId
+    processName: 'chat',
+    moduleId: chatSrcId,
   });
   const gameProcessId = await spawn({
-    processName: 'game', moduleId: gameSrcId, chatProcessId, mapJson
+    processName: 'game',
+    moduleId: gameSrcId,
+    chatProcessId,
+    mapJson,
   });
 
   return {
@@ -106,10 +114,9 @@ async function doIt() {
     [`chat_processId_${env}`]: chatProcessId,
     [`chat_moduleId_${env}`]: chatSrcId,
     mapTxId,
-  }
+  };
 }
 
-doIt().then(r => {
+doIt().then((r) => {
   console.log(r);
 });
-

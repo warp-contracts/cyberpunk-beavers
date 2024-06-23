@@ -14,14 +14,18 @@ export async function initSubscription(moduleId, processId) {
     sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${processId}`);
   };
 
+  window.warpAO.subscribed = true;
+
   return {
     unsubscribe: () => {
-      sse.onmessage = () => {}
+      sse.onmessage = () => {};
+      sse.close();
+      window.warpAO.server = false;
     },
     subscribe: (target) => {
       sse.onmessage = messageListener(target, processId);
     },
-    send: window.warpAO.send.bind(null, moduleId, processId)
+    send: window.warpAO.send.bind(null, moduleId, processId),
   };
 }
 
@@ -52,7 +56,5 @@ function messageListener(target, processId) {
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 }
-
-

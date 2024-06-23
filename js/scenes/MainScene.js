@@ -4,6 +4,13 @@ import MainPlayer from '../MainPlayer.js';
 import { Text } from '../objects/Text.js';
 import { EVENTS_NAME } from '../utils/events.js';
 import { serverConnectionGame } from '../lib/serverConnection.js';
+import {
+  mainSceneKey,
+  connectWalletSceneKey,
+  leaderboardSceneKey,
+  mainSceneLoadingKey,
+  statsSceneKey,
+} from '../config/config.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -12,7 +19,7 @@ export default class MainScene extends Phaser.Scene {
   gameTreasuresLayer;
 
   constructor() {
-    super('main-scene');
+    super(mainSceneKey);
   }
 
   init(data) {
@@ -20,8 +27,8 @@ export default class MainScene extends Phaser.Scene {
     this.beaverId = data.beaverId;
     this.beaverChoice = data.beaverChoice;
     this.walletAddress = data.walletAddress;
-    this.scene.launch('main-scene-loading');
-    this.mainSceneLoading = this.scene.get('main-scene-loading');
+    this.scene.launch(mainSceneLoadingKey);
+    this.mainSceneLoading = this.scene.get(mainSceneLoadingKey);
     this.gameStart = data.gameStart;
     this.gameEnd = data.gameEnd;
   }
@@ -78,7 +85,7 @@ export default class MainScene extends Phaser.Scene {
       this.server.subscribe(this);
       await this.registerPlayer();
     } else {
-      this.scene.start('connect-wallet-scene');
+      this.scene.start(connectWalletSceneKey);
     }
   }
 
@@ -108,11 +115,11 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
-    this.scene.launch('stats-scene', {
+    this.scene.launch(statsSceneKey, {
       beaverChoice: this.beaverChoice,
     });
     this.scene.launch('chat-scene');
-    this.statsScene = this.scene.get('stats-scene');
+    this.statsScene = this.scene.get(statsSceneKey);
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
     this.statsScene.beaverChoice = this.beaverId || this.beaverChoice;
     this.statsScene.stats = this.mainPlayer.stats;
@@ -139,8 +146,8 @@ export default class MainScene extends Phaser.Scene {
   update() {
     if (this.gameEnd && this.gameEnd < Date.now()) {
       this.backgroundMusic.stop();
-      this.scene.stop('stats-scene');
-      this.scene.start('leaderboard-scene', { players: this.allPlayers, mainPlayer: this.mainPlayer });
+      this.scene.remove(statsSceneKey);
+      this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
     }
     const roundInfo = this.roundTick();
     this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
@@ -244,7 +251,7 @@ export default class MainScene extends Phaser.Scene {
           console.log('Registered player', response);
           if (response.error) {
             console.error('Failed to join the game', response.error);
-            self.scene.start('connect-wallet-scene');
+            self.scene.start(connectWalletSceneKey);
           } else {
             self.round = response.round;
             for (const [wallet, player] of Object.entries(response.players)) {
@@ -264,7 +271,7 @@ export default class MainScene extends Phaser.Scene {
               }
             }
 
-            this.scene.remove('main-scene-loading');
+            this.scene.remove(mainSceneLoadingKey);
           }
         }
         break;

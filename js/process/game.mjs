@@ -7,7 +7,8 @@ import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { scoreToDisplay } from '../common/tools.mjs';
 import { gameFinished, gameInfo, gameNotStarted, standInQueue } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
-import {__init} from "./cmd/__init.js";
+import { __init } from './cmd/__init.js';
+import { setNextProcess } from './cmd/setNextProcess.mjs';
 
 const { Scores } = Const;
 
@@ -46,8 +47,10 @@ function handleMessageFromToken(state, action, message) {
 }
 
 function restrictedAccess(state, action, ts) {
-  return (gameNotStarted(state, ts) && ![Const.Command.setup, Const.Command.enqueue].includes(action.cmd)) ||
-    (gameFinished(state, ts) && ![Const.Command.setup].includes(action.cmd))
+  return (
+    (gameNotStarted(state, ts) && ![Const.Command.setup, Const.Command.enqueue].includes(action.cmd)) ||
+    (gameFinished(state, ts) && ![Const.Command.setup, Const.Command.setNextProcess].includes(action.cmd))
+  );
 }
 
 export function handle(state, message) {
@@ -59,7 +62,6 @@ export function handle(state, message) {
 
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
 
-
   if (TOKEN_ACTIONS.includes(actionTagValue)) {
     return handleMessageFromToken(state, actionTagValue, message);
   }
@@ -68,11 +70,11 @@ export function handle(state, message) {
   action.walletAddress = message.Owner;
 
   if (restrictedAccess(state, action, message.Timestamp)) {
-    console.log(`The game has not started yet`)
+    console.log(`The game has not started yet`);
     ao.result({
       cmd: Const.Command.stats,
-      ...gameInfo(state, message.Owner, message.Timestamp)
-    })
+      ...gameInfo(state, message.Owner, message.Timestamp),
+    });
     return;
   }
 
@@ -87,23 +89,29 @@ export function handle(state, message) {
         player: state.players[message.Owner],
       });
       break;
+    case Const.Command.setNextProcess:
+      ao.result({
+        ...setNextProcess(state, action),
+        cmd: Const.Command.nextProcessSet,
+      });
+      break;
     case Const.Command.info:
       ao.result({
         cmd: Const.Command.stats,
-        ...gameInfo(state, message.Owner, message.Timestamp)
-      })
+        ...gameInfo(state, message.Owner, message.Timestamp),
+      });
       break;
     case Const.Command.enqueue:
       standInQueue(state, action);
       ao.result({
         cmd: Const.Command.stats,
-        ...gameInfo(state, message.Owner, message.Timestamp)
-      })
+        ...gameInfo(state, message.Owner, message.Timestamp),
+      });
       break;
     case Const.Command.setup:
       ao.result({
         cmd: Const.Command.info,
-        ...setup(state, action, message)
+        ...setup(state, action, message),
       });
       break;
     case Const.Command.pick:
@@ -157,7 +165,7 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.register:
-      registerPlayer(state, action)
+      registerPlayer(state, action);
       ao.result({
         cmd: Const.Command.registered,
         players: state.players,
