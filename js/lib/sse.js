@@ -23,7 +23,7 @@ export async function initSubscription(moduleId, processId) {
       sse.onmessage = messageListener(target, processId);
     },
     send: (message) => {
-      window.warpAO.send(moduleId, processId, message);
+      return window.warpAO.send(moduleId, processId, message);
     },
     switchProcess: (newProcessId, newModuleId) => {
       processId = newProcessId;
