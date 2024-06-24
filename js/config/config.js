@@ -1,12 +1,34 @@
 import MainScene from '../scenes/MainScene.js';
 import LoadingScene from '../scenes/LoadingScene.js';
-import CharacterPickScene from '../scenes/CharacterPickScene.js';
+import PlayerPickScene from '../scenes/PlayerPickScene.js';
 import ConnectWalletScene from '../scenes/ConnectWalletScene.js';
 import StatsScene from '../scenes/StatsScene.js';
 import MainSceneLoading from '../scenes/MainSceneLoading.js';
 import LeaderboardScene from '../scenes/LeaderboardScene.js';
 import LoungeAreaScene from '../scenes/LoungeAreaScene.js';
-import ChatScene from "../scenes/ChatScene.js";
+import ChatScene from '../scenes/ChatScene.js';
+
+export const scenes = {
+  loadingScene: { key: 'loading-scene', scene: LoadingScene },
+  connectWalletScene: { key: 'connect-wallet-scene', scene: ConnectWalletScene },
+  loungeAreaScene: { key: 'lounge-area-scene', scene: LoungeAreaScene },
+  playerPickScene: { key: 'player-pick-scene', scene: PlayerPickScene },
+  mainScene: { key: 'main-scene', scene: MainScene },
+  statsScene: { key: 'stats-scene', scene: StatsScene },
+  mainSceneLoading: { key: 'main-scene-loading', scene: MainSceneLoading },
+  leaderboardScene: { key: 'leaderboard-scene', scene: LeaderboardScene },
+  chatScene: { key: 'chat-scene', scene: ChatScene },
+};
+
+export const mainSceneKey = scenes.mainScene.key;
+export const mainSceneLoadingKey = scenes.mainSceneLoading.key;
+export const connectWalletSceneKey = scenes.connectWalletScene.key;
+export const leaderboardSceneKey = scenes.leaderboardScene.key;
+export const statsSceneKey = scenes.statsScene.key;
+export const loadingSceneKey = scenes.loadingScene.key;
+export const loungeAreaSceneKey = scenes.loungeAreaScene.key;
+export const playerPickSceneKey = scenes.playerPickScene.key;
+export const chatSceneKey = scenes.chatScene.key;
 
 const config = {
   title: 'CyberBeavers',
@@ -42,17 +64,7 @@ const config = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [
-    LoadingScene,
-    ConnectWalletScene,
-    LoungeAreaScene,
-    CharacterPickScene,
-    MainScene,
-    StatsScene,
-    ChatScene,
-    MainSceneLoading,
-    LeaderboardScene,
-  ],
+  scene: Object.values(scenes).map((s) => s.scene),
 };
 
 window.sizeChanged = () => {

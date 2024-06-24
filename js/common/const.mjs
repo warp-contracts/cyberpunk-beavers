@@ -5,33 +5,21 @@ const EVENTS_NAME = {
 const EMPTY_TILE = -1;
 
 // road tiles
-const NO_AP_GROUND_TILES = [
-  0, 1, 2, 3, 4, 5, 6,
-  7, 8, 9, 10, 11,
-  14, 15, 16, 17, 18, 19, 20,
-  21, 22, 23, 24, 25
-]
+const NO_AP_GROUND_TILES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
 
 // light sand tiles
-const LOW_AP_GROUND_TILES = [
-  26, 27
-];
+const LOW_AP_GROUND_TILES = [26, 27];
 
 // dark sand tiles
-const MED_AP_GROUND_TILES = [
-  12, 13
-];
+const MED_AP_GROUND_TILES = [12, 13];
 
 // "stones"
-const HIGH_AP_DECO_TILES = [
-  5
-]
+const HIGH_AP_DECO_TILES = [5];
 
 const NO_AP_COST = 1; // because fuck logic and naming :)
 const LOW_AP_COST = 1;
 const MED_AP_COST = 2;
 const HIGH_AP_COST = 3;
-
 
 const Command = {
   attack: 'attack',
@@ -50,14 +38,16 @@ const Command = {
   dig: 'dig',
   digged: 'digged',
   token: 'token',
-  msg: 'msg'
+  msg: 'msg',
+  setNextProcess: 'setNextProcess',
+  nextProcessSet: 'nextProcessSet',
 };
 
 const Direction = {
   left: 'left',
   right: 'right',
   up: 'up',
-  down: 'down'
+  down: 'down',
 };
 
 const Map = {
@@ -140,11 +130,10 @@ export const BEAVER_TYPES = {
   },
 };
 
-
 // ------- Queue Config
 const Queue = {
-  limit: 15
-}
+  limit: 15,
+};
 
 export default {
   BEAVER_TYPES,
@@ -166,5 +155,5 @@ export default {
   NO_AP_COST,
   LOW_AP_COST,
   MED_AP_COST,
-  HIGH_AP_COST
+  HIGH_AP_COST,
 };

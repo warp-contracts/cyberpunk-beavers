@@ -1,6 +1,8 @@
+import { connectWalletSceneKey, loadingSceneKey } from '../config/config.js';
+
 export default class LoadingScene extends Phaser.Scene {
   constructor() {
-    super('loading-scene');
+    super(loadingSceneKey);
   }
 
   init() {
@@ -16,6 +18,6 @@ export default class LoadingScene extends Phaser.Scene {
 
   create() {
     console.log('Loading Scene - 3. Create');
-    this.scene.start('connect-wallet-scene');
+    this.scene.start(connectWalletSceneKey);
   }
 }

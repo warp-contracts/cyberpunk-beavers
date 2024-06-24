@@ -16,4 +16,3 @@ async function initServerConnection(moduleId, processId) {
     return initSubscription(moduleId, processId);
   }
 }
-

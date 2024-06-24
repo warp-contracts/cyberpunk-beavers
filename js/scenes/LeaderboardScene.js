@@ -1,21 +1,32 @@
 import { Text } from '../objects/Text.js';
-import { TextButton } from '../objects/TextButton.js';
 import { colors } from '../utils/style.js';
 import { WebFontFile } from '../WebFontFile.js';
+import Const from '../common/const.mjs';
+import { serverConnectionChat, serverConnectionGame } from '../lib/serverConnection.js';
+import { EVENTS_NAME } from '../utils/events.js';
+import {
+  mainSceneKey,
+  connectWalletSceneKey,
+  leaderboardSceneKey,
+  loungeAreaSceneKey,
+  statsSceneKey,
+  scenes,
+} from '../config/config.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
-    super('leaderboard-scene');
+    super(leaderboardSceneKey);
   }
 
   init(data) {
     console.log('Leaderboard Scene - 1. Init');
     this.allPlayers = data.players;
     this.mainPlayer = data.mainPlayer;
+    this.walletAddress = data.mainPlayer?.walletAddress || data.walletAddress;
     this.gameWidth = window.innerWidth;
     this.gameHeight = window.innerHeight;
-    this.mainScene = this.scene.get('main-scene');
-    this.statsScene = this.scene.get('stats-scene');
+    this.mainScene = this.scene.get(mainSceneKey);
+    this.statsScene = this.scene.get(statsSceneKey);
   }
 
   preload() {
@@ -32,28 +43,19 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
-  create() {
+  async create() {
     console.log('Leaderboard Scene - 3. Create');
+    if (window.arweaveWallet || window.warpAO.generatedSigner) {
+      this.server = serverConnectionGame;
+      this.serverChat = serverConnectionChat;
+      this.server.subscribe(this);
+      this.serverChat.subscribe(this);
+    } else {
+      this.scene.start(connectWalletSceneKey);
+    }
     this.addBackground();
     this.addAndPositionTitle();
     this.createGridTable(this);
-    // this.closeButton = new TextButton(
-    //   this,
-    //   this.gameWidth - 200,
-    //   50,
-    //   'Close',
-    //   {
-    //     fill: colors.white,
-    //     font: '20px',
-    //   },
-    //   () => {
-    //     this.statsScene.scene.setVisible(true);
-    //     document.getElementById('stats-box').style.display = 'block';
-    //     document.getElementById('incoming-messages-box').style.display = 'block';
-    //     this.mainScene.scene.resume();
-    //     this.scene.stop();
-    //   }
-    // ).setDepth(13);
   }
 
   addBackground() {
@@ -146,8 +148,8 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   prepareCellsData() {
     const cells = [['RANK', 'PLAYER', 'SCORE', 'HP']];
-    if (this.allPlayers.length == 0) {
-      return cells;
+    if (!this.allPlayers || Object.keys(this.allPlayers).length == 0) {
+      return cells.flat(1);
     }
     let allPlayersKeys = Object.keys(this.allPlayers);
     allPlayersKeys.sort(
@@ -178,5 +180,57 @@ export default class LeaderboardScene extends Phaser.Scene {
       cells.splice(1, 0, mainPlayerCell);
     }
     return cells.flat(1);
+  }
+
+  handleMessage(response) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const env = urlParams.get('env') || 'prod';
+
+    if (response.cmd == Const.Command.nextProcessSet) {
+      this.server.switchProcess(response.processId, response.moduleId);
+      this.serverChat.switchProcess(response.chatProcessId, response.chatModuleId);
+
+      window.warpAO.config[`processId_${env}`] = response.processId;
+      window.warpAO.processId = () => {
+        return response.processId;
+      };
+
+      window.warpAO.config[`moduleId_${env}`] = response.moduleId;
+      window.warpAO.moduleId = () => {
+        return response.moduleId;
+      };
+      window.warpAO.config[`chat_processId_${env}`] = response.chatProcessId;
+      window.warpAO.chatProcessId = () => {
+        return response.chatProcessId;
+      };
+
+      window.warpAO.config[`chat_moduleId_${env}`] = response.chatModuleId;
+      window.warpAO.chatModuleId = () => {
+        return response.chatModuleId;
+      };
+      this.restartScenes();
+      this.scene.start(loungeAreaSceneKey, { walletAddress: this.walletAddress });
+    }
+  }
+
+  restartScenes() {
+    const self = this;
+
+    const scenesToRestartKeys = Object.keys(scenes);
+    scenesToRestartKeys.forEach((s) => {
+      const scene = scenes[s];
+      if (scene.key != leaderboardSceneKey) self.scene.remove(scene.key);
+    });
+
+    this.game.events.removeAllListeners(EVENTS_NAME.updateRoundInfo);
+    this.game.events.removeAllListeners(EVENTS_NAME.nextMessage);
+    this.game.events.removeAllListeners(EVENTS_NAME.updatePlayers);
+    this.game.events.removeAllListeners(EVENTS_NAME.updateStats);
+    this.game.events.removeAllListeners(EVENTS_NAME.updateOtherPlayerStats);
+
+    scenesToRestartKeys.forEach((s) => {
+      const scene = scenes[s];
+      if (scene.key != leaderboardSceneKey) self.scene.add(scene.key, scene.scene, false);
+    });
   }
 }

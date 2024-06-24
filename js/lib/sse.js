@@ -16,12 +16,23 @@ export async function initSubscription(moduleId, processId) {
 
   return {
     unsubscribe: () => {
-      sse.onmessage = () => {}
+      sse.onmessage = () => {};
+      sse.close();
     },
     subscribe: (target) => {
       sse.onmessage = messageListener(target, processId);
     },
-    send: window.warpAO.send.bind(null, moduleId, processId)
+    send: (message) => {
+      window.warpAO.send(moduleId, processId, message);
+    },
+    switchProcess: (newProcessId, newModuleId) => {
+      processId = newProcessId;
+      moduleId = newModuleId;
+      sse.onmessage = () => {};
+      sse.close();
+      console.log('Switching subscription for processId: ', newProcessId);
+      sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${newProcessId}`);
+    },
   };
 }
 
@@ -57,7 +68,5 @@ function messageListener(target, processId) {
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 }
-
-

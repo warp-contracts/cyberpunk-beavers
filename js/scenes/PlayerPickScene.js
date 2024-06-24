@@ -1,12 +1,13 @@
 import { WebFontFile } from '../WebFontFile.js';
 import { Text } from '../objects/Text.js';
+import { mainSceneKey, playerPickSceneKey, leaderboardSceneKey } from '../config/config.js';
 
-export default class CharacterPickScene extends Phaser.Scene {
+export default class PlayerPickScene extends Phaser.Scene {
   score;
   playerAgileOne;
 
   constructor() {
-    super('player-pick-scene');
+    super(playerPickSceneKey);
   }
 
   init(data) {
@@ -59,6 +60,12 @@ export default class CharacterPickScene extends Phaser.Scene {
     });
   }
 
+  update() {
+    if (this.initData.gameEnd && this.initData.gameEnd < Date.now()) {
+      this.scene.start(leaderboardSceneKey, { walletAddress: this.initData.walletAddress });
+    }
+  }
+
   addBeaverOptionPick(option) {
     const beaverSprite = this.add.image(option.x, option.y, option.imgName);
     beaverSprite.y = beaverSprite.height;
@@ -102,7 +109,7 @@ export default class CharacterPickScene extends Phaser.Scene {
       })
       .on('pointerdown', () => {
         console.log(option);
-        this.scene.start('main-scene', {
+        this.scene.start(mainSceneKey, {
           ...this.initData,
           beaverChoice: option.imgName,
         });

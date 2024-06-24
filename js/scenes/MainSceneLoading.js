@@ -1,8 +1,9 @@
 import { Text } from '../objects/Text.js';
+import { mainSceneLoadingKey } from '../config/config.js';
 
 export default class MainSceneLoading extends Phaser.Scene {
   constructor() {
-    super('main-scene-loading');
+    super(mainSceneLoadingKey);
   }
 
   init() {
@@ -11,10 +12,7 @@ export default class MainSceneLoading extends Phaser.Scene {
 
   preload() {
     console.log('Main Scene Loading - 2. Preload');
-    this.load.image(
-      'post_apocalyptic_background',
-      'assets/images/background_post_apocalyptic.png'
-    );
+    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.png');
   }
 
   create() {
@@ -26,11 +24,7 @@ export default class MainSceneLoading extends Phaser.Scene {
   }
 
   addBackground() {
-    this.background = this.add.image(
-      this.gameWidth / 2,
-      this.gameHeight / 2,
-      'post_apocalyptic_background'
-    );
+    this.background = this.add.image(this.gameWidth / 2, this.gameHeight / 2, 'post_apocalyptic_background');
     this.background.setDisplaySize(this.gameWidth, this.gameHeight);
   }
 

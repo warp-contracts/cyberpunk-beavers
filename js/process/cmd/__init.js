@@ -1,7 +1,6 @@
-import Const from "../../common/const.mjs";
+import Const from '../../common/const.mjs';
 
 const { GameObject, Scores, Map, EMPTY_TILE } = Const;
-
 
 export function __init(state, message) {
   state = Object.assign(state, initState(message, state));
@@ -12,7 +11,7 @@ export function __init(state, message) {
 }
 
 function tryLoadLayer(type, rawMap) {
-  const layer = rawMap.layers.find(l => l.name == type);
+  const layer = rawMap.layers.find((l) => l.name == type);
   if (!layer) {
     throw new ProcessError(`No "${type}" found in map data`);
   }
@@ -21,18 +20,18 @@ function tryLoadLayer(type, rawMap) {
   // - when using multiple tilesets, Tiles map editor assigns values globally - as if there was one tileset
   // - for whatever the fuck reason
   const tilesetId = type.replace('_layer', '');
-  const tileset = rawMap.tilesets.find(t => t.source.includes(tilesetId));
+  const tileset = rawMap.tilesets.find((t) => t.source.includes(tilesetId));
   if (!tileset) {
     throw new ProcessError(`Tileset containin words "${tilesetId}" not found`);
   }
-  let firstgid = tileset.firstgid
+  let firstgid = tileset.firstgid;
   if (type == 'obstacles_layer') {
     // for some reason the exported data for obstacles have values increased by 3
     // in comparison to what is set in 'firstgid' in the tileset
     firstgid += 3;
   }
 
-  layer.data = layer.data.map(t => t - firstgid);
+  layer.data = layer.data.map((t) => t - firstgid);
 
   return layer;
 }
@@ -43,6 +42,10 @@ function initState(message, state) {
   const obstaclesLayer = tryLoadLayer('obstacles_layer', state.rawMap);
 
   const result = {
+    nextProcessId: null,
+    nextModuleId: null,
+    nextChatProcessId: null,
+    nextChatModuleId: null,
     counter: 0,
     pos: 1,
     playWindow: {},
@@ -68,15 +71,15 @@ function initState(message, state) {
       .map(() => Array(Map.size)),
     groundTilemap: generateTilemap(groundLayer.data, groundLayer.width),
     decorationTilemap: generateTilemap(decorationLayer.data, decorationLayer.width),
-    obstaclesTilemap: generateTilemap(obstaclesLayer.data, obstaclesLayer.width)
+    obstaclesTilemap: generateTilemap(obstaclesLayer.data, obstaclesLayer.width),
   };
 
   return result;
 }
 
 function generateTilemap(input, width) {
-  const result = []
-  while(input.length) {
+  const result = [];
+  while (input.length) {
     result.push(input.splice(0, width));
   }
   return result;

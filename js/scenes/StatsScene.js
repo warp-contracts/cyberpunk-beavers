@@ -1,8 +1,8 @@
 import { EVENTS_NAME } from '../utils/events.js';
 import { Text } from '../objects/Text.js';
-import { TextButton } from '../objects/TextButton.js';
 import Const from '../common/const.mjs';
 import { colors } from '../utils/style.js';
+import { mainSceneKey, statsSceneKey } from '../config/config.js';
 
 const defaultStyle = {
   fontFamily: '"Press Start 2P"',
@@ -20,12 +20,12 @@ export default class StatsScene extends Phaser.Scene {
   allPlayers;
   messageLogQueue = [];
   constructor() {
-    super('stats-scene');
+    super(statsSceneKey);
   }
 
   init() {
     console.log('Stats Scene - 1. Init');
-    this.mainScene = this.scene.get('main-scene');
+    this.mainScene = this.scene.get(mainSceneKey);
   }
 
   preload() {
@@ -90,7 +90,7 @@ export default class StatsScene extends Phaser.Scene {
       const text = new Text(self, 0, 0, t, defaultStyle);
       Phaser.Display.Bounds.SetLeft(text, Phaser.Display.Bounds.GetCenterX(key) + key.width + 30);
       Phaser.Display.Bounds.SetCenterY(text, Phaser.Display.Bounds.GetCenterY(key));
-    }
+    };
 
     const moveL = addImage(0, 0, 'ARROWLEFT');
     const moveU = addImage(moveL.width * 2, 0, 'ARROWUP');
@@ -191,8 +191,8 @@ export default class StatsScene extends Phaser.Scene {
       if (player) {
         const messageLog = {
           player,
-          ...message
-        }
+          ...message,
+        };
         const newLen = this.messageLogQueue.push(messageLog);
         if (newLen > 4) {
           this.messageLogQueue.shift();
@@ -204,7 +204,7 @@ export default class StatsScene extends Phaser.Scene {
 
   me(interaction) {
     if (interaction.players && interaction.players[this.walletAddress]) {
-      return interaction.players[this.walletAddress]
+      return interaction.players[this.walletAddress];
     }
     if (interaction.player && interaction.player.walletAddress === this.walletAddress) {
       return interaction.player;

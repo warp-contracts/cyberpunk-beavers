@@ -1,15 +1,21 @@
 import Const from '../common/const.mjs';
-import { EVENTS_NAME } from '../utils/events.js';
 import { colors } from '../utils/style.js';
 import { serverConnectionGame } from '../lib/serverConnection.js';
 import { TextButton } from '../objects/TextButton.js';
+import {
+  mainSceneKey,
+  loungeAreaSceneKey,
+  connectWalletSceneKey,
+  playerPickSceneKey,
+  leaderboardSceneKey,
+} from '../config/config.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId;
   enqueueButton;
 
   constructor() {
-    super('lounge-area-scene');
+    super(loungeAreaSceneKey);
   }
 
   init(data) {
@@ -29,7 +35,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.server.subscribe(this);
       this.server.send({ cmd: Const.Command.info });
     } else {
-      this.scene.start('connect-wallet-scene');
+      this.scene.start(connectWalletSceneKey);
     }
 
     this.header = this.add.text(
@@ -61,19 +67,18 @@ export default class LoungeAreaScene extends Phaser.Scene {
     if (!this.gameStart) {
       return;
     }
-
     const now = new Date();
     let diff = Math.round((this.gameStart - now) / 1000);
     if (diff <= 0) {
       if (this.beaverId) {
-        this.scene.start('main-scene', {
+        this.scene.start(mainSceneKey, {
           walletAddress: this.walletAddress,
           beaverId: this.beaverId,
           gameStart: this.gameStart,
           gameEnd: this.gameEnd,
         });
       } else {
-        this.scene.start('player-pick-scene', {
+        this.scene.start(playerPickSceneKey, {
           walletAddress: this.walletAddress,
           gameStart: this.gameStart,
           gameEnd: this.gameEnd,
@@ -95,19 +100,19 @@ export default class LoungeAreaScene extends Phaser.Scene {
         {
           if (response.error) {
             console.error('Failed to fetch game info', response.error);
-            this.scene.start('connect-wallet-scene');
+            this.scene.start(connectWalletSceneKey);
           } else {
             this.beaverId = response.beaverId;
             if (response.active) {
               if (response.beaverId) {
-                this.scene.start('main-scene', {
+                this.scene.start(mainSceneKey, {
                   walletAddress: this.walletAddress,
                   beaverId: response.beaverId,
                   gameStart: response.start,
                   gameEnd: response.end,
                 });
               } else {
-                this.scene.start('player-pick-scene', {
+                this.scene.start(playerPickSceneKey, {
                   walletAddress: this.walletAddress,
                   gameStart: response.start,
                   gameEnd: response.end,
@@ -127,7 +132,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
               this.displayWaitingList(response);
               this.countdown();
             } else {
-              this.scene.start('leaderboard-scene', {
+              this.scene.start(leaderboardSceneKey, {
                 players: response.players,
                 mainPlayer: {
                   walletAddress: response.walletAddress,

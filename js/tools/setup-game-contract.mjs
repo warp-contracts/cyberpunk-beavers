@@ -4,7 +4,6 @@ import { createData } from 'warp-arbundles';
 import { ArweaveSigner } from 'warp-contracts-plugin-deploy';
 import { Tag } from 'warp-contracts';
 
-
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
 
@@ -13,7 +12,6 @@ if (envIdx < 0) {
   throw new Error("Specify 'env' flash with either 'local' or 'prod' value");
 }
 const env = process.argv[envIdx + 1];
-
 
 async function setupGameContract() {
   const processId = ids[`processId_${env}`];
@@ -24,7 +22,7 @@ async function setupGameContract() {
     new Tag('Type', 'Message'),
     new Tag('From-Process', processId),
     new Tag('From-Module', moduleId),
-    new Tag('Action', JSON.stringify({cmd: 'setup', type: 'nextSlot', slotMinutes: 6, playMinutes: 5 })),
+    new Tag('Action', JSON.stringify({ cmd: 'setup', type: 'nextSlot', slotMinutes: 2, playMinutes: 1 })),
     new Tag('SDK', 'ao'),
     new Tag('Name', 'setup'),
   ];
@@ -35,7 +33,7 @@ async function setupGameContract() {
 
   const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
 
-  const processResponse = await fetch(muUrl, {
+  return await fetch(muUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/octet-stream',
@@ -43,9 +41,8 @@ async function setupGameContract() {
     },
     body: processDataItem.getRaw(),
   }).then((res) => res.json());
-  console.log(processResponse);
 }
 
 await setupGameContract()
-  .then(console.log)
+  .then((res) => console.log('New process set up', res))
   .catch(console.error);

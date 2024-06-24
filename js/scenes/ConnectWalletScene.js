@@ -3,10 +3,11 @@ import { Text } from '../objects/Text.js';
 import { colors } from '../utils/style.js';
 import { ArweaveSigner } from 'warp-arbundles';
 import { WarpFactory } from 'warp-contracts';
+import { loungeAreaSceneKey, connectWalletSceneKey } from '../config/config.js';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {
-    super('connect-wallet-scene');
+    super(connectWalletSceneKey);
   }
 
   init() {
@@ -68,7 +69,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
     window.warpAO.generatedSigner = new ArweaveSigner(jwk);
     console.log('Generated wallet address', address);
     localStorage.setItem('wallet_address', address);
-    this.scene.start('lounge-area-scene', {
+    this.scene.start(loungeAreaSceneKey, {
       walletAddress: address,
     });
   }
@@ -87,7 +88,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
         fill: '#ADD8E6',
       });
       localStorage.setItem('wallet_address', walletAddress);
-      this.scene.start('lounge-area-scene', {
+      this.scene.start(loungeAreaSceneKey, {
         walletAddress,
       });
     } else {
