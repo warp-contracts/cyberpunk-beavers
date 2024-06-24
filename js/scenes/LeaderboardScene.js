@@ -2,7 +2,7 @@ import { Text } from '../objects/Text.js';
 import { colors } from '../utils/style.js';
 import { WebFontFile } from '../WebFontFile.js';
 import Const from '../common/const.mjs';
-import { initServer } from '../lib/serverConnection.js';
+import { serverConnection } from '../lib/serverConnection.js';
 import { EVENTS_NAME } from '../utils/events.js';
 import {
   mainSceneKey,
@@ -46,10 +46,7 @@ export default class LeaderboardScene extends Phaser.Scene {
   async create() {
     console.log('Leaderboard Scene - 3. Create');
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
-      if (!window.warpAO.subscribed) {
-        await initServer();
-      }
-      this.server = window.warpAO.server;
+      this.server = serverConnection;
       this.server.subscribe(this);
     } else {
       this.scene.start(connectWalletSceneKey);
@@ -185,8 +182,7 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   handleMessage(response) {
     if (response.cmd == Const.Command.nextProcessSet) {
-      this.server.unsubscribe();
-      window.warpAO.subscribed = false;
+      this.server.switchProcess(response.processId);
       window.warpAO.config.processId_prod = response.processId;
       window.warpAO.processId = () => {
         return response.processId;

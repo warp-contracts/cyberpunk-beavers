@@ -2,7 +2,6 @@ import Const from '../common/const.mjs';
 import { colors } from '../utils/style.js';
 import { serverConnectionGame } from '../lib/serverConnection.js';
 import { TextButton } from '../objects/TextButton.js';
-import MainScene from './MainScene.js';
 import {
   mainSceneKey,
   loungeAreaSceneKey,

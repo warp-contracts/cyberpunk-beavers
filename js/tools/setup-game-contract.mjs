@@ -22,7 +22,7 @@ async function setupGameContract() {
     new Tag('Type', 'Message'),
     new Tag('From-Process', processId),
     new Tag('From-Module', moduleId),
-    new Tag('Action', JSON.stringify({ cmd: 'setup', type: 'nextSlot', slotMinutes: 6, playMinutes: 5 })),
+    new Tag('Action', JSON.stringify({ cmd: 'setup', type: 'nextSlot', slotMinutes: 2, playMinutes: 1 })),
     new Tag('SDK', 'ao'),
     new Tag('Name', 'setup'),
   ];
