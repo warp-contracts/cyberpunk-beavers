@@ -44,6 +44,8 @@ function initState(message, state) {
   const result = {
     nextProcessId: null,
     nextModuleId: null,
+    nextChatProcessId: null,
+    nextChatModuleId: null,
     counter: 0,
     pos: 1,
     playWindow: {},

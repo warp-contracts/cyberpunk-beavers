@@ -21,11 +21,19 @@ async function setNexProcessId() {
   const previousModuleId = ids[`previousModuleId_${env}`];
   const currentProcessId = ids[`processId_${env}`];
   const currentModuleId = ids[`moduleId_${env}`];
+  const currentChatProcessId = ids[`chat_processId_${env}`];
+  const currentChatModuleId = ids[`chat_moduleId_${env}`];
 
   const messageTags = [
     new Tag(
       'Action',
-      JSON.stringify({ cmd: Const.Command.setNextProcess, processId: currentProcessId, moduleId: currentModuleId })
+      JSON.stringify({
+        cmd: Const.Command.setNextProcess,
+        processId: currentProcessId,
+        moduleId: currentModuleId,
+        chatProcessId: currentChatProcessId,
+        chatModuleId: currentChatModuleId,
+      })
     ),
     new Tag('Data-Protocol', 'ao'),
     new Tag('Type', 'Message'),

@@ -64,17 +64,7 @@ const config = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [
-    LoadingScene,
-    ConnectWalletScene,
-    LoungeAreaScene,
-    CharacterPickScene,
-    MainScene,
-    StatsScene,
-    ChatScene,
-    MainSceneLoading,
-    LeaderboardScene,
-  ],
+  scene: Object.values(scenes).map((s) => s.scene),
 };
 
 window.sizeChanged = () => {
