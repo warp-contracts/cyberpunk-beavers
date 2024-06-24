@@ -28,8 +28,13 @@ export async function initSubscription(moduleId, processId) {
 function messageListener(target, processId) {
   return (event) => {
     try {
+      const rawMessage = event.data;
+      if (typeof rawMessage === 'string' || rawMessage instanceof String) {
+        console.log(`\n ==== new warm up message for ${processId}`);
+        return;
+      }
       const now = Date.now();
-      const message = JSON.parse(event.data);
+      const message = JSON.parse(rawMessage);
       console.log(`\n ==== new message ${processId}:${message.nonce} ==== `, message);
       if (message.tags) {
         const salt = message.tags.find((t) => t.name === 'Salt');
