@@ -32,8 +32,10 @@ export default class ChatScene extends Phaser.Scene {
     this.server.subscribe(this);
     this.server.send({ cmd: Const.Command.join });
 
-    const chatBox = this.addChatBox();
+    const chatBoxId = 'chat-messages-box';
+    const chatBox = this.addChatBox(chatBoxId);
     this.chatBoxDiv = this.add.dom(100, 100 + chatBox.width, chatBox);
+    this.removeFocusOnOutsideClick(chatBoxId);
   }
 
   handleMessage(response) {
@@ -51,7 +53,7 @@ export default class ChatScene extends Phaser.Scene {
     chatLogs.scrollTop = chatLogs.scrollHeight;
   }
 
-  addChatBox() {
+  addChatBox(id) {
     const resultDiv = document.createElement('div');
     const input = document.createElement('textarea');
     input.style = `outline: none; width: 350px;`;
@@ -64,7 +66,7 @@ export default class ChatScene extends Phaser.Scene {
       this.mainScene.input.keyboard.enableGlobalCapture();
       this.mainScene.input.keyboard.enabled = true;
     };
-    resultDiv.id = 'chat-messages-box';
+    resultDiv.id = id;
     resultDiv.style = ` width: 400px; height: 400px;
       border: 0; outline: none;
       background-color: #fcee09;
@@ -118,6 +120,15 @@ export default class ChatScene extends Phaser.Scene {
       <div style='margin: 9px 20px 0 20px'><span style='display: inline-block; width: 80px; text-transform: uppercase;'>${truncateTxId(i.from, 3)}</span>
       ${i.msg}
       </div>`;
+  }
+
+  removeFocusOnOutsideClick(id) {
+    const chatBoxEl = document.getElementById(id);
+    document.addEventListener('click', (e) => {
+      if (!chatBoxEl.contains(e.target)) {
+        document.activeElement.blur();
+      }
+    });
   }
 }
 
