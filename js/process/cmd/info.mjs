@@ -23,17 +23,14 @@ export function standInQueue(state, action) {
 
 export function gameInfo(state, owner, ts) {
   const { walletsQueue, walletsBench, players, playWindow } = state;
-  const player = players[owner];
   return {
-    walletAddress: player?.walletAddress,
-    stats: player?.stats,
+    player: players[owner],
     active: isGameActive(state, ts),
     walletsQueue,
     walletsBench,
-    beaverId: player?.beaverId,
     start: playWindow.begin,
     end: playWindow.end,
-    players: state.players,
+    players,
   };
 }
 

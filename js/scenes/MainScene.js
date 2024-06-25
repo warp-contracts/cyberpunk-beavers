@@ -249,9 +249,11 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.registered:
         {
           console.log('Registered player', response);
-          if (response.error) {
-            console.error('Failed to join the game', response.error);
-            self.scene.start(connectWalletSceneKey);
+          if (response.error ||
+            (response.player && response.player.walletAddress === this.walletAddress && response.player.error)) {
+            console.error('Failed to join the game', response.player);
+            this.scene.remove('main-scene-loading');
+            self.scene.start(connectWalletSceneKey, { error: response.player.error });
           } else {
             self.round = response.round;
             for (const [wallet, player] of Object.entries(response.players)) {

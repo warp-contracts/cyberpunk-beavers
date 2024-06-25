@@ -21,6 +21,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   init(data) {
     console.log('Lounge Area - 1. Init', data);
     this.walletAddress = data.walletAddress;
+    this.gameError = data.error;
   }
 
   preload() {
@@ -38,15 +39,14 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.scene.start(connectWalletSceneKey);
     }
 
-    this.header = this.add.text(
-      100,
-      100,
-      'Please, have a seat and relax... The game will start when the time comes..\n\n',
-      {
-        fill: colors.yellow,
-        font: '20px',
-      }
-    );
+    const headerText = this.gameError
+      ? `Cannot join the game.\n${this.gameError}\n\n`
+      : 'Please, have a seat and relax... The game will start when the time comes..\n\n';
+
+    this.header = this.add.text(100, 100, headerText, {
+      fill: colors.yellow,
+      font: '20px',
+    });
 
     this.tt = this.add.text(100, 150, '--:--:--', {
       fill: colors.yellow,
@@ -77,7 +77,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
           gameStart: this.gameStart,
           gameEnd: this.gameEnd,
         });
-      } else {
+      } else if (!this.gameError) {
         this.scene.start(playerPickSceneKey, {
           walletAddress: this.walletAddress,
           gameStart: this.gameStart,
@@ -98,16 +98,19 @@ export default class LoungeAreaScene extends Phaser.Scene {
     switch (response.cmd) {
       case Const.Command.stats:
         {
+          this.displayWaitingList(response);
           if (response.error) {
             console.error('Failed to fetch game info', response.error);
             this.scene.start(connectWalletSceneKey);
-          } else {
-            this.beaverId = response.beaverId;
+          } else if (!this.gameError) {
+            if (response.player && response.player.walletAddress === this.walletAddress) {
+              this.beaverId = response.player.beaverId;
+            }
             if (response.active) {
-              if (response.beaverId) {
+              if (this.beaverId) {
                 this.scene.start(mainSceneKey, {
                   walletAddress: this.walletAddress,
-                  beaverId: response.beaverId,
+                  beaverId: this.beaverId,
                   gameStart: response.start,
                   gameEnd: response.end,
                 });
@@ -129,13 +132,12 @@ export default class LoungeAreaScene extends Phaser.Scene {
               }
               this.gameStart = response.start;
               this.gameEnd = response.end;
-              this.displayWaitingList(response);
               this.countdown();
             } else {
               this.scene.start(leaderboardSceneKey, {
                 players: response.players,
                 mainPlayer: {
-                  walletAddress: response.walletAddress,
+                  walletAddress: this.walletAddress,
                 },
               });
             }
@@ -166,8 +168,8 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
   displayWaitingList(response) {
     console.log(`Waiting queue`, response.walletsQueue);
-    const walletQueue = response.walletsQueue.join('\n\n');
-    const walletBench = response.walletsBench.join('\n\n');
+    const walletQueue = (response.walletsQueue || []).join('\n\n');
+    const walletBench = (response.walletsBench || []).join('\n\n');
     this.wallets.setText(
       `Waiting list:\n
       \n${walletQueue}\n

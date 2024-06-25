@@ -165,9 +165,9 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.register:
-      registerPlayer(state, action);
       ao.result({
         cmd: Const.Command.registered,
+        ...registerPlayer(state, action),
         players: state.players,
         map: {
           groundTilemap: state.groundTilemap,

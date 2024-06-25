@@ -8,15 +8,15 @@ export function registerPlayer(state, action) {
 
   // Player already registered, move along
   if (players[walletAddress]) {
-    return players[walletAddress];
+    return { player: players[walletAddress] };
   }
 
   if (!walletsQueue.includes(walletAddress)) {
     // List is full, forget about it
     if (walletsQueue.length >= Const.Queue.limit) {
-      const error = `Failed to register ${action.walletAddress}. Not on the list amd the list reached its limit ${walletsQueue.length}`;
+      const error = `Failed to register ${action.walletAddress}. Players limit exceeded ${walletsQueue.length}`;
       console.log(error);
-      return { error };
+      return { player: { walletAddress, error } };
     }
     // Register on the list after the game started
     walletsQueue.push(walletAddress);
@@ -26,7 +26,7 @@ export function registerPlayer(state, action) {
   if (!BEAVER_TYPES[beaverId]) {
     const error = `No beaver of type ${beaverId}`;
     console.error(error);
-    return { error, };
+    return { player: { walletAddress, error } };
   }
 
   let newPlayer = {
