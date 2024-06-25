@@ -1,5 +1,5 @@
 import Const from '../common/const.mjs';
-import {serverConnectionChat} from "../lib/serverConnection.js";
+import { serverConnectionChat } from '../lib/serverConnection.js';
 
 const defaultStyle = {
   fontFamily: '"Press Start 2P"',
@@ -30,7 +30,7 @@ export default class ChatScene extends Phaser.Scene {
     console.log('Chats Scene - 3. Create');
     this.server = serverConnectionChat;
     this.server.subscribe(this);
-    this.server.send({cmd: Const.Command.join});
+    this.server.send({ cmd: Const.Command.join });
 
     const chatBox = this.addChatBox();
     this.chatBoxDiv = this.add.dom(100, 100 + chatBox.width, chatBox);
@@ -40,7 +40,7 @@ export default class ChatScene extends Phaser.Scene {
     let newMsgs = response.messages;
     if (this.messagesQueue.length) {
       const lastMsg = this.messagesQueue[this.messagesQueue.length - 1];
-      newMsgs = newMsgs.filter(m => m.nonce > lastMsg.nonce);
+      newMsgs = newMsgs.filter((m) => m.nonce > lastMsg.nonce);
     }
     this.messagesQueue.push(...newMsgs);
     /*if (this.messagesQueue.length > 10) {
@@ -56,8 +56,14 @@ export default class ChatScene extends Phaser.Scene {
     const input = document.createElement('textarea');
     input.style = `outline: none; width: 350px;`;
     input.addEventListener('keyup', this.sendMessage.bind(this));
-    input.onfocus = () => this.mainScene.input.keyboard.disableGlobalCapture();
-    input.onblur = () => this.mainScene.input.keyboard.enableGlobalCapture();
+    input.onfocus = () => {
+      this.mainScene.input.keyboard.disableGlobalCapture();
+      this.mainScene.input.keyboard.enabled = false;
+    };
+    input.onblur = () => {
+      this.mainScene.input.keyboard.enableGlobalCapture();
+      this.mainScene.input.keyboard.enabled = true;
+    };
     resultDiv.id = 'chat-messages-box';
     resultDiv.style = ` width: 400px; height: 400px;
       border: 0; outline: none;
@@ -84,16 +90,17 @@ export default class ChatScene extends Phaser.Scene {
   async sendMessage(e) {
     console.log(e);
     e.stopImmediatePropagation();
-    if (e.code === "Enter") {  //checks whether the pressed key is "Enter"
+    if (e.code === 'Enter') {
+      //checks whether the pressed key is "Enter"
       const text = e.target.value;
       if (!text || text.length == 0) {
         return;
       }
       console.log(text);
-      await this.server.send({cmd: Const.Command.msg, msg: text});
-      e.target.value = "";
+      await this.server.send({ cmd: Const.Command.msg, msg: text });
+      e.target.value = '';
     }
-    if (e.code === "Escape") {
+    if (e.code === 'Escape') {
       document.activeElement.blur();
     }
   }
@@ -119,4 +126,4 @@ function truncateTxId(txId, n) {
     return '';
   }
   return `${txId.substr(0, n) + '...' + txId.substr(txId.length - n)}`;
-};
+}
