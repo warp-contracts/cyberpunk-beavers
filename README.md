@@ -38,6 +38,26 @@ In lua directory run
 `Send({ Target = ao.id, Tags = { Action = "Balances" }})`
 
 
+## Game Flow
+
+Game slot lasts 6 minutes
+ - 5 minutes game
+ - 1-minute break
+During break, first 30 seconds is Leaderboard.
+Second 30 seconds is lounge area.
+
+Every six minutes a cron is triggered which executes deploy scripts.
+Deployment is as follows:
+ - Build contract
+ - Deploy new game contract and spawn it
+ - Transfer tokens to game process
+ - Set up game config, game start and end
+ - Deploy new chat contract
+
+Only a limited number of players can access the game.
+Before the game begins there is a queue for players to register.
+
+
 ## Maps
 Maps are created using the [Tiled](https://www.mapeditor.org/) editor.
 In order to create a new map:  

@@ -19,28 +19,74 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   moveTo(response) {
+    const self = this;
+    this.baseMoveTo(
+      response.pos,
+      () => {
+        self.anims.stop();
+        self.anims.play(`${self.beaverChoice}_walk`, true);
+      },
+      () => {
+        self.anims.stop();
+        self.anims.play(`${self.beaverChoice}_idle`, true);
+      });
+  }
+
+  baseMoveTo(pos, onStart, onComplete) {
+    console.log(`baseMoveTo`, pos);
     let movementTemplate = {
       targets: this,
       ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
       duration: 500,
       repeat: 0, // -1: infinity
       yoyo: false,
-      onStart: () => {
-        this.anims.stop();
-        this.anims.play(`${this.beaverChoice}_walk`, true);
-      },
-      onComplete: () => {
-        this.anims.stop();
-        this.anims.play(`${this.beaverChoice}_idle`, true);
-      },
+      onStart,
+      onComplete
     };
 
-    const moveHorizontal = 26 + response.pos.x * Const.Tile.size - this.x;
-    const moveVertical = 26 + response.pos.y * Const.Tile.size - this.y;
+    const moveHorizontal = 26 + pos.x * Const.Tile.size - this.x;
+    const moveVertical = 26 + pos.y * Const.Tile.size - this.y;
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
     this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}` });
     this.scene.tweens.add({ ...movementTemplate, y: `+=${moveVertical}` });
+  }
+
+
+  bloodyRespawn(pos) {
+    const self = this;
+    self.scene.tweens.add({
+        targets: [self],
+        ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+        duration: 100,
+        x: self.x,
+        delay: 0,
+        repeat: 2, // -1: infinity
+        yoyo: false,
+        onStart: () => {
+          self.anims.play(`blood`, true);
+        },
+        onComplete: () => {
+          self.baseMoveTo(
+            pos,
+            () => {},
+            () => self.blink());
+        },
+      }
+    );
+  }
+
+  blink() {
+    this.scene.add.tween({
+      targets: [this],
+      ease: 'Sine.easeInOut',
+      duration: 250,
+
+      delay: 0,
+      yoyo: true,
+      alpha: { from: 1, to: 0 },
+      repeat: 2
+    });
   }
 
   update() {
@@ -66,6 +112,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         end: 4,
       }),
       frameRate: 8,
+    });
+
+    this.scene.anims.create({
+      key: `blood`,
+      frames: this.scene.anims.generateFrameNames(`blood`, {
+        prefix: 'frame-',
+        start: 0,
+        end: 17,
+      }),
+      frameRate: 34,
     });
   }
 

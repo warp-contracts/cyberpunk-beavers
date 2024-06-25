@@ -4,7 +4,7 @@ const { BEAVER_TYPES, Map } = Const;
 
 export function registerPlayer(state, action) {
   const { beaverId, walletAddress } = action;
-  const { players, walletsQueue } = state;
+  const { players, playersOnTiles, walletsQueue } = state;
 
   // Player already registered, move along
   if (players[walletAddress]) {
@@ -44,11 +44,12 @@ export function registerPlayer(state, action) {
     },
     pos: calculatePlayerRandomPos(state),
   };
+  playersOnTiles[newPlayer.pos.y][newPlayer.pos.x] = newPlayer.walletAddress;
   players[walletAddress] = newPlayer;
   return { player: newPlayer };
 }
 
-function calculatePlayerRandomPos(state) {
+export function calculatePlayerRandomPos(state) {
   let isAllowedPosition = false;
   let pos;
 
@@ -61,6 +62,7 @@ function calculatePlayerRandomPos(state) {
 
     isAllowedPosition = !(state.playersOnTiles[pos.y][pos.x] || state.obstaclesTilemap[pos.y][pos.x] >= 0);
   }
+  console.log(`random pos ${pos.x} ${pos.y} ${state.playersOnTiles[pos.y][pos.x]} ${state.obstaclesTilemap[pos.y][pos.x]} ${isAllowedPosition}`);
 
   return pos;
 }

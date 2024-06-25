@@ -65,6 +65,11 @@ export default class MainScene extends Phaser.Scene {
       'assets/images/beavers/hacker_beaver_anim_walk.png',
       'assets/images/beavers/hacker_beaver_anim_atlas_walk.json'
     );
+    this.load.atlas(
+      'blood',
+      'assets/images/blood_100x100.png',
+      'assets/images/blood_100x100.json'
+    );
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
     this.load.audio('dig_sound', ['assets/audio/dig.mp3']);
@@ -281,8 +286,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.attacked:
         if (
           response.player.walletAddress === self.mainPlayer.walletAddress ||
-          response.opponentPlayer.walletAddress === self.mainPlayer.walletAddress
-        ) {
+          response.opponent.walletAddress === self.mainPlayer.walletAddress) {
           switch (response.player.beaverId) {
             case BEAVER_TYPES.heavy_beaver.name:
               this.attackHeavyBeaverSound.play();
@@ -297,12 +301,19 @@ export default class MainScene extends Phaser.Scene {
               console.log('Beaver type not found');
           }
         }
-        this.updateStats(response.player, response.stats);
-        this.updateStats(response.opponentPlayer, response.opponentStats);
+        this.updateStats(response.player, response.player?.stats);
+        this.updateStats(response.opponent, response.opponent?.stats);
+        if (response.opponentFinished) {
+          if (response.opponent?.walletAddress === self.mainPlayer.walletAddress) {
+            self.mainPlayer.bloodyRespawn(response.opponent.pos);
+          } else {
+            self.allPlayers[response.opponent?.walletAddress]?.bloodyRespawn(response.opponent.pos)
+          }
+        }
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
           forOpponent: {
             score: response.opponentScoreToDisplay,
-            walletAddress: response.opponentPlayer?.walletAddress,
+            walletAddress: response.opponent?.walletAddress,
           },
         });
         break;

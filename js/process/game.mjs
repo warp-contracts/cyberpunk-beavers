@@ -144,15 +144,7 @@ export function handle(state, message) {
       }
       ao.result({
         cmd: Const.Command.attacked,
-        pos: attackRes.attackPos,
-        walletAddress: attackRes.player.name,
-        stats: attackRes.player.stats,
-        player: attackRes.player,
-        opponentWalletAddress: attackRes.opponent?.name,
-        opponentStats: attackRes.opponent?.stats,
-        opponentPlayer: attackRes.opponent,
-        scoreToDisplay: attackRes.scoreToDisplay,
-        opponentScoreToDisplay: attackRes.opponentScoreToDisplay,
+        ...attackRes,
       });
       break;
     case Const.Command.move:
