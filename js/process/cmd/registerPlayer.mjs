@@ -8,6 +8,9 @@ export function registerPlayer(state, action) {
 
   // Player already registered, move along
   if (players[walletAddress]) {
+    if (balance) {
+      players[walletAddress].stats.coins.balance = balance;
+    }
     return { player: players[walletAddress] };
   }
 
@@ -21,7 +24,6 @@ export function registerPlayer(state, action) {
     // Register on the list after the game started
     walletsQueue.push(walletAddress);
   }
-
 
   if (!BEAVER_TYPES[beaverId]) {
     const error = `No beaver of type ${beaverId}`;
@@ -38,6 +40,7 @@ export function registerPlayer(state, action) {
         last: 0,
       },
       coins: {
+        balance: balance || 0,
         available: 0, // tokens available for slashing
         transferred: 0, // info of tokens received through transfer
       },
@@ -62,7 +65,9 @@ export function calculatePlayerRandomPos(state) {
 
     isAllowedPosition = !(state.playersOnTiles[pos.y][pos.x] || state.obstaclesTilemap[pos.y][pos.x] >= 0);
   }
-  console.log(`random pos ${pos.x} ${pos.y} ${state.playersOnTiles[pos.y][pos.x]} ${state.obstaclesTilemap[pos.y][pos.x]} ${isAllowedPosition}`);
+  console.log(
+    `random pos ${pos.x} ${pos.y} ${state.playersOnTiles[pos.y][pos.x]} ${state.obstaclesTilemap[pos.y][pos.x]} ${isAllowedPosition}`
+  );
 
   return pos;
 }

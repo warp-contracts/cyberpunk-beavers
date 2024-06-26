@@ -44,6 +44,7 @@ local utils = {
   end
 }
 
+ao.authorities = {"jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M", "fcoN_xJeisVsPXA-trzVAuIiqO3ydLQxM-L4XbrQKzY"}
 
 --[[
      Initialize State
@@ -53,9 +54,9 @@ local utils = {
 Variant = "0.0.3"
 
 -- token should be idempotent and not change previous state updates
-Denomination = Denomination or 12
-Balances = Balances or { [ao.id] = utils.toBalanceValue(10000 * 10 ^ Denomination) }
-TotalSupply = TotalSupply or utils.toBalanceValue(10000 * 10 ^ Denomination)
+Denomination = Denomination or 0
+Balances = Balances or { [ao.id] = 10000000000000000 }
+TotalSupply = TotalSupply or 10000000000000000
 Name = Name or 'CyberBeaver Coin'
 Ticker = Ticker or 'CBCOINS'
 Logo = Logo or 'WATOlqtoEaO2IsZyUaG-en3qLxPwUnCKLu3SnEm42SY'

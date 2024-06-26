@@ -115,9 +115,9 @@ export default class LeaderboardScene extends Phaser.Scene {
       this.gameHeight / 2,
       {
         cellHeight: 105,
-        cellWidth: (this.gameWidth - this.gameWidth / 5) / 4,
+        cellWidth: (this.gameWidth - this.gameWidth / 5) / 5,
         cellsCount: cells.length,
-        columns: 4,
+        columns: 5,
         cellVisibleCallback: onCellVisible.bind(this),
       }
     );
@@ -147,7 +147,7 @@ export default class LeaderboardScene extends Phaser.Scene {
   }
 
   prepareCellsData() {
-    const cells = [['RANK', 'PLAYER', 'SCORE', 'HP']];
+    const cells = [['RANK', 'PLAYER', 'CBCOINS', 'GAINED', 'HP']];
     if (!this.allPlayers || Object.keys(this.allPlayers).length == 0) {
       return cells.flat(1);
     }
@@ -163,8 +163,9 @@ export default class LeaderboardScene extends Phaser.Scene {
           img: this.allPlayers[key].beaverChoice || this.allPlayers[key].beaverId,
           address: key.substr(0, 3) + '...' + key.substr(key.length - 3),
         },
-        this.allPlayers[key].stats.coins?.available,
-        this.allPlayers[key].stats.hp?.current,
+        this.allPlayers[key].stats?.coins?.balance,
+        this.allPlayers[key].stats?.coins?.transferred,
+        this.allPlayers[key].stats?.hp?.current,
       ]);
     }
     if (this.mainPlayer?.walletAddress) {

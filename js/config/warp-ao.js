@@ -28,6 +28,9 @@ window.warpAO = {
   chatModuleId: () => {
     return window.warpAO.config[`chat_moduleId_${env}`];
   },
+  tokenProcessId: () => {
+    return window.warpAO.config[`token_processId_${env}`];
+  },
   messageTags: (moduleId, processId, message) => [
     new Tag('Action', JSON.stringify(message)),
     new Tag('Data-Protocol', 'ao'),

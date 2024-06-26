@@ -3,6 +3,7 @@ import { Text } from '../objects/Text.js';
 import Const from '../common/const.mjs';
 import { colors } from '../utils/style.js';
 import { mainSceneKey, statsSceneKey } from '../config/config.js';
+import { trimString } from '../utils/utils.js';
 
 const defaultStyle = {
   fontFamily: '"Press Start 2P"',
@@ -49,6 +50,7 @@ export default class StatsScene extends Phaser.Scene {
     this.gameWidth = window.innerWidth;
     this.gameHeight = window.innerHeight;
     this.processId = window.warpAO.processId();
+    this.tokenProcessId = window.warpAO.tokenProcessId();
     if (this.walletAddress) {
       const beaverStatsBoxEl = this.createStatsBox();
       this.beaverStatsBox = this.add.dom(100, 100 + beaverStatsBoxEl.width, beaverStatsBoxEl);
@@ -151,7 +153,9 @@ export default class StatsScene extends Phaser.Scene {
   initListeners() {
     this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
       document.getElementById('stats-scene-hp').innerText = stats?.hp?.current;
-      document.getElementById('stats-scene-coins').innerText = stats?.coins.available + stats?.coins.transferred;
+      document.getElementById('stats-scene-cbcoins').innerText = stats?.coins.balance;
+      document.getElementById('stats-scene-locked').innerText = stats?.coins.available;
+      document.getElementById('stats-scene-transferred').innerText = stats?.coins.transferred;
       this.subtitle.setText(`AP: ${stats?.ap?.current}`);
       if (stats?.ap?.current == 0) {
         this.subtitle.setColor(colors.red);
@@ -181,8 +185,8 @@ export default class StatsScene extends Phaser.Scene {
 
     this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => {
       document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
-      document.getElementById(`stats-scene-coins-${player.walletAddress}`).innerText =
-        player.coins.available + player.coins.transferred;
+      document.getElementById(`stats-scene-cbcoins-${player.walletAddress}`).innerText = player.coins.balance;
+      document.getElementById(`stats-scene-locked-${player.walletAddress}`).innerText = player.coins.available;
     });
 
     this.game.events.on(EVENTS_NAME.nextMessage, (message) => {
@@ -239,21 +243,45 @@ export default class StatsScene extends Phaser.Scene {
 src="assets/images/beavers/${this.beaverChoice}_portrait.png"
 width=72
 height=72/>
-<div style="padding-right: 10px;" id="stats-scene-wallet-address">${this.walletAddress && this.walletAddress.substr(0, 3) + '...' + this.walletAddress.substr(this.walletAddress.length - 3)}</div>
+<div style="display:flex; flex-grow: 1;"> </div>
+<div style="display: flex;
+flex-grow: 1;
+flex-direction: column;">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>PLAYER</div>
+<div style="display: flex; justify-content: space-between;">
+<div style="padding-right: 10px;" id="stats-scene-player">${trimString(this.walletAddress)}</div>
 </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>PROCESS</div>
-    <div style="display: flex; justify-content: space-between;">
-    <div style="padding-right: 10px;" id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${this.processId.substr(0, 3) + '...' + this.processId.substr(this.processId.length - 3)}</a></div>
-    </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-right: 10px;"><div>HP</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>PROCESS</div>
+<div style="display: flex; justify-content: space-between;">
+<div style="padding-right: 10px;" id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${trimString(this.processId)}</a></div>
+</div>
+</div>
+</div>
+</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>HP</div>
     <div style="display: flex; justify-content: space-between;">
     <div id="stats-scene-hp">${this.stats?.hp.current}</div>
     </div>
     </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-right: 10px;"><div>COINS</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>CBCOINS</div>
     <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-coins">${this.stats?.coins.available + this.stats?.coins.transferred}</div>
+    <div id="stats-scene-cbcoins-process"><a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.tokenProcessId}'>${trimString(this.tokenProcessId)}</a></div>
+    </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;"><div>OWNED</div>
+    <div style="display: flex; justify-content: space-between;">
+    <div id="stats-scene-cbcoins">${this.stats?.coins.balance}</div>
+    </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;"><div>LOCKED</div>
+    <div style="display: flex; justify-content: space-between;">
+    <div id="stats-scene-locked">${this.stats?.coins.available}</div>
+    </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;"><div>GAINED</div>
+    <div style="display: flex; justify-content: space-between;">
+    <div id="stats-scene-transferred">${this.stats?.coins.transferred}</div>
     </div>
     </div>
     <div id="stats-scene-other-beavers">
@@ -301,25 +329,30 @@ height=72/>
 
   addOtherPlayerBox(player) {
     return `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;" id="player-box">
+      <div style="display: flex; justify-content: space-between; align-items: end; margin-top: 25px;" id="player-box">
       <img
   src="assets/images/beavers/${player.beaverChoice}_portrait.png"
-  width=48
-  height=48/>
+  width=64
+  height=64/>
   <div style="display:flex; flex-grow: 1;"> </div>
   <div style="display: flex;
   flex-grow: 1;
   flex-direction: column;">
-  <div style="align-self: flex-end;" id="stats-scene-wallet-address">${player.walletAddress && player.walletAddress.substr(0, 3) + '...' + player.walletAddress.substr(player.walletAddress.length - 3)}</div>
+  <div style="align-self: flex-end;" id="stats-scene-wallet-address">${player.walletAddress && trimString(player.walletAddress)}</div>
   <div style="display: flex; justify-content: space-between; flex-direction: column;">
   <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>HP</div>
   <div style="display: flex; justify-content: space-between;">
   <div id="stats-scene-hp-${player.walletAddress}">${player.stats.hp.current}</div>
   </div>
   </div>
-  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>COINS</div>
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>CBCOINS</div>
   <div style="display: flex; justify-content: space-between;">
-  <div id="stats-scene-coins-${player.walletAddress}">${this.stats?.coins.available + this.stats?.coins.transferred}</div>
+  <div id="stats-scene-cbcoins-${player.walletAddress}">${player.stats?.coins.balance}</div>
+  </div>
+  </div>
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>LOCKED</div>
+  <div style="display: flex; justify-content: space-between;">
+  <div id="stats-scene-locked-${player.walletAddress}">${player.stats?.coins.available}</div>
   </div>
   </div>
   </div>

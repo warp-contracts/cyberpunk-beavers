@@ -11,6 +11,8 @@ import {
   mainSceneLoadingKey,
   statsSceneKey,
 } from '../config/config.js';
+import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
+import { createData } from 'warp-arbundles';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -105,19 +107,66 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async registerPlayer() {
+    const balance = await this.checkBalance();
+    console.log(balance);
     if (this.beaverId) {
       console.log(`Beaver has already been previously, Joinning game...`, this.beaverId);
-      await this.server.send({ cmd: Const.Command.join });
+      await this.server.send({ cmd: Const.Command.join, balance: balance && parseInt(balance) });
     } else {
       console.log('Register player...');
       await this.server.send({
         cmd: Const.Command.register,
         beaverId: this.beaverChoice,
+        balance: balance && parseInt(balance),
       });
     }
   }
 
+  async checkBalance() {
+    const processId = window.warpAO.tokenProcessId();
+    const generatedSigner = window.warpAO.generatedSigner;
+    let dataItemSigner;
+    const tags = [
+      { name: 'Action', value: 'Balance' },
+      { name: 'Recipient', value: this.walletAddress },
+    ];
+    const data = '1234';
+
+    if (generatedSigner) {
+      dataItemSigner = async ({ data, tags, target, anchor, createDataItem }) => {
+        const dataItem = createData(data, generatedSigner, {
+          tags,
+          target,
+        });
+        await dataItem.sign(generatedSigner);
+        return {
+          id: await dataItem.id,
+          raw: await dataItem.getRaw(),
+        };
+      };
+    } else {
+      dataItemSigner = createDataItemSigner(window.arweaveWallet);
+    }
+    return await message({
+      process: processId,
+      tags,
+      signer: dataItemSigner,
+      data,
+    })
+      .catch((e) => {
+        console.error(e);
+      })
+      .then((id) =>
+        result({
+          message: id,
+          process: processId,
+        })
+      )
+      .then((r) => r?.Messages[0]?.Data);
+  }
+
   createMainPlayer(playerInfo) {
+    console.log(playerInfo);
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
       stats: playerInfo.stats,

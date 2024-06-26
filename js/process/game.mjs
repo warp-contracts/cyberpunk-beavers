@@ -13,7 +13,7 @@ import { setNextProcess } from './cmd/setNextProcess.mjs';
 const { Scores } = Const;
 
 // ------- Token Contract Config
-const TOKEN_CONTRACT_ID = 'Iny8fK0S1FCSVVOIWubg2L9EXV1RFaxgRJwv5-mwEYk';
+const TOKEN_CONTRACT_ID = 'rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8';
 const TOKEN_CONTRACT_METHOD = 'Transfer';
 const TOKEN_ACTIONS = ['Credit-Notice', 'Debit-Notice', 'Transfer-Error'];
 
@@ -33,6 +33,7 @@ function handleMessageFromToken(state, action, message) {
   const txId = message.Tags.find((t) => t.name === 'Message').value;
   const player = state.players[recipient];
   player.stats.coins.transferred += Number(qty);
+  player.stats.coins.balance += Number(qty);
   return ao.result({
     action,
     cmd: Const.Command.token,
@@ -172,6 +173,9 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.join:
+      if (action.balance) {
+        state.players[action.walletAddress].stats.coins.balance = action.balance;
+      }
       ao.result({
         cmd: Const.Command.registered,
         players: state.players,
