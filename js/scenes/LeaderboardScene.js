@@ -12,7 +12,7 @@ import {
   statsSceneKey,
   scenes,
 } from '../config/config.js';
-import { trimString } from "../utils/utils.js";
+import { trimString } from '../utils/utils.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -182,30 +182,34 @@ export default class LeaderboardScene extends Phaser.Scene {
     const urlParams = new URLSearchParams(window.location.search);
     const env = urlParams.get('env') || 'prod';
 
-    if (response.cmd === Const.Command.nextProcessSet) {
-      this.server.switchProcess(response.processId, response.moduleId);
-      this.serverChat.switchProcess(response.chatProcessId, response.chatModuleId);
+    if (response.cmd == Const.Command.nextProcessSet) {
+      if (warpAO.config.reload) {
+        window.location.reload();
+      } else {
+        this.server.switchProcess(response.processId, response.moduleId);
+        this.serverChat.switchProcess(response.chatProcessId, response.chatModuleId);
 
-      window.warpAO.config[`processId_${env}`] = response.processId;
-      window.warpAO.processId = () => {
-        return response.processId;
-      };
+        window.warpAO.config[`processId_${env}`] = response.processId;
+        window.warpAO.processId = () => {
+          return response.processId;
+        };
 
-      window.warpAO.config[`moduleId_${env}`] = response.moduleId;
-      window.warpAO.moduleId = () => {
-        return response.moduleId;
-      };
-      window.warpAO.config[`chat_processId_${env}`] = response.chatProcessId;
-      window.warpAO.chatProcessId = () => {
-        return response.chatProcessId;
-      };
+        window.warpAO.config[`moduleId_${env}`] = response.moduleId;
+        window.warpAO.moduleId = () => {
+          return response.moduleId;
+        };
+        window.warpAO.config[`chat_processId_${env}`] = response.chatProcessId;
+        window.warpAO.chatProcessId = () => {
+          return response.chatProcessId;
+        };
 
-      window.warpAO.config[`chat_moduleId_${env}`] = response.chatModuleId;
-      window.warpAO.chatModuleId = () => {
-        return response.chatModuleId;
-      };
-      this.restartScenes();
-      this.scene.start(loungeAreaSceneKey, { walletAddress: this.walletAddress });
+        window.warpAO.config[`chat_moduleId_${env}`] = response.chatModuleId;
+        window.warpAO.chatModuleId = () => {
+          return response.chatModuleId;
+        };
+        this.restartScenes();
+        this.scene.start(loungeAreaSceneKey, { walletAddress: this.walletAddress });
+      }
     }
   }
 

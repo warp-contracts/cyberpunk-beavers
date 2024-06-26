@@ -13,6 +13,7 @@ window.warpAO = {
     env,
     muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
     cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc',
+    reload: true,
   },
   generatedSigner: null,
   nonce: 0,
