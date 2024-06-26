@@ -1,4 +1,5 @@
 import Const from './common/const.mjs';
+import { trimString } from "./utils/utils.js";
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
@@ -15,7 +16,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.initInputKeys();
     this.onGameObject = null;
     this.setDepth(5);
-    console.log(this);
+    this.name = scene.add.text(x-14, y+22, trimString(walletAddress, 2, 2, 2),
+      {font: '8px', fill: "#ffffff", backgroundColor: "#000000", align: "center"});
+    this.name.setDepth(8);
   }
 
   moveTo(response) {
@@ -50,6 +53,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
     this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}` });
     this.scene.tweens.add({ ...movementTemplate, y: `+=${moveVertical}` });
+    this.scene.tweens.add({ ...movementTemplate, targets: [this.name], x: `+=${moveHorizontal}` });
+    this.scene.tweens.add({ ...movementTemplate, targets: [this.name], y: `+=${moveVertical}` });
   }
 
 

@@ -12,6 +12,7 @@ import {
   statsSceneKey,
   scenes,
 } from '../config/config.js';
+import { trimString } from "../utils/utils.js";
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -161,7 +162,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         i + 1,
         {
           img: this.allPlayers[key].beaverChoice || this.allPlayers[key].beaverId,
-          address: key.substr(0, 3) + '...' + key.substr(key.length - 3),
+          address: trimString(key),
         },
         this.allPlayers[key].stats?.coins?.balance,
         this.allPlayers[key].stats?.coins?.transferred,
@@ -169,13 +170,7 @@ export default class LeaderboardScene extends Phaser.Scene {
       ]);
     }
     if (this.mainPlayer?.walletAddress) {
-      const mainPlayerCell = cells.find(
-        (c) =>
-          c[1].address ==
-          this.mainPlayer.walletAddress.substr(0, 3) +
-            '...' +
-            this.mainPlayer.walletAddress.substr(this.mainPlayer.walletAddress.length - 3)
-      );
+      const mainPlayerCell = cells.find((c) => c[1].address === trimString(this.mainPlayer.walletAddress));
       const mainPlayerIndex = cells.indexOf(mainPlayerCell);
       cells.splice(mainPlayerIndex, 1);
       cells.splice(1, 0, mainPlayerCell);
@@ -187,7 +182,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     const urlParams = new URLSearchParams(window.location.search);
     const env = urlParams.get('env') || 'prod';
 
-    if (response.cmd == Const.Command.nextProcessSet) {
+    if (response.cmd === Const.Command.nextProcessSet) {
       this.server.switchProcess(response.processId, response.moduleId);
       this.serverChat.switchProcess(response.chatProcessId, response.chatModuleId);
 
