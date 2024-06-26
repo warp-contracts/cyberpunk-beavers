@@ -231,7 +231,7 @@ export default class MainScene extends Phaser.Scene {
     return {
       gone,
       currentRound,
-      roundsToGo: this.roundsCountdownStart && ~~(this.roundsCountdownTotal - tsChange / this.round.interval) + 1,
+      roundsToGo: this.roundsCountdownTotal && this.roundsCountdownTotal - currentRound,
     };
   }
 
@@ -319,9 +319,9 @@ export default class MainScene extends Phaser.Scene {
             self.scene.start(connectWalletSceneKey, { error: response.player.error });
           } else {
             self.round = response.round;
-            if (response.gameEnd) {
+            if (this.gameEnd) {
               self.roundsCountdownStart = Date.now();
-              self.roundsCountdownTotal = (self.gameEnd - self.roundsCountdownStart) / response.round.interval;
+              self.roundsCountdownTotal = ~~((self.gameEnd - self.roundsCountdownStart) / response.round.interval);
             }
             for (const [wallet, player] of Object.entries(response.players)) {
               if (wallet === this.walletAddress && !this.mainPlayer) {
