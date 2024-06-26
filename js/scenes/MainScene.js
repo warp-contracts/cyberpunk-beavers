@@ -61,6 +61,16 @@ export default class MainScene extends Phaser.Scene {
       'assets/images/beavers/hacker_beaver_anim_atlas_idle.json'
     );
     this.load.atlas(
+      'heavy_beaver_anim_walk',
+      'assets/images/beavers/heavy_beaver_anim_walk.png',
+      'assets/images/beavers/heavy_beaver_anim_atlas_walk.json'
+    );
+    this.load.atlas(
+      'speedy_beaver_anim_walk',
+      'assets/images/beavers/speedy_beaver_anim_walk.png',
+      'assets/images/beavers/speedy_beaver_anim_atlas_walk.json'
+    );
+    this.load.atlas(
       'hacker_beaver_anim_walk',
       'assets/images/beavers/hacker_beaver_anim_walk.png',
       'assets/images/beavers/hacker_beaver_anim_atlas_walk.json'
