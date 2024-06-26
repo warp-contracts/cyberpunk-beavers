@@ -19,6 +19,8 @@ export default class MainScene extends Phaser.Scene {
   obstacle;
   gameObjectsLayer;
   gameTreasuresLayer;
+  roundsCountdownTotal;
+  roundsCountdownStart;
 
   constructor() {
     super(mainSceneKey);
@@ -77,11 +79,7 @@ export default class MainScene extends Phaser.Scene {
       'assets/images/beavers/hacker_beaver_anim_walk.png',
       'assets/images/beavers/hacker_beaver_anim_atlas_walk.json'
     );
-    this.load.atlas(
-      'blood',
-      'assets/images/blood_100x100.png',
-      'assets/images/blood_100x100.json'
-    );
+    this.load.atlas('blood', 'assets/images/blood_100x100.png', 'assets/images/blood_100x100.json');
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
     this.load.audio('dig_sound', ['assets/audio/dig.mp3']);
@@ -94,8 +92,6 @@ export default class MainScene extends Phaser.Scene {
   async create() {
     console.log('Main Scene - 3. Create');
     this.addSounds();
-
-    this.obstacle = this.physics.add.sprite(240, 240, 'atlas', 'walk-1');
     this.allPlayers = {};
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnectionGame;
@@ -226,7 +222,7 @@ export default class MainScene extends Phaser.Scene {
     if (!this.round) {
       return `Waiting to start the round...`;
     }
-    const tsChange = Date.now() - this.round.start;
+    const tsChange = Date.now() - (this.roundsCountdownStart || this.round.start);
     const currentRound = ~~(tsChange / this.round.interval);
     const gone = ~~((10 * (tsChange - currentRound * this.round.interval)) / this.round.interval);
     if (gone === 1) {
@@ -235,6 +231,7 @@ export default class MainScene extends Phaser.Scene {
     return {
       gone,
       currentRound,
+      roundsToGo: this.roundsCountdownStart && ~~(this.roundsCountdownTotal - tsChange / this.round.interval) + 1,
     };
   }
 
@@ -313,13 +310,19 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.registered:
         {
           console.log('Registered player', response);
-          if (response.error ||
-            (response.player && response.player.walletAddress === this.walletAddress && response.player.error)) {
+          if (
+            response.error ||
+            (response.player && response.player.walletAddress === this.walletAddress && response.player.error)
+          ) {
             console.error('Failed to join the game', response.player);
             this.scene.remove('main-scene-loading');
             self.scene.start(connectWalletSceneKey, { error: response.player.error });
           } else {
             self.round = response.round;
+            if (response.gameEnd) {
+              self.roundsCountdownStart = Date.now();
+              self.roundsCountdownTotal = (self.gameEnd - self.roundsCountdownStart) / response.round.interval;
+            }
             for (const [wallet, player] of Object.entries(response.players)) {
               if (wallet === this.walletAddress && !this.mainPlayer) {
                 this.beaverId = player.beaverId;
@@ -345,7 +348,8 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.attacked:
         if (
           response.player.walletAddress === self.mainPlayer.walletAddress ||
-          response.opponent.walletAddress === self.mainPlayer.walletAddress) {
+          response.opponent.walletAddress === self.mainPlayer.walletAddress
+        ) {
           switch (response.player.beaverId) {
             case BEAVER_TYPES.heavy_beaver.name:
               this.attackHeavyBeaverSound.play();
@@ -366,7 +370,7 @@ export default class MainScene extends Phaser.Scene {
           if (response.opponent?.walletAddress === self.mainPlayer.walletAddress) {
             self.mainPlayer.bloodyRespawn(response.opponent.pos);
           } else {
-            self.allPlayers[response.opponent?.walletAddress]?.bloodyRespawn(response.opponent.pos)
+            self.allPlayers[response.opponent?.walletAddress]?.bloodyRespawn(response.opponent.pos);
           }
         }
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {

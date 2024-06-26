@@ -166,7 +166,7 @@ export default class StatsScene extends Phaser.Scene {
 
     this.game.events.on(EVENTS_NAME.updateRoundInfo, (roundInfo) => {
       this.timeMask.x = this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
-      this.title.setText(`ROUND ${roundInfo.currentRound}`);
+      this.title.setText(`ROUND ${roundInfo.roundsToGo || roundInfo.currentRound}`);
     });
 
     this.game.events.on(EVENTS_NAME.updatePlayers, (player) => {
