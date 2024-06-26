@@ -10,26 +10,16 @@ const { GameObject, Map, NO_AP_GROUND_TILES,
   HIGH_AP_COST } = Const;
 
 export function movePlayer(state, action) {
-  const walletAddress = action.walletAddress;
-  const dir = action.dir;
+  const { walletAddress, dir } = action;
   const player = state.players[walletAddress];
   if (!player) {
     console.log(`Cannot move ${walletAddress} Player not registered`)
     return { player: { error: 'Player not registered' } }
   }
-  if (player.stats.ap.current < 1) {
-    console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
-    return { player, moved: false };
-  }
 
   const newPos = step(player.pos, dir);
 
-  if (
-    newPos.x < 0 ||
-    newPos.x >= Map.size ||
-    newPos.y < 0 ||
-    newPos.y >= Map.size
-  ) {
+  if (newPos.x < 0 || newPos.x >= Map.size || newPos.y < 0 || newPos.y >= Map.size) {
     console.log(`Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`);
     return { player };
   } else if (state.playersOnTiles[newPos.y][newPos.x]) {
@@ -39,6 +29,12 @@ export function movePlayer(state, action) {
     console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
     return { player };
   } else {
+    const apCost = calculateApCost(state, newPos.y, newPos.x);
+    if (player.stats.ap.current < apCost) {
+      console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
+      return { player, moved: false };
+    }
+
     player.onGameObject = state.gameObjectsTiles.find(
       (t) => t.tile === state.gameObjectsTilemap[newPos.y][newPos.x]
     );
@@ -50,7 +46,7 @@ export function movePlayer(state, action) {
     state.playersOnTiles[player.pos.y][player.pos.x] = null;
     state.playersOnTiles[newPos.y][newPos.x] = player.walletAddress;
     player.pos = newPos;
-    const apCost = calculateApCost(state, newPos.y, newPos.x);
+
     player.stats.ap.current -= apCost;
     return {
       player,
