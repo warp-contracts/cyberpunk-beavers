@@ -90,7 +90,6 @@ export default class ChatScene extends Phaser.Scene {
   }
 
   async sendMessage(e) {
-    console.log(e);
     e.stopImmediatePropagation();
     if (e.code === 'Enter') {
       //checks whether the pressed key is "Enter"
@@ -98,7 +97,6 @@ export default class ChatScene extends Phaser.Scene {
       if (!text || text.length == 0) {
         return;
       }
-      console.log(text);
       await this.server.send({ cmd: Const.Command.msg, msg: text });
       e.target.value = '';
     }
