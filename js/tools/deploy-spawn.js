@@ -22,7 +22,7 @@ console.info(`Deploying for ${env} env.`);
 // TBIU0X-FkFu-KPdboiQgbVkkVyVPPsW73rbjX6aIGYg - Greg map 1 - BROKEN obstacles layer!!
 // 3JwZKHRqBRJ98Y4arUilHLgwiyCMqWuCyACXwfEB9Ec - Greg map 1 fixed
 // 0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM - Greg map 2
-const mapTxId = 'qtcpzuuGoVKVQGMuq_PMaRHEL071Ja1SV8dvC-gur2Q';
+const mapTxId = 'fI8pyDeSd3SqpKbxZUviFRgH2IryEbIiRGEdAJRFA0Y';
 
 async function readMapFromArweave() {
   console.log(`Loading map ${mapTxId}`);
