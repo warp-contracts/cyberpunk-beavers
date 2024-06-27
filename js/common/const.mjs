@@ -60,7 +60,7 @@ const Tile = {
 const GameObject = {
   hp: { type: 'hp', tile: 1, value: 5 },
   ap: { type: 'ap', tile: 0, value: 5 },
-  treasure: { type: 'treasure', tile: 0, value: 1000 },
+  treasure: { type: 'treasure', tile: 0, value: 500 },
   hole: { type: 'hole', tile: 1, value: 0 },
   none: { type: 'none', tile: 2, value: 0 },
 };
@@ -78,7 +78,7 @@ const Errors = {
 
 // ------- Combat
 const Combat = {
-  DefaultLoot: 100, // Tokens that will be taken after the defeating the opponent.
+  DefaultLoot: 500, // Tokens that will be taken after the defeating the opponent.
 };
 
 // ------- Beaver Config
@@ -95,7 +95,7 @@ export const BEAVER_TYPES = {
     },
     damage: 10,
     bonus: {
-      [GameObject.treasure.type]: 200,
+      [GameObject.treasure.type]: 100,
     },
   },
   heavy_beaver: {
@@ -125,7 +125,7 @@ export const BEAVER_TYPES = {
     },
     damage: 10,
     bonus: {
-      [GameObject.treasure.type]: 40,
+      [GameObject.treasure.type]: 20,
     },
   },
 };

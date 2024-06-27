@@ -15,6 +15,7 @@ import {
 } from '../config/config.js';
 import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
+import { WebFontFile } from '../WebFontFile.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -88,6 +89,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('attack_heavy_beaver_sound', ['assets/audio/attack_heavy_beaver.mp3']);
     this.load.audio('attack_speedy_beaver_sound', ['assets/audio/attack_speedy_beaver.mp3']);
     this.load.audio('attack_hacker_beaver_sound', ['assets/audio/attack_hacker_beaver.mp3']);
+    this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
   async create() {
@@ -409,7 +411,7 @@ export default class MainScene extends Phaser.Scene {
         {
           if (response.picked) {
             console.log(`Player picked a game object.`);
-            this.pickUpSound.play();
+            if (this.mainPlayer.walletAddress == response.player.walletAddress) this.pickUpSound.play();
             this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
             if (response.player.onGameTreasure.type == 'treasure') {
               this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
@@ -426,10 +428,10 @@ export default class MainScene extends Phaser.Scene {
         }
         if (response.digged?.type == Const.GameObject.treasure.type) {
           console.log(`Player digged a game treasure.`);
-          this.treasureSound.play();
+          if (this.mainPlayer.walletAddress == response.player.walletAddress) this.treasureSound.play();
           this.gameTreasuresLayer.putTileAt(0, response.player.pos.x, response.player.pos.y);
         } else {
-          this.digSound.play();
+          if (this.mainPlayer.walletAddress == response.player.walletAddress) this.digSound.play();
           const gameObjectTile = this.gameObjectsLayer.getTileAt(response.player.pos.x, response.player.pos.y)?.index;
           if (gameObjectTile == 2 || gameObjectTile == null) {
             this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);

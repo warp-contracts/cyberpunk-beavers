@@ -1,6 +1,6 @@
-import Const from './const.mjs'
+import Const from './const.mjs';
 
-const TOKEN_GAME_LOCKED_AMOUNT = 100;
+const TOKEN_GAME_LOCKED_AMOUNT = 500;
 
 function step(pos, dir) {
   switch (dir) {
@@ -35,4 +35,4 @@ function addCoins(player, amount) {
   }
 }
 
-export { addCoins, step, scoreToDisplay }
+export { addCoins, step, scoreToDisplay };
