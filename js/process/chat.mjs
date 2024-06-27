@@ -1,6 +1,5 @@
-import Const from "../common/const.mjs";
+import Const, {MIN_MSG_LENGTH, MAX_MSG_LENGTH} from "../common/const.mjs";
 
-const MAX_MSG_LENGTH = 280; // twitter..
 const LAST_MESSAGES_TO_RETURN = 10;
 
 export function handle(state, message) {
@@ -15,6 +14,9 @@ export function handle(state, message) {
   switch (action.cmd) {
     case 'msg':
       const msg = action.msg;
+      if (msg.length < MIN_MSG_LENGTH) {
+        throw new ProcessError("Message too short");
+      }
       if (msg.length > MAX_MSG_LENGTH) {
         throw new ProcessError("Message too long");
       }

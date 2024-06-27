@@ -89,6 +89,9 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('attack_heavy_beaver_sound', ['assets/audio/attack_heavy_beaver.mp3']);
     this.load.audio('attack_speedy_beaver_sound', ['assets/audio/attack_speedy_beaver.mp3']);
     this.load.audio('attack_hacker_beaver_sound', ['assets/audio/attack_hacker_beaver.mp3']);
+    this.load.audio('beaver_eliminated_sound', ['assets/audio/beaver_eliminated.m4a']);
+    this.load.audio('not_enough_ap', ['assets/audio/not_enough_ap.m4a']);
+    this.load.audio('new_challenger', ['assets/audio/new_challenger.m4a']);
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
@@ -176,6 +179,7 @@ export default class MainScene extends Phaser.Scene {
       animated: true,
       beaverChoice: playerInfo.beaverId,
     });
+    this.mainPlayer.mainScene = this;
 
     this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
     this.scene.launch(statsSceneKey, {
@@ -339,6 +343,15 @@ export default class MainScene extends Phaser.Scene {
                 self.createMainPlayer(player);
                 self.initCamera();
               } else {
+                if (!this.newChallengerSound.isPlaying) {
+                  const now = Date.now();
+                  if (!this.newChallengerSoundLastTs || now - this.newChallengerSoundLastTs > 5000) {
+                    this.newChallengerSoundLastTs = now;
+                    this.newChallengerSound.play();
+                  }
+
+                }
+
                 self.addOtherPlayer(player);
               }
             }
@@ -370,6 +383,9 @@ export default class MainScene extends Phaser.Scene {
         this.updateStats(response.player, response.player?.stats);
         this.updateStats(response.opponent, response.opponent?.stats);
         if (response.opponentFinished) {
+          if (!this.beaverEliminatedSound.isPlaying) {
+            this.beaverEliminatedSound.play();
+          }
           if (response.opponent?.walletAddress === self.mainPlayer.walletAddress) {
             self.mainPlayer.bloodyRespawn(response.opponent.pos);
           } else {
@@ -404,6 +420,11 @@ export default class MainScene extends Phaser.Scene {
 
           this.updateStats(response.player, response.stats);
           this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+          if (response.moved === false) {
+            if (!this.notEnoughApSound.isPlaying) {
+              this.notEnoughApSound.play();
+            }
+          }
         }
         break;
 
@@ -466,10 +487,10 @@ export default class MainScene extends Phaser.Scene {
       console.log('Stats update', responsePlayer?.walletAddress);
       console.log('responseStats', responseStats);
       //responseStats.ap = self.mainPlayer.stats.ap;
-      self.mainPlayer.stats = responseStats;
+      self.mainPlayer.updateStats(responseStats);
       this.game.events.emit(EVENTS_NAME.updateStats, responseStats);
     } else if (responsePlayer) {
-      this.allPlayers[responsePlayer?.walletAddress].stats = responsePlayer.stats;
+      this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
       this.game.events.emit(EVENTS_NAME.updateOtherPlayerStats, {
         ...responseStats,
         walletAddress: responsePlayer.walletAddress,
@@ -551,7 +572,7 @@ export default class MainScene extends Phaser.Scene {
         textTransform: 'uppercase',
         fill: score.sign == 'positive' ? 'white' : 'red',
       }
-    ).setDepth(10);
+    ).setDepth(20);
   }
 
   createScoreTween(target) {
@@ -570,9 +591,12 @@ export default class MainScene extends Phaser.Scene {
     this.pickUpSound = this.sound.add('pick_up_sound', { loop: false, volume: 3 });
     this.digSound = this.sound.add('dig_sound', { loop: false, volume: 0.5 });
     this.treasureSound = this.sound.add('treasure_sound', { loop: false, volume: 0.5 });
-    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', { loop: false, volume: 0.5 });
-    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 0.5 });
-    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 0.5 });
+    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', { loop: false, volume: 1.0 });
+    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 1.0 });
+    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 1.0 });
+    this.beaverEliminatedSound = this.sound.add('beaver_eliminated_sound', { loop: false, volume: 2.0 });
+    this.notEnoughApSound = this.sound.add('not_enough_ap', { loop: false, volume: 0.5 });
+    this.newChallengerSound = this.sound.add('new_challenger', { loop: false, volume: 2.0 });
 
     if (window.warpAO.config.env !== 'local') {
       this.backgroundMusic.play();

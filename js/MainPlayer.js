@@ -7,10 +7,19 @@ const { attack, move, pick, dig } = Const.Command;
 
 export default class MainPlayer extends Player {
   combatMode = false;
+  mainScene;
+  lastNoApPlayTimestamp;
 
   async update() {
     if (this.stats.ap.current === 0) {
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
+      if (!this.mainScene.notEnoughApSound.isPlaying && !this.mainScene.beaverEliminatedSound.isPlaying) {
+        const now = Date.now();
+        if (!this.lastNoApPlayTimestamp || now - this.lastNoApPlayTimestamp > 4000) {
+          this.mainScene.notEnoughApSound.play();
+          this.lastNoApPlayTimestamp = now;
+        }
+      }
       return;
     }
 

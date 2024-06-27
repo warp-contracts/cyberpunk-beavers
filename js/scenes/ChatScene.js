@@ -1,4 +1,4 @@
-import Const from '../common/const.mjs';
+import Const, {MAX_MSG_LENGTH, MIN_MSG_LENGTH} from '../common/const.mjs';
 import { serverConnectionChat } from '../lib/serverConnection.js';
 
 const defaultStyle = {
@@ -62,6 +62,7 @@ export default class ChatScene extends Phaser.Scene {
       this.mainScene.input.keyboard.disableGlobalCapture();
       this.mainScene.input.keyboard.enabled = false;
     };
+    input.setAttribute("maxlength", "" + MAX_MSG_LENGTH);
     input.onblur = () => {
       this.mainScene.input.keyboard.enableGlobalCapture();
       this.mainScene.input.keyboard.enabled = true;
@@ -78,7 +79,7 @@ export default class ChatScene extends Phaser.Scene {
     <div style="font-family: 'Press Start 2P'; position: relative; height: 100%">
     <div style='margin: 10px 20px 5px 20px'>CHAT MESSAGES <a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${truncateTxId(this.processId, 3)}</a></div>
     <div id="chat-msg-logs" style="height: 320px;
-    overflow: scroll;
+    overflow-y: auto;
     margin-bottom: 10px;">${this.messagesFormatted()}</div>
     <div class="msg-input" style="
         position: absolute;
@@ -94,7 +95,9 @@ export default class ChatScene extends Phaser.Scene {
     if (e.code === 'Enter') {
       //checks whether the pressed key is "Enter"
       const text = e.target.value;
-      if (!text || text.length == 0) {
+      console.log(text);
+      console.log(text.length);
+      if (!text || text.length < MIN_MSG_LENGTH || !text.replace(/\s/g, '').length) {
         return;
       }
       await this.server.send({ cmd: Const.Command.msg, msg: text });

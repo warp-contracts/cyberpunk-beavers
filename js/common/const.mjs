@@ -21,6 +21,11 @@ const LOW_AP_COST = 1;
 const MED_AP_COST = 2;
 const HIGH_AP_COST = 3;
 
+
+export const MAX_MSG_LENGTH = 280; // twitter..
+export const MIN_MSG_LENGTH = 2; // Hi
+
+
 const Command = {
   attack: 'attack',
   attacked: 'attacked',
