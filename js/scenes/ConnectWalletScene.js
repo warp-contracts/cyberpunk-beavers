@@ -32,19 +32,25 @@ export default class ConnectWalletScene extends Phaser.Scene {
 
     const self = this;
 
+    const textBorder = this.add.rectangle(200, 200, 200, 50, 0xffffff, 0);
+    textBorder.setStrokeStyle(2, 0x00ff00);
+
     this.connectWalletButton = new TextButton(
       this,
       100,
       200,
       'Connect wallet',
       {
-        fill: colors.yellow,
+        fill: colors.green,
         font: '20px',
       },
       async () => {
         await self.connectWallet();
       }
     );
+
+    Phaser.Display.Align.In.Center(this.connectWalletButton, textBorder);
+
     await this.connectWalletButton.animateText(animationSpeed);
 
     if (window.warpAO.config.env != 'prod') {
