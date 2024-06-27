@@ -10,6 +10,7 @@ import {
   leaderboardSceneKey,
   mainSceneLoadingKey,
   statsSceneKey,
+  chatSceneKey,
 } from '../config/config.js';
 import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
@@ -20,7 +21,6 @@ export default class MainScene extends Phaser.Scene {
   gameObjectsLayer;
   gameTreasuresLayer;
   roundsCountdownTotal;
-  roundsCountdownStart;
 
   constructor() {
     super(mainSceneKey);
@@ -207,6 +207,7 @@ export default class MainScene extends Phaser.Scene {
     if (this.gameEnd && this.gameEnd < Date.now()) {
       this.backgroundMusic.stop();
       this.scene.remove(statsSceneKey);
+      this.scene.remove(chatSceneKey);
       this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
     }
     const roundInfo = this.roundTick();
@@ -222,7 +223,7 @@ export default class MainScene extends Phaser.Scene {
     if (!this.round) {
       return `Waiting to start the round...`;
     }
-    const tsChange = Date.now() - (this.roundsCountdownStart || this.round.start);
+    const tsChange = Date.now() - this.round.start;
     const currentRound = ~~(tsChange / this.round.interval);
     const gone = ~~((10 * (tsChange - currentRound * this.round.interval)) / this.round.interval);
     if (gone === 1) {
@@ -320,8 +321,7 @@ export default class MainScene extends Phaser.Scene {
           } else {
             self.round = response.round;
             if (this.gameEnd) {
-              self.roundsCountdownStart = Date.now();
-              self.roundsCountdownTotal = ~~((self.gameEnd - self.roundsCountdownStart) / response.round.interval);
+              self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
             }
             for (const [wallet, player] of Object.entries(response.players)) {
               if (wallet === this.walletAddress && !this.mainPlayer) {

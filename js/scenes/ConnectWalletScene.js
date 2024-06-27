@@ -74,6 +74,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
 
   async connectWallet() {
     if (window.arweaveWallet) {
+      console.log('connect?');
       await window.arweaveWallet.connect([
         'ACCESS_ADDRESS',
         'DISPATCH',
@@ -81,6 +82,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
         'ACCESS_PUBLIC_KEY',
         'SIGNATURE',
       ]);
+      console.log('connect');
       const walletAddress = await window.arweaveWallet.getActiveAddress();
       new Text(this, 100, 300, 'Wallet connected', {
         fill: '#ADD8E6',

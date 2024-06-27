@@ -57,7 +57,7 @@ function initState(message, state) {
     gameObjectsRarity: 10,
     gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],
     gameTreasuresTilesForClient: [GameObject.none],
-    gameTreasuresRarity: 50,
+    gameTreasuresRarity: 15,
     round: {
       current: 0,
       start: message.Timestamp, //ms

@@ -116,8 +116,8 @@ export const BEAVER_TYPES = {
   speedy_beaver: {
     name: 'speedy_beaver',
     ap: {
-      current: 20,
-      max: 20,
+      current: 15,
+      max: 15,
     },
     hp: {
       current: 100,
