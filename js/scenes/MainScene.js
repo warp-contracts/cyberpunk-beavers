@@ -8,6 +8,7 @@ import {
   mainSceneKey,
   connectWalletSceneKey,
   leaderboardSceneKey,
+  loungeAreaSceneKey,
   mainSceneLoadingKey,
   statsSceneKey,
   chatSceneKey,
@@ -317,7 +318,7 @@ export default class MainScene extends Phaser.Scene {
           ) {
             console.error('Failed to join the game', response.player);
             this.scene.remove('main-scene-loading');
-            self.scene.start(connectWalletSceneKey, { error: response.player.error });
+            self.scene.start(loungeAreaSceneKey, { error: response.player.error });
           } else {
             self.round = response.round;
             if (this.gameEnd) {

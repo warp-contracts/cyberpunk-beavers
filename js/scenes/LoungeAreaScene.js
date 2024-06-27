@@ -64,40 +64,62 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   countdown() {
-    if (!this.gameStart) {
-      return;
-    }
-    const now = new Date();
-    let diff = Math.round((this.gameStart - now) / 1000);
-    if (diff <= 0) {
-      if (this.beaverId) {
-        this.scene.start(mainSceneKey, {
-          walletAddress: this.walletAddress,
-          beaverId: this.beaverId,
-          gameStart: this.gameStart,
-          gameEnd: this.gameEnd,
-        });
-      } else if (!this.gameError) {
-        this.scene.start(playerPickSceneKey, {
-          walletAddress: this.walletAddress,
-          gameStart: this.gameStart,
-          gameEnd: this.gameEnd,
-        });
+    if (this.gameError && this.gameEnd) {
+      const now = new Date();
+      let diff = Math.round((this.gameEnd - now) / 1000);
+      if (diff >= 0) {
+        this.tt.setText(`The game will finish in\n${this.formatCountdownTo(diff)}`);
+      } else {
+        this.server.send({ cmd: Const.Command.info });
       }
-    } else {
-      const hour = Math.floor(diff / 3600);
-      diff -= hour * 3600;
-      const min = Math.floor(diff / 60);
-      const sec = diff - min * 60;
-      const padZero = (x) => x.toString().padStart(2, '0');
-      this.tt.setText(`${padZero(hour)}:${padZero(min)}:${padZero(sec)}`);
+    } else if (this.gameStart) {
+      const now = new Date();
+      let diff = Math.round((this.gameStart - now) / 1000);
+      if (diff <= 0) {
+        if (this.beaverId) {
+          this.scene.start(mainSceneKey, {
+            walletAddress: this.walletAddress,
+            beaverId: this.beaverId,
+            gameStart: this.gameStart,
+            gameEnd: this.gameEnd,
+          });
+        } else if (!this.gameError) {
+          this.scene.start(playerPickSceneKey, {
+            walletAddress: this.walletAddress,
+            gameStart: this.gameStart,
+            gameEnd: this.gameEnd,
+          });
+        }
+      } else {
+        this.tt.setText(this.formatCountdownTo(diff));
+      }
     }
+  }
+
+  formatCountdownTo(diff) {
+    const hour = Math.floor(diff / 3600);
+    diff -= hour * 3600;
+    const min = Math.floor(diff / 60);
+    const sec = diff - min * 60;
+    const padZero = (x) => x.toString().padStart(2, '0');
+    return `${padZero(hour)}:${padZero(min)}:${padZero(sec)}`;
   }
 
   handleMessage(response) {
     switch (response.cmd) {
       case Const.Command.stats:
         {
+          if (response.end && response.end < new Date()) {
+            this.scene.start(leaderboardSceneKey, {
+              players: response.players,
+              mainPlayer: {
+                walletAddress: this.walletAddress,
+              },
+            });
+            return;
+          }
+          this.gameStart = response.start;
+          this.gameEnd = response.end;
           this.displayWaitingList(response);
           if (response.error) {
             console.error('Failed to fetch game info', response.error);
@@ -130,8 +152,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
               } else if (this.enqueueButton) {
                 this.enqueueButton.destroy();
               }
-              this.gameStart = response.start;
-              this.gameEnd = response.end;
               this.countdown();
             } else {
               this.scene.start(leaderboardSceneKey, {
