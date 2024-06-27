@@ -47,18 +47,19 @@ export default class ConnectWalletScene extends Phaser.Scene {
     );
     await this.connectWalletButton.animateText(animationSpeed);
 
-    // remove in 'prod'?
-    this.generateWalletButton = new TextButton(
-      this,
-      100,
-      300,
-      'Generate wallet',
-      {
-        fill: colors.red,
-        font: '20px',
-      },
-      async () => await this.generateWallet()
-    );
+    if (window.warpAO.config.env != 'prod') {
+      this.generateWalletButton = new TextButton(
+        this,
+        100,
+        300,
+        'Generate wallet',
+        {
+          fill: colors.red,
+          font: '20px',
+        },
+        async () => await this.generateWallet()
+      );
+    }
   }
 
   async generateWallet() {
