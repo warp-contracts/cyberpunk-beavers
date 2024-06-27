@@ -154,7 +154,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     }
     let allPlayersKeys = Object.keys(this.allPlayers);
     allPlayersKeys.sort(
-      (a, b) => this.allPlayers[b].stats.coins?.available - this.allPlayers[a].stats.coins?.available
+      (a, b) => this.allPlayers[b].stats.coins?.transferred - this.allPlayers[a].stats.coins?.transferred
     );
     for (let i = 0; i < allPlayersKeys.length; i++) {
       const key = allPlayersKeys[i];
@@ -168,12 +168,6 @@ export default class LeaderboardScene extends Phaser.Scene {
         this.allPlayers[key].stats?.coins?.transferred,
         this.allPlayers[key].stats?.hp?.current,
       ]);
-    }
-    if (this.mainPlayer?.walletAddress) {
-      const mainPlayerCell = cells.find((c) => c[1].address === trimString(this.mainPlayer.walletAddress));
-      const mainPlayerIndex = cells.indexOf(mainPlayerCell);
-      cells.splice(mainPlayerIndex, 1);
-      cells.splice(1, 0, mainPlayerCell);
     }
     return cells.flat(1);
   }

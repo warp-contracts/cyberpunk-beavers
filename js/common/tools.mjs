@@ -1,6 +1,6 @@
 import Const from './const.mjs';
 
-const TOKEN_GAME_LOCKED_AMOUNT = 500;
+const TOKEN_GAME_LOCKED_AMOUNT = 1000;
 
 function step(pos, dir) {
   switch (dir) {

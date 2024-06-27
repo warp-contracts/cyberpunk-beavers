@@ -83,7 +83,7 @@ const Errors = {
 
 // ------- Combat
 const Combat = {
-  DefaultLoot: 500, // Tokens that will be taken after the defeating the opponent.
+  DefaultLoot: 1000, // Tokens that will be taken after the defeating the opponent.
 };
 
 // ------- Beaver Config
