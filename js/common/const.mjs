@@ -21,10 +21,8 @@ const LOW_AP_COST = 1;
 const MED_AP_COST = 2;
 const HIGH_AP_COST = 3;
 
-
 export const MAX_MSG_LENGTH = 280; // twitter..
 export const MIN_MSG_LENGTH = 2; // Hi
-
 
 const Command = {
   attack: 'attack',
@@ -91,8 +89,8 @@ export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
     ap: {
-      current: 10,
-      max: 10,
+      current: 15,
+      max: 15,
     },
     hp: {
       current: 100,
@@ -106,8 +104,8 @@ export const BEAVER_TYPES = {
   heavy_beaver: {
     name: 'heavy_beaver',
     ap: {
-      current: 10,
-      max: 10,
+      current: 15,
+      max: 15,
     },
     hp: {
       current: 200,
@@ -121,8 +119,8 @@ export const BEAVER_TYPES = {
   speedy_beaver: {
     name: 'speedy_beaver',
     ap: {
-      current: 15,
-      max: 15,
+      current: 20,
+      max: 20,
     },
     hp: {
       current: 100,
