@@ -567,10 +567,11 @@ export default class MainScene extends Phaser.Scene {
       player.y - (score.sign == 'negative' ? 40 : 60),
       `${score.value}${score.type}`,
       {
+        backgroundColor: "black",
         fontFamily: '"Press Start 2P"',
         fontSize: '12px',
         textTransform: 'uppercase',
-        fill: score.sign == 'positive' ? 'white' : 'red',
+        fill: score.sign == 'positive' ? 'green' : 'red',
       }
     ).setDepth(20);
   }

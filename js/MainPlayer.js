@@ -15,7 +15,7 @@ export default class MainPlayer extends Player {
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
       if (!this.mainScene.notEnoughApSound.isPlaying && !this.mainScene.beaverEliminatedSound.isPlaying) {
         const now = Date.now();
-        if (!this.lastNoApPlayTimestamp || now - this.lastNoApPlayTimestamp > 4000) {
+        if (!this.lastNoApPlayTimestamp || now - this.lastNoApPlayTimestamp > 5000) {
           this.mainScene.notEnoughApSound.play();
           this.lastNoApPlayTimestamp = now;
         }
@@ -56,6 +56,7 @@ export default class MainPlayer extends Player {
 
   nextRound() {
     this.stats.ap.current = this.stats.ap.max;
+    this.updateStats(this.stats);
     this.scene.game.events.emit(EVENTS_NAME.updateStats, this.stats);
     this.lockingDataItemId = undefined;
   }

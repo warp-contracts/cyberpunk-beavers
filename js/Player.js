@@ -17,7 +17,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.onGameObject = null;
     this.setDepth(5);
 
-    this.healthBar = scene.add.rectangle(x + 2, y - 32, this.calculateBarWidth(this.stats.hp), 6, 0xfcee09);
+    this.healthBar = scene.add.rectangle(x + 2, y - 32, this.calculateBarWidth(this.stats.hp), 6, 0xdc143c);
     this.apBar = scene.add.rectangle(x + 2, y - 40, this.calculateBarWidth(this.stats.ap), 6, 0x00ff00);
     this.healthBar.setDepth(10);
     this.apBar.setDepth(10);
@@ -28,16 +28,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   calculateBarWidth(stats) {
-    return (stats.current / stats.max) * 45;
+    const percentage = stats.current / stats.max;
+    return Math.min(1, percentage) * 45;
   }
 
   updateStats(newStats) {
-    if (newStats.hp.max != this.stats.hp.max || newStats.hp.current != this.stats.hp.current) {
-      this.healthBar.setSize(this.calculateBarWidth(newStats.hp), 6);
-    }
-    if (newStats.ap.max != this.stats.ap.max || newStats.ap.current != this.stats.ap.current) {
-      this.apBar.setSize(this.calculateBarWidth(newStats.ap), 6);
-    }
+    this.healthBar.setSize(this.calculateBarWidth(newStats.hp), 6);
+    this.apBar.setSize(this.calculateBarWidth(newStats.ap), 6);
     this.stats = newStats;
   }
 
