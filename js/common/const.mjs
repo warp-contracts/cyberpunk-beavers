@@ -99,6 +99,7 @@ export const BEAVER_TYPES = {
       max: 100,
     },
     damage: 10,
+    attack_range: 5,
     bonus: {
       [GameObject.treasure.type]: 100,
     },
@@ -114,9 +115,10 @@ export const BEAVER_TYPES = {
       max: 200,
     },
     damage: 20,
+    attack_range: 3,
     bonus: {
       [GameObject.treasure.type]: 0,
-    },
+    }
   },
   speedy_beaver: {
     name: 'speedy_beaver',
@@ -129,6 +131,7 @@ export const BEAVER_TYPES = {
       max: 100,
     },
     damage: 10,
+    attack_range: 1,
     bonus: {
       [GameObject.treasure.type]: 20,
     },
