@@ -23,6 +23,7 @@ export default class MainScene extends Phaser.Scene {
   gameObjectsLayer;
   gameTreasuresLayer;
   roundsCountdownTotal;
+  gameOver = false;
 
   constructor() {
     super(mainSceneKey);
@@ -92,6 +93,9 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('beaver_eliminated_sound', ['assets/audio/beaver_eliminated.m4a']);
     this.load.audio('not_enough_ap', ['assets/audio/not_enough_ap.m4a']);
     this.load.audio('new_challenger', ['assets/audio/new_challenger.m4a']);
+    this.load.audio('game_over', ['assets/audio/game_over.m4a']);
+    this.load.audio('3_rounds_left', ['assets/audio/3_rounds_left.m4a']);
+    this.load.audio('last_round', ['assets/audio/last_round.m4a']);
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
@@ -211,13 +215,30 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.gameEnd && this.gameEnd < Date.now()) {
-      this.backgroundMusic.stop();
-      this.scene.remove(statsSceneKey);
-      this.scene.remove(chatSceneKey);
-      this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
+    if (this.gameOver) {
+      return;
     }
     const roundInfo = this.roundTick();
+    if ((this.gameEnd && this.gameEnd < Date.now()) || roundInfo.roundsToGo == 0) {
+      this.gameOver = true;
+      this.statsScene.gameOver();
+      this.backgroundMusic.stop();
+      this.gameOverSound.play();
+      setTimeout(() => {
+        this.scene.remove(statsSceneKey);
+        this.scene.remove(chatSceneKey);
+        this.scene.start(leaderboardSceneKey, {players: this.allPlayers, mainPlayer: this.mainPlayer});
+      }, 2000);
+    }
+    if (roundInfo.roundsToGo == 3 && !this.threeRoundsPlayed) {
+      this.threeRoundsPlayed = true;
+      this.threeRoundsLeftSound.play();
+    }
+    if (roundInfo.roundsToGo == 1 && !this.lastRoundPlayed) {
+      this.lastRoundPlayed = true;
+      this.lastRoundSound.play();
+    }
+
     this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
 
     this.mainPlayer?.update();
@@ -596,8 +617,11 @@ export default class MainScene extends Phaser.Scene {
     this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 1.0 });
     this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 1.0 });
     this.beaverEliminatedSound = this.sound.add('beaver_eliminated_sound', { loop: false, volume: 2.0 });
-    this.notEnoughApSound = this.sound.add('not_enough_ap', { loop: false, volume: 0.5 });
+    this.notEnoughApSound = this.sound.add('not_enough_ap', { loop: false, volume: 1.0 });
     this.newChallengerSound = this.sound.add('new_challenger', { loop: false, volume: 2.0 });
+    this.gameOverSound = this.sound.add('game_over', { loop: false, volume: 2.0 });
+    this.threeRoundsLeftSound = this.sound.add('3_rounds_left', { loop: false, volume: 2.0 });
+    this.lastRoundSound = this.sound.add('last_round', { loop: false, volume: 2.0 });
 
     if (window.warpAO.config.env !== 'local') {
       this.backgroundMusic.play();

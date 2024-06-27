@@ -1,8 +1,8 @@
-import { readFileSync } from 'node:fs';
+import {readFileSync} from 'node:fs';
 import ids from '../config/warp-ao-ids.js';
-import { createData } from 'warp-arbundles';
-import { ArweaveSigner } from 'warp-contracts-plugin-deploy';
-import { Tag } from 'warp-contracts';
+import {createData} from 'warp-arbundles';
+import {ArweaveSigner} from 'warp-contracts-plugin-deploy';
+import {Tag} from 'warp-contracts';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
@@ -13,6 +13,17 @@ if (envIdx < 0) {
 }
 const env = process.argv[envIdx + 1];
 
+const customConfig = {
+  cmd: 'setup',
+  type: 'custom',
+  start: Date.now() + 10 * 1000,
+  end: Date.now() + 60 * 1000,
+};
+
+const defaultConfig = {
+  cmd: 'setup', type: 'nextSlot', slotMinutes: 6, playMinutes: 5
+}
+
 async function setupGameContract() {
   const processId = ids[`processId_${env}`];
   const moduleId = ids[`moduleId_${env}`];
@@ -22,13 +33,13 @@ async function setupGameContract() {
     new Tag('Type', 'Message'),
     new Tag('From-Process', processId),
     new Tag('From-Module', moduleId),
-    new Tag('Action', JSON.stringify({ cmd: 'setup', type: 'nextSlot', slotMinutes: 6, playMinutes: 5 })),
+    new Tag('Action', JSON.stringify(env == 'local' ? customConfig : defaultConfig)),
     new Tag('SDK', 'ao'),
     new Tag('Name', 'setup'),
   ];
 
   const data = JSON.stringify('1234');
-  const processDataItem = createData(data, signer, { tags: processTags, target: processId });
+  const processDataItem = createData(data, signer, {tags: processTags, target: processId});
   await processDataItem.sign(signer);
 
   const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';

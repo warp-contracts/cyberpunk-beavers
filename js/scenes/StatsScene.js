@@ -119,7 +119,8 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   addTitle() {
-    this.title = new Text(this, this.gameWidth / 2, 50, 'ROUND 700', {
+    this.title = new Text(this, this.gameWidth / 2, 50, 'ROUNDS LEFT 700', {
+      backgroundColor: 'black',
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
       textTransform: 'uppercase',
@@ -130,6 +131,7 @@ export default class StatsScene extends Phaser.Scene {
 
   addSubtitle() {
     this.subtitle = new Text(this, this.gameWidth / 2, this.timeBar.y + this.timeBar.height, 'AP: 10', {
+      backgroundColor: 'black',
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
       textTransform: 'uppercase',
@@ -150,6 +152,10 @@ export default class StatsScene extends Phaser.Scene {
     this.stepWidth = this.timeMask.displayWidth / 10;
   }
 
+  gameOver() {
+    this.title.setText(`GAME OVER`);
+  }
+
   initListeners() {
     this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
       document.getElementById('stats-scene-hp').innerText = stats?.hp?.current;
@@ -165,8 +171,10 @@ export default class StatsScene extends Phaser.Scene {
     });
 
     this.game.events.on(EVENTS_NAME.updateRoundInfo, (roundInfo) => {
-      this.timeMask.x = this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
-      this.title.setText(`ROUND ${roundInfo.roundsToGo || roundInfo.currentRound}`);
+      if (!this.mainScene.gameOver) {
+        this.timeMask.x = this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
+        this.title.setText(`ROUNDS LEFT ${roundInfo.roundsToGo || roundInfo.currentRound}`);
+      }
     });
 
     this.game.events.on(EVENTS_NAME.updatePlayers, (player) => {
