@@ -39,6 +39,10 @@ export function registerPlayer(state, action) {
       round: {
         last: 0,
       },
+      kills: {
+        frags: 0,
+        deaths: 0,
+      },
       coins: {
         balance: balance || 0,
         available: 0, // tokens available for slashing

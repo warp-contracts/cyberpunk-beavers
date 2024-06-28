@@ -57,6 +57,8 @@ function finishHim(player, opponent) {
     const loot = lootPlayer(opponent);
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
     opponent.stats.hp.current = opponent.stats.hp.max;
+    opponent.stats.kills.deaths++;
+    player.stats.kills.frags++;
     const tokenTransfer = addCoins(player, loot);
     return {
       finished: true,

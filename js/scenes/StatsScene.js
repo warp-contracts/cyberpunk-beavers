@@ -159,6 +159,8 @@ export default class StatsScene extends Phaser.Scene {
   initListeners() {
     this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
       document.getElementById('stats-scene-hp').innerText = stats?.hp?.current;
+      document.getElementById('stats-scene-frags').innerText = stats?.kills.frags;
+      document.getElementById('stats-scene-deaths').innerText = stats?.kills.deaths;
       document.getElementById('stats-scene-cbcoins').innerText = stats?.coins.balance;
       document.getElementById('stats-scene-locked').innerText = stats?.coins.available;
       document.getElementById('stats-scene-transferred').innerText = stats?.coins.transferred;
@@ -193,6 +195,8 @@ export default class StatsScene extends Phaser.Scene {
 
     this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => {
       document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
+      document.getElementById(`stats-scene-frags-${player.walletAddress}`).innerText = player.kills.frags;
+      document.getElementById(`stats-scene-deaths-${player.walletAddress}`).innerText = player.kills.deaths;
       document.getElementById(`stats-scene-cbcoins-${player.walletAddress}`).innerText = player.coins.balance;
       document.getElementById(`stats-scene-locked-${player.walletAddress}`).innerText = player.coins.available;
     });
@@ -268,9 +272,19 @@ flex-direction: column;">
 </div>
 </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>HP</div>
-    <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-hp">${this.stats?.hp.current}</div>
+      <div style="display: flex; justify-content: space-between;">
+          <div id="stats-scene-hp">${this.stats?.hp.current}</div>
+      </div>
     </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>FRAGS</div>
+      <div style="display: flex; justify-content: space-between;">
+          <div id="stats-scene-frags">${this.stats?.kills.frags}</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>DEATHS</div>
+      <div style="display: flex; justify-content: space-between;">
+          <div id="stats-scene-deaths">${this.stats?.kills.deaths}</div>
+      </div>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>CBCOINS</div>
     <div style="display: flex; justify-content: space-between;">
@@ -351,6 +365,16 @@ flex-direction: column;">
   <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>HP</div>
   <div style="display: flex; justify-content: space-between;">
   <div id="stats-scene-hp-${player.walletAddress}">${player.stats.hp.current}</div>
+  </div>
+  </div>
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>FRAGS</div>
+  <div style="display: flex; justify-content: space-between;">
+  <div id="stats-scene-frags-${player.walletAddress}">${player.stats.kills.frags}</div>
+  </div>
+  </div>
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>DEATHS</div>
+  <div style="display: flex; justify-content: space-between;">
+  <div id="stats-scene-deaths-${player.walletAddress}">${player.stats.kills.deaths}</div>
   </div>
   </div>
   <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>CBCOINS</div>
