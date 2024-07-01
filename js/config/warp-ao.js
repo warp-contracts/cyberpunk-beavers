@@ -63,11 +63,13 @@ window.warpAO = {
 };
 
 async function sendUsingGeneratedWallet(moduleId, processId, message, signer) {
+  const now = Date.now();
   const dataItem = createData('1234', signer, {
     tags: window.warpAO.messageTags(moduleId, processId, message),
     target: processId,
   });
   await dataItem.sign(signer);
+  console.log(`Signing with raw ${Date.now() - now}ms`);
   return sendRawDataItem(dataItem.getRaw());
 }
 
@@ -92,6 +94,9 @@ async function sendRawDataItem(rawData) {
 }
 
 async function sendUsingConnectedWallet(moduleId, processId, message) {
-  const signedDataItem = await window.arweaveWallet.signDataItem(window.warpAO.data(moduleId, processId, message));
+  const dataItem = window.warpAO.data(moduleId, processId, message);
+  const now = Date.now();
+  const signedDataItem = await window.arweaveWallet.signDataItem(dataItem);
+  console.log(`Signing with ArConnect ${Date.now() - now}ms`);
   return sendRawDataItem(signedDataItem);
 }

@@ -192,22 +192,26 @@ export default class MainScene extends Phaser.Scene {
     } else {
       dataItemSigner = createDataItemSigner(window.arweaveWallet);
     }
-    return await message({
-      process: processId,
-      tags,
-      signer: dataItemSigner,
-      data,
-    })
-      .catch((e) => {
-        console.error(e);
-      })
-      .then((id) =>
-        result({
-          message: id,
-          process: processId,
-        })
-      )
-      .then((r) => r?.Messages[0]?.Data);
+
+    try {
+      const now = Date.now();
+      const messageId = await message({
+        process: processId,
+        tags,
+        signer: dataItemSigner,
+        data,
+      });
+
+      const msgResult = await result({
+        message: messageId,
+        process: processId,
+      });
+      console.log(`Checking balance took ${Date.now() - now}ms`);
+      return msgResult.Messages[0]?.Data;
+    } catch (error) {
+      console.error(error);
+      return "0";
+    }
   }
 
   createMainPlayer(playerInfo) {

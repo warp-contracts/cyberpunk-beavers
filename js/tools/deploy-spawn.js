@@ -18,11 +18,23 @@ const env = process.argv[envIdx + 1];
 
 console.info(`Deploying for ${env} env.`);
 // qtcpzuuGoVKVQGMuq_PMaRHEL071Ja1SV8dvC-gur2Q - 'default' map
-// fI8pyDeSd3SqpKbxZUviFRgH2IryEbIiRGEdAJRFA0Y - ao 'tutorial' map
-// TBIU0X-FkFu-KPdboiQgbVkkVyVPPsW73rbjX6aIGYg - Greg map 1 - BROKEN obstacles layer!!
-// 3JwZKHRqBRJ98Y4arUilHLgwiyCMqWuCyACXwfEB9Ec - Greg map 1 fixed
+// AeSkeoKPIpM71iapW6Onv4681CAXOU9DEr2XcgDZPI0 - ao 'tutorial' map
+
+// below needs to be fixed/verified - do not use now
+// 3JwZKHRqBRJ98Y4arUilHLgwiyCMqWuCyACXwfEB9Ec - Greg map 1
 // 0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM - Greg map 2
-const mapTxId = 'AeSkeoKPIpM71iapW6Onv4681CAXOU9DEr2XcgDZPI0';
+
+const maps = [
+  'qtcpzuuGoVKVQGMuq_PMaRHEL071Ja1SV8dvC-gur2Q', // - 'default' map
+  'AeSkeoKPIpM71iapW6Onv4681CAXOU9DEr2XcgDZPI0', // - ao 'tutorial' map
+  '3JwZKHRqBRJ98Y4arUilHLgwiyCMqWuCyACXwfEB9Ec', // Greg map 1
+  '0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM'  // Greg map 2
+]
+
+const randomIntegerInRange = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+const mapTxId = maps[randomIntegerInRange(0, maps.length - 1)];
 
 async function readMapFromArweave() {
   console.log(`Loading map ${mapTxId}`);
