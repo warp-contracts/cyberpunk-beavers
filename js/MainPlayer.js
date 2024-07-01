@@ -47,6 +47,14 @@ export default class MainPlayer extends Player {
   }
 
   async action(dir) {
+    switch (dir) {
+      case left:
+        this.scaleX = -1;
+        break;
+      case right:
+        this.scaleX = 1;
+        break;
+    }
     if (this.combatMode) {
       await this.send({ cmd: attack, dir });
     } else {
