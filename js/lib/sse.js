@@ -66,6 +66,7 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
               cuCalc: message.cuSent - message.cuReceived,
               total: now - sentTs
             };
+            window.warpAO.lag = lag;
             console.log(`===== Lag:`, window.warpAO.lag);
           }
         }

@@ -153,9 +153,9 @@ export default class MainScene extends Phaser.Scene {
 
   async registerPlayer() {
     const balance = await this.checkBalance();
-    console.log(balance);
+    // console.log(balance);
     if (this.beaverId) {
-      console.log(`Beaver has already been previously, Joinning game...`, this.beaverId);
+      console.log(`Beaver has already been registered previously, joining game...`, this.beaverId);
       await this.server.send({ cmd: Const.Command.join, balance: balance && parseInt(balance) });
     } else {
       console.log('Register player...');
@@ -211,7 +211,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createMainPlayer(playerInfo) {
-    console.log(playerInfo);
+    // console.log(playerInfo);
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
       stats: playerInfo.stats,
@@ -461,7 +461,7 @@ export default class MainScene extends Phaser.Scene {
         break;
       case Const.Command.moved:
         {
-          console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
+          // console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
           if (!self.allPlayers[response.player.walletAddress]) {
             self.addOtherPlayer(response.player);
           } else {
@@ -470,13 +470,13 @@ export default class MainScene extends Phaser.Scene {
 
           if (response.player.onGameObject != null &&
             response.player.walletAddress === self.mainPlayer?.walletAddress) {
-            console.log(`Main player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
+            // console.log(`Main player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
             this.mainPlayer.onGameObject = response.player.onGameObject;
           }
 
           if (response.player.onGameTreasure != null &&
             response.player.walletAddress === self.mainPlayer?.walletAddress) {
-            console.log(`Main player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
+            // console.log(`Main player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
             this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
           }
 
@@ -493,7 +493,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.picked:
         {
           if (response.picked) {
-            console.log(`Player picked a game object.`);
+            // console.log(`Player picked a game object.`);
             if (this.mainPlayer.walletAddress == response.player.walletAddress) this.pickUpSound.play();
             this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
             if (response.player.onGameTreasure.type == 'treasure') {
@@ -510,7 +510,7 @@ export default class MainScene extends Phaser.Scene {
           return;
         }
         if (response.digged?.type == Const.GameObject.treasure.type) {
-          console.log(`Player digged a game treasure.`);
+          // console.log(`Player digged a game treasure.`);
           if (this.mainPlayer.walletAddress == response.player.walletAddress) this.treasureSound.play();
           this.gameTreasuresLayer.putTileAt(0, response.player.pos.x, response.player.pos.y);
         } else {
@@ -544,10 +544,10 @@ export default class MainScene extends Phaser.Scene {
 
   updateStats(responsePlayer, responseStats) {
     const self = this;
-    console.log('Player stats', responsePlayer);
+    // console.log('Player stats', responsePlayer);
     if (responsePlayer?.walletAddress === self.mainPlayer.walletAddress) {
-      console.log('Stats update', responsePlayer?.walletAddress);
-      console.log('responseStats', responseStats);
+      // console.log('Stats update', responsePlayer?.walletAddress);
+      // console.log('responseStats', responseStats);
       //responseStats.ap = self.mainPlayer.stats.ap;
       self.mainPlayer.updateStats(responseStats);
       this.game.events.emit(EVENTS_NAME.updateStats, responseStats);
@@ -670,10 +670,8 @@ export default class MainScene extends Phaser.Scene {
     const musicKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     musicKey.on('up', () => {
       if (this.backgroundMusic.isPlaying) {
-        console.log('Music off');
         this.backgroundMusic.stop();
       } else {
-        console.log('Music on');
         this.backgroundMusic.play();
       }
     });
