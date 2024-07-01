@@ -3,7 +3,7 @@ import Const from '../../common/const.mjs';
 const { BEAVER_TYPES, Map } = Const;
 
 export function registerPlayer(state, action) {
-  const { beaverId, walletAddress, balance } = action;
+  const { beaverId, walletAddress, balance, generatedWalletAddress } = action;
   const { players, playersOnTiles, walletsQueue } = state;
 
   // Player already registered, move along
@@ -53,6 +53,9 @@ export function registerPlayer(state, action) {
   };
   playersOnTiles[newPlayer.pos.y][newPlayer.pos.x] = newPlayer.walletAddress;
   players[walletAddress] = newPlayer;
+  if (generatedWalletAddress) {
+    state.generatedWalletsMapping[generatedWalletAddress] = walletAddress;
+  }
   return { player: newPlayer };
 }
 
