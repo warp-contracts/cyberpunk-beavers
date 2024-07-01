@@ -102,6 +102,7 @@ export default class MainScene extends Phaser.Scene {
   async create() {
     console.log('Main Scene - 3. Create');
     this.addSounds();
+    this.initAnimations();
     this.allPlayers = {};
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnectionGame;
@@ -110,6 +111,44 @@ export default class MainScene extends Phaser.Scene {
     } else {
       this.scene.start(connectWalletSceneKey);
     }
+  }
+
+  initAnimations() {
+    this.initBeaverAnim('hacker_beaver');
+    this.initBeaverAnim('heavy_beaver');
+    this.initBeaverAnim('speedy_beaver');
+
+    this.anims.create({
+      key: `blood`,
+      frames: this.anims.generateFrameNames(`blood`, {
+        prefix: 'frame-',
+        start: 0,
+        end: 17,
+      }),
+      frameRate: 34,
+    });
+  }
+
+  initBeaverAnim(beaver) {
+    this.anims.create({
+      key: `${beaver}_idle`,
+      frames: this.anims.generateFrameNames(`${beaver}_anim_idle`, {
+        prefix: 'frame-',
+        start: 0,
+        end: 12,
+      }),
+      frameRate: 24,
+    });
+
+    this.anims.create({
+      key: `${beaver}_walk`,
+      frames: this.anims.generateFrameNames(`${beaver}_anim_walk`, {
+        prefix: 'frame-',
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 8,
+    });
   }
 
   async registerPlayer() {
@@ -429,13 +468,15 @@ export default class MainScene extends Phaser.Scene {
             self.allPlayers[response.player.walletAddress].moveTo(response.player);
           }
 
-          if (response.player.onGameObject != null) {
-            console.log(`Player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
+          if (response.player.onGameObject != null &&
+            response.player.walletAddress === self.mainPlayer?.walletAddress) {
+            console.log(`Main player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
             this.mainPlayer.onGameObject = response.player.onGameObject;
           }
 
-          if (response.player.onGameTreasure != null) {
-            console.log(`Player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
+          if (response.player.onGameTreasure != null &&
+            response.player.walletAddress === self.mainPlayer?.walletAddress) {
+            console.log(`Main player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
             this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
           }
 

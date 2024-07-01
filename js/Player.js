@@ -10,9 +10,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.stats = stats;
     this.animated = animated;
     scene.add.existing(this);
-    if (animated) {
-      this.initAnimations();
-    }
     this.initInputKeys();
     this.onGameObject = null;
     this.setDepth(5);
@@ -114,38 +111,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   update() {
     if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
-  }
-
-  initAnimations() {
-    this.scene.anims.create({
-      key: `${this.beaverChoice}_idle`,
-      frames: this.scene.anims.generateFrameNames(`${this.beaverChoice}_anim_idle`, {
-        prefix: 'frame-',
-        start: 0,
-        end: 12,
-      }),
-      frameRate: 24,
-    });
-
-    this.scene.anims.create({
-      key: `${this.beaverChoice}_walk`,
-      frames: this.scene.anims.generateFrameNames(`${this.beaverChoice}_anim_walk`, {
-        prefix: 'frame-',
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 8,
-    });
-
-    this.scene.anims.create({
-      key: `blood`,
-      frames: this.scene.anims.generateFrameNames(`blood`, {
-        prefix: 'frame-',
-        start: 0,
-        end: 17,
-      }),
-      frameRate: 34,
-    });
   }
 
   initInputKeys() {

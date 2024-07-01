@@ -42,6 +42,7 @@ function mockDataItem(moduleId, processId, data, nonce) {
   return {
     Owner: localStorage.getItem('wallet_address'),
     Id: Math.random().toString(36).substring(2),
+    Signature: Math.random().toString(36).substring(2),
     Tags: withTags.tags,
     Timestamp: Date.now(),
     Nonce: nonce
