@@ -65,6 +65,7 @@ function initState(message, state) {
     },
     walletsQueue: [],
     walletsBench: [],
+    generatedWalletsMapping: {},
     players: {},
     playersOnTiles: Array(Map.size)
       .fill([])

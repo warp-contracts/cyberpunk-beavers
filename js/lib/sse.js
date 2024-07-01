@@ -1,4 +1,5 @@
-export async function initSubscription(moduleId, processId, verifyNonce, verifyLag) {
+export async function initSubscription(
+  moduleId, processId, verifyNonce, verifyLag, alwaysUseConnectedWallet) {
   console.log('Subscribing for processId: ', processId);
 
   let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${processId}`);
@@ -22,8 +23,12 @@ export async function initSubscription(moduleId, processId, verifyNonce, verifyL
     subscribe: (target) => {
       sse.onmessage = messageListener(target, processId, verifyNonce, verifyLag);
     },
-    send: (message) => {
-      return window.warpAO.send(moduleId, processId, message);
+    send: (message, forceConnectedWallet) => {
+      return window.warpAO.send(
+        moduleId,
+        processId,
+        message,
+        alwaysUseConnectedWallet || forceConnectedWallet);
     },
     switchProcess: (newProcessId, newModuleId) => {
       processId = newProcessId;

@@ -16,6 +16,7 @@ window.warpAO = {
     reload: true,
   },
   generatedSigner: null,
+  signingMode: null, // generated | arconnect
   nonce: -1,
   processId: () => {
     return window.warpAO.config[`processId_${env}`];
@@ -47,14 +48,15 @@ window.warpAO = {
     data: '1234',
     target: processId,
   }),
-  send: async (moduleId, processId, message) => {
+  send: async (moduleId, processId, message, useConnectedWallet) => {
     if (!moduleId) {
       throw new Error('moduleId not set');
     }
     if (!processId) {
       throw new Error('processId not set');
     }
-    if (window.warpAO.generatedSigner) {
+    if (window.warpAO.signingMode == 'generated'
+      || (window.warpAO.signingMode == 'arconnect' && !useConnectedWallet)) {
       return sendUsingGeneratedWallet(moduleId, processId, message, window.warpAO.generatedSigner);
     } else {
       return sendUsingConnectedWallet(moduleId, processId, message);
