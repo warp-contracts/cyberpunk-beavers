@@ -20,7 +20,6 @@ export default class StatsScene extends Phaser.Scene {
   processId;
   allPlayers;
   messageLogQueue = [];
-  lag = 0;
   constructor() {
     super(statsSceneKey);
   }
@@ -188,7 +187,9 @@ export default class StatsScene extends Phaser.Scene {
     this.game.events.on(EVENTS_NAME.nextMessage, ({response, lag}) => {
       console.log(response);
       const player = this.me(response);
-      this.lag = lag;
+      if (lag) {
+        document.getElementById('stats-scene-lag').innerHTML = `${this.formatLag(lag)}`;
+      }
       if (player) {
         const messageLog = {
           player,
@@ -199,7 +200,6 @@ export default class StatsScene extends Phaser.Scene {
           this.messageLogQueue.shift();
         }
         document.getElementById('stats-scene-interaction-logs').innerHTML = this.interactionsFormatted();
-        document.getElementById('stats-scene-lag').innerHTML = `${this.lag}ms`;
       }
     });
   }
@@ -257,7 +257,7 @@ flex-direction: column;">
 </div>
 <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>LAG</div>
 <div style="display: flex; justify-content: space-between;">
-<div style="padding-right: 10px;" id="stats-scene-lag">${window.warpAO.lag}ms</div>
+<div style="padding-right: 10px;" id="stats-scene-lag">${this.formatLag(window.warpAO.lag)}</div>
 </div>
 </div>
 </div>
@@ -405,6 +405,10 @@ flex-direction: column;">
 
   interactionsFormatted() {
     return this.messageLogQueue.map(this.formatMessageLog).join('');
+  }
+
+  formatLag(lag) {
+    return `${lag.total}(${lag.deliveryToCu}/${lag.cuCalc}/${lag.deliveryFromCu})ms`;
   }
 
   formatMessageLog(ml) {

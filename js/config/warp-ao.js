@@ -16,7 +16,7 @@ window.warpAO = {
     reload: true,
   },
   generatedSigner: null,
-  nonce: 0,
+  nonce: -1,
   processId: () => {
     return window.warpAO.config[`processId_${env}`];
   },

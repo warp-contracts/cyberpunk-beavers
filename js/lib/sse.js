@@ -1,4 +1,4 @@
-export async function initSubscription(moduleId, processId) {
+export async function initSubscription(moduleId, processId, verifyNonce, verifyLag) {
   console.log('Subscribing for processId: ', processId);
 
   let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${processId}`);
@@ -20,7 +20,7 @@ export async function initSubscription(moduleId, processId) {
       sse.close();
     },
     subscribe: (target) => {
-      sse.onmessage = messageListener(target, processId);
+      sse.onmessage = messageListener(target, processId, verifyNonce, verifyLag);
     },
     send: (message) => {
       return window.warpAO.send(moduleId, processId, message);
@@ -36,26 +36,41 @@ export async function initSubscription(moduleId, processId) {
   };
 }
 
-function messageListener(target, processId) {
+function messageListener(target, processId, verifyNonce, verifyLag) {
   return (event) => {
     try {
       const now = Date.now();
       const message = JSON.parse(event.data);
       console.log(`\n ==== new message ${processId}:${message.nonce} ==== `, message);
-      let lag = 0;
-      if (message.tags) {
-        const salt = message.tags.find((t) => t.name === 'Salt');
-        if (salt) {
-          const saltInt = parseInt(salt.value);
-          lag = now - saltInt;
-          window.warpAO.lag = lag;
-          console.log(`===== Lag: ${lag} ms`);
+      let lag = null;
+      if (verifyNonce) {
+        if (message.nonce <= window.warpAO.nonce) {
+          console.log('New message nonce lower or equal than last', {
+            last: window.warpAO.nonce,
+            message: message.nonce,
+          });
+          return;
+        } else {
+          window.warpAO.nonce = message.nonce;
+        }
+
+      }
+      if (verifyLag) {
+        if (message.tags) {
+          const sentTag = message.tags.find((t) => t.name === 'Salt');
+          if (sentTag) {
+            const sentTs = parseInt(sentTag.value);
+            lag = {
+              deliveryToCu: message.cuReceived - sentTs,
+              deliveryFromCu: now - message.cuSent,
+              cuCalc: message.cuSent - message.cuReceived,
+              total: now - sentTs
+            };
+            console.log(`===== Lag:`, window.warpAO.lag);
+          }
         }
       }
 
-      if (target.handleTx) {
-        target.handleTx(message.txId);
-      }
       if (message.output && message.output.cmd) {
         message.output.txId = message.txId; // FIXME: well..., no the best approach
         if (target.handleMessage) {
