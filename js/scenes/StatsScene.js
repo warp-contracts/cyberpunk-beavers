@@ -20,6 +20,7 @@ export default class StatsScene extends Phaser.Scene {
   processId;
   allPlayers;
   messageLogQueue = [];
+  lag = 0;
   constructor() {
     super(statsSceneKey);
   }
@@ -62,23 +63,6 @@ export default class StatsScene extends Phaser.Scene {
     this.addRoundBar();
     this.addSubtitle();
     this.addLegend();
-    // this.leaderboardButton = new TextButton(
-    //   this,
-    //   this.gameWidth - 200,
-    //   50,
-    //   'Leaderboard',
-    //   {
-    //     fill: colors.white,
-    //     font: '20px',
-    //   },
-    //   () => {
-    //     document.getElementById('stats-box').style.display = 'none';
-    //     document.getElementById('incoming-messages-box').style.display = 'none';
-    //     this.scene.setVisible(false);
-    //     this.mainScene.scene.pause();
-    //     this.scene.launch('leaderboard-scene', { players: this.allPlayers });
-    //   }
-    // );
   }
 
   addLegend() {
@@ -201,19 +185,21 @@ export default class StatsScene extends Phaser.Scene {
       document.getElementById(`stats-scene-locked-${player.walletAddress}`).innerText = player.coins.available;
     });
 
-    this.game.events.on(EVENTS_NAME.nextMessage, (message) => {
-      console.log(message);
-      const player = this.me(message);
+    this.game.events.on(EVENTS_NAME.nextMessage, ({response, lag}) => {
+      console.log(response);
+      const player = this.me(response);
+      this.lag = lag;
       if (player) {
         const messageLog = {
           player,
-          ...message,
+          ...response,
         };
         const newLen = this.messageLogQueue.push(messageLog);
         if (newLen > 4) {
           this.messageLogQueue.shift();
         }
         document.getElementById('stats-scene-interaction-logs').innerHTML = this.interactionsFormatted();
+        document.getElementById('stats-scene-lag').innerHTML = `${this.lag}ms`;
       }
     });
   }
@@ -267,6 +253,11 @@ flex-direction: column;">
 <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>PROCESS</div>
 <div style="display: flex; justify-content: space-between;">
 <div style="padding-right: 10px;" id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${trimString(this.processId)}</a></div>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>LAG</div>
+<div style="display: flex; justify-content: space-between;">
+<div style="padding-right: 10px;" id="stats-scene-lag">${window.warpAO.lag}ms</div>
 </div>
 </div>
 </div>

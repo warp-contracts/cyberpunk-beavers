@@ -42,12 +42,14 @@ function messageListener(target, processId) {
       const now = Date.now();
       const message = JSON.parse(event.data);
       console.log(`\n ==== new message ${processId}:${message.nonce} ==== `, message);
+      let lag = 0;
       if (message.tags) {
         const salt = message.tags.find((t) => t.name === 'Salt');
         if (salt) {
           const saltInt = parseInt(salt.value);
-          const diff = now - saltInt;
-          console.log(`===== Lag: ${diff} ms`);
+          lag = now - saltInt;
+          window.warpAO.lag = lag;
+          console.log(`===== Lag: ${lag} ms`);
         }
       }
 
@@ -57,7 +59,7 @@ function messageListener(target, processId) {
       if (message.output && message.output.cmd) {
         message.output.txId = message.txId; // FIXME: well..., no the best approach
         if (target.handleMessage) {
-          target.handleMessage(message.output);
+          target.handleMessage(message.output, lag);
         }
       }
     } catch (e) {

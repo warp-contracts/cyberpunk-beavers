@@ -332,9 +332,9 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
-  handleMessage(response) {
+  handleMessage(response, lag) {
     const self = this;
-    this.game.events.emit(EVENTS_NAME.nextMessage, response);
+    this.game.events.emit(EVENTS_NAME.nextMessage, {response, lag});
     switch (response.cmd) {
       case Const.Command.registered:
         {
