@@ -180,7 +180,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       },
       async () => {
         setTimeout(async () => {
-          await self.server.send({ cmd: Const.Command.enqueue });
+          await self.server.send({ cmd: Const.Command.enqueue }, true);
         });
       }
     );
