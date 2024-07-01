@@ -255,7 +255,7 @@ flex-direction: column;">
 </div>
 <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>LAG</div>
 <div style="display: flex; justify-content: space-between;">
-<div style="padding-right: 10px;" id="stats-scene-lag">${this.formatLag(window.warpAO.lag)}</div>
+<div style="padding-right: 10px; width: 170px; text-align: right;" id="stats-scene-lag">${this.formatLag(window.warpAO.lag)}</div>
 </div>
 </div>
 </div>
