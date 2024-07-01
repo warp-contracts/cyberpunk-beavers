@@ -77,7 +77,10 @@ export function handle(state, message) {
   }
 
   const action = JSON.parse(actionTagValue);
-  action.walletAddress = message.Owner;
+
+  action.walletAddress = state.generatedWalletsMapping.hasOwnProperty(message.Owner)
+    ? state.generatedWalletsMapping[message.Owner]
+    : message.Owner
 
   if (restrictedAccess(state, action, message.Timestamp)) {
     console.log(`The game has not started yet`);
@@ -188,6 +191,9 @@ export function handle(state, message) {
     case Const.Command.join:
       if (action.balance) {
         state.players[action.walletAddress].stats.coins.balance = action.balance;
+      }
+      if (action.generatedWalletAddress) {
+        state.generatedWalletsMapping[action.generatedWalletAddress] = action.walletAddress;
       }
       ao.result({
         cmd: Const.Command.registered,

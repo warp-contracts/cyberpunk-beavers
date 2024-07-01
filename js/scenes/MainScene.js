@@ -154,23 +154,26 @@ export default class MainScene extends Phaser.Scene {
 
   async registerPlayer() {
     const balance = await this.checkBalance();
+    const generatedWalletAddress = warpAO.signingMode == 'arconnect'
+      ? localStorage.getItem('generated_wallet_address')
+      : null;
     // console.log(balance);
     if (this.beaverId) {
       console.log(`Beaver has already been registered previously, joining game...`, this.beaverId);
-      await this.server.send({ cmd: Const.Command.join, balance: balance && parseInt(balance) });
+      await this.server.send({ cmd: Const.Command.join, balance: balance && parseInt(balance), generatedWalletAddress }, true);
     } else {
       console.log('Register player...');
       await this.server.send({
         cmd: Const.Command.register,
         beaverId: this.beaverChoice,
         balance: balance && parseInt(balance),
-      });
+        generatedWalletAddress
+      }, true);
     }
   }
 
   async checkBalance() {
     const processId = window.warpAO.tokenProcessId();
-    const generatedSigner = window.warpAO.generatedSigner;
     let dataItemSigner;
     const tags = [
       { name: 'Action', value: 'Balance' },
@@ -178,7 +181,8 @@ export default class MainScene extends Phaser.Scene {
     ];
     const data = '1234';
 
-    if (generatedSigner) {
+    if (window.warpAO.signingMode == 'generated') {
+      const generatedSigner = window.warpAO.generatedSigner;
       dataItemSigner = async ({ data, tags, target, anchor, createDataItem }) => {
         const dataItem = createData(data, generatedSigner, {
           tags,
@@ -195,14 +199,16 @@ export default class MainScene extends Phaser.Scene {
     }
 
     try {
-      const now = Date.now();
+      let now = Date.now();
       const messageId = await message({
         process: processId,
         tags,
         signer: dataItemSigner,
         data,
       });
+      console.log(`Sending check balance took ${Date.now() - now}ms`);
 
+      now = Date.now();
       const msgResult = await result({
         message: messageId,
         process: processId,
@@ -420,9 +426,7 @@ export default class MainScene extends Phaser.Scene {
                     this.newChallengerSoundLastTs = now;
                     this.newChallengerSound.play();
                   }
-
                 }
-
                 self.addOtherPlayer(player);
               }
             }
