@@ -7,7 +7,7 @@ const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
 
 export default async function runNpc() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     const warp = WarpFactory.forMainnet();
     const { address, jwk } = await warp.generateWallet();
     const signer = new ArweaveSigner(jwk);
@@ -62,7 +62,7 @@ const createMessageWithTags = (message, processId, moduleId) => {
       { name: 'SDK', value: 'ao' },
       new Tag('From-Process', processId),
       new Tag('From-Module', moduleId),
-      new Tag('Salt', '' + Date.now()),
+      new Tag('Sent', '' + performance.now()),
     ],
     data: '1234',
     target: processId,
