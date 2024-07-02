@@ -63,7 +63,7 @@ const Tile = {
 };
 
 const GameObject = {
-  hp: { type: 'hp', tile: 1, value: 5 },
+  hp: { type: 'hp', tile: 1, value: 10 },
   ap: { type: 'ap', tile: 0, value: 5 },
   treasure: { type: 'treasure', tile: 0, value: 500 },
   hole: { type: 'hole', tile: 1, value: 0 },
@@ -101,8 +101,10 @@ export const BEAVER_TYPES = {
       current: 100,
       max: 100,
     },
-    damage: 10,
     attack_range: 5,
+    damage: [20, 18, 16, 14, 12],
+    critical_hit_chance: [0.25, 0.2, 0.15, 0.1, 0.05],
+    critical_hit_multiplier: [2.4, 2.3, 2.2, 2.1, 2.0],
     bonus: {
       [GameObject.treasure.type]: 100,
       [BonusType.KillBonus]: 200,
@@ -111,18 +113,20 @@ export const BEAVER_TYPES = {
   heavy_beaver: {
     name: 'heavy_beaver',
     ap: {
-      current: 15,
-      max: 15,
+      current: 13,
+      max: 13,
     },
     hp: {
       current: 200,
       max: 200,
     },
-    damage: 20,
     attack_range: 3,
+    damage: [22, 19, 15],
+    critical_hit_chance: [0.15, 0.1, 0.05],
+    critical_hit_multiplier: [2.2, 1.8, 1.6],
     bonus: {
       [GameObject.treasure.type]: 0,
-      [BonusType.KillBonus]: 200,
+      [BonusType.KillBonus]: 220,
     }
   },
   speedy_beaver: {
@@ -135,11 +139,13 @@ export const BEAVER_TYPES = {
       current: 100,
       max: 100,
     },
-    damage: 10,
+    damage: [25],
+    critical_hit_chance: [0.2],
+    critical_hit_multiplier: [2.5],
     attack_range: 1,
     bonus: {
       [GameObject.treasure.type]: 20,
-      [BonusType.KillBonus]: 200,
+      [BonusType.KillBonus]: 180,
     },
   },
 };

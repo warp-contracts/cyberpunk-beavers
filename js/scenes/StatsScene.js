@@ -218,7 +218,7 @@ export default class StatsScene extends Phaser.Scene {
     const beaverStatsBoxEl = document.createElement('div');
     beaverStatsBoxEl.id = 'stats-box';
 
-    beaverStatsBoxEl.style = `  width: 350px;
+    beaverStatsBoxEl.style = `width: 350px;
       border: 0;
       outline: none;
       background-color: #050a0e;
@@ -414,14 +414,24 @@ flex-direction: column;">
 
   formatMessageLog(ml) {
     let data = ``;
+    console.dir(ml, {depth: null});
+
     switch (ml.cmd) {
       case Const.Command.moved: {
         data = `<div style='display: inline-block'>NEW POS ${ml.player.pos.x},${ml.player.pos.y}</div>`;
         break;
       }
       case Const.Command.attacked: {
-        const info = ml.pos ? `POS ${ml.pos.x},${ml.pos.y}` : `Failed`;
-        data = `<div style='display: inline-block'>${info}</div>`;
+        let attackMsg = '';
+        if (ml.damage) {
+          attackMsg = `POS ${ml.pos.x},${ml.pos.y} (-${ml.damage.finalDmg}HP)`;
+          if (ml.damage.dmgMultiplier > 1) {
+            attackMsg += ' (C!)';
+          }
+        } else {
+          attackMsg = `MISSED`;
+        }
+        data = `<div style='display: inline-block'>${attackMsg}</div>`;
         break;
       }
       case Const.Command.token:
