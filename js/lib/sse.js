@@ -44,7 +44,7 @@ export async function initSubscription(
 function messageListener(target, processId, verifyNonce, verifyLag) {
   return (event) => {
     try {
-      const now = Date.now();
+      const now = performance.now();
       const message = JSON.parse(event.data);
       console.log(`\n ==== new message ${processId}:${message.nonce} ==== `, message);
       let lag = null;
@@ -65,14 +65,14 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
       }
       if (verifyLag) {
         if (message.tags) {
-          const sentTag = message.tags.find((t) => t.name === 'Salt');
+          const sentTag = message.tags.find((t) => t.name === 'Sent');
           if (sentTag) {
-            const sentTs = parseInt(sentTag.value);
+            const sentTs = parseFloat(sentTag.value);
             lag = {
-              deliveryToCu: message.cuReceived - sentTs,
-              deliveryFromCu: now - message.cuSent,
-              cuCalc: message.cuSent - message.cuReceived,
-              total: now - sentTs
+              deliveryToCu: Math.floor(message.cuReceived - sentTs),
+              deliveryFromCu: Math.floor(now - message.cuSent),
+              cuCalc: Math.floor(message.cuSent - message.cuReceived),
+              total: Math.floor(now - sentTs)
             };
             window.warpAO.lag = lag;
             console.log(`===== Lag:`, window.warpAO.lag);

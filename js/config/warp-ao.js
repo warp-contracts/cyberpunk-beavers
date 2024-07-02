@@ -41,7 +41,7 @@ window.warpAO = {
     { name: 'SDK', value: 'ao' },
     new Tag('From-Module', moduleId),
     new Tag('From-Process', processId),
-    new Tag('Salt', '' + Date.now()),
+    new Tag('Sent', '' + performance.now()),
   ],
   data: (moduleId, processId, message) => ({
     tags: window.warpAO.messageTags(moduleId, processId, message),
