@@ -98,8 +98,8 @@ async function sendRawDataItem(rawData) {
 
 async function sendUsingConnectedWallet(moduleId, processId, message) {
   const dataItem = window.warpAO.data(moduleId, processId, message);
-  const now = Date.now();
+  const now = performance.now();
   const signedDataItem = await window.arweaveWallet.signDataItem(dataItem);
-  console.log(`Signing with ArConnect ${Date.now() - now}ms`);
+  console.log(`Signing with ArConnect ${Math.floor(performance.now() - now)}ms`);
   return sendRawDataItem(signedDataItem);
 }
