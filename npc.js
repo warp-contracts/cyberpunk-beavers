@@ -7,7 +7,7 @@ const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
 
 export default async function runNpc() {
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 15; i++) {
     const warp = WarpFactory.forMainnet();
     const { address, jwk } = await warp.generateWallet();
     const signer = new ArweaveSigner(jwk);
