@@ -549,6 +549,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   addOtherPlayer(pInfo) {
+    if (!pInfo || pInfo.error) {
+      return;
+    }
     if (!this.allPlayers[pInfo.walletAddress]) {
       console.log('Setting up new player', pInfo.walletAddress);
       const player = this.createPlayer(pInfo);
