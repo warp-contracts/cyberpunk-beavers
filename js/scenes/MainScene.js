@@ -24,6 +24,7 @@ export default class MainScene extends Phaser.Scene {
   gameTreasuresLayer;
   roundsCountdownTotal;
   gameOver = false;
+  lockingTx = null;
 
   constructor() {
     super(mainSceneKey);
@@ -367,6 +368,18 @@ export default class MainScene extends Phaser.Scene {
     }
 
     return layer;
+  }
+
+  handleTx(lastTxs) {
+    console.log('Checking locked tx', {
+      lastTxs,
+      locking: this.lockingTx
+    });
+    const lockingTx = this.lockingTx;
+    if (lastTxs && lastTxs.includes(lockingTx)) {
+      this.lockingTx = null;
+      console.log('Actions unlocked', lockingTx);
+    }
   }
 
   handleMessage(response, lag) {

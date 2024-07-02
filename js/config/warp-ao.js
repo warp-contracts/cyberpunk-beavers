@@ -90,6 +90,7 @@ async function sendRawDataItem(rawData) {
       code: response.statusCode,
       message: response.statusText,
     });
+    return null;
   }
 }
 

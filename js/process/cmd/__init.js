@@ -53,6 +53,7 @@ function initState(message, state) {
       width: groundLayer.width,
       height: groundLayer.height,
     },
+    lastTxs: [],
     gameObjectsTiles: [GameObject.ap, GameObject.hp, GameObject.none],
     gameObjectsRarity: 10,
     gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],

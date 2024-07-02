@@ -50,7 +50,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   baseMoveTo(pos, onStart, onComplete) {
-    console.log(`baseMoveTo`, pos);
+    // console.log(`baseMoveTo`, pos);
     let movementTemplate = {
       targets: this,
       ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
