@@ -406,7 +406,7 @@ flex-direction: column;">
   }
 
   formatLag(lag) {
-    return lag ? `${lag.total}(${lag.deliveryToCu}/${lag.cuCalc}/${lag.deliveryFromCu})ms` : `N/A`;
+    return lag ? `${lag.total}(${lag.cuCalc})ms` : 'N/A';
   }
 
   formatMessageLog(ml) {
