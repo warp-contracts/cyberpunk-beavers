@@ -25,7 +25,7 @@ export default async function runNpc() {
       setInterval(async () => {
         const randomDirection = Math.floor(Math.random() * direction.length);
         await sendDataItem({ cmd: 'move', dir: direction[randomDirection] }, signer);
-      }, 4000);
+      }, 1000);
     }, i * 1000);
 
     console.log(`NPC ${address} in the game.`);
