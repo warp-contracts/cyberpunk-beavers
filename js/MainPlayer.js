@@ -68,8 +68,18 @@ export default class MainPlayer extends Player {
     this.scene.game.events.emit(EVENTS_NAME.updateStats, this.stats);
   }
 
-
   async send(message) {
-    return this.scene.server.send(message);
+    if (this.mainScene.lockingTx) {
+      console.log(`Action locked for tx`, this.mainScene.lockingTx);
+    } else {
+      this.mainScene.lockingTx = 'locking...';
+      try {
+        this.mainScene.lockingTx = (await this.scene.server.send(message)).id;
+      } catch (e) {
+        console.error(e);
+        this.mainScene.lockingTx = null;
+      }
+      console.log('Locked actions until tx is resolved', this.lockingTx);
+    }
   }
 }

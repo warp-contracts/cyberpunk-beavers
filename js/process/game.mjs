@@ -1,4 +1,4 @@
-import Const from '../common/const.mjs';
+import Const, {MAX_LAST_TXS} from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
@@ -54,12 +54,21 @@ function restrictedAccess(state, action, ts) {
   );
 }
 
+function addToLastTxs(message, state) {
+  state.lastTxs.push(message.Id);
+  if (state.lastTxs.length > MAX_LAST_TXS) {
+    state.lastTxs.shift();
+  }
+}
+
 export function handle(state, message) {
   console.log("We're in");
   state.randomCounter = 0;
   if (state.hasOwnProperty('rawMap')) {
     __init(state, message);
   }
+
+  addToLastTxs(message, state);
 
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
 
@@ -126,6 +135,7 @@ export function handle(state, message) {
         picked: pickRes.picked,
         stats: pickRes.player.stats,
         scoreToDisplay: pickRes.scoreToDisplay,
+        lastTxs: state.lastTxs
       });
       break;
     case Const.Command.dig:
@@ -136,6 +146,7 @@ export function handle(state, message) {
         stats: digRes.player.stats,
         digged: digRes.digged,
         scoreToDisplay: digRes.scoreToDisplay,
+        lastTxs: state.lastTxs
       });
       break;
     case Const.Command.attack:
@@ -146,6 +157,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.attacked,
         ...attackRes,
+        lastTxs: state.lastTxs
       });
       break;
     case Const.Command.move:
@@ -155,6 +167,7 @@ export function handle(state, message) {
         stats: moveRes.player.stats,
         player: moveRes.player,
         scoreToDisplay: moveRes.scoreToDisplay,
+        lastTxs: state.lastTxs
       });
       break;
     case Const.Command.register:
@@ -169,7 +182,7 @@ export function handle(state, message) {
           gameObjectsTilemap: state.gameObjectsTilemap,
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
-        round: state.round,
+        round: state.round
       });
       break;
     case Const.Command.join:
@@ -186,7 +199,7 @@ export function handle(state, message) {
           gameObjectsTilemap: state.gameObjectsTilemap,
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
-        round: state.round,
+        round: state.round
       });
       break;
     default:
