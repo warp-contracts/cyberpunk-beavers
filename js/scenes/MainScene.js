@@ -369,12 +369,6 @@ export default class MainScene extends Phaser.Scene {
     return layer;
   }
 
-  handleTx(id) {
-    if (id && this.mainPlayer) {
-      this.mainPlayer.handleTx(id);
-    }
-  }
-
   handleMessage(response, lag) {
     const self = this;
     this.game.events.emit(EVENTS_NAME.nextMessage, {response, lag});

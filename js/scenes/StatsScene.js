@@ -187,9 +187,7 @@ export default class StatsScene extends Phaser.Scene {
     this.game.events.on(EVENTS_NAME.nextMessage, ({response, lag}) => {
       console.log(response);
       const player = this.me(response);
-      if (lag) {
-        document.getElementById('stats-scene-lag').innerHTML = `${this.formatLag(lag)}`;
-      }
+      document.getElementById('stats-scene-lag').innerHTML = `${this.formatLag(lag)}`;
       if (player) {
         const messageLog = {
           player,
@@ -408,7 +406,7 @@ flex-direction: column;">
   }
 
   formatLag(lag) {
-    return `${lag.total}(${lag.deliveryToCu}/${lag.cuCalc}/${lag.deliveryFromCu})ms`;
+    return lag ? `${lag.total}(${lag.deliveryToCu}/${lag.cuCalc}/${lag.deliveryFromCu})ms` : `N/A`;
   }
 
   formatMessageLog(ml) {

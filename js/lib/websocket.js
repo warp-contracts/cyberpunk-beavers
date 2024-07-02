@@ -28,9 +28,6 @@ const messageListener = (target) => {
   return (event) => {
     const response = JSON.parse(event.data);
     console.log(`Got message`, response.txId, response.cmd);
-    if (target.handleTx) {
-      target.handleTx(response.txId);
-    }
     if (target.handleMessage) {
       target.handleMessage(response);
     }
