@@ -41,7 +41,9 @@ export function registerPlayer(state, action) {
       },
       kills: {
         frags: 0,
+        fragsInRow: 0,
         deaths: 0,
+        killedBy: '',
       },
       coins: {
         balance: balance || 0,

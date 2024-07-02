@@ -87,6 +87,9 @@ const Combat = {
 };
 
 // ------- Beaver Config
+const BonusType = {
+  KillBonus: "KillBonus"
+}
 export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
@@ -102,6 +105,7 @@ export const BEAVER_TYPES = {
     attack_range: 5,
     bonus: {
       [GameObject.treasure.type]: 100,
+      [BonusType.KillBonus]: 200,
     },
   },
   heavy_beaver: {
@@ -118,6 +122,7 @@ export const BEAVER_TYPES = {
     attack_range: 3,
     bonus: {
       [GameObject.treasure.type]: 0,
+      [BonusType.KillBonus]: 200,
     }
   },
   speedy_beaver: {
@@ -134,6 +139,7 @@ export const BEAVER_TYPES = {
     attack_range: 1,
     bonus: {
       [GameObject.treasure.type]: 20,
+      [BonusType.KillBonus]: 200,
     },
   },
 };
@@ -145,6 +151,7 @@ const Queue = {
 
 export default {
   BEAVER_TYPES,
+  BonusType,
   Combat,
   Command,
   Direction,

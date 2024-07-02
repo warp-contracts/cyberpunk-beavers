@@ -97,6 +97,11 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('game_over', ['assets/audio/game_over.m4a']);
     this.load.audio('3_rounds_left', ['assets/audio/3_rounds_left.m4a']);
     this.load.audio('last_round', ['assets/audio/last_round.m4a']);
+    this.load.audio('first_blood', ['assets/audio/first_blood.m4a']);
+    this.load.audio('double_kill', ['assets/audio/double_kill.m4a']);
+    this.load.audio('triple_kill', ['assets/audio/triple_kill.m4a']);
+    this.load.audio('god_like', ['assets/audio/god_like.m4a']);
+    this.load.audio('revenge', ['assets/audio/revenge.m4a']);
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
@@ -438,8 +443,8 @@ export default class MainScene extends Phaser.Scene {
 
       case Const.Command.attacked:
         if (
-          response.player.walletAddress === self.mainPlayer.walletAddress ||
-          response.opponent.walletAddress === self.mainPlayer.walletAddress
+          response.player.walletAddress === self.mainPlayer?.walletAddress ||
+          response.opponent.walletAddress === self.mainPlayer?.walletAddress
         ) {
           switch (response.player.beaverId) {
             case BEAVER_TYPES.heavy_beaver.name:
@@ -458,14 +463,16 @@ export default class MainScene extends Phaser.Scene {
         this.updateStats(response.player, response.player?.stats);
         this.updateStats(response.opponent, response.opponent?.stats);
         if (response.opponentFinished) {
-          if (!this.beaverEliminatedSound.isPlaying) {
-            this.beaverEliminatedSound.play();
-          }
-          if (response.opponent?.walletAddress === self.mainPlayer.walletAddress) {
-            self.mainPlayer.bloodyRespawn(response.opponent.pos);
+          if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
+            setTimeout(() => {
+              self.opponentFinishedSound(response.player, response.revenge);
+            }, 900);
           } else {
-            self.allPlayers[response.opponent?.walletAddress]?.bloodyRespawn(response.opponent.pos);
+            if (!this.beaverEliminatedSound.isPlaying) {
+              this.beaverEliminatedSound.play();
+            }
           }
+          self.allPlayers[response.opponent?.walletAddress]?.bloodyRespawn(response.opponent.pos);
         }
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
           forOpponent: {
@@ -545,6 +552,41 @@ export default class MainScene extends Phaser.Scene {
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         break;
       }
+    }
+  }
+
+  opponentFinishedSound(player, revenge) {
+    if (revenge) {
+      if (!this.revengeSound.isPlaying) {
+        this.revengeSound.play();
+      }
+      return;
+    }
+    switch (player.stats.kills.fragsInRow) {
+      case 1:
+        if (!this.firstBloodSound.isPlaying) {
+          this.firstBloodSound.play();
+        }
+        break;
+      case 2:
+        if (!this.doubleKillSound.isPlaying) {
+          this.doubleKillSound.play();
+        }
+        break;
+      case 3:
+        if (!this.tripleKillSound.isPlaying) {
+          this.tripleKillSound.play();
+        }
+        break;
+      case 10:
+        if (!this.godLikeSound.isPlaying) {
+          this.godLikeSound.play();
+        }
+        break;
+      default:
+        if (!this.beaverEliminatedSound.isPlaying) {
+          this.beaverEliminatedSound.play();
+        }
     }
   }
 
@@ -681,6 +723,11 @@ export default class MainScene extends Phaser.Scene {
     this.gameOverSound = this.sound.add('game_over', { loop: false, volume: 2.0 });
     this.threeRoundsLeftSound = this.sound.add('3_rounds_left', { loop: false, volume: 2.0 });
     this.lastRoundSound = this.sound.add('last_round', { loop: false, volume: 2.0 });
+    this.firstBloodSound = this.sound.add('first_blood', { loop: false, volume: 4.0 });
+    this.doubleKillSound = this.sound.add('double_kill', { loop: false, volume: 4.0 });
+    this.tripleKillSound = this.sound.add('triple_kill', { loop: false, volume: 4.0 });
+    this.godLikeSound = this.sound.add('god_like', { loop: false, volume: 4.0 });
+    this.revengeSound = this.sound.add('revenge', { loop: false, volume: 4.0 });
 
     if (window.warpAO.config.env !== 'local') {
       this.backgroundMusic.play();

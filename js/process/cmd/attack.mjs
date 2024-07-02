@@ -24,7 +24,7 @@ export function attack(state, action) {
 
   if (opponent) {
     console.log(`Player ${player.walletAddress} attacked ${attackPos.x} ${attackPos.y} ${opponent.walletAddress}`);
-    const { finished,  loot, tokenTransfer } = finishHim(player, opponent);
+    const { finished, revenge,  loot, tokenTransfer } = finishHim(player, opponent);
     if (finished) {
       opponent.pos = calculatePlayerRandomPos(state);
       state.playersOnTiles[attackPos.y][attackPos.x] = null;
@@ -43,6 +43,7 @@ export function attack(state, action) {
       tokenTransfer,
       opponent,
       opponentFinished: finished,
+      revenge,
       pos: attackPos,
       scoreToDisplay: scoreToDisplay(playerScores),
       opponentScoreToDisplay: scoreToDisplay(opponentScores),
@@ -54,14 +55,22 @@ export function attack(state, action) {
 function finishHim(player, opponent) {
   opponent.stats.hp.current -= player.stats.damage;
   if (opponent.stats.hp.current <= 0) {
-    const loot = lootPlayer(opponent);
+    const loot = lootPlayer(opponent) + Const.BEAVER_TYPES[player.beaverId].bonus[Const.BonusType.KillBonus];
+    const revenge = (player.stats.kills.killedBy === opponent.walletAddress);
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
     opponent.stats.hp.current = opponent.stats.hp.max;
     opponent.stats.kills.deaths++;
+    opponent.stats.kills.fragsInRow = 0;
+    opponent.stats.kills.killedBy = player.walletAddress;
     player.stats.kills.frags++;
+    player.stats.kills.fragsInRow++;
+    if (revenge) {
+      player.stats.kills.killedBy = '';
+    }
     const tokenTransfer = addCoins(player, loot);
     return {
       finished: true,
+      revenge,
       loot,
       tokenTransfer,
     };
