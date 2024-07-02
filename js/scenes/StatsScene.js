@@ -189,7 +189,7 @@ export default class StatsScene extends Phaser.Scene {
       const player = this.me(response);
 
       if (player) {
-        if (lag) {
+        if (lag && lag.total > 0) {
           document.getElementById('stats-scene-lag').innerHTML = `${this.formatLag(lag)}`;
         }
         const messageLog = {
