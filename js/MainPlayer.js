@@ -38,9 +38,11 @@ export default class MainPlayer extends Player {
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.p)) {
       if (this.onGameObject) {
         await this.send({ cmd: pick });
+        this.anims.play(`${this.beaverChoice}_pick`, true);
       }
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.d) && this.stats.ap.current >= 2) {
       await this.send({ cmd: dig });
+      this.anims.play(`${this.beaverChoice}_dig`, true);
     } else {
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
     }
@@ -57,6 +59,7 @@ export default class MainPlayer extends Player {
     }
     if (this.combatMode) {
       await this.send({ cmd: attack, dir });
+      this.anims.play(`${this.beaverChoice}_attack`, true);
     } else {
       await this.send({ cmd: move, dir });
     }

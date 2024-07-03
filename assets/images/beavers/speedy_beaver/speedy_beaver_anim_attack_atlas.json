@@ -1,7 +1,7 @@
 {
     "frames": [
         {
-            "filename": "speedy_beaver_attack1",
+            "filename": "frame-1",
             "frame": {
                 "w": 48,
                 "h": 48,
@@ -14,7 +14,7 @@
             }
         },
         {
-            "filename": "speedy_beaver_attack2",
+            "filename": "frame-2",
             "frame": {
                 "w": 48,
                 "h": 48,
@@ -27,7 +27,7 @@
             }
         },
         {
-            "filename": "speedy_beaver_attack3",
+            "filename": "frame-3",
             "frame": {
                 "w": 48,
                 "h": 48,
@@ -40,7 +40,7 @@
             }
         },
         {
-            "filename": "speedy_beaver_attack4",
+            "filename": "frame-4",
             "frame": {
                 "w": 48,
                 "h": 48,
@@ -53,7 +53,7 @@
             }
         },
         {
-            "filename": "speedy_beaver_attack5",
+            "filename": "frame-5",
             "frame": {
                 "w": 48,
                 "h": 48,
@@ -66,7 +66,7 @@
             }
         },
         {
-            "filename": "speedy_beaver_attack6",
+            "filename": "frame-6",
             "frame": {
                 "w": 48,
                 "h": 48,

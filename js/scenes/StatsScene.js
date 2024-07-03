@@ -31,9 +31,9 @@ export default class StatsScene extends Phaser.Scene {
 
   preload() {
     console.log('Stats Scene - 2. Preload');
-    this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver_portrait.png');
-    this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver_portrait.png');
-    this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver_portrait.png');
+    this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver/hacker_beaver_portrait.png');
+    this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver/heavy_beaver_portrait.png');
+    this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver/speedy_beaver_portrait.png');
     this.load.image('time_bar', 'assets/images/time_bar.png');
     this.load.image('AO', 'assets/images/ao.png');
 
@@ -262,7 +262,7 @@ export default class StatsScene extends Phaser.Scene {
     clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);">
     <div style="display: flex; justify-content: space-between; align-items: center;">
     <img
-src="assets/images/beavers/${this.beaverChoice}_portrait.png"
+src="assets/images/beavers/${this.beaverChoice}/${this.beaverChoice}_portrait.png"
 width=72
 height=72/>
 <div style="display:flex; flex-grow: 1;"> </div>
@@ -368,7 +368,7 @@ flex-direction: column;">
     return `
       <div style="display: flex; justify-content: space-between; align-items: end; margin-top: 25px;" id="player-box">
       <img
-  src="assets/images/beavers/${player.beaverChoice}_portrait.png"
+  src="assets/images/beavers/${player.beaverChoice}/${player.beaverChoice}_portrait.png"
   width=64
   height=64/>
   <div style="display:flex; flex-grow: 1;"> </div>

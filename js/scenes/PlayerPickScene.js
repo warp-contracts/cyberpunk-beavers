@@ -18,9 +18,9 @@ export default class PlayerPickScene extends Phaser.Scene {
   preload() {
     console.log('Player Pick Scene - 2. Preload');
     this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.png');
-    this.load.image('hacker_beaver', 'assets/images/beavers/hacker_beaver_200px.png');
-    this.load.image('heavy_beaver', 'assets/images/beavers/heavy_beaver_200px.png');
-    this.load.image('speedy_beaver', 'assets/images/beavers/speedy_beaver_200px.png');
+    this.load.image('hacker_beaver', 'assets/images/beavers/hacker_beaver/hacker_beaver_200px.png');
+    this.load.image('heavy_beaver', 'assets/images/beavers/heavy_beaver/heavy_beaver_200px.png');
+    this.load.image('speedy_beaver', 'assets/images/beavers/speedy_beaver/speedy_beaver_200px.png');
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 

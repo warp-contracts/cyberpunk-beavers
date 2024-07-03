@@ -16,6 +16,7 @@ import {
 import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
 import { WebFontFile } from '../WebFontFile.js';
+import { ANIM_SETTINGS } from "./anim/settings.js";
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -49,39 +50,10 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('cyberpunk_game_objects', 'assets/images/ap_hp.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
 
-    this.load.image('hacker_beaver_48', 'assets/images/beavers/hacker_beaver_48px.png');
-    this.load.image('heavy_beaver_48', 'assets/images/beavers/heavy_beaver_48px.png');
-    this.load.image('speedy_beaver_48', 'assets/images/beavers/speedy_beaver_48px.png');
-    this.load.atlas(
-      'heavy_beaver_anim_idle',
-      'assets/images/beavers/heavy_beaver_anim_idle.png',
-      'assets/images/beavers/heavy_beaver_anim_atlas_idle.json'
-    );
-    this.load.atlas(
-      'speedy_beaver_anim_idle',
-      'assets/images/beavers/speedy_beaver_anim_idle.png',
-      'assets/images/beavers/speedy_beaver_anim_atlas_idle.json'
-    );
-    this.load.atlas(
-      'hacker_beaver_anim_idle',
-      'assets/images/beavers/hacker_beaver_anim_idle.png',
-      'assets/images/beavers/hacker_beaver_anim_atlas_idle.json'
-    );
-    this.load.atlas(
-      'heavy_beaver_anim_walk',
-      'assets/images/beavers/heavy_beaver_anim_walk.png',
-      'assets/images/beavers/heavy_beaver_anim_atlas_walk.json'
-    );
-    this.load.atlas(
-      'speedy_beaver_anim_walk',
-      'assets/images/beavers/speedy_beaver_anim_walk.png',
-      'assets/images/beavers/speedy_beaver_anim_atlas_walk.json'
-    );
-    this.load.atlas(
-      'hacker_beaver_anim_walk',
-      'assets/images/beavers/hacker_beaver_anim_walk.png',
-      'assets/images/beavers/hacker_beaver_anim_atlas_walk.json'
-    );
+    this.loadBeaverAssets('hacker_beaver');
+    this.loadBeaverAssets('heavy_beaver');
+    this.loadBeaverAssets('speedy_beaver');
+
     this.load.atlas('blood', 'assets/images/blood_100x100.png', 'assets/images/blood_100x100.json');
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
@@ -104,6 +76,22 @@ export default class MainScene extends Phaser.Scene {
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
+  loadBeaverAssets(beaver) {
+    this.load.image(`${beaver}_48`, `assets/images/beavers/${beaver}/${beaver}_48px.png`);
+    this.loadBeaverAnim(beaver, 'idle');
+    this.loadBeaverAnim(beaver, 'walk');
+    this.loadBeaverAnim(beaver, 'attack');
+    this.loadBeaverAnim(beaver, 'dig');
+    this.loadBeaverAnim(beaver, 'pick');
+  }
+
+  loadBeaverAnim(beaver, asset) {
+    this.load.atlas(
+      `${beaver}_anim_${asset}`,
+      `assets/images/beavers/${beaver}/${beaver}_anim_${asset}.png`,
+      `assets/images/beavers/${beaver}/${beaver}_anim_${asset}_atlas.json`);
+  }
+
   async create() {
     console.log('Main Scene - 3. Create');
     this.addSounds();
@@ -119,9 +107,17 @@ export default class MainScene extends Phaser.Scene {
   }
 
   initAnimations() {
-    this.initBeaverAnim('hacker_beaver');
-    this.initBeaverAnim('heavy_beaver');
-    this.initBeaverAnim('speedy_beaver');
+    for (const [beaver, anims] of Object.entries(ANIM_SETTINGS)) {
+      for (const [anim, config] of Object.entries(anims)) {
+        const {prefix, start, end, frameRate} = config;
+        this.anims.create({
+          key: `${beaver}_${anim}`,
+          frames: this.anims.generateFrameNames(`${beaver}_anim_${anim}`, { prefix, start, end, }),
+          frameRate,
+        });
+      }
+
+    }
 
     this.anims.create({
       key: `blood`,
@@ -131,28 +127,6 @@ export default class MainScene extends Phaser.Scene {
         end: 17,
       }),
       frameRate: 34,
-    });
-  }
-
-  initBeaverAnim(beaver) {
-    this.anims.create({
-      key: `${beaver}_idle`,
-      frames: this.anims.generateFrameNames(`${beaver}_anim_idle`, {
-        prefix: 'frame-',
-        start: 0,
-        end: 12,
-      }),
-      frameRate: 24,
-    });
-
-    this.anims.create({
-      key: `${beaver}_walk`,
-      frames: this.anims.generateFrameNames(`${beaver}_anim_walk`, {
-        prefix: 'frame-',
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 8,
     });
   }
 
