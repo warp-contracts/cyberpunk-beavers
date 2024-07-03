@@ -65,11 +65,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const moveVertical = 26 + pos.y * Const.Tile.size - this.y;
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
-    this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}` });
-    this.scene.tweens.add({ ...movementTemplate, y: `+=${moveVertical}` });
+    this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
+    // this.scene.tweens.add({ ...movementTemplate, y: `+=${moveVertical}` });
 
-    this.scene.tweens.add({ ...movementTemplate, targets: [this.name, this.healthBar, this.apBar], x: `+=${moveHorizontal}` });
-    this.scene.tweens.add({ ...movementTemplate, targets: [this.name, this.healthBar, this.apBar], y: `+=${moveVertical}` });
+    this.scene.tweens.add({ ...movementTemplate, targets: [this.name, this.healthBar, this.apBar], x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
+    // this.scene.tweens.add({ ...movementTemplate, targets: [this.name, this.healthBar, this.apBar], y: `+=${moveVertical}` });
   }
 
 

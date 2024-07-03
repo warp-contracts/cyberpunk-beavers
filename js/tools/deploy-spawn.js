@@ -17,17 +17,11 @@ if (envIdx < 0) {
 const env = process.argv[envIdx + 1];
 
 console.info(`Deploying for ${env} env.`);
-// qtcpzuuGoVKVQGMuq_PMaRHEL071Ja1SV8dvC-gur2Q - 'default' map
-// AeSkeoKPIpM71iapW6Onv4681CAXOU9DEr2XcgDZPI0 - ao 'tutorial' map
-
-// below needs to be fixed/verified - do not use now
-// 3JwZKHRqBRJ98Y4arUilHLgwiyCMqWuCyACXwfEB9Ec - Greg map 1
-// 0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM - Greg map 2
 
 const maps = [
   'qtcpzuuGoVKVQGMuq_PMaRHEL071Ja1SV8dvC-gur2Q', // - 'default' map
   'AeSkeoKPIpM71iapW6Onv4681CAXOU9DEr2XcgDZPI0', // - ao 'tutorial' map
-  '3JwZKHRqBRJ98Y4arUilHLgwiyCMqWuCyACXwfEB9Ec', // Greg map 1
+  'IOcu1uK7ViJc9OOA2PeUbAh1hAUlibeqOYbV2fmMZ6U', // Greg map 1
   '0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM'  // Greg map 2
 ]
 

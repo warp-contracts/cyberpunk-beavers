@@ -303,7 +303,7 @@ flex-direction: column;">
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>CBCOINS</div>
     <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-cbcoins-process"><a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.tokenProcessId}'>${trimString(this.tokenProcessId)}</a></div>
+    <div id="stats-scene-cbcoins-process"><a style="color: black;" target="_blank" href='https://www.ao.link/#/token/${this.tokenProcessId}'>${trimString(this.tokenProcessId)}</a></div>
     </div>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;"><div>OWNED</div>
@@ -437,7 +437,6 @@ flex-direction: column;">
 
   formatMessageLog(ml) {
     let data = ``;
-    console.dir(ml, {depth: null});
 
     switch (ml.cmd) {
       case Const.Command.moved: {
@@ -447,9 +446,9 @@ flex-direction: column;">
       case Const.Command.attacked: {
         let attackMsg = '';
         if (ml.damage) {
-          attackMsg = `POS ${ml.pos.x},${ml.pos.y} (-${ml.damage.finalDmg}HP)`;
+          attackMsg = `POS ${ml.pos.x},${ml.pos.y} (${ml.damage.finalDmg}HP)`;
           if (ml.damage.dmgMultiplier > 1) {
-            attackMsg += ' (C!)';
+            attackMsg += ' C!';
           }
         } else {
           attackMsg = `MISSED`;
