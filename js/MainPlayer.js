@@ -1,6 +1,7 @@
 import Const from './common/const.mjs';
 import Player from './Player.js';
 import { EVENTS_NAME } from './utils/events.js';
+import {trimString} from "./utils/utils.js";
 
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig } = Const.Command;
@@ -9,6 +10,16 @@ export default class MainPlayer extends Player {
   combatMode = false;
   mainScene;
   lastNoApPlayTimestamp;
+
+  constructor(data) {
+    let { stats, scene, x, y } = data;
+    super(data);
+
+    const attackMarkers = stats.attack_range * 2 + 1;
+
+    this.rangeBarX = scene.add.grid(x, y, attackMarkers * 48, 48, 48, 48, 0xFF0000, 0.2);
+    this.rangeBarY = scene.add.grid(x, y, 48, attackMarkers * 48, 48, 48, 0xFF0000, 0.2);
+  }
 
   async update() {
     if (this.stats.ap.current === 0) {
@@ -46,6 +57,11 @@ export default class MainPlayer extends Player {
     } else {
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
     }
+  }
+
+  baseMoveTo(pos, onStart, onComplete) {
+    const { movementTemplate, moveHorizontal, moveVertical } = super.baseMoveTo(pos, onStart, onComplete);
+    this.scene.tweens.add({ ...movementTemplate, targets: [this.rangeBarX, this.rangeBarY], x: `+=${moveHorizontal}`, y: `+=${moveVertical}` })
   }
 
   async action(dir) {

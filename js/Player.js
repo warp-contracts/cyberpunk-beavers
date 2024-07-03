@@ -14,8 +14,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.onGameObject = null;
     this.setDepth(5);
 
-    this.healthBar = scene.add.rectangle(x + 2, y - 32, this.calculateBarWidth(this.stats.hp), 6, 0xdc143c);
-    this.apBar = scene.add.rectangle(x + 2, y - 40, this.calculateBarWidth(this.stats.ap), 6, 0x00ff00);
+    this.healthBar = scene.add.rectangle(x, y - 32, this.calculateBarWidth(this.stats.hp), 6, 0xdc143c);
+    this.apBar = scene.add.rectangle(x, y - 40, this.calculateBarWidth(this.stats.ap), 6, 0x00ff00);
     this.healthBar.setDepth(10);
     this.apBar.setDepth(10);
 
@@ -61,15 +61,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       onComplete
     };
 
-    const moveHorizontal = 26 + pos.x * Const.Tile.size - this.x;
-    const moveVertical = 26 + pos.y * Const.Tile.size - this.y;
+    // TODO: this should fixed? and use prevPos into account
+    const moveHorizontal = 24 + pos.x * Const.Tile.size - this.x;
+    const moveVertical = 24 + pos.y * Const.Tile.size - this.y;
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
     this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
-    // this.scene.tweens.add({ ...movementTemplate, y: `+=${moveVertical}` });
+    this.scene.tweens.add({ ...movementTemplate, targets: [this.name, this.healthBar, this.apBar, /*this.rangeBarX, this.rangeBarY*/], x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
 
-    this.scene.tweens.add({ ...movementTemplate, targets: [this.name, this.healthBar, this.apBar], x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
-    // this.scene.tweens.add({ ...movementTemplate, targets: [this.name, this.healthBar, this.apBar], y: `+=${moveVertical}` });
+    return { movementTemplate, moveHorizontal, moveVertical }
   }
 
 
@@ -78,7 +78,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     self.scene.tweens.add({
         targets: [self],
         ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        duration: 100,
+        duration: 200,
         x: self.x,
         delay: 0,
         repeat: 2, // -1: infinity
@@ -100,7 +100,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.tween({
       targets: [this],
       ease: 'Sine.easeInOut',
-      duration: 250,
+      duration: 300,
 
       delay: 0,
       yoyo: true,
