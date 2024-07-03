@@ -19,7 +19,6 @@ import { WebFontFile } from '../WebFontFile.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
-  obstacle;
   gameObjectsLayer;
   gameTreasuresLayer;
   roundsCountdownTotal;
@@ -282,7 +281,7 @@ export default class MainScene extends Phaser.Scene {
       setTimeout(() => {
         this.scene.remove(statsSceneKey);
         this.scene.remove(chatSceneKey);
-        this.scene.start(leaderboardSceneKey, {players: this.allPlayers, mainPlayer: this.mainPlayer});
+        this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
       }, 2000);
     }
     if (roundInfo.roundsToGo == 3 && !this.threeRoundsPlayed) {
@@ -384,7 +383,7 @@ export default class MainScene extends Phaser.Scene {
   handleTx(lastTxs) {
     console.log('Checking locked tx', {
       lastTxs,
-      locking: this.lockingTx
+      locking: this.lockingTx,
     });
     const lockingTx = this.lockingTx;
     if (this.lockingTx === 'LOCK' || (lastTxs && lastTxs.includes(lockingTx))) {
@@ -395,7 +394,7 @@ export default class MainScene extends Phaser.Scene {
 
   handleMessage(response, lag) {
     const self = this;
-    this.game.events.emit(EVENTS_NAME.nextMessage, {response, lag});
+    this.game.events.emit(EVENTS_NAME.nextMessage, { response, lag });
     switch (response.cmd) {
       case Const.Command.registered:
         {
@@ -460,8 +459,8 @@ export default class MainScene extends Phaser.Scene {
               console.log('Beaver type not found');
           }
         }
-        this.updateStats(response.player, response.player?.stats);
-        this.updateStats(response.opponent, response.opponent?.stats);
+        this.updateStats(response.player, response.gameStats);
+        this.updateStats(response.opponent, response.gameStats);
         if (response.opponentFinished) {
           if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
             setTimeout(() => {
@@ -502,7 +501,7 @@ export default class MainScene extends Phaser.Scene {
             this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
           }
 
-          this.updateStats(response.player, response.stats);
+          this.updateStats(response.player, response.gameStats);
           this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
           if (response.moved === false) {
             if (!this.notEnoughApSound.isPlaying) {
@@ -516,13 +515,13 @@ export default class MainScene extends Phaser.Scene {
         {
           if (response.picked) {
             // console.log(`Player picked a game object.`);
-            if (this.mainPlayer.walletAddress == response.player.walletAddress) this.pickUpSound.play();
+            if (this.mainPlayer.walletAddress === response.player.walletAddress) this.pickUpSound.play();
             this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
-            if (response.player.onGameTreasure.type == 'treasure') {
+            if (response.player.onGameTreasure.type === Const.GameObject.treasure.type) {
               this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
             }
           }
-          this.updateStats(response.player, response.stats);
+          this.updateStats(response.player, response.gameStats);
           response.picked && this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         }
         break;
@@ -543,12 +542,12 @@ export default class MainScene extends Phaser.Scene {
           }
           this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
         }
-        this.updateStats(response.player, response.stats);
+        this.updateStats(response.player, response.gameStats);
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         break;
       }
       case Const.Command.token: {
-        this.updateStats(response.player, response.stats);
+        this.updateStats(response.player, response.gameStats);
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         break;
       }
@@ -602,19 +601,19 @@ export default class MainScene extends Phaser.Scene {
     return this.allPlayers[pInfo.walletAddress];
   }
 
-  updateStats(responsePlayer, responseStats) {
+  updateStats(responsePlayer, gameStats) {
     const self = this;
     // console.log('Player stats', responsePlayer);
     if (responsePlayer?.walletAddress === self.mainPlayer.walletAddress) {
-      // console.log('Stats update', responsePlayer?.walletAddress);
-      // console.log('responseStats', responseStats);
-      //responseStats.ap = self.mainPlayer.stats.ap;
-      self.mainPlayer.updateStats(responseStats);
-      this.game.events.emit(EVENTS_NAME.updateStats, responseStats);
+      self.mainPlayer.updateStats(responsePlayer.stats);
+      this.game.events.emit(EVENTS_NAME.updateStats, {
+        player: responsePlayer.stats,
+        game: gameStats
+      });
     } else if (responsePlayer) {
       this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
       this.game.events.emit(EVENTS_NAME.updateOtherPlayerStats, {
-        ...responseStats,
+        ...responsePlayer.stats,
         walletAddress: responsePlayer.walletAddress,
       });
     }
@@ -689,7 +688,7 @@ export default class MainScene extends Phaser.Scene {
       player.y - (score.sign == 'negative' ? 40 : 60),
       `${score.value}${score.type}`,
       {
-        backgroundColor: "black",
+        backgroundColor: 'black',
         fontFamily: '"Press Start 2P"',
         fontSize: '12px',
         textTransform: 'uppercase',

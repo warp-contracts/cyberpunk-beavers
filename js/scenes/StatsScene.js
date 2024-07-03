@@ -35,6 +35,7 @@ export default class StatsScene extends Phaser.Scene {
     this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver_portrait.png');
     this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver_portrait.png');
     this.load.image('time_bar', 'assets/images/time_bar.png');
+    this.load.image('AO', 'assets/images/ao.png');
 
     this.load.image('ARROWDOWN', 'assets/images/keys/ARROWDOWN.png');
     this.load.image('ARROWLEFT', 'assets/images/keys/ARROWLEFT.png');
@@ -58,6 +59,7 @@ export default class StatsScene extends Phaser.Scene {
       this.interactionLogsDiv = this.add.dom(100, 100 + interactionLogs.width, interactionLogs);
     }
     this.initListeners();
+    this.addCounterAO();
     this.addTitle();
     this.addRoundBar();
     this.addSubtitle();
@@ -101,8 +103,22 @@ export default class StatsScene extends Phaser.Scene {
     Phaser.Display.Bounds.SetCenterY(attack, Phaser.Display.Bounds.GetCenterY(plus));
   }
 
+  addCounterAO() {
+    this.aoCounter = new Text(this, this.gameWidth / 2, 30, 'Find the treasure...', {
+      backgroundColor: 'black',
+      fontFamily: '"Press Start 2P"',
+      fontSize: '20px',
+      textTransform: 'uppercase',
+      color: 'white',
+    }).setDepth(1);
+    this.aoCounter.x = this.gameWidth / 2 - this.aoCounter.width / 2;
+    this.aoCounterImg = this.add.image(this.gameWidth / 2 + this.aoCounter.width / 2 + 24, this.aoCounter.y + this.aoCounter.height/2, 'AO');
+    this.aoCounterImg.setDepth(2);
+    this.aoCounterImg.visible = false;
+  }
+
   addTitle() {
-    this.title = new Text(this, this.gameWidth / 2, 50, 'ROUNDS LEFT 700', {
+    this.title = new Text(this, this.gameWidth / 2, 80, 'ROUNDS LEFT 700', {
       backgroundColor: 'black',
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
@@ -141,17 +157,24 @@ export default class StatsScene extends Phaser.Scene {
 
   initListeners() {
     this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
-      document.getElementById('stats-scene-hp').innerText = stats?.hp?.current;
-      document.getElementById('stats-scene-frags').innerText = stats?.kills.frags;
-      document.getElementById('stats-scene-deaths').innerText = stats?.kills.deaths;
-      document.getElementById('stats-scene-cbcoins').innerText = stats?.coins.balance;
-      document.getElementById('stats-scene-locked').innerText = stats?.coins.available;
-      document.getElementById('stats-scene-transferred').innerText = stats?.coins.transferred;
-      this.subtitle.setText(`AP: ${stats?.ap?.current}`);
-      if (stats?.ap?.current == 0) {
+      document.getElementById('stats-scene-hp').innerText = stats?.player?.hp?.current;
+      document.getElementById('stats-scene-frags').innerText = stats?.player?.kills.frags;
+      document.getElementById('stats-scene-deaths').innerText = stats?.player?.kills.deaths;
+      document.getElementById('stats-scene-cbcoins').innerText = stats?.player?.coins.balance;
+      document.getElementById('stats-scene-locked').innerText = stats?.player?.coins.available;
+      document.getElementById('stats-scene-transferred').innerText = stats?.player?.coins.transferred;
+      this.subtitle.setText(`AP: ${stats?.player?.ap?.current}`);
+      if (stats?.player?.ap?.current === 0) {
         this.subtitle.setColor(colors.red);
       } else {
         this.subtitle.setColor(colors.white);
+      }
+      if (stats?.game?.gameTreasuresCounter) {
+        this.aoCounter.setText(`${stats?.game?.gameTreasuresCounter}   HIDDEN`);
+        this.aoCounter.x = this.gameWidth / 2 - this.aoCounter.width / 2;
+        this.aoCounterImg.x = this.gameWidth / 2 + this.aoCounter.width / 2 - 150;
+        this.aoCounterImg.visible = true;
+        this.aoCounterImg.setDepth(2);
       }
     });
 

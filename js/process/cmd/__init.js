@@ -59,6 +59,7 @@ function initState(message, state) {
     gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],
     gameTreasuresTilesForClient: [GameObject.none],
     gameTreasuresRarity: 15,
+    gameTreasuresCounter: 0,
     round: {
       current: 0,
       start: message.Timestamp, //ms
@@ -114,7 +115,11 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
       if (b <= EMPTY_TILE) {
         state.randomCounter++;
         const randomValue = getRandomNumber(0, tilesToPropagate.length - 1, state.randomCounter);
-        return tilesToPropagate[randomValue].tile;
+        const drawnTile = tilesToPropagate[randomValue];
+        if (drawnTile.type === GameObject.treasure.type) {
+          state.gameTreasuresCounter += 1;
+        }
+        return drawnTile.tile;
       } else {
         return EMPTY_TILE;
       }

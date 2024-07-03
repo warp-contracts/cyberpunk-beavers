@@ -65,7 +65,7 @@ export default class MainPlayer extends Player {
   nextRound() {
     this.stats.ap.current = this.stats.ap.max;
     this.updateStats(this.stats);
-    this.scene.game.events.emit(EVENTS_NAME.updateStats, this.stats);
+    this.scene.game.events.emit(EVENTS_NAME.updateStats, { player: this.stats });
   }
 
   async send(message) {

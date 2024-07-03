@@ -21,6 +21,14 @@ export function standInQueue(state, action) {
   return { walletsQueue, walletsBench };
 }
 
+
+export function gameStats(state) {
+  const { gameTreasuresCounter, lastTxs } = state;
+  return {
+    gameStats: { gameTreasuresCounter, lastTxs }
+  }
+}
+
 export function gameInfo(state, owner, ts) {
   const { walletsQueue, walletsBench, players, playWindow } = state;
   return {

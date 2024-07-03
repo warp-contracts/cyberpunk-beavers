@@ -15,7 +15,7 @@ export function dig(state, action) {
     (t) => t.tile === state.gameObjectsTilemap[player.pos.y][player.pos.x]
   );
   let { type: objectTile } = gameObjectTile;
-  if (objectTile != GameObject.none.type) {
+  if (objectTile !== GameObject.none.type) {
     console.log(`Cannot perform dig ${player.walletAddress}. Player stands on a game object.`);
     return { player, digged: false };
   }
@@ -45,6 +45,7 @@ export function dig(state, action) {
   if (type == GameObject.treasure.type) {
     console.log(`Player stands on a game treasure: ${type}.`);
     state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameObject.treasure.tile;
+    state.gameTreasuresCounter -= 1;
     return {
       player,
       digged: { type },

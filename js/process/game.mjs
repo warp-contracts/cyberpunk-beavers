@@ -5,7 +5,7 @@ import { dig } from './cmd/dig.mjs';
 import { pick } from './cmd/pick.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { scoreToDisplay } from '../common/tools.mjs';
-import { gameFinished, gameInfo, gameNotStarted, standInQueue } from './cmd/info.mjs';
+import { gameFinished, gameInfo, gameNotStarted, gameStats, standInQueue } from "./cmd/info.mjs";
 import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
 import { setNextProcess } from './cmd/setNextProcess.mjs';
@@ -39,9 +39,9 @@ function handleMessageFromToken(state, action, message) {
     cmd: Const.Command.token,
     data: message.Data,
     tags: message.Tags,
-    stats: player.stats,
     player: {
       walletAddress: recipient,
+      stats: player.stats
     },
     scoreToDisplay: scoreToDisplay([{ value: qty, type: Scores.coin, txId }]),
   });
@@ -104,8 +104,8 @@ export function handle(state, message) {
       break;
     case Const.Command.setNextProcess:
       ao.result({
-        ...setNextProcess(state, action),
         cmd: Const.Command.nextProcessSet,
+        ...setNextProcess(state, action),
       });
       break;
     case Const.Command.info:
@@ -136,20 +136,15 @@ export function handle(state, message) {
         cmd: Const.Command.picked,
         player: pickRes.player,
         picked: pickRes.picked,
-        stats: pickRes.player.stats,
         scoreToDisplay: pickRes.scoreToDisplay,
-        lastTxs: state.lastTxs
+        ...gameStats(state)
       });
       break;
     case Const.Command.dig:
-      const digRes = dig(state, action);
       ao.result({
         cmd: Const.Command.digged,
-        player: digRes.player,
-        stats: digRes.player.stats,
-        digged: digRes.digged,
-        scoreToDisplay: digRes.scoreToDisplay,
-        lastTxs: state.lastTxs
+        ...dig(state, action),
+        ...gameStats(state)
       });
       break;
     case Const.Command.attack:
@@ -160,17 +155,16 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.attacked,
         ...attackRes,
-        lastTxs: state.lastTxs
+        ...gameStats(state)
       });
       break;
     case Const.Command.move:
       const moveRes = movePlayer(state, action);
       ao.result({
         cmd: Const.Command.moved,
-        stats: moveRes.player.stats,
         player: moveRes.player,
         scoreToDisplay: moveRes.scoreToDisplay,
-        lastTxs: state.lastTxs
+        ...gameStats(state)
       });
       break;
     case Const.Command.register:
@@ -185,7 +179,8 @@ export function handle(state, message) {
           gameObjectsTilemap: state.gameObjectsTilemap,
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
-        round: state.round
+        round: state.round,
+        ...gameStats(state)
       });
       break;
     case Const.Command.join:
@@ -205,7 +200,8 @@ export function handle(state, message) {
           gameObjectsTilemap: state.gameObjectsTilemap,
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
-        round: state.round
+        round: state.round,
+        ...gameStats(state)
       });
       break;
     default:

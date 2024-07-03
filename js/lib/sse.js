@@ -48,8 +48,8 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
       const message = JSON.parse(event.data);
       console.log(`\n ==== new message ${processId}:${message.nonce} ==== `, message);
       let lag = null;
-      if (target.handleTx && message.output.lastTxs) {
-        target.handleTx(message.output.lastTxs);
+      if (target.handleTx && message.output.gameStats.lastTxs) {
+        target.handleTx(message.output.gameStats.lastTxs);
       }
       if (verifyNonce) {
         if (message.nonce <= window.warpAO.nonce) {
