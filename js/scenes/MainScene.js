@@ -484,7 +484,7 @@ export default class MainScene extends Phaser.Scene {
         {
           if (response.picked) {
             // console.log(`Player picked a game object.`);
-            if (this.mainPlayer.walletAddress === response.player.walletAddress) {
+            if (this.mainPlayer?.walletAddress === response.player.walletAddress) {
               this.pickUpSound.play();
             } else {
               this.allPlayers[response.player.walletAddress]?.pickAnim();
@@ -508,10 +508,10 @@ export default class MainScene extends Phaser.Scene {
         }
         if (response.digged?.type == Const.GameObject.treasure.type) {
           // console.log(`Player digged a game treasure.`);
-          if (this.mainPlayer.walletAddress == response.player.walletAddress) this.treasureSound.play();
+          if (this.mainPlayer?.walletAddress == response.player.walletAddress) this.treasureSound.play();
           this.gameTreasuresLayer.putTileAt(0, response.player.pos.x, response.player.pos.y);
         } else {
-          if (this.mainPlayer.walletAddress == response.player.walletAddress) this.digSound.play();
+          if (this.mainPlayer?.walletAddress == response.player.walletAddress) this.digSound.play();
           const gameObjectTile = this.gameObjectsLayer.getTileAt(response.player.pos.x, response.player.pos.y)?.index;
           if (gameObjectTile == 2 || gameObjectTile == null) {
             this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
@@ -580,7 +580,7 @@ export default class MainScene extends Phaser.Scene {
   updateStats(responsePlayer, gameStats) {
     const self = this;
     // console.log('Player stats', responsePlayer);
-    if (responsePlayer?.walletAddress === self.mainPlayer.walletAddress) {
+    if (responsePlayer?.walletAddress === self.mainPlayer?.walletAddress) {
       self.mainPlayer.updateStats(responsePlayer.stats);
       this.game.events.emit(EVENTS_NAME.updateStats, {
         player: responsePlayer.stats,
@@ -597,7 +597,7 @@ export default class MainScene extends Phaser.Scene {
 
   displayPlayerScore(scores, walletAddress, options) {
     if (!scores || scores.length == 0) return;
-    const isMainPlayer = this.mainPlayer.walletAddress == walletAddress;
+    const isMainPlayer = this.mainPlayer?.walletAddress == walletAddress;
     const opponent = options?.forOpponent?.walletAddress;
 
     if (isMainPlayer && opponent) {
@@ -624,7 +624,7 @@ export default class MainScene extends Phaser.Scene {
       });
     }
 
-    if (this.mainPlayer.walletAddress == opponent) {
+    if (this.mainPlayer?.walletAddress == opponent) {
       options?.forOpponent?.score.forEach((s) => {
         const scoreText = this.createScoreText(this.allPlayers[options?.forOpponent.walletAddress], s, {
           forOpponent: this.allPlayers[options?.forOpponent.walletAddress],
