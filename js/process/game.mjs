@@ -95,13 +95,6 @@ export function handle(state, message) {
   gamePlayerTick(state, action);
 
   switch (action.cmd) {
-    case 'increment':
-      state.counter++;
-      ao.result({
-        counter: state.counter,
-        player: state.players[message.Owner],
-      });
-      break;
     case Const.Command.setNextProcess:
       ao.result({
         cmd: Const.Command.nextProcessSet,
@@ -130,7 +123,7 @@ export function handle(state, message) {
     case Const.Command.pick:
       const pickRes = pick(state, action);
       if (pickRes.tokenTransfer > 0) {
-        sendToken(message.Owner, pickRes.tokenTransfer);
+        sendToken(action.walletAddress, pickRes.tokenTransfer);
       }
       ao.result({
         cmd: Const.Command.picked,
@@ -150,7 +143,7 @@ export function handle(state, message) {
     case Const.Command.attack:
       const attackRes = attack(state, action);
       if (attackRes.tokenTransfer > 0) {
-        sendToken(message.Owner, attackRes.tokenTransfer);
+        sendToken(action.walletAddress, attackRes.tokenTransfer);
       }
       ao.result({
         cmd: Const.Command.attacked,
