@@ -1,9 +1,9 @@
 {
     "frames": [
         {
-            "filename": "frame-2",
+            "filename": "hacker_beaver_attack_shot1",
             "frame": {
-                "w": 48,
+                "w": 96,
                 "h": 48,
                 "x": 0,
                 "y": 0
@@ -14,22 +14,9 @@
             }
         },
         {
-            "filename": "frame-3",
+            "filename": "hacker_beaver_attack_shot2",
             "frame": {
-                "w": 48,
-                "h": 48,
-                "x": 48,
-                "y": 0
-            },
-            "anchor": {
-                "x": 0.5,
-                "y": 0.5
-            }
-        },
-        {
-            "filename": "frame-4",
-            "frame": {
-                "w": 48,
+                "w": 96,
                 "h": 48,
                 "x": 0,
                 "y": 48
@@ -40,22 +27,9 @@
             }
         },
         {
-            "filename": "frame-5",
+            "filename": "hacker_beaver_attack_shot3",
             "frame": {
-                "w": 48,
-                "h": 48,
-                "x": 48,
-                "y": 48
-            },
-            "anchor": {
-                "x": 0.5,
-                "y": 0.5
-            }
-        },
-        {
-            "filename": "frame-6",
-            "frame": {
-                "w": 48,
+                "w": 96,
                 "h": 48,
                 "x": 96,
                 "y": 0
@@ -66,12 +40,38 @@
             }
         },
         {
-            "filename": "frame-7",
+            "filename": "hacker_beaver_attack_shot4",
             "frame": {
-                "w": 48,
+                "w": 96,
                 "h": 48,
                 "x": 96,
                 "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hacker_beaver_attack_shot5",
+            "frame": {
+                "w": 96,
+                "h": 48,
+                "x": 0,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hacker_beaver_attack_shot6",
+            "frame": {
+                "w": 96,
+                "h": 48,
+                "x": 96,
+                "y": 96
             },
             "anchor": {
                 "x": 0.5,

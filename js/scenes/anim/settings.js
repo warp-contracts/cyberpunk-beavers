@@ -13,9 +13,9 @@ export const ANIM_SETTINGS = {
       frameRate: 8,
     },
     attack: {
-      prefix: 'frame-',
-      start: 2,
-      end: 7,
+      prefix: 'hacker_beaver_attack_shot',
+      start: 1,
+      end: 6,
       frameRate: 8,
     },
     dig: {
@@ -45,7 +45,7 @@ export const ANIM_SETTINGS = {
       frameRate: 8,
     },
     attack: {
-      prefix: 'frame-',
+      prefix: 'heavy_beaver_attack_shot',
       start: 1,
       end: 5,
       frameRate: 8,
