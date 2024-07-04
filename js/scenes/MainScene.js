@@ -427,6 +427,9 @@ export default class MainScene extends Phaser.Scene {
         }
         this.updateStats(response.player, response.gameStats);
         this.updateStats(response.opponent, response.gameStats);
+        if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
+          this.allPlayers[response.player.walletAddress]?.attackAnim();
+        }
         if (response.opponentFinished) {
           if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
             setTimeout(() => {
@@ -481,7 +484,11 @@ export default class MainScene extends Phaser.Scene {
         {
           if (response.picked) {
             // console.log(`Player picked a game object.`);
-            if (this.mainPlayer.walletAddress === response.player.walletAddress) this.pickUpSound.play();
+            if (this.mainPlayer.walletAddress === response.player.walletAddress) {
+              this.pickUpSound.play();
+            } else {
+              this.allPlayers[response.player.walletAddress]?.pickAnim();
+            }
             this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
             if (response.player.onGameTreasure.type === Const.GameObject.treasure.type) {
               this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
@@ -495,6 +502,9 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.digged: {
         if (!response.digged) {
           return;
+        }
+        if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
+          this.allPlayers[response.player.walletAddress]?.digAnim();
         }
         if (response.digged?.type == Const.GameObject.treasure.type) {
           // console.log(`Player digged a game treasure.`);

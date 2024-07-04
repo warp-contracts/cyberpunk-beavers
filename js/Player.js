@@ -49,6 +49,18 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       });
   }
 
+  attackAnim() {
+    this.anims.play(`${this.beaverChoice}_attack`, true);
+  }
+
+  digAnim() {
+    this.anims.play(`${this.beaverChoice}_dig`, true);
+  }
+
+  pickAnim() {
+    this.anims.play(`${this.beaverChoice}_pick`, true);
+  }
+
   baseMoveTo(pos, onStart, onComplete) {
     // console.log(`baseMoveTo`, pos);
     let movementTemplate = {
