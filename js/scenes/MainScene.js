@@ -13,7 +13,7 @@ import {
   statsSceneKey,
   chatSceneKey,
 } from '../config/config.js';
-import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
+import { createDataItemSigner, dryrun } from "@permaweb/aoconnect";
 import { createData } from 'warp-arbundles';
 import { WebFontFile } from '../WebFontFile.js';
 import { ANIM_SETTINGS } from "./anim/settings.js";
@@ -153,13 +153,8 @@ export default class MainScene extends Phaser.Scene {
   async checkBalance() {
     const processId = window.warpAO.tokenProcessId();
     let dataItemSigner;
-    const tags = [
-      { name: 'Action', value: 'Balance' },
-      { name: 'Recipient', value: this.walletAddress },
-    ];
-    const data = '1234';
 
-    if (window.warpAO.signingMode == 'generated') {
+    if (window.warpAO.signingMode === 'generated') {
       const generatedSigner = window.warpAO.generatedSigner;
       dataItemSigner = async ({ data, tags, target, anchor, createDataItem }) => {
         const dataItem = createData(data, generatedSigner, {
@@ -178,21 +173,18 @@ export default class MainScene extends Phaser.Scene {
 
     try {
       let now = Date.now();
-      const messageId = await message({
+      const result = await dryrun({
         process: processId,
-        tags,
+        tags: [
+          { name: 'Action', value: 'Balance' },
+          { name: 'Target', value: this.walletAddress },
+        ],
         signer: dataItemSigner,
-        data,
+        data: '1234',
       });
-      console.log(`Sending check balance took ${Date.now() - now}ms`);
-
-      now = Date.now();
-      const msgResult = await result({
-        message: messageId,
-        process: processId,
-      });
-      console.log(`Checking balance took ${Date.now() - now}ms`);
-      return msgResult.Messages[0]?.Data;
+      const balance = result.Messages[0].Tags.find((t) => t.name === "Balance").value;
+      console.log(`Checking balance ${balance} took ${Date.now() - now}ms`);
+      return balance;
     } catch (error) {
       console.error(error);
       return "0";
