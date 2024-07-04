@@ -62,17 +62,25 @@ export function attack(state, action) {
 function calculateDamage(player, range, state) {
   const baseDmg = player.stats.damage[range];
   const criticalChance = player.stats.critical_hit_chance[range];
-  const random = Math.random(++state.randomCounter);
+  const criticalHitRandom = Math.random(++state.randomCounter);
   let dmgMultiplier = 1;
-  if (random <= criticalChance) {
+  if (criticalHitRandom <= criticalChance) {
     dmgMultiplier = player.stats.critical_hit_multiplier[range]
   }
-  const finalDmg = Math.floor(baseDmg * dmgMultiplier);
+  const hitChance = player.stats.hit_chance[range];
+  const hitRandom = Math.random(++state.randomCounter);
+  let finalDmg = Math.floor(baseDmg * dmgMultiplier);
+  if (hitRandom > hitChance) {
+    console.log({
+      hitRandom, hitChance
+    })
+    finalDmg = 0;
+  }
   return {
     range,
     baseDmg,
     criticalChance,
-    random,
+    random: criticalHitRandom,
     dmgMultiplier,
     finalDmg
   };

@@ -103,6 +103,7 @@ export const BEAVER_TYPES = {
     },
     attack_range: 5,
     damage: [20, 18, 16, 14, 12],
+    hit_chance: [0.95, 0.90, 0.85, 0.80, 0.75],
     critical_hit_chance: [0.25, 0.2, 0.15, 0.1, 0.05],
     critical_hit_multiplier: [2.4, 2.3, 2.2, 2.1, 2.0],
     bonus: {
@@ -122,6 +123,7 @@ export const BEAVER_TYPES = {
     },
     attack_range: 3,
     damage: [22, 19, 15],
+    hit_chance: [0.9, 0.8, 0.7],
     critical_hit_chance: [0.15, 0.1, 0.05],
     critical_hit_multiplier: [2.2, 1.8, 1.6],
     bonus: {
@@ -140,6 +142,7 @@ export const BEAVER_TYPES = {
       max: 100,
     },
     damage: [25],
+    hit_chance: [0.95],
     critical_hit_chance: [0.2],
     critical_hit_multiplier: [2.5],
     attack_range: 1,
