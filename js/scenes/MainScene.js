@@ -624,7 +624,7 @@ export default class MainScene extends Phaser.Scene {
       });
     }
 
-    if (this.mainPlayer?.walletAddress == opponent) {
+    if (this.mainPlayer && this.mainPlayer.walletAddress === opponent) {
       options?.forOpponent?.score.forEach((s) => {
         const scoreText = this.createScoreText(this.allPlayers[options?.forOpponent.walletAddress], s, {
           forOpponent: this.allPlayers[options?.forOpponent.walletAddress],

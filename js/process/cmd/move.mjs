@@ -40,7 +40,7 @@ export function movePlayer(state, action) {
     );
 
     player.onGameTreasure = state.gameTreasuresTiles.find(
-      (t) => t.tile === state.gameTreasuresTilemap[newPos.y][newPos.x]
+      (t) => t.tile === state.gameTreasuresTilemapForClient[newPos.y][newPos.x]
     );
 
     state.playersOnTiles[player.pos.y][player.pos.x] = null;

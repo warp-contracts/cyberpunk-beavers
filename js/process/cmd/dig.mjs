@@ -46,6 +46,8 @@ export function dig(state, action) {
     console.log(`Player stands on a game treasure: ${type}.`);
     state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameObject.treasure.tile;
     state.gameTreasuresCounter -= 1;
+    state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
+    player.onGameTreasure = Const.GameObject.treasure;
     return {
       player,
       digged: { type },
