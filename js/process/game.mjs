@@ -105,6 +105,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.stats,
         ...gameInfo(state, message.Owner, message.Timestamp),
+        ...gameStats(state)
       });
       break;
     case Const.Command.enqueue:
@@ -112,6 +113,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.stats,
         ...gameInfo(state, message.Owner, message.Timestamp),
+        ...gameStats(state)
       });
       break;
     case Const.Command.setup:
