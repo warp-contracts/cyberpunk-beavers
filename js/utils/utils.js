@@ -13,7 +13,11 @@ export async function checkProfile(wallet) {
   const now = Date.now();
 
   const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
-  let profileId = profiles[wallet];
+  let { profileId, profile, expiration } = profiles[wallet] || {};
+  if (expiration && expiration < Date.now()) {
+    profile = null;
+    await console.log(`ProfileId ${profileId} expired`);
+  }
   if (!profileId) {
     const result = await dryrun({
       process: 'SNy4m-DrqxWl01YqGM4sxI8qCni-58re8uuJLvZPypY',
@@ -22,13 +26,11 @@ export async function checkProfile(wallet) {
     });
     if (result?.Messages?.length && result.Messages[0]?.Data) {
       profileId = JSON.parse(result.Messages[0].Data)[0].ProfileId;
-      profiles[wallet] = profileId;
-      localStorage.setItem('profiles', JSON.stringify(profiles));
     }
   }
   console.log(`Checking ${wallet} profile registry ${profileId} took ${Date.now() - now}ms`);
 
-  if (profileId) {
+  if (profileId && !profile) {
     const fetchedProfile = await dryrun({
       process: profileId,
       tags: [{name: 'Action', value: 'Info'}],
@@ -36,7 +38,12 @@ export async function checkProfile(wallet) {
     });
 
     console.log(`Checking whole profile ${profileId} took ${Date.now() - now}ms`);
-    return JSON.parse(fetchedProfile.Messages[0].Data);
+
+    profile = JSON.parse(fetchedProfile.Messages[0].Data);
+    profiles[wallet] = { profileId, profile, expiration: Date.now() + 1_000 * 60 * 15 }; // expires in 15 minutes
+    localStorage.setItem('profiles', JSON.stringify(profiles));
+
+    return profile
   } else {
     return null;
   }
