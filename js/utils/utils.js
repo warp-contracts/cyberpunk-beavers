@@ -6,6 +6,9 @@ export function getEnv() {
 }
 
 export function trimString(toTrim, charsLeft = 3, dotsCount = 3, charsRight = 3) {
+  if (!toTrim) {
+    return '';
+  }
   return toTrim.substring(0, charsLeft) + '.'.repeat(dotsCount) + toTrim.substring(toTrim.length - charsRight);
 }
 
@@ -42,10 +45,7 @@ export async function checkProfile(wallet) {
     profile = JSON.parse(fetchedProfile.Messages[0].Data);
     profiles[wallet] = { profileId, profile, expiration: Date.now() + 1_000 * 60 * 15 }; // expires in 15 minutes
     localStorage.setItem('profiles', JSON.stringify(profiles));
-
-    return profile
-  } else {
-    return null;
   }
+  return profile;
 }
 

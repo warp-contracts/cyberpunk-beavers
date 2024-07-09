@@ -8,7 +8,7 @@ export function handle(state, message) {
   action.walletAddress = message.Owner;
   console.log('Le Chat Noir process');
   if (!state.messages) {
-    state = Object.assign(state, {messages: []});
+    state = Object.assign(state, {messages: [], userNames: {}});
   }
 
   switch (action.cmd) {
@@ -22,7 +22,7 @@ export function handle(state, message) {
       }
       state.messages.push({
         from: action.walletAddress,
-        nick: action.nick,
+        userName: state.userNames[action.walletAddress],
         clientTs: action.clientTs,
         nonce: message.Nonce,
         msg
@@ -33,6 +33,9 @@ export function handle(state, message) {
       });
       break;
     case 'join':
+      if (action.userName) {
+        state.userNames[action.walletAddress] = action.userName;
+      }
       ao.result({
         cmd: Const.Command.join,
         messages: state.messages.slice(Math.max(state.messages.length - LAST_MESSAGES_TO_RETURN * 5, 0))

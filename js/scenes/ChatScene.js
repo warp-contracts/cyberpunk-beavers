@@ -1,5 +1,7 @@
 import Const, {MAX_MSG_LENGTH, MIN_MSG_LENGTH} from '../common/const.mjs';
 import { serverConnectionChat } from '../lib/serverConnection.js';
+import { chatSceneKey } from "../config/config.js";
+import { trimString } from "../utils/utils.js";
 
 const defaultStyle = {
   fontFamily: '"Press Start 2P"',
@@ -10,14 +12,16 @@ const defaultStyle = {
 
 export default class ChatScene extends Phaser.Scene {
   messagesQueue;
+  userName;
 
   constructor() {
-    super('chat-scene');
+    super(chatSceneKey);
   }
 
-  init() {
-    console.log('Chat Scene - 1. Init');
+  init(data) {
+    console.log('Chat Scene - 1. Init', data);
     this.mainScene = this.scene.get('main-scene');
+    this.userName = data.userName;
     this.messagesQueue = [];
     this.processId = window.warpAO.chatProcessId();
   }
@@ -30,7 +34,7 @@ export default class ChatScene extends Phaser.Scene {
     console.log('Chats Scene - 3. Create');
     this.server = serverConnectionChat;
     this.server.subscribe(this);
-    this.server.send({ cmd: Const.Command.join });
+    this.server.send({ cmd: Const.Command.join, userName: this.userName });
 
     const chatBoxId = 'chat-messages-box';
     const chatBox = this.addChatBox(chatBoxId);
@@ -77,7 +81,7 @@ export default class ChatScene extends Phaser.Scene {
 
     resultDiv.innerHTML = `
     <div style="font-family: 'Press Start 2P'; position: relative; height: 100%">
-    <div style='margin: 10px 20px 5px 20px'>CHAT MESSAGES <a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${truncateTxId(this.processId, 3)}</a></div>
+    <div style='margin: 10px 20px 5px 20px'>CHAT MESSAGES <a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${trimString(this.processId)}</a></div>
     <div id="chat-msg-logs" style="height: 320px;
     overflow-y: auto;
     margin-bottom: 10px;">${this.messagesFormatted()}</div>
@@ -110,7 +114,10 @@ export default class ChatScene extends Phaser.Scene {
 
   messagesFormatted() {
     if (this.messagesQueue) {
-      return this.messagesQueue.map(this.formatMessage).join('');
+      return this.messagesQueue
+        .map(this.addDisplayName)
+        .map(this.formatMessage)
+        .join('');
     } else {
       return '';
     }
@@ -118,9 +125,20 @@ export default class ChatScene extends Phaser.Scene {
 
   formatMessage(i) {
     return `
-      <div style='margin: 9px 20px 0 20px'><span style='display: inline-block; width: 80px; text-transform: uppercase;'>${truncateTxId(i.from, 3)}</span>
+      <div style='margin: 9px 20px 0 20px'><span style='display: inline-block; width: 80px; text-transform: uppercase;'>${i.displayName}</span>
       ${i.msg}
       </div>`;
+  }
+
+  addDisplayName(i) {
+    if (i.userName) {
+      i.displayName = i.userName.length > 9 ?
+        trimString(i.userName, 7, 2, 0) :
+        i.userName;
+    } else {
+      i.displayName = trimString(i.from);
+    }
+    return i;
   }
 
   removeFocusOnOutsideClick(id) {
@@ -131,11 +149,4 @@ export default class ChatScene extends Phaser.Scene {
       }
     });
   }
-}
-
-function truncateTxId(txId, n) {
-  if (!txId) {
-    return '';
-  }
-  return `${txId.substr(0, n) + '...' + txId.substr(txId.length - n)}`;
 }

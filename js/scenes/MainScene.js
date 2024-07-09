@@ -212,7 +212,7 @@ export default class MainScene extends Phaser.Scene {
     this.scene.launch(statsSceneKey, {
       beaverChoice: this.beaverChoice,
     });
-    this.scene.launch('chat-scene');
+    this.scene.launch(chatSceneKey, {userName: playerInfo.userName});
     this.statsScene = this.scene.get(statsSceneKey);
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
     this.statsScene.userName = this.mainPlayer?.userName;
