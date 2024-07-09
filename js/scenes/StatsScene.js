@@ -271,7 +271,7 @@ flex-grow: 1;
 flex-direction: column;">
 <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>PLAYER</div>
 <div style="display: flex; justify-content: space-between;">
-<div style="padding-right: 10px;" id="stats-scene-player">${trimString(this.walletAddress)}</div>
+<div style="padding-right: 10px;" id="stats-scene-player">${this.displayName({userName: this.userName, walletAddress: this.walletAddress})}</div>
 </div>
 </div>
 <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>PROCESS</div>
@@ -375,7 +375,7 @@ flex-direction: column;">
   <div style="display: flex;
   flex-grow: 1;
   flex-direction: column;">
-  <div style="align-self: flex-end;" id="stats-scene-wallet-address">${player.walletAddress && trimString(player.walletAddress)}</div>
+  <div style="align-self: flex-end;" id="stats-scene-wallet-address">${this.displayName(player)}</div>
   <div style="display: flex; justify-content: space-between; flex-direction: column;">
   <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>HP</div>
   <div style="display: flex; justify-content: space-between;">
@@ -406,6 +406,19 @@ flex-direction: column;">
   </div>
   </div>
       `;
+  }
+
+  displayName(player) {
+    if (player.userName) {
+      if (player.userName.length > 11) {
+        trimString(player.userName, 4, 3, 4)
+      }
+      return player.userName;
+    }
+    if (player.walletAddress) {
+      return trimString(player.walletAddress);
+    }
+    return '';
   }
 
   addInteractionLogs() {

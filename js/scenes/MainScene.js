@@ -39,6 +39,7 @@ export default class MainScene extends Phaser.Scene {
     this.mainSceneLoading = this.scene.get(mainSceneLoadingKey);
     this.gameStart = data.gameStart;
     this.gameEnd = data.gameEnd;
+    this.userName = data.userName;
   }
 
   preload() {
@@ -144,6 +145,7 @@ export default class MainScene extends Phaser.Scene {
       await this.server.send({
         cmd: Const.Command.register,
         beaverId: this.beaverChoice,
+        userName: this.userName,
         balance: balance && parseInt(balance),
         generatedWalletAddress
       }, true);
@@ -195,6 +197,7 @@ export default class MainScene extends Phaser.Scene {
     // console.log(playerInfo);
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
+      userName: playerInfo.userName,
       stats: playerInfo.stats,
       scene: this,
       x: 24 + playerInfo.pos.x * Const.Tile.size,
@@ -212,6 +215,7 @@ export default class MainScene extends Phaser.Scene {
     this.scene.launch('chat-scene');
     this.statsScene = this.scene.get(statsSceneKey);
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
+    this.statsScene.userName = this.mainPlayer?.userName;
     this.statsScene.beaverChoice = this.beaverId || this.beaverChoice;
     this.statsScene.stats = this.mainPlayer.stats;
     this.statsScene.allPlayers = this.allPlayers;
@@ -222,6 +226,7 @@ export default class MainScene extends Phaser.Scene {
   createPlayer(playerInfo) {
     const player = new Player({
       walletAddress: playerInfo.walletAddress,
+      userName: playerInfo.userName,
       scene: this,
       stats: playerInfo.stats,
       x: 24 + playerInfo.pos.x * Const.Tile.size,

@@ -162,7 +162,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         i + 1,
         {
           img: this.allPlayers[key].beaverChoice || this.allPlayers[key].beaverId,
-          address: trimString(key),
+          address: this.displayName(this.allPlayers[key]),
         },
         this.allPlayers[key].stats?.coins?.balance,
         this.allPlayers[key].stats?.coins?.transferred,
@@ -170,6 +170,16 @@ export default class LeaderboardScene extends Phaser.Scene {
       ]);
     }
     return cells.flat(1);
+  }
+
+  displayName(player) {
+    if (player.userName) {
+      if (player.userName.length > 11) {
+        trimString(player.userName, 4, 3, 4)
+      }
+      return player.userName;
+    }
+    return trimString(player.walletAddress);
   }
 
   handleMessage(response) {

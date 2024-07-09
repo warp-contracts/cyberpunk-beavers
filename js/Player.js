@@ -3,10 +3,11 @@ import { trimString } from "./utils/utils.js";
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { walletAddress, stats, scene, x, y, texture, animated, beaverChoice } = data;
+    let { walletAddress, userName, stats, scene, x, y, texture, animated, beaverChoice } = data;
     super(scene, x, y, texture);
     this.walletAddress = walletAddress;
     this.beaverChoice = beaverChoice;
+    this.userName = userName;
     this.stats = stats;
     this.animated = animated;
     scene.add.existing(this);
@@ -19,7 +20,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.healthBar.setDepth(10);
     this.apBar.setDepth(10);
 
-    this.name = scene.add.text(x-14, y+22, trimString(walletAddress, 2, 2, 2),
+    const name = this.displayName();
+    this.name = scene.add.text(x-2*name.length-8, y+22, name,
       {font: '10px', fill: "#ffffff", backgroundColor: "#000000", align: "center"});
     this.name.setDepth(8);
   }
@@ -27,6 +29,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   calculateBarWidth(stats) {
     const percentage = stats.current / stats.max;
     return Math.min(1, percentage) * 45;
+  }
+
+  displayName() {
+    if (this.userName) {
+      if (this.userName.length > 8) {
+        return trimString(this.userName, 2, 2, 2)
+      }
+      return this.userName;
+    }
+    return trimString(this.walletAddress, 2, 2, 2);
   }
 
   updateStats(newStats) {
