@@ -7,9 +7,6 @@ export default class LoadingScene extends Phaser.Scene {
 
   init() {
     console.log('Loading Scene - 1. Init');
-    if (window.warpAO.config.env === 'dev') {
-      localStorage.clear();
-    }
   }
 
   preload() {
