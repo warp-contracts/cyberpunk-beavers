@@ -1,27 +1,37 @@
 
 export async function initWebSocket(moduleId, processId) {
-  const ws = new WebSocket(`ws://localhost:8097/${processId}`);
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(`ws://localhost:8097/${processId}`);
 
-  let nonce = 0;
-  let currentListener = null;
-  const unsubscribe = () => {
-    if (currentListener) {
-      ws.removeEventListener('message', currentListener);
+    let nonce = 0;
+    let currentListener = null;
+    const unsubscribe = () => {
+      if (currentListener) {
+        ws.removeEventListener('message', currentListener);
+      }
     }
-  }
-  return {
-    unsubscribe,
-    subscribe: (target) => {
-      unsubscribe();
-      currentListener = messageListener(target);
-      ws.addEventListener('message', currentListener);
-    },
-    send: async (message) => {
-      const di = mockDataItem(moduleId, processId, message, ++nonce);
-      ws.send(JSON.stringify(di));
-      return { id: di.Id };
-    },
-  };
+
+    ws.onopen = (event) => {
+      console.log(`ws connection ready`, event);
+      resolve({
+        unsubscribe,
+        subscribe: (target) => {
+          unsubscribe();
+          currentListener = messageListener(target);
+          ws.addEventListener('message', currentListener);
+        },
+        send: async (message) => {
+          const di = mockDataItem(moduleId, processId, message, ++nonce);
+          ws.send(JSON.stringify(di));
+          return { id: di.Id };
+        },
+      })
+    };
+    ws.onerror = (event) => {
+      console.log(`connection failed`, event);
+      reject(event);
+    };
+  })
 }
 
 const messageListener = (target) => {
