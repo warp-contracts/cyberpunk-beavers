@@ -357,7 +357,7 @@ export default class MainScene extends Phaser.Scene {
       locking: this.lockingTx,
     });
     const lockingTx = this.lockingTx;
-    if (this.lockingTx === 'LOCK' || (lastTxs && lastTxs.includes(lockingTx))) {
+    if (lastTxs && lastTxs.includes(this.lockingTx)) {
       this.lockingTx = null;
       console.log('Actions unlocked', lockingTx);
     }

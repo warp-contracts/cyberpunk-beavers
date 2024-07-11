@@ -90,7 +90,6 @@ export default class MainPlayer extends Player {
     if (this.mainScene.lockingTx) {
       console.log(`Action locked for tx`, this.mainScene.lockingTx);
     } else {
-      this.mainScene.lockingTx = 'LOCK';
       try {
         this.mainScene.lockingTx = (await this.scene.server.send(message)).id;
       } catch (e) {

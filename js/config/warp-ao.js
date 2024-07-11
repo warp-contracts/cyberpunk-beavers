@@ -72,7 +72,10 @@ async function sendUsingGeneratedWallet(moduleId, processId, message, signer) {
   });
   await dataItem.sign(signer);
   console.log(`Signing with raw ${Date.now() - now}ms`);
-  return sendRawDataItem(dataItem.getRaw());
+  sendRawDataItem(dataItem.getRaw())
+    .catch(console.error);
+  //return id immediately to lock on this id before message has been effectively sent
+  return {id: await dataItem.id};
 }
 
 async function sendRawDataItem(rawData) {
