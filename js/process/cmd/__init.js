@@ -58,7 +58,7 @@ function initState(message, state) {
     gameObjectsRarity: 10,
     gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],
     gameTreasuresTilesForClient: [GameObject.none],
-    gameTreasuresRarity: 15,
+    gameTreasuresRarity: 50,
     gameTreasuresCounter: 0,
     round: {
       current: 0,
@@ -93,12 +93,21 @@ function setVisibleGameObjects(state) {
 }
 
 function setInvisibleGameObjects(state) {
-  const gameTreasuresTilesToPropagate = state.gameTreasuresTiles.filter((t) => t != GameObject.hole);
-  state.gameTreasuresTilemap = setGameObjectsTilesOnMap(
-    state,
-    gameTreasuresTilesToPropagate,
-    state.gameTreasuresRarity
-  );
+  state.gameTreasuresTilemap = setGameObjectsTilesOnMap(state, [GameObject.none], 0);
+  let treasuresCount = 0;
+
+  while (treasuresCount < state.gameTreasuresRarity) {
+    const pos = calculateRandomPos(state, Map.size);
+
+    const isAllowedPosition = !(
+      state.obstaclesTilemap[pos.y][pos.x] >= 0 || state.gameTreasuresTilemap[pos.y][pos.x] == GameObject.treasure.tile
+    );
+    if (isAllowedPosition) {
+      state.gameTreasuresTilemap[pos.y][pos.x] = GameObject.treasure.tile;
+      treasuresCount++;
+      state.gameTreasuresCounter += 1;
+    }
+  }
 }
 
 function setInvisibleGameObjectsForClient(state) {
@@ -130,4 +139,12 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
 function getRandomNumber(min, max, randomCounter) {
   const randomValue = Math.random(randomCounter);
   return Math.floor(randomValue * (max - min + 1)) + min;
+}
+
+export function calculateRandomPos(state, max) {
+  state.randomCounter++;
+  const x = Math.floor(Math.random(state.randomCounter) * max);
+  state.randomCounter++;
+  const y = Math.floor(Math.random(state.randomCounter) * max);
+  return { x, y };
 }

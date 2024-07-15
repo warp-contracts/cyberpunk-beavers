@@ -1,4 +1,5 @@
 import Const from '../../common/const.mjs';
+import { calculateRandomPos } from './__init';
 
 const { BEAVER_TYPES, Map } = Const;
 
@@ -67,11 +68,7 @@ export function calculatePlayerRandomPos(state) {
   let pos;
 
   while (!isAllowedPosition) {
-    state.randomCounter++;
-    const x = Math.floor(Math.random(state.randomCounter) * Map.size);
-    state.randomCounter++;
-    const y = Math.floor(Math.random(state.randomCounter) * Map.size);
-    pos = { x, y };
+    pos = calculateRandomPos(state, Map.size);
 
     isAllowedPosition = !(state.playersOnTiles[pos.y][pos.x] || state.obstaclesTilemap[pos.y][pos.x] >= 0);
   }
