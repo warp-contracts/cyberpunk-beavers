@@ -16,17 +16,19 @@ if (envIdx < 0) {
 }
 const env = process.argv[envIdx + 1];
 
+const treasuresIdx = process.argv.indexOf('--treasures');
+const treasures = process.argv[treasuresIdx + 1];
+
 console.info(`Deploying for ${env} env.`);
 
 const maps = [
   'qtcpzuuGoVKVQGMuq_PMaRHEL071Ja1SV8dvC-gur2Q', // - 'default' map
   'AeSkeoKPIpM71iapW6Onv4681CAXOU9DEr2XcgDZPI0', // - ao 'tutorial' map
   'IOcu1uK7ViJc9OOA2PeUbAh1hAUlibeqOYbV2fmMZ6U', // Greg map 1
-  '0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM'  // Greg map 2
-]
+  '0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM', // Greg map 2
+];
 
-const randomIntegerInRange = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
+const randomIntegerInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 const mapTxId = maps[randomIntegerInRange(0, maps.length - 1)];
 
@@ -80,8 +82,12 @@ async function spawn({ processName, moduleId, chatProcessId, mapJson }) {
     processTags.push(new Tag('Chat-Process-Tx', chatProcessId));
   }
 
-  const data = mapJson ? JSON.stringify({ rawMap: mapJson, mapApi: 'v1' }) : '{}';
-  const processDataItem = createData(data, signer, { tags: processTags });
+  const data = {
+    ...(mapJson && { rawMap: mapJson, mapApi: 'v1' }),
+    ...(treasures && { gameTreasuresRarity: treasures }),
+  };
+
+  const processDataItem = createData(JSON.stringify(data), signer, { tags: processTags });
   await processDataItem.sign(signer);
 
   const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
