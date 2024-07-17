@@ -112,7 +112,11 @@ export default class StatsScene extends Phaser.Scene {
       color: 'white',
     }).setDepth(1);
     this.aoCounter.x = this.gameWidth / 2 - this.aoCounter.width / 2;
-    this.aoCounterImg = this.add.image(this.gameWidth / 2 + this.aoCounter.width / 2 + 24, this.aoCounter.y + this.aoCounter.height/2, 'AO');
+    this.aoCounterImg = this.add.image(
+      this.gameWidth / 2 + this.aoCounter.width / 2 + 24,
+      this.aoCounter.y + this.aoCounter.height / 2,
+      'AO'
+    );
     this.aoCounterImg.setDepth(2);
     this.aoCounterImg.visible = false;
   }
@@ -156,76 +160,11 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   initListeners() {
-    this.game.events.on(EVENTS_NAME.updateStats, (stats) => {
-      document.getElementById('stats-scene-hp').innerText = stats?.player?.hp?.current;
-      document.getElementById('stats-scene-frags').innerText = stats?.player?.kills.frags;
-      document.getElementById('stats-scene-deaths').innerText = stats?.player?.kills.deaths;
-      document.getElementById('stats-scene-cbcoins').innerText = stats?.player?.coins.balance;
-      document.getElementById('stats-scene-locked').innerText = stats?.player?.coins.available;
-      document.getElementById('stats-scene-transferred').innerText = stats?.player?.coins.transferred;
-      this.subtitle.setText(`AP: ${stats?.player?.ap?.current}`);
-      if (stats?.player?.ap?.current === 0) {
-        this.subtitle.setColor(colors.red);
-      } else {
-        this.subtitle.setColor(colors.white);
-      }
-      if (stats?.game?.gameTreasuresCounter) {
-        this.aoCounter.setText(`${stats?.game?.gameTreasuresCounter}   HIDDEN`);
-        this.aoCounter.x = this.gameWidth / 2 - this.aoCounter.width / 2;
-        this.aoCounterImg.x = this.gameWidth / 2 + this.aoCounter.width / 2 - 150;
-        this.aoCounterImg.visible = true;
-        this.aoCounterImg.setDepth(2);
-      }
-    });
-
-    this.game.events.on(EVENTS_NAME.updateRoundInfo, (roundInfo) => {
-      if (!this.mainScene.gameOver) {
-        this.timeMask.x = this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
-        this.title.setText(`ROUNDS LEFT ${roundInfo.roundsToGo || roundInfo.currentRound}`);
-      }
-    });
-
-    this.game.events.on(EVENTS_NAME.updatePlayers, (player) => {
-      this.allPlayers[player.walletAddress] = player;
-      const totalPlayers = Object.keys(this.allPlayers).length;
-      if (totalPlayers == 2) {
-        document.getElementById('stats-scene-other-beavers').innerHTML = this.addPlayersModal();
-      } else if (totalPlayers > 2) {
-        const totalPlayersSpan = document.getElementsByClassName('total-players')[0];
-        totalPlayersSpan.textContent = '' + (totalPlayers - 1);
-        const playerBoxes = document.querySelectorAll('[id="player-box"]');
-        const lastPlayerBox = playerBoxes[playerBoxes.length - 1];
-        lastPlayerBox.insertAdjacentHTML('afterend', this.addOtherPlayerBox(player));
-      }
-    });
-
-    this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => {
-      document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
-      document.getElementById(`stats-scene-frags-${player.walletAddress}`).innerText = player.kills.frags;
-      document.getElementById(`stats-scene-deaths-${player.walletAddress}`).innerText = player.kills.deaths;
-      document.getElementById(`stats-scene-cbcoins-${player.walletAddress}`).innerText = player.coins.balance;
-      document.getElementById(`stats-scene-locked-${player.walletAddress}`).innerText = player.coins.available;
-    });
-
-    this.game.events.on(EVENTS_NAME.nextMessage, ({response, lag}) => {
-      // console.log(response);
-      const player = this.me(response);
-
-      if (player) {
-        if (lag && lag.total > 0) {
-          document.getElementById('stats-scene-lag').innerHTML = `${this.formatLag(lag)}`;
-        }
-        const messageLog = {
-          player,
-          ...response,
-        };
-        const newLen = this.messageLogQueue.push(messageLog);
-        if (newLen > 4) {
-          this.messageLogQueue.shift();
-        }
-        document.getElementById('stats-scene-interaction-logs').innerHTML = this.interactionsFormatted();
-      }
-    });
+    this.game.events.on(EVENTS_NAME.updateStats, (stats) => this.onUpdateStats);
+    this.game.events.on(EVENTS_NAME.updateRoundInfo, (roundInfo) => this.onUpdateRoundInfo);
+    this.game.events.on(EVENTS_NAME.updatePlayers, (player) => this.onUpdatePlayers);
+    this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => this.onUpdateOtherPlayerStats);
+    this.game.events.on(EVENTS_NAME.nextMessage, ({ response, lag }) => this.onNexMessage(response, lag));
   }
 
   me(interaction) {
@@ -251,80 +190,88 @@ export default class StatsScene extends Phaser.Scene {
       text-transform: uppercase;
       color: #050a0e;
       clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);`;
+
     beaverStatsBoxEl.innerHTML = `
-    <div style="  display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background-color: #fcee09;
-    font-family: 'Press Start 2P';
-    font-size: 0.5rem;
-    padding: 30px 20px 30px 30px;
-    clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-    <img
-src="assets/images/beavers/${this.beaverChoice}/${this.beaverChoice}_portrait.png"
-width=72
-height=72/>
-<div style="display:flex; flex-grow: 1;"> </div>
-<div style="display: flex;
-flex-grow: 1;
-flex-direction: column;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;"><div>PLAYER</div>
-<div style="display: flex; justify-content: space-between;">
-<div style="padding-right: 10px;" id="stats-scene-player">${this.displayName({userName: this.userName, walletAddress: this.walletAddress})}</div>
-</div>
-</div>
-<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>PROCESS</div>
-<div style="display: flex; justify-content: space-between;">
-<div style="padding-right: 10px;" id="stats-scene-contract"><a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${trimString(this.processId)}</a></div>
-</div>
-</div>
-<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>LAG</div>
-<div style="display: flex; justify-content: space-between;">
-<div style="padding-right: 10px; width: 170px; text-align: right;" id="stats-scene-lag">${this.formatLag(window.warpAO.lag)}</div>
-</div>
-</div>
-</div>
-</div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>HP</div>
-      <div style="display: flex; justify-content: space-between;">
-          <div id="stats-scene-hp">${this.stats?.hp.current}</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>FRAGS</div>
-      <div style="display: flex; justify-content: space-between;">
-          <div id="stats-scene-frags">${this.stats?.kills.frags}</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>DEATHS</div>
-      <div style="display: flex; justify-content: space-between;">
-          <div id="stats-scene-deaths">${this.stats?.kills.deaths}</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;"><div>CBCOINS</div>
-    <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-cbcoins-process"><a style="color: black;" target="_blank" href='https://www.ao.link/#/token/${this.tokenProcessId}'>${trimString(this.tokenProcessId)}</a></div>
-    </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;"><div>OWNED</div>
-    <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-cbcoins">${this.stats?.coins.balance}</div>
-    </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;"><div>LOCKED</div>
-    <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-locked">${this.stats?.coins.available}</div>
-    </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;"><div>GAINED</div>
-    <div style="display: flex; justify-content: space-between;">
-    <div id="stats-scene-transferred">${this.stats?.coins.transferred}</div>
-    </div>
-    </div>
-    <div id="stats-scene-other-beavers">
-     ${this.addPlayersModal()}
-     </div>
-    </div>`;
+      <div style="display: flex;
+        justify-content: center;
+        flex-direction: column;
+        background-color: #fcee09;
+        font-family: 'Press Start 2P';
+        font-size: 0.5rem;
+        padding: 30px 20px 30px 30px;
+        clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <img src="assets/images/beavers/${this.beaverChoice}/${this.beaverChoice}_portrait.png" width=72 height=72/>
+          <div style="display:flex; flex-grow: 1;"> </div>
+          <div style="display: flex; flex-grow: 1; flex-direction: column;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 18px;">
+              <div>PLAYER</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div style="padding-right: 10px;" id="stats-scene-player">${this.displayName({ userName: this.userName, walletAddress: this.walletAddress })}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+              <div>PROCESS</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div style="padding-right: 10px;" id="stats-scene-contract">
+                  <a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${trimString(this.processId)}</a>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+              <div>LAG</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div style="padding-right: 10px; width: 170px; text-align: right;" id="stats-scene-lag">${this.formatLag(window.warpAO.lag)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;">
+          <div>HP</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div id="stats-scene-hp">${this.stats?.hp.current}</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;">
+          <div>FRAGS</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div id="stats-scene-frags">${this.stats?.kills.frags}</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;">
+          <div>DEATHS</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div id="stats-scene-deaths">${this.stats?.kills.deaths}</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-right: 10px;">
+          <div>CBCOINS</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div id="stats-scene-cbcoins-process">
+              <a style="color: black;" target="_blank" href='https://www.ao.link/#/token/${this.tokenProcessId}'>${trimString(this.tokenProcessId)}</a>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;">
+          <div>OWNED</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div id="stats-scene-cbcoins">${this.stats?.coins.balance}</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;">
+          <div>LOCKED</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div id="stats-scene-locked">${this.stats?.coins.available}</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding-right: 10px; padding-left:15px;">
+          <div>GAINED</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div id="stats-scene-transferred">${this.stats?.coins.transferred}</div>
+          </div>
+        </div>
+        <div id="stats-scene-other-beavers">${this.addPlayersModal()}</div>
+      </div>`;
 
     return beaverStatsBoxEl;
   }
@@ -333,24 +280,21 @@ flex-direction: column;">
     const otherPlayersLength = Object.keys(this.allPlayers).length - 1;
     if (Object.keys(this.allPlayers).length <= 1) return '';
     return `
-    <div style="position: relative;">
-    <div style="display: flex; justify-content: center;"><div style="display: flex;
-    justify-content: center;
-    margin-top: 25px;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 12px;">OTHER BEAVERS (<span class="total-players">${otherPlayersLength}</span>)</div></div>
-    <div style="max-height: 300px;
-    overflow-y: scroll;
-    padding-right: 10px;">
-      ${this.addPlayers()}
-    </div>
-    </div>
-    </div>
-`;
+      <div style="position: relative;">
+        <div style="display: flex; justify-content: center;">
+          <div style="display: flex;
+            justify-content: center;
+            margin-top: 25px;
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;">OTHER BEAVERS (<span class="total-players">${otherPlayersLength}</span>)
+          </div>
+        </div>
+        <div style="max-height: 300px; overflow-y: scroll; padding-right: 10px;">${this.addPlayers()}</div>
+      </div>`;
   }
 
   addPlayers() {
@@ -367,51 +311,50 @@ flex-direction: column;">
   addOtherPlayerBox(player) {
     return `
       <div style="display: flex; justify-content: space-between; align-items: end; margin-top: 25px;" id="player-box">
-      <img
-  src="assets/images/beavers/${player.beaverChoice}/${player.beaverChoice}_portrait.png"
-  width=64
-  height=64/>
-  <div style="display:flex; flex-grow: 1;"> </div>
-  <div style="display: flex;
-  flex-grow: 1;
-  flex-direction: column;">
-  <div style="align-self: flex-end;" id="stats-scene-wallet-address">${this.displayName(player)}</div>
-  <div style="display: flex; justify-content: space-between; flex-direction: column;">
-  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>HP</div>
-  <div style="display: flex; justify-content: space-between;">
-  <div id="stats-scene-hp-${player.walletAddress}">${player.stats.hp.current}</div>
-  </div>
-  </div>
-  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>FRAGS</div>
-  <div style="display: flex; justify-content: space-between;">
-  <div id="stats-scene-frags-${player.walletAddress}">${player.stats.kills.frags}</div>
-  </div>
-  </div>
-  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>DEATHS</div>
-  <div style="display: flex; justify-content: space-between;">
-  <div id="stats-scene-deaths-${player.walletAddress}">${player.stats.kills.deaths}</div>
-  </div>
-  </div>
-  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>CBCOINS</div>
-  <div style="display: flex; justify-content: space-between;">
-  <div id="stats-scene-cbcoins-${player.walletAddress}">${player.stats?.coins.balance}</div>
-  </div>
-  </div>
-  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;"><div>LOCKED</div>
-  <div style="display: flex; justify-content: space-between;">
-  <div id="stats-scene-locked-${player.walletAddress}">${player.stats?.coins.available}</div>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>
-      `;
+        <img src="assets/images/beavers/${player.beaverChoice}/${player.beaverChoice}_portrait.png" width=64 height=64/>
+        <div style="display:flex; flex-grow: 1;"> </div>
+        <div style="display: flex; flex-grow: 1; flex-direction: column;">
+          <div style="align-self: flex-end;" id="stats-scene-wallet-address">${this.displayName(player)}</div>
+          <div style="display: flex; justify-content: space-between; flex-direction: column;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+              <div>HP</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div id="stats-scene-hp-${player.walletAddress}">${player.stats.hp.current}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+              <div>FRAGS</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div id="stats-scene-frags-${player.walletAddress}">${player.stats.kills.frags}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+              <div>DEATHS</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div id="stats-scene-deaths-${player.walletAddress}">${player.stats.kills.deaths}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+              <div>CBCOINS</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div id="stats-scene-cbcoins-${player.walletAddress}">${player.stats?.coins.balance}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+              <div>LOCKED</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div id="stats-scene-locked-${player.walletAddress}">${player.stats?.coins.available}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
   }
 
   displayName(player) {
     if (player.userName) {
       if (player.userName.length > 11) {
-        trimString(player.userName, 4, 3, 4)
+        trimString(player.userName, 4, 3, 4);
       }
       return player.userName;
     }
@@ -432,11 +375,10 @@ flex-direction: column;">
       font-size: 0.5rem;
       clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);`;
     resultDiv.innerHTML = `
-    <div style="font-family: 'Press Start 2P'">
-    <div style='margin: 18px 0 0 40px'>INCOMING MESSAGES</div>
-    <div id="stats-scene-interaction-logs">${this.interactionsFormatted()}</div>
-    </div>
-    `;
+      <div style="font-family: 'Press Start 2P'">
+        <div style='margin: 18px 0 0 40px'>INCOMING MESSAGES</div>
+        <div id="stats-scene-interaction-logs">${this.interactionsFormatted()}</div>
+      </div>`;
     return resultDiv;
   }
 
@@ -480,9 +422,81 @@ flex-direction: column;">
       }
     }
     return `
-      <div id="stats-message" style='margin: 18px 0 0 40px'><span style='display: inline-block; width: 60px; text-transform: uppercase;'>${ml.cmd}</span>
-      <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/#/message/${ml.txId}'>${ml.txId.substr(0, 5) + '...' + ml.txId.substr(ml.txId.length - 5)}</a>
-      ${data}
+      <div id="stats-message" style='margin: 18px 0 0 40px'>
+        <span style='display: inline-block; width: 60px; text-transform: uppercase;'>${ml.cmd}</span>
+        <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/#/message/${ml.txId}'>${ml.txId.substr(0, 5) + '...' + ml.txId.substr(ml.txId.length - 5)}</a>
+        ${data}
       </div>`;
+  }
+
+  onUpdateStats(stats) {
+    document.getElementById('stats-scene-hp').innerText = stats?.player?.hp?.current;
+    document.getElementById('stats-scene-frags').innerText = stats?.player?.kills.frags;
+    document.getElementById('stats-scene-deaths').innerText = stats?.player?.kills.deaths;
+    document.getElementById('stats-scene-cbcoins').innerText = stats?.player?.coins.balance;
+    document.getElementById('stats-scene-locked').innerText = stats?.player?.coins.available;
+    document.getElementById('stats-scene-transferred').innerText = stats?.player?.coins.transferred;
+    this.subtitle.setText(`AP: ${stats?.player?.ap?.current}`);
+    if (stats?.player?.ap?.current === 0) {
+      this.subtitle.setColor(colors.red);
+    } else {
+      this.subtitle.setColor(colors.white);
+    }
+    if (stats?.game?.gameTreasuresCounter) {
+      this.aoCounter.setText(`${stats?.game?.gameTreasuresCounter}   HIDDEN`);
+      this.aoCounter.x = this.gameWidth / 2 - this.aoCounter.width / 2;
+      this.aoCounterImg.x = this.gameWidth / 2 + this.aoCounter.width / 2 - 150;
+      this.aoCounterImg.visible = true;
+      this.aoCounterImg.setDepth(2);
+    }
+  }
+
+  onUpdateRoundInfo(roundInfo) {
+    if (!this.mainScene.gameOver) {
+      this.timeMask.x = this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
+      this.title.setText(`ROUNDS LEFT ${roundInfo.roundsToGo || roundInfo.currentRound}`);
+    }
+  }
+
+  onUpdatePlayers(player) {
+    this.allPlayers[player.walletAddress] = player;
+    const totalPlayers = Object.keys(this.allPlayers).length;
+    if (totalPlayers == 2) {
+      document.getElementById('stats-scene-other-beavers').innerHTML = this.addPlayersModal();
+    } else if (totalPlayers > 2) {
+      const totalPlayersSpan = document.getElementsByClassName('total-players')[0];
+      totalPlayersSpan.textContent = '' + (totalPlayers - 1);
+      const playerBoxes = document.querySelectorAll('[id="player-box"]');
+      const lastPlayerBox = playerBoxes[playerBoxes.length - 1];
+      lastPlayerBox.insertAdjacentHTML('afterend', this.addOtherPlayerBox(player));
+    }
+  }
+
+  onUpdateOtherPlayerStats(player) {
+    document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
+    document.getElementById(`stats-scene-frags-${player.walletAddress}`).innerText = player.kills.frags;
+    document.getElementById(`stats-scene-deaths-${player.walletAddress}`).innerText = player.kills.deaths;
+    document.getElementById(`stats-scene-cbcoins-${player.walletAddress}`).innerText = player.coins.balance;
+    document.getElementById(`stats-scene-locked-${player.walletAddress}`).innerText = player.coins.available;
+  }
+
+  onNexMessage(response, lag) {
+    // console.log(response);
+    const player = this.me(response);
+
+    if (player) {
+      if (lag && lag.total > 0) {
+        document.getElementById('stats-scene-lag').innerHTML = `${this.formatLag(lag)}`;
+      }
+      const messageLog = {
+        player,
+        ...response,
+      };
+      const newLen = this.messageLogQueue.push(messageLog);
+      if (newLen > 4) {
+        this.messageLogQueue.shift();
+      }
+      document.getElementById('stats-scene-interaction-logs').innerHTML = this.interactionsFormatted();
+    }
   }
 }
