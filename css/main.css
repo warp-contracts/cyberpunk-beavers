@@ -2,3 +2,36 @@
   margin: 0;
   padding: 0;
 }
+
+.list-container {
+  position: relative;
+  height: 300px;
+}
+
+.list-item {
+  transition: transform 0.5s ease-in-out;
+  position: relative;
+  width: 100%;
+}
+
+.list-item.shuffling {
+  position: absolute;
+  left: 0;
+  transition:
+    transform 0.5s ease-in-out,
+    opacity 0.25s ease-in-out;
+}
+
+@keyframes fade-out-in {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.list-item.shuffling {
+  animation: fade-out-in 0.5s ease-in-out;
+}
