@@ -412,7 +412,6 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   onNexMessage(response, lag) {
-    // console.log(response);
     const player = this.me(response);
 
     if (player) {

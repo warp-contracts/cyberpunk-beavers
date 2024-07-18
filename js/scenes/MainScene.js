@@ -13,10 +13,10 @@ import {
   statsSceneKey,
   chatSceneKey,
 } from '../config/config.js';
-import { createDataItemSigner, dryrun } from "@permaweb/aoconnect";
+import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
 import { WebFontFile } from '../WebFontFile.js';
-import { ANIM_SETTINGS } from "./anim/settings.js";
+import { ANIM_SETTINGS } from './anim/settings.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -90,7 +90,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.atlas(
       `${beaver}_anim_${asset}`,
       `assets/images/beavers/${beaver}/${beaver}_anim_${asset}.png`,
-      `assets/images/beavers/${beaver}/${beaver}_anim_${asset}_atlas.json`);
+      `assets/images/beavers/${beaver}/${beaver}_anim_${asset}_atlas.json`
+    );
   }
 
   async create() {
@@ -98,6 +99,7 @@ export default class MainScene extends Phaser.Scene {
     this.addSounds();
     this.initAnimations();
     this.allPlayers = {};
+    this.ranking = [];
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnectionGame;
       this.server.subscribe(this);
@@ -110,14 +112,13 @@ export default class MainScene extends Phaser.Scene {
   initAnimations() {
     for (const [beaver, anims] of Object.entries(ANIM_SETTINGS)) {
       for (const [anim, config] of Object.entries(anims)) {
-        const {prefix, start, end, frameRate} = config;
+        const { prefix, start, end, frameRate } = config;
         this.anims.create({
           key: `${beaver}_${anim}`,
-          frames: this.anims.generateFrameNames(`${beaver}_anim_${anim}`, { prefix, start, end, }),
+          frames: this.anims.generateFrameNames(`${beaver}_anim_${anim}`, { prefix, start, end }),
           frameRate,
         });
       }
-
     }
 
     this.anims.create({
@@ -133,22 +134,27 @@ export default class MainScene extends Phaser.Scene {
 
   async registerPlayer() {
     const balance = await this.checkBalance();
-    const generatedWalletAddress = warpAO.signingMode == 'arconnect'
-      ? localStorage.getItem('generated_wallet_address')
-      : null;
+    const generatedWalletAddress =
+      warpAO.signingMode == 'arconnect' ? localStorage.getItem('generated_wallet_address') : null;
     // console.log(balance);
     if (this.beaverId) {
       console.log(`Beaver has already been registered previously, joining game...`, this.beaverId);
-      await this.server.send({ cmd: Const.Command.join, balance: balance && parseInt(balance), generatedWalletAddress }, true);
+      await this.server.send(
+        { cmd: Const.Command.join, balance: balance && parseInt(balance), generatedWalletAddress },
+        true
+      );
     } else {
       console.log('Register player...');
-      await this.server.send({
-        cmd: Const.Command.register,
-        beaverId: this.beaverChoice,
-        userName: this.userName,
-        balance: balance && parseInt(balance),
-        generatedWalletAddress
-      }, true);
+      await this.server.send(
+        {
+          cmd: Const.Command.register,
+          beaverId: this.beaverChoice,
+          userName: this.userName,
+          balance: balance && parseInt(balance),
+          generatedWalletAddress,
+        },
+        true
+      );
     }
   }
 
@@ -184,12 +190,12 @@ export default class MainScene extends Phaser.Scene {
         signer: dataItemSigner,
         data: '1234',
       });
-      const balance = result.Messages[0].Tags.find((t) => t.name === "Balance").value;
+      const balance = result.Messages[0].Tags.find((t) => t.name === 'Balance').value;
       console.log(`Checking balance ${balance} took ${Date.now() - now}ms`);
       return balance;
     } catch (error) {
       console.error(error);
-      return "0";
+      return '0';
     }
   }
 
@@ -209,10 +215,11 @@ export default class MainScene extends Phaser.Scene {
     this.mainPlayer.mainScene = this;
 
     this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
+    this.updateRanking();
     this.scene.launch(statsSceneKey, {
       beaverChoice: this.beaverChoice,
     });
-    this.scene.launch(chatSceneKey, {userName: playerInfo.userName});
+    this.scene.launch(chatSceneKey, { userName: playerInfo.userName });
     this.statsScene = this.scene.get(statsSceneKey);
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
     this.statsScene.userName = this.mainPlayer?.userName;
@@ -236,6 +243,7 @@ export default class MainScene extends Phaser.Scene {
       beaverChoice: playerInfo.beaverId,
     });
     this.allPlayers[playerInfo.walletAddress] = player;
+    this.updateRanking();
     return player;
   }
 
@@ -463,14 +471,18 @@ export default class MainScene extends Phaser.Scene {
             self.allPlayers[response.player.walletAddress].moveTo(response.player);
           }
 
-          if (response.player.onGameObject != null &&
-            response.player.walletAddress === self.mainPlayer?.walletAddress) {
+          if (
+            response.player.onGameObject != null &&
+            response.player.walletAddress === self.mainPlayer?.walletAddress
+          ) {
             // console.log(`Main player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
             this.mainPlayer.onGameObject = response.player.onGameObject;
           }
 
-          if (response.player.onGameTreasure != null &&
-            response.player.walletAddress === self.mainPlayer?.walletAddress) {
+          if (
+            response.player.onGameTreasure != null &&
+            response.player.walletAddress === self.mainPlayer?.walletAddress
+          ) {
             // console.log(`Main player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
             this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
           }
@@ -584,19 +596,27 @@ export default class MainScene extends Phaser.Scene {
 
   updateStats(responsePlayer, gameStats) {
     const self = this;
-    // console.log('Player stats', responsePlayer);
+    let currentCoinsAvailable;
+    let newCoinsAvailable;
     if (responsePlayer?.walletAddress === self.mainPlayer?.walletAddress) {
+      currentCoinsAvailable = self.mainPlayer?.stats.coins.available;
+      newCoinsAvailable = responsePlayer.stats.coins.available;
       self.mainPlayer.updateStats(responsePlayer.stats);
       this.game.events.emit(EVENTS_NAME.updateStats, {
         player: responsePlayer.stats,
-        game: gameStats
+        game: gameStats,
       });
     } else if (responsePlayer) {
+      currentCoinsAvailable = this.allPlayers[responsePlayer?.walletAddress].stats.coins.available;
+      newCoinsAvailable = responsePlayer.stats.coins.available;
       this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
       this.game.events.emit(EVENTS_NAME.updateOtherPlayerStats, {
         ...responsePlayer.stats,
         walletAddress: responsePlayer.walletAddress,
       });
+    }
+    if (currentCoinsAvailable != newCoinsAvailable) {
+      self.updateRanking();
     }
   }
 
@@ -720,5 +740,12 @@ export default class MainScene extends Phaser.Scene {
         this.backgroundMusic.play();
       }
     });
+  }
+
+  updateRanking() {
+    this.ranking = Object.entries(this.allPlayers).sort(
+      (a, b) => b[1].stats.coins.available - a[1].stats.coins.available
+    );
+    Object.values(this.allPlayers).forEach((p) => p.updatePlayerPosition());
   }
 }

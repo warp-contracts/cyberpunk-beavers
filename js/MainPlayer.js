@@ -16,8 +16,8 @@ export default class MainPlayer extends Player {
 
     const attackMarkers = stats.attack_range * 2 + 1;
 
-    this.rangeBarX = scene.add.grid(x, y, attackMarkers * 48, 48, 48, 48, 0xFF0000, 0.2);
-    this.rangeBarY = scene.add.grid(x, y, 48, attackMarkers * 48, 48, 48, 0xFF0000, 0.2);
+    this.rangeBarX = scene.add.grid(x, y, attackMarkers * 48, 48, 48, 48, 0xff0000, 0.2);
+    this.rangeBarY = scene.add.grid(x, y, 48, attackMarkers * 48, 48, 48, 0xff0000, 0.2);
   }
 
   async update() {
@@ -60,7 +60,12 @@ export default class MainPlayer extends Player {
 
   baseMoveTo(pos, onStart, onComplete) {
     const { movementTemplate, moveHorizontal, moveVertical } = super.baseMoveTo(pos, onStart, onComplete);
-    this.scene.tweens.add({ ...movementTemplate, targets: [this.rangeBarX, this.rangeBarY], x: `+=${moveHorizontal}`, y: `+=${moveVertical}` })
+    this.scene.tweens.add({
+      ...movementTemplate,
+      targets: [this.rangeBarX, this.rangeBarY],
+      x: `+=${moveHorizontal}`,
+      y: `+=${moveVertical}`,
+    });
   }
 
   async action(dir) {

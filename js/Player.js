@@ -1,5 +1,5 @@
 import Const from './common/const.mjs';
-import { trimString } from "./utils/utils.js";
+import { trimString } from './utils/utils.js';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
@@ -15,14 +15,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.onGameObject = null;
     this.setDepth(5);
 
+    this.position = this.addInfoText(x, y - 55, ``);
     this.healthBar = scene.add.rectangle(x, y - 32, this.calculateBarWidth(this.stats.hp), 6, 0xdc143c);
     this.apBar = scene.add.rectangle(x, y - 40, this.calculateBarWidth(this.stats.ap), 6, 0x00ff00);
     this.healthBar.setDepth(10);
     this.apBar.setDepth(10);
+    this.position.setDepth(10);
 
     const name = this.displayName();
-    this.name = scene.add.text(x-2*name.length-8, y+22, name,
-      {font: '10px', fill: "#ffffff", backgroundColor: "#000000", align: "center"});
+    this.name = scene.add.text(x - 2 * name.length - 8, y + 22, `${name}`, {
+      font: '10px',
+      fill: '#ffffff',
+      backgroundColor: '#000000',
+      align: 'center',
+    });
     this.name.setDepth(8);
   }
 
@@ -34,7 +40,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   displayName() {
     if (this.userName) {
       if (this.userName.length > 8) {
-        return trimString(this.userName, 2, 2, 2)
+        return trimString(this.userName, 2, 2, 2);
       }
       return this.userName;
     }
@@ -45,6 +51,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.healthBar.setSize(this.calculateBarWidth(newStats.hp), 6);
     this.apBar.setSize(this.calculateBarWidth(newStats.ap), 6);
     this.stats = newStats;
+  }
+
+  updatePlayerPosition() {
+    const text = `${this.scene.ranking.indexOf(this.scene.ranking.find((r) => r[0] == this.walletAddress)) + 1}/${this.scene.ranking.length}`;
+    console.log(text);
+    this.position.setText(text);
+    this.position.x = this.x - 3 * text.length;
   }
 
   moveTo(response) {
@@ -58,7 +71,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       () => {
         self.anims.stop();
         self.anims.play(`${self.beaverChoice}_idle`, true);
-      });
+      }
+    );
   }
 
   attackAnim() {
@@ -82,7 +96,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       repeat: 0, // -1: infinity
       yoyo: false,
       onStart,
-      onComplete
+      onComplete,
     };
 
     // TODO: this should fixed? and use prevPos into account
@@ -91,33 +105,37 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
     this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
-    this.scene.tweens.add({ ...movementTemplate, targets: [this.name, this.healthBar, this.apBar, /*this.rangeBarX, this.rangeBarY*/], x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
+    this.scene.tweens.add({
+      ...movementTemplate,
+      targets: [this.name, this.position, this.healthBar, this.apBar /*this.rangeBarX, this.rangeBarY*/],
+      x: `+=${moveHorizontal}`,
+      y: `+=${moveVertical}`,
+    });
 
-    return { movementTemplate, moveHorizontal, moveVertical }
+    return { movementTemplate, moveHorizontal, moveVertical };
   }
-
 
   bloodyRespawn(pos) {
     const self = this;
     self.scene.tweens.add({
-        targets: [self],
-        ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        duration: 200,
-        x: self.x,
-        delay: 0,
-        repeat: 2, // -1: infinity
-        yoyo: false,
-        onStart: () => {
-          self.anims.play(`blood`, true);
-        },
-        onComplete: () => {
-          self.baseMoveTo(
-            pos,
-            () => {},
-            () => self.blink());
-        },
-      }
-    );
+      targets: [self],
+      ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 200,
+      x: self.x,
+      delay: 0,
+      repeat: 2, // -1: infinity
+      yoyo: false,
+      onStart: () => {
+        self.anims.play(`blood`, true);
+      },
+      onComplete: () => {
+        self.baseMoveTo(
+          pos,
+          () => {},
+          () => self.blink()
+        );
+      },
+    });
   }
 
   blink() {
@@ -129,7 +147,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       delay: 0,
       yoyo: true,
       alpha: { from: 1, to: 0 },
-      repeat: 2
+      repeat: 2,
     });
   }
 
@@ -146,6 +164,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
       p: Phaser.Input.Keyboard.KeyCodes.P,
       d: Phaser.Input.Keyboard.KeyCodes.D,
+    });
+  }
+
+  addInfoText(x, y, text) {
+    return this.scene.add.text(x, y, text, {
+      font: '10px',
+      fill: '#ffffff',
+      backgroundColor: '#000000',
+      align: 'center',
     });
   }
 }
