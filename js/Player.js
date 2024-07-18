@@ -54,10 +54,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   updatePlayerPosition() {
-    const text = `${this.scene.ranking.indexOf(this.scene.ranking.find((r) => r[0] == this.walletAddress)) + 1}/${this.scene.ranking.length}`;
-    console.log(text);
+    const playerPosition = this.scene.ranking.indexOf(this.scene.ranking.find((r) => r[0] == this.walletAddress)) + 1;
+    const text = `${playerPosition}/${this.scene.ranking.length}`;
     this.position.setText(text);
     this.position.x = this.x - 3 * text.length;
+    if (this.medal) this.medal.destroy();
+    switch (playerPosition) {
+      case 1:
+        this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_gold');
+        break;
+      case 2:
+        this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_silver');
+        break;
+      case 3:
+        this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_brown');
+        break;
+    }
   }
 
   moveTo(response) {
@@ -107,7 +119,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
     this.scene.tweens.add({
       ...movementTemplate,
-      targets: [this.name, this.position, this.healthBar, this.apBar /*this.rangeBarX, this.rangeBarY*/],
+      targets: [this.name, this.position, this.medal, this.healthBar, this.apBar /*this.rangeBarX, this.rangeBarY*/],
       x: `+=${moveHorizontal}`,
       y: `+=${moveVertical}`,
     });

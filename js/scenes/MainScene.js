@@ -51,6 +51,10 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('cyberpunk_game_objects', 'assets/images/ap_hp.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
 
+    this.load.image('medal_gold', 'assets/images/medal-gold.png');
+    this.load.image('medal_silver', 'assets/images/medal-silver.png');
+    this.load.image('medal_brown', 'assets/images/medal-brown.png');
+
     this.loadBeaverAssets('hacker_beaver');
     this.loadBeaverAssets('heavy_beaver');
     this.loadBeaverAssets('speedy_beaver');
