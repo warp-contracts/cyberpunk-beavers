@@ -1,6 +1,6 @@
 import Const from '../common/const.mjs';
 import { colors } from '../utils/style.js';
-import { serverConnectionGame } from '../lib/serverConnection.js';
+import { serverConnection } from "../lib/serverConnection.js";
 import { TextButton } from '../objects/TextButton.js';
 import {
   mainSceneKey,
@@ -33,7 +33,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
     console.log('Lounge Area - 3. Create');
 
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
-      this.server = serverConnectionGame;
+      this.server = serverConnection.game;
       this.server.subscribe(this);
       this.profilePromise = checkProfile(this.walletAddress);
       this.server.send({ cmd: Const.Command.info });
@@ -108,8 +108,10 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   async handleMessage(response) {
+    console.log(`Got message`, response)
     switch (response.cmd) {
       case Const.Command.stats: {
+        console.log(`Got me some stats`, response)
         if (response.end && response.end < new Date()) {
           this.scene.start(leaderboardSceneKey, {
             players: response.players,
@@ -126,8 +128,8 @@ export default class LoungeAreaScene extends Phaser.Scene {
           console.error('Failed to fetch game info', response.error);
           this.scene.start(connectWalletSceneKey);
         } else if (!this.gameError) {
-          if (response.player && response.player.walletAddress === this.walletAddress) {
-            this.beaverId = response.player.beaverId;
+          if (response.players && response.players[this.walletAddress]) {
+            this.beaverId = response.players[this.walletAddress].beaverId;
           }
           if (response.active) {
             const userName = (await this.profilePromise)?.Profile?.UserName;

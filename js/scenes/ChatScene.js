@@ -1,5 +1,5 @@
 import Const, {MAX_MSG_LENGTH, MIN_MSG_LENGTH} from '../common/const.mjs';
-import { serverConnectionChat } from '../lib/serverConnection.js';
+import { serverConnection } from '../lib/serverConnection.js';
 import { chatSceneKey } from "../config/config.js";
 import { trimString } from "../utils/utils.js";
 
@@ -32,7 +32,7 @@ export default class ChatScene extends Phaser.Scene {
 
   async create() {
     console.log('Chats Scene - 3. Create');
-    this.server = serverConnectionChat;
+    this.server = serverConnection.chat;
     this.server.subscribe(this);
     this.server.send({ cmd: Const.Command.join, userName: this.userName });
 

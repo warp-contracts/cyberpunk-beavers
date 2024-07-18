@@ -396,7 +396,7 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   onUpdateOtherPlayerStats(player) {
-    const currentLockedValue = document.getElementById(`stats-scene-locked-${player.walletAddress}`).innerText;
+    const currentLockedValue = document.getElementById(`stats-scene-locked-${player.walletAddress}`)?.innerText;
     const newLockedValue = player.coins.available;
     document
       .getElementById(`player-box-${player.walletAddress}`)

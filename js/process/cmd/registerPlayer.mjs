@@ -60,6 +60,7 @@ export function registerPlayer(state, action) {
   if (generatedWalletAddress) {
     state.generatedWalletsMapping[generatedWalletAddress] = walletAddress;
   }
+  sendHubNotification(state);
   return { player: newPlayer };
 }
 
@@ -77,4 +78,16 @@ export function calculatePlayerRandomPos(state) {
   );
 
   return pos;
+}
+
+function sendHubNotification(state) {
+  console.log(`---- GAME -- updating players`, state.hubProcessId);
+  ao.send({
+    Target: state.hubProcessId,
+    Data: '1234',
+    Action: JSON.stringify({
+      cmd: Const.Command.hubGamePlayers,
+      players: Object.keys(state.players),
+    }),
+  });
 }

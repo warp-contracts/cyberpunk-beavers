@@ -46,6 +46,10 @@ const Command = {
   msg: 'msg',
   setNextProcess: 'setNextProcess',
   nextProcessSet: 'nextProcessSet',
+  hubRegisterGame: 'hubRegisterGame',
+  hubGamePlayers: 'hubGamePlayers',
+  hubInfo: 'hubInfo',
+  hubStats: 'hubStats'
 };
 
 const Direction = {

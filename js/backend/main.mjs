@@ -2,31 +2,14 @@ import { WebSocketServer, WebSocket } from 'ws';
 import {QuickJsPlugin} from "warp-contracts-plugin-quickjs";
 import ids from '../config/warp-ao-ids.js';
 import fs from "fs";
+import { mockDataItem } from "../tools/common.mjs";
 
 const WS_PORT = 8097;
 
 // Create a WebSocket server
 const wss = new WebSocketServer({ port: WS_PORT });
-
 const quickJSPlugin = new QuickJsPlugin({});
 
-/* ------ GAME ------*/
-const gameSource = fs.readFileSync('./dist/output-game.js', 'utf-8');
-const gameQuickJS = await quickJSPlugin.process({
-  contractSource: gameSource,
-  binaryType: "release_sync"
-});
-const map = JSON.parse(fs.readFileSync('./assets/maps/map-2-30x30.json', 'utf-8'));
-let gameState = { rawMap: map };
-
-
-/* ------ CHAT ------*/
-const chatSource = fs.readFileSync('./dist/output-chat.js', 'utf-8');
-const chatQuickJs = await quickJSPlugin.process({
-  contractSource: chatSource,
-  binaryType: "release_sync"
-});
-let chatState = {};
 
 const processEnv = {
   Process: {
@@ -42,6 +25,10 @@ const processEnv = {
 }
 
 let txId = null;
+let ongoingProcesses = await spawnGameHub();
+const hub = ongoingProcesses[ids.hub_processId_dev];
+Object.assign(ongoingProcesses, (await spawnGameAndChat()));
+Object.assign(ongoingProcesses, (await spawnGameAndChat()));
 
 
 // Event listener for WebSocket connections
@@ -53,14 +40,17 @@ wss.on('connection', (ws, request) => {
   ws.on('message', async (req) => {
     const message = JSON.parse(req);
     const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
-    const processTagValue = message.Tags.find((t) => t.name === 'From-Process').value;
+    const processTagValue = message.Tags.find((t) => t.name === 'From-Process')?.value;
     console.log(`-------------------------------------------`)
     console.log('WS REQ: %s', processTagValue, actionTagValue);
     txId = message.Id;
 
-    if (ids['chat_processId_dev'] === processTagValue) {
-      const result = await chatQuickJs.handle(message, processEnv, chatState);
-      chatState = result.State;
+    const process = ongoingProcesses[processTagValue];
+    if (!process) {
+      console.error(`Process not found ${processTagValue} among `, Object.keys(ongoingProcesses))
+    } else {
+      const result = await process.quickJS.handle(message, processEnv, process.state);
+      process.state = result.State;
       if (result.Error) {
         console.error(result.Error);
       }
@@ -68,19 +58,21 @@ wss.on('connection', (ws, request) => {
         logAndBroadcast(result.Output, processTagValue);
       }
       if (result.Messages.length) {
-        chatState = await sendResponse(chatQuickJs, chatState, result.Messages[0]);
-      }
-    } else {
-      const result = await gameQuickJS.handle(message, processEnv, gameState);
-      gameState = result.State;
-      if (result.Error) {
-        console.error(result.Error);
-      }
-      if (result.Output) {
-        logAndBroadcast(result.Output, processTagValue);
-      }
-      if (result.Messages?.length) {
-        gameState = await sendResponse(gameQuickJS, gameState, result.Messages[0]);
+        const msg = result.Messages[0];
+        const addresseeProcess = ongoingProcesses[msg.Target];
+        if (addresseeProcess) {
+          if (msg?.Tags?.find((t) => t.name === 'From-Process')) {
+            msg.Tags.find((t) => t.name === 'From-Process').value = processTagValue;
+          } else {
+            msg?.Tags?.push({name: 'From-Process', value: processTagValue});
+          }
+          console.log(`-- Sending message to ${msg.Target} `, msg);
+          addresseeProcess.state = await sendMessage(addresseeProcess.quickJS, addresseeProcess.state, msg);
+        } else {
+          // no process spawned in dev, probably aimed for AO, like transfer action
+          console.log(`-- No process, sending debit notice back to ${msg.Target} `, msg);
+          process.state = await sendDebitNotice(process.quickJS, process.state, msg);
+        }
       }
     }
   });
@@ -103,7 +95,17 @@ function logAndBroadcast(message, processId) {
   });
 }
 
-async function sendResponse(quickJs, state, message) {
+async function sendMessage(quickJs, state, message) {
+  return await (new Promise((resolve, reject) => {
+    setTimeout(async () => {
+      const result = await quickJs.handle(message, processEnv, state);
+      resolve(result.State);
+    }, 10);
+  }));
+}
+
+
+async function sendDebitNotice(quickJs, state, message) {
   console.log(message);
   return await (new Promise((resolve, reject) => {
     setTimeout(async () => {
@@ -118,7 +120,68 @@ async function sendResponse(quickJs, state, message) {
       resolve(result.State);
     }, 600);
   }));
+}
 
+async function spawnGameHub() {
+  return {
+    [ids.hub_processId_dev]: {
+      quickJS: await quickJSPlugin.process({
+        contractSource: fs.readFileSync('./dist/output-hub.js', 'utf-8'),
+        binaryType: "release_sync"
+      }),
+      state: {}
+    }
+  }
+}
+
+async function spawnGameAndChat() {
+  const chatProcess = await spawnChat();
+
+  const quickJS = await quickJSPlugin.process({
+    contractSource: fs.readFileSync('./dist/output-game.js', 'utf-8'),
+    binaryType: "release_sync"
+  });
+  const processRandomId = Math.random().toString(36).substring(2);
+  const setupMessage = mockDataItem({
+    cmd: 'setup',
+    type: 'custom',
+    chatProcessId: Object.keys(chatProcess)[0],
+    chatModuleId: Object.values(chatProcess)[0].moduleId,
+    hubProcessId: ids.hub_processId_dev
+  }, processEnv.Process.Owner);
+  const result = await quickJS.handle(setupMessage, processEnv, {
+    rawMap: JSON.parse(fs.readFileSync('./assets/maps/map-2-30x30.json', 'utf-8'))
+  });
+  if (result.Error) {
+    console.error(result.Error);
+  }
+  if (result.Messages.length) {
+    const message = result.Messages[0];
+    message.Tags.find((t) => t.name === 'From-Process').value = processRandomId;
+    hub.state = (await hub.quickJS.handle(result.Messages[0], processEnv, hub.state)).State;
+  }
+  return {
+    ...chatProcess,
+    [processRandomId]: {
+      quickJS: quickJS,
+      state: result.State
+    }
+  }
+}
+
+async function spawnChat() {
+  const chatQuickJs = await quickJSPlugin.process({
+    contractSource: fs.readFileSync('./dist/output-chat.js', 'utf-8'),
+    binaryType: "release_sync"
+  });
+  const processRandomId = Math.random().toString(36).substring(2);
+  return {
+    [processRandomId]: {
+      moduleId: processRandomId,
+      quickJS: chatQuickJs,
+      state: {}
+    }
+  }
 }
 
 console.log(`WebSocket server is running on port ${WS_PORT}`);

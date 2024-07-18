@@ -18,6 +18,12 @@ window.warpAO = {
   generatedSigner: null,
   signingMode: null, // generated | arconnect
   nonce: -1,
+  gameHubProcessId: () => {
+    return window.warpAO.config[`hub_processId_${env}`];
+  },
+  gameHubModuleId: () => {
+    return window.warpAO.config[`hub_moduleId_${env}`];
+  },
   processId: () => {
     return window.warpAO.config[`processId_${env}`];
   },
