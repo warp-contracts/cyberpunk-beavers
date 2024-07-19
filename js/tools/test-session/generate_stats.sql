@@ -1,4 +1,8 @@
-
+---------------------------------------------------------------------------------------------------------------------
+------- Following sql were used to generate stats for each testing session.
+------- Each of the sql is parametrised with timestamp to fetch accurate data.
+------- Please remember to update it before running.
+---------------------------------------------------------------------------------------------------------------------
 
 
 --- Overall
@@ -240,3 +244,35 @@ group by val -> 'opponent' ->> 'walletAddress'
 order by 2 desc;
 ---------------------------------------------------------------------------------------------------------------------
 
+
+------- Biggest Talker
+with message as (
+    select
+                    message_data -> 'message' -> 'owner' ->> 'address' as owner,
+                    message_id,
+                    timestamp,
+                    message_data -> 'message' -> 'tags' as tags,
+                    (jsonb_path_query_array(message_data, '$.message.tags[*] ? (@.name == "Action")') -> 0 ->> 'value') as value,
+                    (jsonb_path_query_array(message_data, '$.message.tags[*] ? (@.name == "Recipient")') -> 0 ->> 'value') as recipient,
+                    (jsonb_path_query_array(message_data, '$.message.tags[*] ? (@.name == "Quantity")') -> 0 ->> 'value') as qty,
+                    (jsonb_path_query_array(message_data, '$.message.tags[*] ? (@.name == "Action")') -> 0 ->> 'value') = any(ARRAY['Debit', 'Debit-Notice']) as weird
+    from su.messages
+    where timestamp >= 1720099800000 and timestamp <= 1720102980000
+      and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4'
+      and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
+), action as (
+    select
+        message_id,
+        timestamp,
+        owner,
+        recipient,
+        qty,
+        case when weird then value else value::jsonb ->> 'cmd' end as cmd,
+        value
+    from message
+)
+-- select distinct cmd from action;
+-- select distinct owner from action;
+select owner, count(*) from action where cmd = 'msg'
+group by owner order by 2 desc;
+---------------------------------------------------------------------------------------------------------------------
