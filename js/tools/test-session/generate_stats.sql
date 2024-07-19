@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------------------------
-------- Following sql were used to generate stats for each testing session.
+------- Following sqls were used to generate stats for each testing session.
 ------- Each of the sql is parametrised with timestamp to fetch accurate data.
 ------- Please remember to update it before running.
 ------- Watch out for the oracle process: _b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ
