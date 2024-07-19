@@ -2,6 +2,7 @@
 ------- Following sql were used to generate stats for each testing session.
 ------- Each of the sql is parametrised with timestamp to fetch accurate data.
 ------- Please remember to update it before running.
+------- Watch out for the oracle process: _b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ
 ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -12,8 +13,7 @@ with wallet_mapping as (
     select distinct key as temp_wallet, value as owner
     from results, jsonb_each(result -> 'State' -> 'generatedWalletsMapping')
     where timestamp >= '2024-07-16 14:00:00 +00:00' and timestamp <= '2024-07-16 15:00:00 +00:00'
-      and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
-      and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4')
+      and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ')
 select count(distinct owner) as "Actual Players"
 from wallet_mapping;
 ---------------------------------------------------------------------------------------------------------------------
@@ -32,8 +32,7 @@ with message as (
                     (jsonb_path_query_array(message_data, '$.message.tags[*] ? (@.name == "Action")') -> 0 ->> 'value') = any(ARRAY['Debit', 'Debit-Notice']) as weird
     from messages
     where timestamp >= 1721138400000 and timestamp <= 1721142000000
-      and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4'
-      and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
+      and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ'
 )
 select count(distinct owner) as "Visitors",
        count(distinct process_id) as "Games and chat processes",
@@ -52,8 +51,7 @@ with message as (
         (jsonb_path_query_array(message_data, '$.message.tags[*] ? (@.name == "Action")') -> 0 ->> 'value') = any(ARRAY['Debit', 'Debit-Notice']) as weird
     from messages
     where timestamp >= 1721138400000 and timestamp <= 1721142000000
-      and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4'
-      and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
+      and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ'
 )
 --    select * from message;
    , action as (
@@ -119,8 +117,7 @@ with message as (
     --     where timestamp >= 1719496800000 and timestamp <= 1719504000000
 --         where timestamp >= 1720099800000 and timestamp <= 1720102980000
     where timestamp >= 1721138400000 and timestamp <= 1721142000000
-      and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4'
-      and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
+      and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ'
 )
         , action as (
     select
@@ -136,8 +133,7 @@ with message as (
          select distinct key as temp_wallet, value ->> 0 as owner
          from results20240705, jsonb_each(result -> 'State' -> 'generatedWalletsMapping')
          where timestamp >= '2024-07-16 14:00:00 +00:00' and timestamp <= '2024-07-16 15:00:00 +00:00'
-           and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
-           and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4')
+           and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ')
 select owner,
        sum(qty),
        string_agg(recipient, ',')
@@ -193,8 +189,7 @@ select
 from output
 where digged ->> 'type' = 'treasure'
   and timestamp >= '2024-07-16 14:00:00 +00:00' and timestamp <= '2024-07-16 15:00:00 +00:00'
-  and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
-  and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4' -- oracle contract
+  and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ' -- oracle contract
 group by 1
 order by 2 desc;
 ---------------------------------------------------------------------------------------------------------------------
@@ -215,8 +210,7 @@ select
 from output
 where cmd = 'attacked' and (val ->> 'opponentFinished')::bool
   and timestamp >= '2024-07-16 14:00:00 +00:00' and timestamp <= '2024-07-16 15:00:00 +00:00'
-  and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
-  and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4'  -- oracle contract
+  and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ'  -- oracle contract
 group by val -> 'player' ->> 'walletAddress'
 order by 2 desc;
 ---------------------------------------------------------------------------------------------------------------------
@@ -238,8 +232,7 @@ select
 from output
 where cmd = 'attacked' and (val ->> 'opponentFinished')::bool
   and timestamp >= '2024-07-16 14:00:00 +00:00' and timestamp <= '2024-07-16 15:00:00 +00:00'
-  and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
-  and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4'
+  and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ'
 group by val -> 'opponent' ->> 'walletAddress'
 order by 2 desc;
 ---------------------------------------------------------------------------------------------------------------------
@@ -258,8 +251,7 @@ with message as (
                     (jsonb_path_query_array(message_data, '$.message.tags[*] ? (@.name == "Action")') -> 0 ->> 'value') = any(ARRAY['Debit', 'Debit-Notice']) as weird
     from su.messages
     where timestamp >= 1720099800000 and timestamp <= 1720102980000
-      and process_id <> 'iSxR0exVxlpL26emdzNAa5YLvuL5aqDJX8tz5QiESS4'
-      and process_id <> 'p-4NGGl79EX_xwanjJJyjkSyOUknyJbhj61TAwj9nsQ'
+      and process_id <> '_b21c1djDesKI5LPXBZvZbXKdkTgQIx2FsN2HXtFsqQ'
 ), action as (
     select
         message_id,
