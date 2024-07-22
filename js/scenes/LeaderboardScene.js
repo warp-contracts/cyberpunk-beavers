@@ -153,7 +153,9 @@ export default class LeaderboardScene extends Phaser.Scene {
       return cells.flat(1);
     }
     let allPlayersKeys = Object.keys(this.allPlayers);
-    allPlayersKeys.sort((a, b) => this.allPlayers[b].stats.coins?.gained - this.allPlayers[a].stats.coins?.gained);
+    allPlayersKeys.sort(
+      (a, b) => this.allPlayers[b].stats.coins?.transferred - this.allPlayers[a].stats.coins?.transferred
+    );
     for (let i = 0; i < allPlayersKeys.length; i++) {
       const key = allPlayersKeys[i];
       cells.push([
@@ -163,7 +165,7 @@ export default class LeaderboardScene extends Phaser.Scene {
           address: this.displayName(this.allPlayers[key]),
         },
         this.allPlayers[key].stats?.coins?.balance,
-        this.allPlayers[key].stats?.coins?.gained,
+        this.allPlayers[key].stats?.coins?.transferred,
         this.allPlayers[key].stats?.hp?.current,
       ]);
     }
@@ -173,7 +175,7 @@ export default class LeaderboardScene extends Phaser.Scene {
   displayName(player) {
     if (player.userName) {
       if (player.userName.length > 11) {
-        trimString(player.userName, 4, 3, 4);
+        trimString(player.userName, 4, 3, 4)
       }
       return player.userName;
     }
