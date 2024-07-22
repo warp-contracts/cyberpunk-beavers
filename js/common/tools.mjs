@@ -1,7 +1,5 @@
 import Const from './const.mjs';
 
-const TOKEN_GAME_LOCKED_AMOUNT = 1000;
-
 function step(pos, dir) {
   switch (dir) {
     case Const.Direction.left:
@@ -27,12 +25,8 @@ function scoreToDisplay(scoreValues) {
 }
 
 function addCoins(player, amount) {
-  player.stats.coins.available += amount;
-  if (player.stats.coins.available > TOKEN_GAME_LOCKED_AMOUNT) {
-    const toBeTransferred = player.stats.coins.available - TOKEN_GAME_LOCKED_AMOUNT;
-    player.stats.coins.available = TOKEN_GAME_LOCKED_AMOUNT;
-    return toBeTransferred;
-  }
+  player.stats.coins.gained += Number(amount);
+  player.stats.coins.balance += Number(amount);
 }
 
 export { addCoins, step, scoreToDisplay };

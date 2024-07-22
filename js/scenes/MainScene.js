@@ -261,6 +261,7 @@ export default class MainScene extends Phaser.Scene {
       this.statsScene.gameOver();
       this.backgroundMusic.stop();
       this.gameOverSound.play();
+      this.server.send({ cmd: Const.Command.end });
       setTimeout(() => {
         this.scene.remove(statsSceneKey);
         this.scene.remove(chatSceneKey);
@@ -543,11 +544,6 @@ export default class MainScene extends Phaser.Scene {
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         break;
       }
-      case Const.Command.token: {
-        this.updateStats(response.player, response.gameStats);
-        this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-        break;
-      }
     }
   }
 
@@ -600,26 +596,26 @@ export default class MainScene extends Phaser.Scene {
 
   updateStats(responsePlayer, gameStats) {
     const self = this;
-    let currentCoinsAvailable;
-    let newCoinsAvailable;
+    let currentCoinsGained;
+    let newCoinsGained;
     if (responsePlayer?.walletAddress === self.mainPlayer?.walletAddress) {
-      currentCoinsAvailable = self.mainPlayer?.stats.coins.available;
-      newCoinsAvailable = responsePlayer.stats.coins.available;
+      currentCoinsGained = self.mainPlayer?.stats.coins.gained;
+      newCoinsGained = responsePlayer.stats.coins.gained;
       self.mainPlayer.updateStats(responsePlayer.stats);
       this.game.events.emit(EVENTS_NAME.updateStats, {
         player: responsePlayer.stats,
         game: gameStats,
       });
     } else if (responsePlayer) {
-      currentCoinsAvailable = this.allPlayers[responsePlayer?.walletAddress].stats.coins.available;
-      newCoinsAvailable = responsePlayer.stats.coins.available;
+      currentCoinsGained = this.allPlayers[responsePlayer?.walletAddress].stats.coins.gained;
+      newCoinsGained = responsePlayer.stats.coins.gained;
       this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
       this.game.events.emit(EVENTS_NAME.updateOtherPlayerStats, {
         ...responsePlayer.stats,
         walletAddress: responsePlayer.walletAddress,
       });
     }
-    if (currentCoinsAvailable != newCoinsAvailable) {
+    if (currentCoinsGained != newCoinsGained) {
       self.updateRanking();
     }
   }
@@ -747,9 +743,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   updateRanking() {
-    this.ranking = Object.entries(this.allPlayers).sort(
-      (a, b) => b[1].stats.coins.available - a[1].stats.coins.available
-    );
+    this.ranking = Object.entries(this.allPlayers).sort((a, b) => b[1].stats.coins.gained - a[1].stats.coins.gained);
     Object.values(this.allPlayers).forEach((p) => p.updatePlayerPosition());
   }
 }

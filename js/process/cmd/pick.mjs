@@ -21,12 +21,11 @@ export function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}.`);
     player.stats.hp.current += value;
-    const tokenTransfer = addCoins(player, value);
+    addCoins(player, value);
     state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
     return {
       player,
       picked: { type },
-      tokenTransfer,
       scoreToDisplay: scoreToDisplay([
         { value: value, type: Scores.hp },
         { value: -1, type: Scores.ap },
@@ -36,12 +35,11 @@ export function pick(state, action) {
     player.stats.ap.current -= 1;
     console.log(`Player stands on a game object, increasing ${type}. `);
     player.stats.ap.current += value;
-    const tokenTransfer = addCoins(player, value);
+    addCoins(player, value);
     state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
     return {
       player,
       picked: { type },
-      tokenTransfer,
       scoreToDisplay: scoreToDisplay([
         { value: value, type: Scores.ap },
         { value: -1, type: Scores.ap },
@@ -61,11 +59,10 @@ export function pick(state, action) {
       state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
       state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameObject.hole.tile;
       const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
-      const tokenTransfer = addCoins(player, valueWithBonus);
+      addCoins(player, valueWithBonus);
       return {
         player,
         picked: { type },
-        tokenTransfer,
         scoreToDisplay: scoreToDisplay([
           { value: valueWithBonus, type: Scores.coin },
           { value: -1, type: Scores.ap },

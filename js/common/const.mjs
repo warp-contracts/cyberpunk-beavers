@@ -42,10 +42,10 @@ const Command = {
   picked: 'picked',
   dig: 'dig',
   digged: 'digged',
-  token: 'token',
   msg: 'msg',
   setNextProcess: 'setNextProcess',
   nextProcessSet: 'nextProcessSet',
+  end: 'end',
 };
 
 const Direction = {
@@ -88,8 +88,8 @@ const Combat = {
 
 // ------- Beaver Config
 const BonusType = {
-  KillBonus: "KillBonus"
-}
+  KillBonus: 'KillBonus',
+};
 export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
@@ -103,7 +103,7 @@ export const BEAVER_TYPES = {
     },
     attack_range: 5,
     damage: [20, 18, 16, 14, 12],
-    hit_chance: [0.95, 0.90, 0.85, 0.80, 0.75],
+    hit_chance: [0.95, 0.9, 0.85, 0.8, 0.75],
     critical_hit_chance: [0.25, 0.2, 0.15, 0.1, 0.05],
     critical_hit_multiplier: [2.4, 2.3, 2.2, 2.1, 2.0],
     bonus: {
@@ -129,7 +129,7 @@ export const BEAVER_TYPES = {
     bonus: {
       [GameObject.treasure.type]: 0,
       [BonusType.KillBonus]: 220,
-    }
+    },
   },
   speedy_beaver: {
     name: 'speedy_beaver',

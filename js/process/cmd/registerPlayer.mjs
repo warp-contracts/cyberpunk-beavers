@@ -49,8 +49,7 @@ export function registerPlayer(state, action) {
       },
       coins: {
         balance: balance || 0,
-        available: 0, // tokens available for slashing
-        transferred: 0, // info of tokens received through transfer
+        gained: 0, // info of tokens gained in the game
       },
     },
     pos: calculatePlayerRandomPos(state),

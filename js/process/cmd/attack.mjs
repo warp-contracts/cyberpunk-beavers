@@ -1,6 +1,6 @@
 import Const from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
-import { calculatePlayerRandomPos } from "./registerPlayer.mjs";
+import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
 export function attack(state, action) {
   const player = state.players[action.walletAddress];
@@ -30,7 +30,7 @@ export function attack(state, action) {
 
   if (opponent) {
     console.log(`Player ${player.walletAddress} attacked ${attackPos.x} ${attackPos.y} ${opponent.walletAddress}`);
-    const { finished, revenge,  loot, tokenTransfer, damage } = finishHim(player, opponent, range, state);
+    const { finished, revenge, loot, tokenTransfer, damage } = finishHim(player, opponent, range, state);
     if (finished) {
       opponent.pos = calculatePlayerRandomPos(state);
       state.playersOnTiles[attackPos.y][attackPos.x] = null;
@@ -56,7 +56,7 @@ export function attack(state, action) {
       opponentScoreToDisplay: scoreToDisplay(opponentScores),
     };
   }
-  return { player,  pos: attackPos, tokenTransfer: 0 };
+  return { player, pos: attackPos, tokenTransfer: 0 };
 }
 
 function calculateDamage(player, range, state) {
@@ -65,15 +65,16 @@ function calculateDamage(player, range, state) {
   const criticalHitRandom = Math.random(++state.randomCounter);
   let dmgMultiplier = 1;
   if (criticalHitRandom <= criticalChance) {
-    dmgMultiplier = player.stats.critical_hit_multiplier[range]
+    dmgMultiplier = player.stats.critical_hit_multiplier[range];
   }
   const hitChance = player.stats.hit_chance[range];
   const hitRandom = Math.random(++state.randomCounter);
   let finalDmg = Math.floor(baseDmg * dmgMultiplier);
   if (hitRandom > hitChance) {
     console.log({
-      hitRandom, hitChance
-    })
+      hitRandom,
+      hitChance,
+    });
     finalDmg = 0;
   }
   return {
@@ -82,7 +83,7 @@ function calculateDamage(player, range, state) {
     criticalChance,
     random: criticalHitRandom,
     dmgMultiplier,
-    finalDmg
+    finalDmg,
   };
 }
 
@@ -92,7 +93,7 @@ function finishHim(player, opponent, range, state) {
   opponent.stats.hp.current -= damage.finalDmg;
   if (opponent.stats.hp.current <= 0) {
     const loot = lootPlayer(opponent) + Const.BEAVER_TYPES[player.beaverId].bonus[Const.BonusType.KillBonus];
-    const revenge = (player.stats.kills.killedBy === opponent.walletAddress);
+    const revenge = player.stats.kills.killedBy === opponent.walletAddress;
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
     opponent.stats.hp.current = opponent.stats.hp.max;
     opponent.stats.kills.deaths++;
@@ -103,25 +104,24 @@ function finishHim(player, opponent, range, state) {
     if (revenge) {
       player.stats.kills.killedBy = '';
     }
-    const tokenTransfer = addCoins(player, loot);
+    addCoins(player, loot);
     return {
       finished: true,
       revenge,
       loot,
       damage,
-      tokenTransfer,
     };
   }
   return {
     finished: false,
     loot: 0,
     tokenTransfer: 0,
-    damage
+    damage,
   };
 }
 
 function lootPlayer(player) {
-  const amount = Math.min(player.stats.coins.available, Const.Combat.DefaultLoot);
-  player.stats.coins.available -= amount;
+  const amount = Math.min(player.stats.coins.gained, Const.Combat.DefaultLoot);
+  player.stats.coins.gained -= amount;
   return amount;
 }
