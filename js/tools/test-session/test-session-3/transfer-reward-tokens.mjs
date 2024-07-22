@@ -1,18 +1,16 @@
 import { readFileSync } from 'node:fs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
-import { feedbackRewardTokens3, topPlayersRewardSession3 } from "./reward-tokens.js";
-
+import { feedbackRewardTokens3, topPlayersRewardSession3 } from './reward-tokens.js';
 
 const wallet = JSON.parse(readFileSync('./.secrets/wallet.json').toString());
 
 for (const [tag, conf] of Object.entries(topPlayersRewardSession3)) {
-  console.log(`--------- ${tag}`)
+  console.log(`--------- ${tag}`);
   for (const [wallet, qty] of Object.entries(conf)) {
-    console.log(`${wallet}  ${qty}`)
+    console.log(`${wallet}  ${qty}`);
     // transferToken(wallet, tag, qty).then(console.log);
   }
 }
-
 
 async function transferToken(recipient, tag, qty) {
   await message({
@@ -23,7 +21,7 @@ async function transferToken(recipient, tag, qty) {
     process: `rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8`,
     tags: [
       { name: 'From-Process', value: 'rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8' }, // ;)
-      { name: 'Recipient', value:  `${recipient}`},
+      { name: 'Recipient', value: `${recipient}` },
       { name: 'Action', value: 'Transfer' },
       { name: 'Quantity', value: `${qty}` },
       { name: 'Reward', value: `${tag}` },

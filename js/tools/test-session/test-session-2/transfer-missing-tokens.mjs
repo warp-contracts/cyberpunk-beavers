@@ -1,15 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
-import { missingTokens } from "./missing-tokens.js";
-
+import { missingTokens } from './missing-tokens.js';
 
 const wallet = JSON.parse(readFileSync('./.secrets/wallet.json').toString());
 
 for (const [key, value] of Object.entries(missingTokens)) {
-  console.log(`${key}  ${value}`)
+  console.log(`${key}  ${value}`);
   // transferToken(key, value).then(r => console.log(`Transferred ${key} ${value}`, r));
 }
-
 
 async function transferToken(recipient, qty) {
   await message({
@@ -20,7 +18,7 @@ async function transferToken(recipient, qty) {
     process: `rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8`,
     tags: [
       { name: 'From-Process', value: 'rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8' }, // ;)
-      { name: 'Recipient', value:  `${recipient}`},
+      { name: 'Recipient', value: `${recipient}` },
       { name: 'Action', value: 'Transfer' },
       { name: 'Quantity', value: `${qty}` },
       { name: 'Reward', value: 'TestingSession2' },
@@ -36,8 +34,6 @@ async function transferToken(recipient, qty) {
     .then((s) => console.log(`Token transfer id: ${s}`))
     .catch(console.error);
 }
-
-
 
 // Token transfer id: 0ASna_lJGvo_QIGn86EvHsV5ByCNANOUMsfZVt820-s
 // Transferred dAewPZFNJulHmJgobwn4UoNRpStcB1yS7UlygQn_z6U 10
@@ -77,4 +73,3 @@ async function transferToken(recipient, qty) {
 // Transferred Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY 6470
 // Token transfer id: NI1FL5yIE5kiGbxMG4zYHML_HXP88cZ4u0cjG5nuqw8
 // Transferred wF_7BbSj8Yzlt7T44nMGXwJHmqn8t2Sv45LfxILNu_o 6245
-

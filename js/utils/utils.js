@@ -24,8 +24,8 @@ export async function checkProfile(wallet) {
   if (!profileId) {
     const result = await dryrun({
       process: 'SNy4m-DrqxWl01YqGM4sxI8qCni-58re8uuJLvZPypY',
-      tags: [{name: 'Action', value: 'Get-Profiles-By-Delegate'}],
-      data: JSON.stringify({Address: wallet}),
+      tags: [{ name: 'Action', value: 'Get-Profiles-By-Delegate' }],
+      data: JSON.stringify({ Address: wallet }),
     });
     if (result?.Messages?.length && result.Messages[0]?.Data) {
       profileId = JSON.parse(result.Messages[0].Data)[0].ProfileId;
@@ -36,7 +36,7 @@ export async function checkProfile(wallet) {
   if (profileId && !profile) {
     const fetchedProfile = await dryrun({
       process: profileId,
-      tags: [{name: 'Action', value: 'Info'}],
+      tags: [{ name: 'Action', value: 'Info' }],
       data: '1984',
     });
 
@@ -48,4 +48,3 @@ export async function checkProfile(wallet) {
   }
   return profile;
 }
-

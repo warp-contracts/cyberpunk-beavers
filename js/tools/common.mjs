@@ -1,7 +1,6 @@
 import { Tag } from 'warp-contracts';
 import ids from '../config/warp-ao-ids.js';
 
-
 export function mockDataItem(data, owner) {
   const withTags = {
     tags: [

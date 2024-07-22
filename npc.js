@@ -22,14 +22,14 @@ export default async function runNpc() {
     );
 
     //setTimeout(() => {
-      setInterval(async () => {
-        const randomDirection = Math.floor(Math.random() * direction.length);
-        try {
-          await sendDataItem({cmd: 'move', dir: direction[randomDirection]}, signer);
-        } catch (err) {
-          console.error(err);
-        }
-      }, 500);
+    setInterval(async () => {
+      const randomDirection = Math.floor(Math.random() * direction.length);
+      try {
+        await sendDataItem({ cmd: 'move', dir: direction[randomDirection] }, signer);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 500);
     //}, i * 500);
 
     console.log(`NPC ${address} in the game.`);

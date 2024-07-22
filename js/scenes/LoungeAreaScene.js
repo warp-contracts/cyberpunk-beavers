@@ -9,7 +9,7 @@ import {
   playerPickSceneKey,
   leaderboardSceneKey,
 } from '../config/config.js';
-import { checkProfile } from "../utils/utils.js";
+import { checkProfile } from '../utils/utils.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId;
@@ -109,64 +109,65 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
   async handleMessage(response) {
     switch (response.cmd) {
-      case Const.Command.stats: {
-        if (response.end && response.end < new Date()) {
-          this.scene.start(leaderboardSceneKey, {
-            players: response.players,
-            mainPlayer: {
-              walletAddress: this.walletAddress,
-            },
-          });
-          return;
-        }
-        this.gameStart = response.start;
-        this.gameEnd = response.end;
-        this.displayWaitingList(response);
-        if (response.error) {
-          console.error('Failed to fetch game info', response.error);
-          this.scene.start(connectWalletSceneKey);
-        } else if (!this.gameError) {
-          if (response.player && response.player.walletAddress === this.walletAddress) {
-            this.beaverId = response.player.beaverId;
-          }
-          if (response.active) {
-            const userName = (await this.profilePromise)?.Profile?.UserName;
-            if (this.beaverId) {
-              this.scene.start(mainSceneKey, {
-                userName,
-                walletAddress: this.walletAddress,
-                beaverId: this.beaverId,
-                gameStart: response.start,
-                gameEnd: response.end,
-              });
-            } else {
-              this.scene.start(playerPickSceneKey, {
-                userName,
-                walletAddress: this.walletAddress,
-                gameStart: response.start,
-                gameEnd: response.end,
-              });
-            }
-          } else if (Date.now() < response.start) {
-            if (
-              !response.walletsQueue.includes(this.walletAddress) &&
-              !response.walletsBench.includes(this.walletAddress)
-            ) {
-              this.displayEnqueueButton();
-            } else if (this.enqueueButton) {
-              this.enqueueButton.destroy();
-            }
-            this.countdown();
-          } else {
+      case Const.Command.stats:
+        {
+          if (response.end && response.end < new Date()) {
             this.scene.start(leaderboardSceneKey, {
               players: response.players,
               mainPlayer: {
                 walletAddress: this.walletAddress,
               },
             });
+            return;
+          }
+          this.gameStart = response.start;
+          this.gameEnd = response.end;
+          this.displayWaitingList(response);
+          if (response.error) {
+            console.error('Failed to fetch game info', response.error);
+            this.scene.start(connectWalletSceneKey);
+          } else if (!this.gameError) {
+            if (response.player && response.player.walletAddress === this.walletAddress) {
+              this.beaverId = response.player.beaverId;
+            }
+            if (response.active) {
+              const userName = (await this.profilePromise)?.Profile?.UserName;
+              if (this.beaverId) {
+                this.scene.start(mainSceneKey, {
+                  userName,
+                  walletAddress: this.walletAddress,
+                  beaverId: this.beaverId,
+                  gameStart: response.start,
+                  gameEnd: response.end,
+                });
+              } else {
+                this.scene.start(playerPickSceneKey, {
+                  userName,
+                  walletAddress: this.walletAddress,
+                  gameStart: response.start,
+                  gameEnd: response.end,
+                });
+              }
+            } else if (Date.now() < response.start) {
+              if (
+                !response.walletsQueue.includes(this.walletAddress) &&
+                !response.walletsBench.includes(this.walletAddress)
+              ) {
+                this.displayEnqueueButton();
+              } else if (this.enqueueButton) {
+                this.enqueueButton.destroy();
+              }
+              this.countdown();
+            } else {
+              this.scene.start(leaderboardSceneKey, {
+                players: response.players,
+                mainPlayer: {
+                  walletAddress: this.walletAddress,
+                },
+              });
+            }
           }
         }
-      }
         break;
     }
   }

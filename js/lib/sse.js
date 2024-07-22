@@ -1,5 +1,4 @@
-export async function initSubscription(
-  moduleId, processId, verifyNonce, verifyLag, alwaysUseConnectedWallet) {
+export async function initSubscription(moduleId, processId, verifyNonce, verifyLag, alwaysUseConnectedWallet) {
   console.log('Subscribing for processId: ', processId);
 
   let sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${processId}`);
@@ -24,11 +23,7 @@ export async function initSubscription(
       sse.onmessage = messageListener(target, processId, verifyNonce, verifyLag);
     },
     send: (message, forceConnectedWallet) => {
-      return window.warpAO.send(
-        moduleId,
-        processId,
-        message,
-        alwaysUseConnectedWallet || forceConnectedWallet);
+      return window.warpAO.send(moduleId, processId, message, alwaysUseConnectedWallet || forceConnectedWallet);
     },
     switchProcess: (newProcessId, newModuleId) => {
       processId = newProcessId;
@@ -61,7 +56,6 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
         } else {
           window.warpAO.nonce = message.nonce;
         }
-
       }
       if (verifyLag) {
         if (message.tags) {
@@ -72,7 +66,7 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
               deliveryToCu: Math.floor(message.cuReceived - sentTs),
               deliveryFromCu: Math.floor(now - message.cuSent),
               cuCalc: Math.floor(message.cuSent - message.cuReceived),
-              total: Math.floor(now - sentTs)
+              total: Math.floor(now - sentTs),
             };
             window.warpAO.lag = lag;
             console.log(`===== Lag:`, window.warpAO.lag);

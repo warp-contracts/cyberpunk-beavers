@@ -1,16 +1,16 @@
-import Text from './objects/Text.js'
+import Text from './objects/Text.js';
 
 export default class Score extends Text {
-  scoreValue
+  scoreValue;
   constructor(scene, x, y, initScore = '') {
-    super(scene, x, y, `Move: ${initScore}`)
-    scene.add.existing(this)
-    this.scoreValue = initScore
+    super(scene, x, y, `Move: ${initScore}`);
+    scene.add.existing(this);
+    this.scoreValue = initScore;
   }
 
   changeValue(value) {
-    this.scoreValue = value
-    this.setText(`Move: ${this.scoreValue}`)
+    this.scoreValue = value;
+    this.setText(`Move: ${this.scoreValue}`);
   }
   //   changeValue(operation, value) {
   //     switch (operation) {
@@ -30,6 +30,6 @@ export default class Score extends Text {
   //   }
 
   getValue() {
-    return this.scoreValue
+    return this.scoreValue;
   }
 }

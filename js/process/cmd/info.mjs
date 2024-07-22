@@ -21,12 +21,11 @@ export function standInQueue(state, action) {
   return { walletsQueue, walletsBench };
 }
 
-
 export function gameStats(state) {
   const { gameTreasuresCounter, lastTxs } = state;
   return {
-    gameStats: { gameTreasuresCounter, lastTxs }
-  }
+    gameStats: { gameTreasuresCounter, lastTxs },
+  };
 }
 
 export function gameInfo(state, owner, ts) {

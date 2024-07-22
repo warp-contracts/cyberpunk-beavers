@@ -1,4 +1,3 @@
-
 export async function initWebSocket(moduleId, processId) {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(`ws://localhost:8097/${processId}`);
@@ -9,7 +8,7 @@ export async function initWebSocket(moduleId, processId) {
       if (currentListener) {
         ws.removeEventListener('message', currentListener);
       }
-    }
+    };
 
     ws.onopen = (event) => {
       console.log(`ws connection ready`, event);
@@ -25,13 +24,13 @@ export async function initWebSocket(moduleId, processId) {
           ws.send(JSON.stringify(di));
           return { id: di.Id };
         },
-      })
+      });
     };
     ws.onerror = (event) => {
       console.log(`connection failed`, event);
       reject(event);
     };
-  })
+  });
 }
 
 const messageListener = (target) => {
@@ -44,8 +43,8 @@ const messageListener = (target) => {
     if (target.handleMessage) {
       target.handleMessage(response);
     }
-  }
-}
+  };
+};
 
 function mockDataItem(moduleId, processId, data, nonce) {
   const withTags = window.warpAO.data(moduleId, processId, data);
@@ -55,6 +54,6 @@ function mockDataItem(moduleId, processId, data, nonce) {
     Signature: Math.random().toString(36).substring(2),
     Tags: withTags.tags,
     Timestamp: Date.now(),
-    Nonce: nonce
+    Nonce: nonce,
   };
 }

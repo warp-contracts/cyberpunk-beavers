@@ -55,8 +55,7 @@ window.warpAO = {
     if (!processId) {
       throw new Error('processId not set');
     }
-    if (window.warpAO.signingMode == 'generated'
-      || (window.warpAO.signingMode == 'arconnect' && !useConnectedWallet)) {
+    if (window.warpAO.signingMode == 'generated' || (window.warpAO.signingMode == 'arconnect' && !useConnectedWallet)) {
       return sendUsingGeneratedWallet(moduleId, processId, message, window.warpAO.generatedSigner);
     } else {
       return sendUsingConnectedWallet(moduleId, processId, message);
@@ -72,10 +71,9 @@ async function sendUsingGeneratedWallet(moduleId, processId, message, signer) {
   });
   await dataItem.sign(signer);
   console.log(`Signing with raw ${Date.now() - now}ms`);
-  sendRawDataItem(dataItem.getRaw())
-    .catch(console.error);
+  sendRawDataItem(dataItem.getRaw()).catch(console.error);
   //return id immediately to lock on this id before message has been effectively sent
-  return {id: await dataItem.id};
+  return { id: await dataItem.id };
 }
 
 async function sendRawDataItem(rawData) {

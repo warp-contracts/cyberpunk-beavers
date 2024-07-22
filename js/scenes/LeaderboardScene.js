@@ -175,7 +175,7 @@ export default class LeaderboardScene extends Phaser.Scene {
   displayName(player) {
     if (player.userName) {
       if (player.userName.length > 11) {
-        trimString(player.userName, 4, 3, 4)
+        trimString(player.userName, 4, 3, 4);
       }
       return player.userName;
     }

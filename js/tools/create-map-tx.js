@@ -1,18 +1,14 @@
-import {
-  TurboFactory,
-  defaultTurboConfiguration,
-} from "@ardrive/turbo-sdk/node";
-import fs from "fs";
+import { TurboFactory, defaultTurboConfiguration } from '@ardrive/turbo-sdk/node';
+import fs from 'fs';
 
-const file = "./../../assets/maps/map_g_1.json";
-const mapName = "map_g_1.json";
-
+const file = './../../assets/maps/map_g_1.json';
+const mapName = 'map_g_1.json';
 
 (async () => {
   /**
    * Generate a key from the arweave wallet.
    */
-  const jwk = JSON.parse(fs.readFileSync('.secrets/wallet.json', "utf-8"));
+  const jwk = JSON.parse(fs.readFileSync('.secrets/wallet.json', 'utf-8'));
   /**
    * Use the arweave key to create an authenticated turbo client
    */
@@ -25,12 +21,12 @@ const mapName = "map_g_1.json";
    * Fetch the balance for the private key.
    */
   const balance = await turboAuthClient.getBalance();
-  console.log("Balance:", balance);
+  console.log('Balance:', balance);
 
   /**
    * Post local files to the Turbo service.
    */
-  console.log("Posting raw file to Turbo service...");
+  console.log('Posting raw file to Turbo service...');
   const filePath = new URL(file, import.meta.url).pathname;
   const fileSize = fs.statSync(filePath).size;
   const uploadResult = await turboAuthClient.uploadFile({
@@ -40,23 +36,23 @@ const mapName = "map_g_1.json";
     dataItemOpts: {
       tags: [
         {
-          "name": "Data-Protocol",
-          "value": "warp-beavers-map"
+          name: 'Data-Protocol',
+          value: 'warp-beavers-map',
         },
         {
-          "name": "Name",
-          "value": mapName
+          name: 'Name',
+          value: mapName,
         },
         {
-          "name": "Map-Api-Version",
-          "value": "v1"
+          name: 'Map-Api-Version',
+          value: 'v1',
         },
         {
-          "name": "Terrain",
-          "value": "desert"
+          name: 'Terrain',
+          value: 'desert',
         },
       ],
-    }
+    },
   });
   console.log(JSON.stringify(uploadResult, null, 2));
 

@@ -44,7 +44,10 @@ async function setNexProcessId() {
     new Tag('Salt', '' + Date.now()),
   ];
 
-  const messageDataItem = createData(JSON.stringify('1234'), signer, { tags: messageTags, target: previousProcessId });
+  const messageDataItem = createData(JSON.stringify('1234'), signer, {
+    tags: messageTags,
+    target: previousProcessId,
+  });
   await messageDataItem.sign(signer);
 
   const messageResponse = await fetch(muUrl, {

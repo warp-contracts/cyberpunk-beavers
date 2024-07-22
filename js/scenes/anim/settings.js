@@ -96,4 +96,3 @@ export const ANIM_SETTINGS = {
     },
   },
 };
-

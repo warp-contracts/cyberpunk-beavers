@@ -1,6 +1,6 @@
 const MilisecondsOf = {
-  'nextFullHour': 60 * 60 * 1000,
-  'nextHalfHour': 30 * 60 * 1000,
+  nextFullHour: 60 * 60 * 1000,
+  nextHalfHour: 30 * 60 * 1000,
 };
 
 const SetupTimes = {
@@ -23,7 +23,7 @@ export function setup(state, action, message) {
     case SetupTimes.nextSlot: {
       const nextMS = action.slotMinutes * 60 * 1000;
       const nextFull = (Math.floor(message.Timestamp / nextMS) + 1) * nextMS;
-      const duration = (action.playMinutes * 60 * 1000) || (5 * 60 * 1000);
+      const duration = action.playMinutes * 60 * 1000 || 5 * 60 * 1000;
       state.playWindow = {
         begin: nextFull,
         end: nextFull + duration,
@@ -36,7 +36,7 @@ export function setup(state, action, message) {
     case SetupTimes.nextHalfHour:
       const ms = MilisecondsOf[action.type];
       const nextFullHour = (Math.floor(message.Timestamp / ms) + 1) * ms;
-      const duration = action.duration || (5 * 60 * 1000);
+      const duration = action.duration || 5 * 60 * 1000;
       state.playWindow = {
         begin: nextFullHour,
         end: nextFullHour + duration,

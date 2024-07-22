@@ -1,7 +1,7 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import {QuickJsPlugin} from "warp-contracts-plugin-quickjs";
+import { QuickJsPlugin } from 'warp-contracts-plugin-quickjs';
 import ids from '../config/warp-ao-ids.js';
-import fs from "fs";
+import fs from 'fs';
 
 const WS_PORT = 8097;
 
@@ -14,35 +14,33 @@ const quickJSPlugin = new QuickJsPlugin({});
 const gameSource = fs.readFileSync('./dist/output-game.js', 'utf-8');
 const gameQuickJS = await quickJSPlugin.process({
   contractSource: gameSource,
-  binaryType: "release_sync"
+  binaryType: 'release_sync',
 });
 const map = JSON.parse(fs.readFileSync('./assets/maps/map-2-30x30.json', 'utf-8'));
 let gameState = { rawMap: map };
-
 
 /* ------ CHAT ------*/
 const chatSource = fs.readFileSync('./dist/output-chat.js', 'utf-8');
 const chatQuickJs = await quickJSPlugin.process({
   contractSource: chatSource,
-  binaryType: "release_sync"
+  binaryType: 'release_sync',
 });
 let chatState = {};
 
 const processEnv = {
   Process: {
     Id: 'x'.repeat(43),
-    Owner: "stefan",
-    Tags: []
+    Owner: 'stefan',
+    Tags: [],
   },
   Module: {
     Id: 'y'.repeat(43),
-    Owner: "zenon",
-    Tags: []
-  }
-}
+    Owner: 'zenon',
+    Tags: [],
+  },
+};
 
 let txId = null;
-
 
 // Event listener for WebSocket connections
 wss.on('connection', (ws, request) => {
@@ -54,7 +52,7 @@ wss.on('connection', (ws, request) => {
     const message = JSON.parse(req);
     const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
     const processTagValue = message.Tags.find((t) => t.name === 'From-Process').value;
-    console.log(`-------------------------------------------`)
+    console.log(`-------------------------------------------`);
     console.log('WS REQ: %s', processTagValue, actionTagValue);
     txId = message.Id;
 
@@ -105,20 +103,23 @@ function logAndBroadcast(message, processId) {
 
 async function sendResponse(quickJs, state, message) {
   console.log(message);
-  return await (new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     setTimeout(async () => {
-      const result = await quickJs.handle({
-        Tags: [
-          {name: 'Action', value: 'Debit-Notice'},
-          {name: 'Message', value: '123123'},
-          {name: 'Quantity', value: message.Quantity},
-          {name: 'Recipient', value: message.Recipient},
-        ]
-      }, processEnv, state);
+      const result = await quickJs.handle(
+        {
+          Tags: [
+            { name: 'Action', value: 'Debit-Notice' },
+            { name: 'Message', value: '123123' },
+            { name: 'Quantity', value: message.Quantity },
+            { name: 'Recipient', value: message.Recipient },
+          ],
+        },
+        processEnv,
+        state
+      );
       resolve(result.State);
     }, 600);
-  }));
-
+  });
 }
 
 console.log(`WebSocket server is running on port ${WS_PORT}`);

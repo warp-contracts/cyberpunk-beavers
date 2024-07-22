@@ -1,4 +1,4 @@
-import warpAoIds from "../config/warp-ao-ids.js";
+import warpAoIds from '../config/warp-ao-ids.js';
 import fs from 'node:fs';
 
 const filePath = './js/config/warp-ao-ids.js';
@@ -14,5 +14,5 @@ export function replaceId(key, txId) {
 
 function generateTemplate(json) {
   const configAsString = JSON.stringify(json, null, 2);
-  return `export default ${configAsString};`
+  return `export default ${configAsString};`;
 }

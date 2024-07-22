@@ -1,5 +1,5 @@
 import esbuild from 'esbuild';
-import {writeFileSync} from "fs";
+import { writeFileSync } from 'fs';
 
 const commonEsbuildSettings = {
   bundle: true,
@@ -8,22 +8,22 @@ const commonEsbuildSettings = {
   sourcemap: false,
   minify: false,
   target: ['es2020'],
-}
+};
 
 const processes = [
   {
     entryPoints: ['js/process/game.mjs'],
     outfile: 'dist/output-game.js',
-    ...commonEsbuildSettings
+    ...commonEsbuildSettings,
   },
   {
     entryPoints: ['js/process/chat.mjs'],
     outfile: 'dist/output-chat.js',
-    ...commonEsbuildSettings
-  }
-]
+    ...commonEsbuildSettings,
+  },
+];
 
-processes.forEach(async process => {
+processes.forEach(async (process) => {
   console.log(`Building ${process.entryPoints[0]}`);
   const result = await esbuild.build(process);
 

@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
 
-
 const wallet = JSON.parse(readFileSync('./.secrets/wallet.json').toString());
 
 await message({

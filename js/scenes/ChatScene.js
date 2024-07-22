@@ -1,7 +1,7 @@
-import Const, {MAX_MSG_LENGTH, MIN_MSG_LENGTH} from '../common/const.mjs';
+import Const, { MAX_MSG_LENGTH, MIN_MSG_LENGTH } from '../common/const.mjs';
 import { serverConnectionChat } from '../lib/serverConnection.js';
-import { chatSceneKey } from "../config/config.js";
-import { trimString } from "../utils/utils.js";
+import { chatSceneKey } from '../config/config.js';
+import { trimString } from '../utils/utils.js';
 
 const defaultStyle = {
   fontFamily: '"Press Start 2P"',
@@ -66,7 +66,7 @@ export default class ChatScene extends Phaser.Scene {
       this.mainScene.input.keyboard.disableGlobalCapture();
       this.mainScene.input.keyboard.enabled = false;
     };
-    input.setAttribute("maxlength", "" + MAX_MSG_LENGTH);
+    input.setAttribute('maxlength', '' + MAX_MSG_LENGTH);
     input.onblur = () => {
       this.mainScene.input.keyboard.enableGlobalCapture();
       this.mainScene.input.keyboard.enabled = true;
@@ -114,10 +114,7 @@ export default class ChatScene extends Phaser.Scene {
 
   messagesFormatted() {
     if (this.messagesQueue) {
-      return this.messagesQueue
-        .map(this.addDisplayName)
-        .map(this.formatMessage)
-        .join('');
+      return this.messagesQueue.map(this.addDisplayName).map(this.formatMessage).join('');
     } else {
       return '';
     }
@@ -132,9 +129,7 @@ export default class ChatScene extends Phaser.Scene {
 
   addDisplayName(i) {
     if (i.userName) {
-      i.displayName = i.userName.length > 9 ?
-        trimString(i.userName, 7, 2, 0) :
-        i.userName;
+      i.displayName = i.userName.length > 9 ? trimString(i.userName, 7, 2, 0) : i.userName;
     } else {
       i.displayName = trimString(i.from);
     }

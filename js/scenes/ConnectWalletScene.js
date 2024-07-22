@@ -69,7 +69,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
   }
 
   async generateWallet() {
-    const {signer, address} = await this.generateSigner();
+    const { signer, address } = await this.generateSigner();
     window.warpAO.generatedSigner = signer;
     console.log('Generated wallet address', address);
     localStorage.setItem('wallet_address', address);
@@ -82,7 +82,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
   async generateSigner() {
     const warpInst = WarpFactory.forMainnet();
     const { jwk, address } = await warpInst.generateWallet();
-    return {signer: new ArweaveSigner(jwk), address};
+    return { signer: new ArweaveSigner(jwk), address };
   }
 
   async connectWallet() {
@@ -104,7 +104,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
       this.scene.start(loungeAreaSceneKey, {
         walletAddress,
       });
-      const {signer, address} = await this.generateSigner();
+      const { signer, address } = await this.generateSigner();
       localStorage.setItem('generated_wallet_address', address);
       window.warpAO.generatedSigner = signer;
       window.warpAO.signingMode = 'arconnect';

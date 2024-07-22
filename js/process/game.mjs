@@ -1,11 +1,11 @@
-import Const, {MAX_LAST_TXS} from '../common/const.mjs';
+import Const, { MAX_LAST_TXS } from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
 import { pick } from './cmd/pick.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { scoreToDisplay } from '../common/tools.mjs';
-import { gameFinished, gameInfo, gameNotStarted, gameStats, standInQueue } from "./cmd/info.mjs";
+import { gameFinished, gameInfo, gameNotStarted, gameStats, standInQueue } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
 import { setNextProcess } from './cmd/setNextProcess.mjs';
@@ -41,7 +41,7 @@ function handleMessageFromToken(state, action, message) {
     tags: message.Tags,
     player: {
       walletAddress: recipient,
-      stats: player.stats
+      stats: player.stats,
     },
     scoreToDisplay: scoreToDisplay([{ value: qty, type: Scores.coin, txId }]),
   });
@@ -80,7 +80,7 @@ export function handle(state, message) {
 
   action.walletAddress = state.generatedWalletsMapping.hasOwnProperty(message.Owner)
     ? state.generatedWalletsMapping[message.Owner]
-    : message.Owner
+    : message.Owner;
 
   if (restrictedAccess(state, action, message.Timestamp)) {
     console.log(`The game has not started yet`);
@@ -105,7 +105,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.stats,
         ...gameInfo(state, message.Owner, message.Timestamp),
-        ...gameStats(state)
+        ...gameStats(state),
       });
       break;
     case Const.Command.enqueue:
@@ -113,7 +113,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.stats,
         ...gameInfo(state, message.Owner, message.Timestamp),
-        ...gameStats(state)
+        ...gameStats(state),
       });
       break;
     case Const.Command.setup:
@@ -132,14 +132,14 @@ export function handle(state, message) {
         player: pickRes.player,
         picked: pickRes.picked,
         scoreToDisplay: pickRes.scoreToDisplay,
-        ...gameStats(state)
+        ...gameStats(state),
       });
       break;
     case Const.Command.dig:
       ao.result({
         cmd: Const.Command.digged,
         ...dig(state, action),
-        ...gameStats(state)
+        ...gameStats(state),
       });
       break;
     case Const.Command.attack:
@@ -150,7 +150,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.attacked,
         ...attackRes,
-        ...gameStats(state)
+        ...gameStats(state),
       });
       break;
     case Const.Command.move:
@@ -159,7 +159,7 @@ export function handle(state, message) {
         cmd: Const.Command.moved,
         player: moveRes.player,
         scoreToDisplay: moveRes.scoreToDisplay,
-        ...gameStats(state)
+        ...gameStats(state),
       });
       break;
     case Const.Command.register:
@@ -175,7 +175,7 @@ export function handle(state, message) {
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
         round: state.round,
-        ...gameStats(state)
+        ...gameStats(state),
       });
       break;
     case Const.Command.join:
@@ -196,7 +196,7 @@ export function handle(state, message) {
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
         round: state.round,
-        ...gameStats(state)
+        ...gameStats(state),
       });
       break;
     default:
