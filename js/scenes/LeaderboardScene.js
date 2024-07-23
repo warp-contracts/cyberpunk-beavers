@@ -153,9 +153,7 @@ export default class LeaderboardScene extends Phaser.Scene {
       return cells.flat(1);
     }
     let allPlayersKeys = Object.keys(this.allPlayers);
-    allPlayersKeys.sort(
-      (a, b) => this.allPlayers[b].stats.coins?.transferred - this.allPlayers[a].stats.coins?.transferred
-    );
+    allPlayersKeys.sort((a, b) => this.allPlayers[b].stats.coins?.gained - this.allPlayers[a].stats.coins?.gained);
     for (let i = 0; i < allPlayersKeys.length; i++) {
       const key = allPlayersKeys[i];
       cells.push([
@@ -164,8 +162,8 @@ export default class LeaderboardScene extends Phaser.Scene {
           img: this.allPlayers[key].beaverChoice || this.allPlayers[key].beaverId,
           address: this.displayName(this.allPlayers[key]),
         },
-        this.allPlayers[key].stats?.coins?.balance,
-        this.allPlayers[key].stats?.coins?.transferred,
+        this.allPlayers[key].stats?.coins?.balance + this.allPlayers[key].stats?.coins?.gained,
+        this.allPlayers[key].stats?.coins?.gained,
         this.allPlayers[key].stats?.hp?.current,
       ]);
     }

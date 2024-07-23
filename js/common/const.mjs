@@ -42,10 +42,10 @@ const Command = {
   picked: 'picked',
   dig: 'dig',
   digged: 'digged',
-  token: 'token',
   msg: 'msg',
   setNextProcess: 'setNextProcess',
   nextProcessSet: 'nextProcessSet',
+  end: 'end',
 };
 
 const Direction = {

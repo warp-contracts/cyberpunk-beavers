@@ -4,48 +4,11 @@ import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
 import { pick } from './cmd/pick.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
-import { scoreToDisplay } from '../common/tools.mjs';
 import { gameFinished, gameInfo, gameNotStarted, gameStats, standInQueue } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
 import { setNextProcess } from './cmd/setNextProcess.mjs';
-
-const { Scores } = Const;
-
-// ------- Token Contract Config
-const TOKEN_CONTRACT_ID = 'rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8';
-const TOKEN_CONTRACT_METHOD = 'Transfer';
-const TOKEN_ACTIONS = ['Credit-Notice', 'Debit-Notice', 'Transfer-Error'];
-
-function sendToken(recipient, qty) {
-  ao.send({
-    Target: TOKEN_CONTRACT_ID,
-    Data: '1234',
-    Action: TOKEN_CONTRACT_METHOD,
-    Recipient: recipient,
-    Quantity: qty.toString(),
-  });
-}
-
-function handleMessageFromToken(state, action, message) {
-  const qty = message.Tags.find((t) => t.name === 'Quantity').value;
-  const recipient = message.Tags.find((t) => t.name === 'Recipient').value;
-  const txId = message.Tags.find((t) => t.name === 'Message').value;
-  const player = state.players[recipient];
-  player.stats.coins.transferred += Number(qty);
-  player.stats.coins.balance += Number(qty);
-  return ao.result({
-    action,
-    cmd: Const.Command.token,
-    data: message.Data,
-    tags: message.Tags,
-    player: {
-      walletAddress: recipient,
-      stats: player.stats,
-    },
-    scoreToDisplay: scoreToDisplay([{ value: qty, type: Scores.coin, txId }]),
-  });
-}
+import { end, sendTokens } from './cmd/end.mjs';
 
 function restrictedAccess(state, action, ts) {
   return (
@@ -71,10 +34,6 @@ export function handle(state, message) {
   addToLastTxs(message, state);
 
   const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
-
-  if (TOKEN_ACTIONS.includes(actionTagValue)) {
-    return handleMessageFromToken(state, actionTagValue, message);
-  }
 
   const action = JSON.parse(actionTagValue);
 
@@ -124,9 +83,6 @@ export function handle(state, message) {
       break;
     case Const.Command.pick:
       const pickRes = pick(state, action);
-      if (pickRes.tokenTransfer > 0) {
-        sendToken(action.walletAddress, pickRes.tokenTransfer);
-      }
       ao.result({
         cmd: Const.Command.picked,
         player: pickRes.player,
@@ -144,9 +100,6 @@ export function handle(state, message) {
       break;
     case Const.Command.attack:
       const attackRes = attack(state, action);
-      if (attackRes.tokenTransfer > 0) {
-        sendToken(action.walletAddress, attackRes.tokenTransfer);
-      }
       ao.result({
         cmd: Const.Command.attacked,
         ...attackRes,
@@ -199,6 +152,9 @@ export function handle(state, message) {
         ...gameStats(state),
       });
       break;
+    case Const.Command.end:
+      end(state, action);
+      break;
     default:
       throw new ProcessError(`Unknown action: ${action.cmd}`);
   }
@@ -210,6 +166,11 @@ function gameRoundTick(state, message) {
   const round = ~~(tsChange / state.round.interval);
   console.log('Last round ', state.round);
   state.round.current = round;
+  if (state.playWindow?.roundsTotal) {
+    const roundsToGo = state.playWindow?.roundsTotal - state.round.current;
+    console.log('Rounds to go', roundsToGo);
+    if (roundsToGo == 0) sendTokens(state);
+  }
   console.log(`new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`);
 }
 
