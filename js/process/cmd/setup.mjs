@@ -28,6 +28,7 @@ export function setup(state, action, message) {
         begin: nextFull,
         end: nextFull + duration,
       };
+      state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup ${action.type}`, state.playWindow);
       break;
     }
@@ -41,12 +42,14 @@ export function setup(state, action, message) {
         begin: nextFullHour,
         end: nextFullHour + duration,
       };
+      state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup ${action.type}`, state.playWindow);
       break;
 
     case SetupTimes.custom:
       state.playWindow.begin = action.start;
       state.playWindow.end = action.end;
+      state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup custom`, state.playWindow);
       break;
 
@@ -57,4 +60,8 @@ export function setup(state, action, message) {
   return {
     playWindow: state.playWindow,
   };
+}
+
+function calculateTotalRounds(state) {
+  return ~~((state.playWindow.end - state.playWindow.begin) / state.round.interval);
 }

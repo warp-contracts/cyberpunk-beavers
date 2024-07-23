@@ -104,13 +104,12 @@ function finishHim(player, opponent, range, state) {
     if (revenge) {
       player.stats.kills.killedBy = '';
     }
-    const tokenTransfer = addCoins(player, loot);
+    addCoins(player, loot);
     return {
       finished: true,
       revenge,
       loot,
       damage,
-      tokenTransfer,
     };
   }
   return {
@@ -122,7 +121,7 @@ function finishHim(player, opponent, range, state) {
 }
 
 function lootPlayer(player) {
-  const amount = Math.min(player.stats.coins.available, Const.Combat.DefaultLoot);
-  player.stats.coins.available -= amount;
+  const amount = Math.min(player.stats.coins.gained, Const.Combat.DefaultLoot);
+  player.stats.coins.gained -= amount;
   return amount;
 }

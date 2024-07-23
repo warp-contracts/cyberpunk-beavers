@@ -214,8 +214,7 @@ export default class StatsScene extends Phaser.Scene {
         ${this.label('deaths', 'stats-scene-deaths', this.stats?.kills.deaths, { marginTop: 10, paddingLeft: 0, inline: 'padding-right: 10px;' })}
         ${this.label('cbcoins', 'stats-scene-cbcoins-process', `<a style="color: black;" target="_blank" href='https://www.ao.link/#/token/${this.tokenProcessId}'>${trimString(this.tokenProcessId)}</a>`, { marginTop: 10, paddingLeft: 0, inline: 'padding-right: 10px;' })}
         ${this.label('owned', 'stats-scene-cbcoins', this.stats?.coins.balance, { marginTop: 5, paddingLeft: 15, inline: 'padding-right: 10px;' })}
-        ${this.label('locked', 'stats-scene-locked', this.stats?.coins.available, { marginTop: 5, paddingLeft: 15, inline: 'padding-right: 10px;' })}
-        ${this.label('gained', 'stats-scene-transferred', this.stats?.coins.transferred, { marginTop: 5, paddingLeft: 15, inline: 'padding-right: 10px;' })}
+        ${this.label('gained', 'stats-scene-gained', this.stats?.coins.gained, { marginTop: 5, paddingLeft: 15, inline: 'padding-right: 10px;' })}
         <div id="stats-scene-other-beavers">${this.addPlayersModal()}</div>
       </div>`;
 
@@ -257,7 +256,7 @@ export default class StatsScene extends Phaser.Scene {
 
   addOtherPlayerBox(player) {
     return `
-      <div class="list-item" style="display: flex; justify-content: space-between; align-items: end; margin-top: 25px;" id="player-box-${player.walletAddress}" data-coins-available=${player.stats?.coins.available}>
+      <div class="list-item" style="display: flex; justify-content: space-between; align-items: end; margin-top: 25px;" id="player-box-${player.walletAddress}" data-coins-gained=${player.stats?.coins.gained}>
         <img src="assets/images/beavers/${player.beaverChoice}/${player.beaverChoice}_portrait.png" width=64 height=64/>
         <div style="display:flex; flex-grow: 1;"> </div>
         <div style="display: flex; flex-grow: 1; flex-direction: column;">
@@ -267,7 +266,7 @@ export default class StatsScene extends Phaser.Scene {
             ${this.label('frags', `stats-scene-frags-${player.walletAddress}`, player.stats.kills.frags, { marginTop: 10, paddingLeft: 0, inline: '' })}
             ${this.label('deaths', `stats-scene-deaths-${player.walletAddress}`, player.stats.kills.deaths, { marginTop: 10, paddingLeft: 0, inline: '' })}
             ${this.label('cbcoins', `stats-scene-cbcoins-${player.walletAddress}`, player.stats?.coins.balance, { marginTop: 10, paddingLeft: 0, inline: '' })}
-            ${this.label('locked', `stats-scene-locked-${player.walletAddress}`, player.stats?.coins.available, { marginTop: 10, paddingLeft: 0, inline: '' })}
+            ${this.label('gained', `stats-scene-gained-${player.walletAddress}`, player.stats?.coins.gained, { marginTop: 10, paddingLeft: 0, inline: '' })}
           </div>
         </div>
       </div>`;
@@ -331,9 +330,13 @@ export default class StatsScene extends Phaser.Scene {
           attackMsg = `MISSED`;
         }
         data = `<div style='display: inline-block'>${attackMsg}</div>`;
+        if (ml.scoreToDisplay && ml.scoreToDisplay.length > 0) {
+          const score = ml.scoreToDisplay[0];
+          data = `<div style='display: inline-block'>${score.value}${score.type}</div>`;
+        }
         break;
       }
-      case Const.Command.token:
+      // case Const.Command.token:
       case Const.Command.picked:
       case Const.Command.digged: {
         if (ml.scoreToDisplay && ml.scoreToDisplay.length > 0) {
@@ -356,8 +359,7 @@ export default class StatsScene extends Phaser.Scene {
     document.getElementById('stats-scene-frags').innerText = stats?.player?.kills.frags;
     document.getElementById('stats-scene-deaths').innerText = stats?.player?.kills.deaths;
     document.getElementById('stats-scene-cbcoins').innerText = stats?.player?.coins.balance;
-    document.getElementById('stats-scene-locked').innerText = stats?.player?.coins.available;
-    document.getElementById('stats-scene-transferred').innerText = stats?.player?.coins.transferred;
+    document.getElementById('stats-scene-gained').innerText = stats?.player?.coins.gained;
     this.subtitle.setText(`AP: ${stats?.player?.ap?.current}`);
     if (stats?.player?.ap?.current === 0) {
       this.subtitle.setColor(colors.red);
@@ -396,19 +398,19 @@ export default class StatsScene extends Phaser.Scene {
   }
 
   onUpdateOtherPlayerStats(player) {
-    const currentLockedValue = document.getElementById(`stats-scene-locked-${player.walletAddress}`).innerText;
-    const newLockedValue = player.coins.available;
+    const currentGainedValue = document.getElementById(`stats-scene-gained-${player.walletAddress}`).innerText;
+    const newGainedValue = player.coins.gained;
     document
       .getElementById(`player-box-${player.walletAddress}`)
-      .setAttribute('data-coins-available', player.coins.available);
-    if (newLockedValue != currentLockedValue) {
+      .setAttribute('data-coins-gained', player.coins.gained);
+    if (newGainedValue != currentGainedValue) {
       this.shufflePlayersList();
     }
     document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
     document.getElementById(`stats-scene-frags-${player.walletAddress}`).innerText = player.kills.frags;
     document.getElementById(`stats-scene-deaths-${player.walletAddress}`).innerText = player.kills.deaths;
     document.getElementById(`stats-scene-cbcoins-${player.walletAddress}`).innerText = player.coins.balance;
-    document.getElementById(`stats-scene-locked-${player.walletAddress}`).innerText = player.coins.available;
+    document.getElementById(`stats-scene-gained-${player.walletAddress}`).innerText = player.coins.gained;
   }
 
   onNexMessage(response, lag) {
@@ -437,7 +439,7 @@ export default class StatsScene extends Phaser.Scene {
     // Sort players list
     for (let i = items.length - 1; i > 0; i--) {
       const itemsBeforeSort = [...items];
-      items.sort((a, b) => b.dataset.coinsAvailable - a.dataset.coinsAvailable);
+      items.sort((a, b) => b.dataset.coinsGained - a.dataset.coinsGained);
       let sameOrder = true;
       for (let i = 0; i < items.length; i++) {
         if (items[i].id != itemsBeforeSort[i].id) {

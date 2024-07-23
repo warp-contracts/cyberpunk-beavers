@@ -46,6 +46,7 @@ function initState(message, state) {
     nextModuleId: null,
     nextChatProcessId: null,
     nextChatModuleId: null,
+    tokensTransferred: false,
     counter: 0,
     pos: 1,
     playWindow: {},
