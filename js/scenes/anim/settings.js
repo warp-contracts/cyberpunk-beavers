@@ -30,6 +30,24 @@ export const ANIM_SETTINGS = {
       end: 5,
       frameRate: 8,
     },
+    death_headshot: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
+      frameRate: 8,
+    },
+    death_tankshot: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
+      frameRate: 8,
+    },
+    death_slice: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
+      frameRate: 8,
+    },
   },
   heavy_beaver: {
     idle: {
@@ -62,6 +80,24 @@ export const ANIM_SETTINGS = {
       end: 5,
       frameRate: 8,
     },
+    death_headshot: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
+      frameRate: 8,
+    },
+    death_tankshot: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
+      frameRate: 8,
+    },
+    death_slice: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
+      frameRate: 8,
+    },
   },
   speedy_beaver: {
     idle: {
@@ -92,6 +128,24 @@ export const ANIM_SETTINGS = {
       prefix: 'frame-',
       start: 1,
       end: 5,
+      frameRate: 8,
+    },
+    death_headshot: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
+      frameRate: 8,
+    },
+    death_tankshot: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
+      frameRate: 8,
+    },
+    death_slice: {
+      prefix: 'frame-',
+      start: 1,
+      end: 21,
       frameRate: 8,
     },
   },

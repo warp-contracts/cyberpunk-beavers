@@ -88,9 +88,13 @@ export default class MainScene extends Phaser.Scene {
     this.loadBeaverAnim(beaver, 'attack');
     this.loadBeaverAnim(beaver, 'dig');
     this.loadBeaverAnim(beaver, 'pick');
+    Object.values(Const.BEAVER_TYPES).forEach((b) => {
+      Object.values(Const.Kills).forEach((k) => this.loadBeaverAnim(b.name, `death_${k}`));
+    });
   }
 
   loadBeaverAnim(beaver, asset) {
+    console.log(`${beaver}_anim_${asset}`);
     this.load.atlas(
       `${beaver}_anim_${asset}`,
       `assets/images/beavers/${beaver}/${beaver}_anim_${asset}.png`,
@@ -458,7 +462,10 @@ export default class MainScene extends Phaser.Scene {
               this.beaverEliminatedSound.play();
             }
           }
-          self.allPlayers[response.opponent?.walletAddress]?.bloodyRespawn(response.opponent.pos);
+          const opponent = self.allPlayers[response.opponent?.walletAddress];
+          opponent?.deathAnim(response.player.beaverId).once('animationcomplete', () => {
+            opponent?.bloodyRespawn(response.opponent.pos);
+          });
         }
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
           forOpponent: {

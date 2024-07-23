@@ -1,4 +1,4 @@
-import Const from './common/const.mjs';
+import Const, { BEAVER_TYPES } from './common/const.mjs';
 import { trimString } from './utils/utils.js';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
@@ -89,6 +89,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   attackAnim() {
     this.anims.play(`${this.beaverChoice}_attack`, true);
+  }
+
+  deathAnim(killer) {
+    return this.anims.play(`${this.beaverChoice}_death_${BEAVER_TYPES[killer].kill}`, true);
   }
 
   digAnim() {

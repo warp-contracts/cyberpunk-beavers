@@ -26,6 +26,12 @@ export const MIN_MSG_LENGTH = 2; // Hi
 
 export const MAX_LAST_TXS = 20;
 
+const Kills = {
+  headshot: 'headshot',
+  slice: 'slice',
+  tankshot: 'tankshot',
+};
+
 const Command = {
   attack: 'attack',
   attacked: 'attacked',
@@ -110,6 +116,7 @@ export const BEAVER_TYPES = {
       [GameObject.treasure.type]: 100,
       [BonusType.KillBonus]: 200,
     },
+    kill: Kills.headshot,
   },
   heavy_beaver: {
     name: 'heavy_beaver',
@@ -130,6 +137,7 @@ export const BEAVER_TYPES = {
       [GameObject.treasure.type]: 0,
       [BonusType.KillBonus]: 220,
     },
+    kill: Kills.tankshot,
   },
   speedy_beaver: {
     name: 'speedy_beaver',
@@ -150,6 +158,7 @@ export const BEAVER_TYPES = {
       [GameObject.treasure.type]: 20,
       [BonusType.KillBonus]: 180,
     },
+    kill: Kills.slice,
   },
 };
 
@@ -180,4 +189,5 @@ export default {
   LOW_AP_COST,
   MED_AP_COST,
   HIGH_AP_COST,
+  Kills,
 };
