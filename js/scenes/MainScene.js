@@ -444,8 +444,8 @@ export default class MainScene extends Phaser.Scene {
 
       case Const.Command.attacked:
         if (
-          response.player.walletAddress === self.mainPlayer?.walletAddress ||
-          response.opponent.walletAddress === self.mainPlayer?.walletAddress
+          response.player?.walletAddress === self.mainPlayer?.walletAddress ||
+          response.opponent?.walletAddress === self.mainPlayer?.walletAddress
         ) {
           switch (response.player.beaverId) {
             case BEAVER_TYPES.heavy_beaver.name:
