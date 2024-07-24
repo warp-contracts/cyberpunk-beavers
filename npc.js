@@ -5,9 +5,9 @@ import { ArweaveSigner, createData } from 'warp-arbundles/build/node/esm/index.j
 
 const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
-const moduleId = 'LM3r549w6XSH6GvPllYJbzZcWQx2oj1sibejW7-Jizc';
+const moduleId = 'jPVgQURGNYHKUi2BcyV1SJqZZ9452ZodxeiCUDRecEE';
 const processIds = [
-  '1B2RneDtd4Xq0NtoY7ONaptuzBamFYzRd_f5amHxVcw',
+  '2lcEc-jZ9yrYY8PMsc0iv5xsRXt1z-_K4p6gihF3Vhc',
   /*'oKolyRBKWf5Y8rdlXh9rd8F4R7Nk0HMnmxS5-WMZ_KM'*/
 ];
 
