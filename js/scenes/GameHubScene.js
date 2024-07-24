@@ -41,7 +41,6 @@ export default class GameHubScene extends Phaser.Scene {
     });
 
     this.container = this.add.container(50, 0);
-    console.log(this.container.add, this.container);
   }
 
   update() {}

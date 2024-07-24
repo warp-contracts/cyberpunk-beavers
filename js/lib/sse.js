@@ -10,8 +10,12 @@ export async function initSubscription(moduleId, processId, verifyNonce, verifyL
 
   sse.onerror = (e) => {
     sse.close();
+    const oldOnMessage = sse.onmessage;
+    const oldOnError = sse.onerror;
     console.error(e);
     sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${processId}`);
+    sse.onerror = oldOnError;
+    sse.onmessage = oldOnMessage;
   };
 
   return {
@@ -57,19 +61,25 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
           window.warpAO.nonce = message.nonce;
         }
       }
-      if (verifyLag) {
+      if (verifyLag && message.walletAddress) {
         if (message.tags) {
           const sentTag = message.tags.find((t) => t.name === 'Sent');
           if (sentTag) {
-            const sentTs = parseFloat(sentTag.value);
-            lag = {
-              deliveryToCu: Math.floor(message.cuReceived - sentTs),
-              deliveryFromCu: Math.floor(now - message.cuSent),
-              cuCalc: Math.floor(message.cuSent - message.cuReceived),
-              total: Math.floor(now - sentTs),
-            };
-            window.warpAO.lag = lag;
-            console.log(`===== Lag:`, window.warpAO.lag);
+            const addresses = [
+              localStorage.getItem('generated_wallet_address'),
+              localStorage.getItem('wallet_address'),
+            ];
+            if (addresses.includes(message.walletAddress)) {
+              const sentTs = parseFloat(sentTag.value);
+              lag = {
+                deliveryToCu: Math.floor(message.cuReceived - sentTs),
+                deliveryFromCu: Math.floor(now - message.cuSent),
+                cuCalc: Math.floor(message.cuSent - message.cuReceived),
+                total: Math.floor(now - sentTs),
+              };
+              window.warpAO.lag = lag;
+              console.log(`===== Lag:`, window.warpAO.lag);
+            }
           }
         }
       }
