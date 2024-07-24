@@ -2,7 +2,7 @@ import { Text } from '../objects/Text.js';
 import { colors } from '../utils/style.js';
 import { WebFontFile } from '../WebFontFile.js';
 import Const from '../common/const.mjs';
-import { serverConnectionChat, serverConnectionGame } from '../lib/serverConnection.js';
+import { serverConnection } from '../lib/serverConnection.js';
 import { EVENTS_NAME } from '../utils/events.js';
 import {
   mainSceneKey,
@@ -11,6 +11,7 @@ import {
   loungeAreaSceneKey,
   statsSceneKey,
   scenes,
+  gameHubSceneKey,
 } from '../config/config.js';
 import { trimString } from '../utils/utils.js';
 
@@ -41,14 +42,15 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver/hacker_beaver_portrait.png');
     this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver/heavy_beaver_portrait.png');
     this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver/speedy_beaver_portrait.png');
+    this.load.image('back_button', 'assets/images/back_button.png');
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
   async create() {
     console.log('Leaderboard Scene - 3. Create');
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
-      this.server = serverConnectionGame;
-      this.serverChat = serverConnectionChat;
+      this.server = serverConnection.game;
+      this.serverChat = serverConnection.chat;
       this.server.subscribe(this);
       this.serverChat.subscribe(this);
     } else {
@@ -56,6 +58,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     }
     this.addBackground();
     this.addAndPositionTitle();
+    this.addReturnToHubButton();
     this.createGridTable(this);
   }
 
@@ -74,6 +77,17 @@ export default class LeaderboardScene extends Phaser.Scene {
     });
     this.title.x = this.gameWidth / 2 - this.title.width / 2;
     this.title.setDepth(11);
+  }
+
+  addReturnToHubButton() {
+    const self = this;
+    const img = this.add.image(150, 100 + this.title.height / 2, `back_button`);
+    img.setDepth(11);
+    img.setInteractive({ useHandCursor: true }).on('pointerdown', async () => {
+      self.scene.start(gameHubSceneKey, {
+        walletAddress: self.walletAddress,
+      });
+    });
   }
 
   createGridTable() {

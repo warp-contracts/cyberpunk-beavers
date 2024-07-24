@@ -18,6 +18,25 @@ After a limited number of rounds, the game ends and a living beaver with the max
 
 4. Open the game at `http://localhost:9001/`
 
+### Spawning testing session
+
+In order to deploy and spawn along with games:
+
+`yarn deploy-session:local 23:20`
+or
+`node js/tools/deploy-spawn-session.js --env local  --time 23:20`
+
+Games config can be found here:
+`js/tools/deploy-spawn-session-config.js`
+
+In order to deploy and spawn a single game to the existing hub
+
+`yarn deploy-session-game:local 23:20`
+or
+`node js/tools/deploy-spawn-session-game.js --env local  --time 23:20`
+
+Omitting date in the commands above will result in spawning games without time limits
+
 ### Token
 
 #### Wallet

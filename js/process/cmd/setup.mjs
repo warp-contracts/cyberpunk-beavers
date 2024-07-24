@@ -1,3 +1,5 @@
+import Const from '../../common/const.mjs';
+
 const MilisecondsOf = {
   nextFullHour: 60 * 60 * 1000,
   nextHalfHour: 30 * 60 * 1000,
@@ -30,6 +32,11 @@ export function setup(state, action, message) {
       };
       state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup ${action.type}`, state.playWindow);
+      state.chatProcessId = action.chatProcessId;
+      state.chatModuleId = action.chatModuleId;
+      state.hubProcessId = action.hubProcessId;
+      console.log(`Setup ${action.type}`, action);
+      sendHubNotification(state);
       break;
     }
 
@@ -44,6 +51,11 @@ export function setup(state, action, message) {
       };
       state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup ${action.type}`, state.playWindow);
+      state.chatProcessId = action.chatProcessId;
+      state.chatModuleId = action.chatModuleId;
+      state.hubProcessId = action.hubProcessId;
+      console.log(`Setup ${action.type}`, action);
+      sendHubNotification(state);
       break;
 
     case SetupTimes.custom:
@@ -51,6 +63,11 @@ export function setup(state, action, message) {
       state.playWindow.end = action.end;
       state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup custom`, state.playWindow);
+      state.chatProcessId = action.chatProcessId;
+      state.chatModuleId = action.chatModuleId;
+      state.hubProcessId = action.hubProcessId;
+      console.log(`Setup custom`, action);
+      sendHubNotification(state);
       break;
 
     default:
@@ -64,4 +81,22 @@ export function setup(state, action, message) {
 
 function calculateTotalRounds(state) {
   return ~~((state.playWindow.end - state.playWindow.begin) / state.round.interval);
+}
+
+function sendHubNotification(state) {
+  console.log(`---- GAME -- registering game in hub`, state.hubProcessId);
+  ao.send({
+    Target: state.hubProcessId,
+    Data: '1234',
+    Action: JSON.stringify({
+      cmd: Const.Command.hubRegisterGame,
+      game: {
+        playWindow: state.playWindow,
+        playersLimit: Const.Queue.limit,
+        players: state.walletsQueue,
+        chatProcessId: state.chatProcessId,
+        chatModuleId: state.chatModuleId,
+      },
+    }),
+  });
 }

@@ -1,7 +1,7 @@
 import { Tag } from 'warp-contracts';
 import ids from '../config/warp-ao-ids.js';
 
-export function mockDataItem(data, owner) {
+export function mockDataItem(data, owner, processId = ids.processId_dev) {
   const withTags = {
     tags: [
       new Tag('Action', JSON.stringify(data)),
@@ -9,12 +9,12 @@ export function mockDataItem(data, owner) {
       new Tag('Type', 'Message'),
       new Tag('Variant', 'ao.TN.1'),
       { name: 'SDK', value: 'ao' },
-      new Tag('From-Process', ids.processId_dev),
+      new Tag('From-Process', processId),
       new Tag('From-Module', ids.moduleId_dev),
       new Tag('Salt', '' + Date.now()),
     ],
     data: '1234',
-    target: ids.processId_dev,
+    target: processId,
   };
   return {
     ...withTags,
@@ -23,4 +23,26 @@ export function mockDataItem(data, owner) {
     Tags: withTags.tags,
     Timestamp: Date.now(),
   };
+}
+
+export function dateFromArg(dateStr) {
+  if (!dateStr) {
+    return null;
+  }
+  const timeArr = dateStr.split(':');
+  const d = new Date();
+  d.setHours(12);
+  d.setMinutes(0);
+  d.setSeconds(0);
+  d.setMilliseconds(0);
+  if (timeArr.length) {
+    d.setHours(timeArr.shift());
+  }
+  if (timeArr.length) {
+    d.setMinutes(timeArr.shift());
+  }
+  if (timeArr.length) {
+    d.setSeconds(timeArr.shift());
+  }
+  return d;
 }

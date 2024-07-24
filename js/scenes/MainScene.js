@@ -3,7 +3,7 @@ import Const, { BEAVER_TYPES } from '../common/const.mjs';
 import MainPlayer from '../MainPlayer.js';
 import { Text } from '../objects/Text.js';
 import { EVENTS_NAME } from '../utils/events.js';
-import { serverConnectionGame } from '../lib/serverConnection.js';
+import { serverConnection } from '../lib/serverConnection.js';
 import {
   mainSceneKey,
   connectWalletSceneKey,
@@ -123,7 +123,7 @@ export default class MainScene extends Phaser.Scene {
     this.allPlayers = {};
     this.ranking = [];
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
-      this.server = serverConnectionGame;
+      this.server = serverConnection.game;
       this.server.subscribe(this);
       await this.registerPlayer();
     } else {
@@ -627,7 +627,7 @@ export default class MainScene extends Phaser.Scene {
         player: responsePlayer.stats,
         game: gameStats,
       });
-    } else if (responsePlayer) {
+    } else if (responsePlayer && this.allPlayers[responsePlayer.walletAddress]) {
       currentCoinsGained = this.allPlayers[responsePlayer?.walletAddress].stats.coins.gained;
       newCoinsGained = responsePlayer.stats.coins.gained;
       this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
