@@ -83,8 +83,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   forDeathSounds(execute) {
-    for (let i = 1; i < Const.DEATH_SOUND_OPTIONS; i++) {
-      Object.values(Const.Kills).forEach((k) => execute(k, i));
+    for (let i = 0; i < Const.DEATH_SOUND_OPTIONS; i++) {
+      Object.values(Const.Kills).forEach((k) => execute(k, i + 1));
     }
   }
 
