@@ -58,7 +58,7 @@ async function spawn({ processName, moduleId }) {
     new Tag('Data-Protocol', 'ao'),
     new Tag('Variant', 'ao.TN.1'),
     new Tag('Type', 'Process'),
-    new Tag('Name', ` spawn ${processName}`),
+    new Tag('Name', `spawn ${processName}`),
     new Tag('Module', moduleId),
     new Tag('Scheduler', 'jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M'),
     new Tag('SDK', 'ao'),
@@ -94,7 +94,7 @@ async function doIt() {
     ? hourSessionGamesConfig(hubProcessId, execDate)
     : activeGamesConfig(hubProcessId);
 
-
+  const gameProcesses = [];
   for (let s of setups) {
     // Spawn chat
     await sleep(1000);
@@ -115,6 +115,7 @@ async function doIt() {
         { name: 'Chat-Module-Tx', value: chatSrcId},
         { name: 'Hub-Process-Tx', value: hubProcessId}]
     });
+    gameProcesses.push(gameProcessId);
 
     // Transfer tokens
     console.log(`Transferring token to game ${gameProcessId}`);
@@ -131,7 +132,8 @@ async function doIt() {
     [`moduleId_${env}`]: gameSrcId,
     [`chat_moduleId_${env}`]: chatSrcId,
     [`hub_moduleId_${env}`]: hubSrcId,
-    [`hub_processId_${env}`]: hubProcessId
+    [`hub_processId_${env}`]: hubProcessId,
+    gameProcesses
   };
 }
 
