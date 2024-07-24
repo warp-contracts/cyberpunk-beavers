@@ -1,12 +1,23 @@
 import { initWebSocket } from './websocket.js';
 import { initSubscription } from './sse.js';
 
-export const serverConnectionGame = await (async () => {
-  return initServerConnection(window.warpAO.moduleId(), window.warpAO.processId(), true, true, false);
-})();
+export const serverConnection = await (async () => {
+  const conn = {};
+  conn.hub = await initServerConnection(
+    window.warpAO.gameHubModuleId(),
+    window.warpAO.gameHubProcessId(),
+    false,
+    false,
+    true
+  );
 
-export const serverConnectionChat = await (async () => {
-  return initServerConnection(window.warpAO.chatModuleId(), window.warpAO.chatProcessId(), false, false, true);
+  conn.initGame = async (module, process) => {
+    conn.game = await initServerConnection(module, process, true, true, false);
+  };
+  conn.initChat = async (module, process) => {
+    conn.chat = await initServerConnection(module, process, false, false, true);
+  };
+  return conn;
 })();
 
 async function initServerConnection(moduleId, processId, verifyNonce, verifyLag, alwaysUseConnectedWallet) {

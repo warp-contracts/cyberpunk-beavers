@@ -54,6 +54,10 @@ const Command = {
   setNextProcess: 'setNextProcess',
   nextProcessSet: 'nextProcessSet',
   end: 'end',
+  hubRegisterGame: 'hubRegisterGame',
+  hubGamePlayers: 'hubGamePlayers',
+  hubInfo: 'hubInfo',
+  hubStats: 'hubStats',
 };
 
 const Direction = {
@@ -166,7 +170,7 @@ export const BEAVER_TYPES = {
 
 // ------- Queue Config
 const Queue = {
-  limit: 15,
+  limit: 30,
 };
 
 export default {
