@@ -26,6 +26,8 @@ export const MIN_MSG_LENGTH = 2; // Hi
 
 export const MAX_LAST_TXS = 20;
 
+const DEATH_SOUND_OPTIONS = 3;
+
 const Kills = {
   headshot: 'headshot',
   slice: 'slice',
@@ -190,4 +192,5 @@ export default {
   MED_AP_COST,
   HIGH_AP_COST,
   Kills,
+  DEATH_SOUND_OPTIONS,
 };

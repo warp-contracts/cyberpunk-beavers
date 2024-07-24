@@ -92,7 +92,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   deathAnim(killer) {
-    return this.anims.play(`${this.beaverChoice}_death_${BEAVER_TYPES[killer].kill}`, true);
+    const kill = BEAVER_TYPES[killer].kill;
+    const random = Math.floor(Math.random() * (Const.DEATH_SOUND_OPTIONS - 1 + 1) + 1);
+    this.scene[`${kill}${random}DeathSound`].play();
+    return this.anims.play(`${this.beaverChoice}_death_${kill}`, true);
   }
 
   digAnim() {

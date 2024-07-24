@@ -78,7 +78,22 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('triple_kill', ['assets/audio/triple_kill.m4a']);
     this.load.audio('god_like', ['assets/audio/god_like.m4a']);
     this.load.audio('revenge', ['assets/audio/revenge.m4a']);
+    this.forDeathSounds((k, i) => this.loadDeathSound(k, i, this));
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
+  }
+
+  forDeathSounds(execute) {
+    for (let i = 1; i < Const.DEATH_SOUND_OPTIONS; i++) {
+      Object.values(Const.Kills).forEach((k) => execute(k, i));
+    }
+  }
+
+  loadDeathSound(k, i, self) {
+    self.load.audio(`death_${k}_${i}`, [`assets/audio/death_${k}_${i}.mp3`]);
+  }
+
+  addDeathSound(k, i) {
+    this[`${k}${i}DeathSound`] = this.sound.add(`death_${k}_${i}`, { loop: false, volume: 2.0 });
   }
 
   loadBeaverAssets(beaver) {
@@ -94,7 +109,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   loadBeaverAnim(beaver, asset) {
-    console.log(`${beaver}_anim_${asset}`);
     this.load.atlas(
       `${beaver}_anim_${asset}`,
       `assets/images/beavers/${beaver}/${beaver}_anim_${asset}.png`,
@@ -735,6 +749,7 @@ export default class MainScene extends Phaser.Scene {
     this.tripleKillSound = this.sound.add('triple_kill', { loop: false, volume: 4.0 });
     this.godLikeSound = this.sound.add('god_like', { loop: false, volume: 4.0 });
     this.revengeSound = this.sound.add('revenge', { loop: false, volume: 4.0 });
+    this.forDeathSounds((k, i) => this.addDeathSound(k, i, this));
 
     if (window.warpAO.config.env !== 'local') {
       this.backgroundMusic.play();
