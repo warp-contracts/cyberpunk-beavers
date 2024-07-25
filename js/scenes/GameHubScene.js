@@ -52,18 +52,37 @@ export default class GameHubScene extends Phaser.Scene {
         console.log(`Found games: ${Object.keys(response.games).length}`);
         if (response.games) {
           let i = 0;
+          let activeGames = [];
           // show active games on the top
-          let games = Object.entries(response.games).sort(([k, v]) => {
+          const gamesToSort = Object.entries(response.games).map(([k, v]) => {
             if (v.playWindow?.end) {
               if (v.playWindow.end > Date.now()) {
-                console.log(`active game `, k, v.playWindow.end);
-                return v.playWindow.end;
+                return [
+                  k,
+                  {
+                    ...v,
+                    finish: v.playWindow.end,
+                  },
+                ];
               }
-              console.log(`inactive game `, k, v.playWindow.end + 24 * 60 * 60 * 1000);
-              return v.playWindow.end + 24 * 60 * 60 * 1000; //finished games should ba the end
+              return [
+                k,
+                {
+                  ...v,
+                  finish: v.playWindow.end + 24 * 60 * 60 * 1000,
+                },
+              ];
             }
-            return v.playWindow?.begin;
+            return [
+              k,
+              {
+                ...v,
+                finish: v.playWindow?.begin,
+              },
+            ];
           });
+
+          let games = gamesToSort.sort(([k1, v1], [k2, v2]) => v1.finish - v2.finish);
           for (const [processId, game] of games) {
             console.log(`${++i} ${processId}: ${game}`);
             let bLabel = `${i} ${trimString(processId, 5, 2, 4)}`;
@@ -76,6 +95,7 @@ export default class GameHubScene extends Phaser.Scene {
               } else if (game.playWindow.end && game.playWindow.end < Date.now()) {
                 bLabel += `\nFinished at: ${new Date(game.playWindow.end).toLocaleString()}`;
               } else {
+                activeGames.push(processId);
                 const termination = game.playWindow.end
                   ? `until ${new Date(game.playWindow.end).toLocaleString()}`
                   : '';
@@ -86,7 +106,7 @@ export default class GameHubScene extends Phaser.Scene {
             const gameButton = new TextButton(
               this,
               100,
-              100 + i * 100,
+              75 + i * 100,
               bLabel,
               {
                 fill: colors.green,
@@ -102,7 +122,18 @@ export default class GameHubScene extends Phaser.Scene {
               }
             );
 
-            this.container.add(gameButton, false);
+            if (activeGames.includes(processId)) {
+              const textBorder = this.add.rectangle(
+                100 + (gameButton.width / 2 + 100 / 2),
+                50 + i * 150,
+                gameButton.width + 100,
+                100,
+                0xffffff,
+                0
+              );
+              textBorder.setStrokeStyle(2, 0x00ff00);
+              Phaser.Display.Align.In.Center(gameButton, textBorder);
+            }
           }
         }
 
