@@ -397,6 +397,7 @@ export default class MainScene extends Phaser.Scene {
   handleMessage(response, lag) {
     const self = this;
     this.game.events.emit(EVENTS_NAME.nextMessage, { response, lag });
+    if (this.allPlayers[response.player?.walletAddress]?.locked) return;
     switch (response.cmd) {
       case Const.Command.registered:
         {
@@ -467,6 +468,8 @@ export default class MainScene extends Phaser.Scene {
           this.allPlayers[response.player.walletAddress]?.attackAnim();
         }
         if (response.opponentFinished) {
+          const opponent = self.allPlayers[response.opponent?.walletAddress];
+          opponent?.lock();
           if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
             setTimeout(() => {
               self.opponentFinishedSound(response.player, response.revenge);
@@ -476,7 +479,6 @@ export default class MainScene extends Phaser.Scene {
               this.beaverEliminatedSound.play();
             }
           }
-          const opponent = self.allPlayers[response.opponent?.walletAddress];
           opponent?.deathAnim(response.player.beaverId).once('animationcomplete', () => {
             opponent?.bloodyRespawn(response.opponent.pos);
           });
