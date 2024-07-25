@@ -10,6 +10,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.userName = userName;
     this.stats = stats;
     this.animated = animated;
+    this.locked = false;
     scene.add.existing(this);
     this.initInputKeys();
     this.onGameObject = null;
@@ -87,6 +88,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     );
   }
 
+  lock() {
+    this.locked = true;
+  }
+
+  unlock() {
+    this.locked = false;
+  }
+
   attackAnim() {
     this.anims.play(`${this.beaverChoice}_attack`, true);
   }
@@ -153,6 +162,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           () => {},
           () => self.blink()
         );
+        self.unlock();
       },
     });
   }

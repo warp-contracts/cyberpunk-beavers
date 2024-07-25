@@ -92,6 +92,7 @@ export default class MainPlayer extends Player {
   }
 
   async send(message) {
+    if (this.locked) return;
     if (this.mainScene.lockingTx) {
       console.log(`Action locked for tx`, this.mainScene.lockingTx);
     } else {
