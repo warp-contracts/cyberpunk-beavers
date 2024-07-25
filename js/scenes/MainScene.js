@@ -59,7 +59,6 @@ export default class MainScene extends Phaser.Scene {
     this.loadBeaverAssets('heavy_beaver');
     this.loadBeaverAssets('speedy_beaver');
 
-    this.load.atlas('blood', 'assets/images/blood_100x100.png', 'assets/images/blood_100x100.json');
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
     this.load.audio('dig_sound', ['assets/audio/dig.mp3']);
@@ -142,16 +141,6 @@ export default class MainScene extends Phaser.Scene {
         });
       }
     }
-
-    this.anims.create({
-      key: `blood`,
-      frames: this.anims.generateFrameNames(`blood`, {
-        prefix: 'frame-',
-        start: 0,
-        end: 17,
-      }),
-      frameRate: 34,
-    });
   }
 
   async registerPlayer() {
@@ -480,7 +469,12 @@ export default class MainScene extends Phaser.Scene {
             }
           }
           opponent?.deathAnim(response.player.beaverId).once('animationcomplete', () => {
-            opponent?.bloodyRespawn(response.opponent.pos);
+            opponent.baseMoveTo(
+              response.opponent.pos,
+              () => {},
+              () => self.blink()
+            );
+            opponent.unlock();
           });
         }
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {

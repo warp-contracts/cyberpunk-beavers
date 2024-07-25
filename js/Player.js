@@ -143,30 +143,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     return { movementTemplate, moveHorizontal, moveVertical };
   }
 
-  bloodyRespawn(pos) {
-    const self = this;
-    self.scene.tweens.add({
-      targets: [self],
-      ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-      duration: 200,
-      x: self.x,
-      delay: 0,
-      repeat: 2, // -1: infinity
-      yoyo: false,
-      onStart: () => {
-        self.anims.play(`blood`, true);
-      },
-      onComplete: () => {
-        self.baseMoveTo(
-          pos,
-          () => {},
-          () => self.blink()
-        );
-        self.unlock();
-      },
-    });
-  }
-
   blink() {
     this.scene.add.tween({
       targets: [this],
