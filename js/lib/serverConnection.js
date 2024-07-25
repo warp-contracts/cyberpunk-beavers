@@ -13,9 +13,11 @@ export const serverConnection = await (async () => {
 
   conn.initGame = async (module, process) => {
     conn.game = await initServerConnection(module, process, true, true, false);
+    window.warpAO.processId = () => process;
   };
   conn.initChat = async (module, process) => {
     conn.chat = await initServerConnection(module, process, false, false, true);
+    window.warpAO.chatProcessId = () => process;
   };
   return conn;
 })();
