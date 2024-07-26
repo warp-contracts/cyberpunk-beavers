@@ -106,6 +106,7 @@ export default class ChatScene extends Phaser.Scene {
       }
       await this.server.send({ cmd: Const.Command.msg, msg: text });
       e.target.value = '';
+      document.activeElement.blur();
     }
     if (e.code === 'Escape') {
       document.activeElement.blur();
