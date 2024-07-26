@@ -7,6 +7,7 @@ import { trimString } from '../utils/utils.js';
 
 export default class GameHubScene extends Phaser.Scene {
   beaverId;
+  gameButtons;
 
   constructor() {
     super(gameHubSceneKey);
@@ -16,6 +17,7 @@ export default class GameHubScene extends Phaser.Scene {
     console.log('Game Hub - 1. Init', data);
     this.walletAddress = data.walletAddress;
     this.gameError = data.error;
+    this.gameButtons = [];
   }
 
   preload() {
@@ -49,6 +51,11 @@ export default class GameHubScene extends Phaser.Scene {
     console.log(`Got message`, response);
     switch (response.cmd) {
       case Const.Command.hubStats: {
+        this.textBorder?.destroy();
+        if (this.gameButtons.length > 0) {
+          this.gameButtons.forEach((b) => b.destroy());
+          this.gameButtons = [];
+        }
         console.log(`Found games: ${Object.keys(response.games).length}`);
         if (response.games) {
           let i = 0;
@@ -103,7 +110,7 @@ export default class GameHubScene extends Phaser.Scene {
               }
             }
 
-            const gameButton = new TextButton(
+            this.gameButtons[i] = new TextButton(
               this,
               100,
               75 + i * 100,
@@ -123,16 +130,16 @@ export default class GameHubScene extends Phaser.Scene {
             );
 
             if (activeGames.includes(processId)) {
-              const textBorder = this.add.rectangle(
-                100 + (gameButton.width / 2 + 100 / 2),
+              this.textBorder = this.add.rectangle(
+                100 + (this.gameButtons[i].width / 2 + 100 / 2),
                 50 + i * 150,
-                gameButton.width + 100,
+                this.gameButtons[i].width + 100,
                 100,
                 0xffffff,
                 0
               );
-              textBorder.setStrokeStyle(2, 0x00ff00);
-              Phaser.Display.Align.In.Center(gameButton, textBorder);
+              this.textBorder.setStrokeStyle(2, 0x00ff00);
+              Phaser.Display.Align.In.Center(this.gameButtons[i], this.textBorder);
             }
           }
         }
