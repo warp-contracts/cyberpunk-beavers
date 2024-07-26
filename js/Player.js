@@ -55,24 +55,27 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   updatePlayerPosition() {
-    const playerPosition = this.scene.ranking.indexOf(this.scene.ranking.find((r) => r[0] == this.walletAddress)) + 1;
-    const text = `${playerPosition}/${this.scene.ranking.length}`;
-    this.position.setText(text);
-    this.position.x = this.x - 3 * text.length;
-    if (this.medal) this.medal.destroy();
-    switch (playerPosition) {
-      case 1:
-        this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_gold');
-        this.medal.setDepth(8);
-        break;
-      case 2:
-        this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_silver');
-        this.medal.setDepth(8);
-        break;
-      case 3:
-        this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_brown');
-        this.medal.setDepth(8);
-        break;
+    const newPlayerRanking = this.scene.ranking.indexOf(this.scene.ranking.find((r) => r[0] == this.walletAddress)) + 1;
+    if (this.playerRanking != newPlayerRanking) {
+      this.playerRanking = newPlayerRanking;
+      const text = `${this.playerRanking}/${this.scene.ranking.length}`;
+      this.position.setText(text);
+      this.position.x = this.x - 3 * text.length;
+      if (this.medal) this.medal.destroy();
+      switch (this.playerRanking) {
+        case 1:
+          this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_gold');
+          this.medal.setDepth(8);
+          break;
+        case 2:
+          this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_silver');
+          this.medal.setDepth(8);
+          break;
+        case 3:
+          this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_brown');
+          this.medal.setDepth(8);
+          break;
+      }
     }
   }
 
