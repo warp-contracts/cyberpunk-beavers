@@ -35,7 +35,7 @@ export function setup(state, action, message) {
       state.chatProcessId = action.chatProcessId;
       state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
-      state.gameTreasuresRarity = action.treasures || Const.TREASURES_RARITY;
+
       state.playersLimit = action.playersLimit || Const.Queue.limit;
       console.log(`Setup ${action.type}`, action);
       sendHubNotification(state);
@@ -56,7 +56,6 @@ export function setup(state, action, message) {
       state.chatProcessId = action.chatProcessId;
       state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
-      state.gameTreasuresRarity = action.treasures || Const.TREASURES_RARITY;
       state.playersLimit = action.playersLimit || Const.Queue.limit;
       console.log(`Setup ${action.type}`, action);
       sendHubNotification(state);
@@ -70,7 +69,6 @@ export function setup(state, action, message) {
       state.chatProcessId = action.chatProcessId;
       state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
-      state.gameTreasuresRarity = action.treasures || Const.TREASURES_RARITY;
       state.playersLimit = action.playersLimit || Const.Queue.limit;
       console.log(`Setup custom`, action);
       sendHubNotification(state);

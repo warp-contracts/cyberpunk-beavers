@@ -59,7 +59,7 @@ function initState(message, state) {
     gameObjectsRarity: 10,
     gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],
     gameTreasuresTilesForClient: [GameObject.none],
-    gameTreasuresRarity: Const.TREASURES_RARITY,
+    gameTreasuresRarity: state.gameTreasuresRarity || Const.TREASURES_RARITY,
     gameTreasuresCounter: 0,
     round: {
       current: 0,
