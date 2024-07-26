@@ -140,8 +140,8 @@ export default class GameHubScene extends Phaser.Scene {
                 0xffffff,
                 0
               );
-              this.textBorder[i].setStrokeStyle(2, 0x00ff00);
-              Phaser.Display.Align.In.Center(this.gameButtons[i], this.textBorder[i]);
+              this.textBorders[i].setStrokeStyle(2, 0x00ff00);
+              Phaser.Display.Align.In.Center(this.gameButtons[i], this.textBorders[i]);
             }
           }
         }
