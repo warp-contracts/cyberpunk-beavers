@@ -35,22 +35,22 @@ export default class MainPlayer extends Player {
 
     if (Phaser.Input.Keyboard.JustDown(this.inputKeys.space)) {
       this.combatMode = true;
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.left)) {
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.left)) {
       await this.action(left);
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.right)) {
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.right)) {
       await this.action(right);
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.up)) {
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.up)) {
       await this.action(up);
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.down)) {
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.down)) {
       await this.action(down);
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
       this.combatMode = false;
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.p)) {
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.p)) {
       if (this.onGameObject) {
         await this.send({ cmd: pick });
         this.pickAnim();
       }
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.d) && this.stats.ap.current >= 2) {
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.d) && this.stats.ap.current >= 2) {
       await this.send({ cmd: dig });
       this.digAnim();
     } else {
