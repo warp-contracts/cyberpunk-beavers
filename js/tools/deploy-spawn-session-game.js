@@ -99,9 +99,10 @@ async function doIt() {
       { name: 'Chat-Module-Tx', value: chatSrcId },
       { name: 'Hub-Process-Tx', value: hubProcessId },
     ],
+    treasures,
   });
 
-  const customConfig = gameCustomConfig(hubProcessId, execDate.getTime(), playersLimit, treasures);
+  const customConfig = gameCustomConfig(hubProcessId, execDate.getTime(), playersLimit);
   customConfig.chatProcessId = chatProcessId;
   customConfig.chatModuleId = chatSrcId;
 

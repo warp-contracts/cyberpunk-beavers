@@ -93,8 +93,8 @@ async function doIt() {
   console.log(`----- deployed hub`, hubSrcId, hubProcessId);
 
   let setups = execDate
-    ? hourSessionGamesConfig(hubProcessId, execDate, playersLimit, treasures)
-    : activeGamesConfig(hubProcessId, playersLimit, treasures);
+    ? hourSessionGamesConfig(hubProcessId, execDate, playersLimit)
+    : activeGamesConfig(hubProcessId, playersLimit);
 
   const gameProcesses = [];
   for (let s of setups) {
@@ -117,6 +117,7 @@ async function doIt() {
         { name: 'Chat-Module-Tx', value: chatSrcId },
         { name: 'Hub-Process-Tx', value: hubProcessId },
       ],
+      treasures,
     });
     gameProcesses.push(gameProcessId);
 
