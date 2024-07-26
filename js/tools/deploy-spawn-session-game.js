@@ -28,6 +28,10 @@ const execDate = timeIdx > 0 ? dateFromArg(process.argv[timeIdx + 1]) : null;
 const treasuresIdx = process.argv.indexOf('--treasures');
 const treasures = process.argv[treasuresIdx + 1];
 
+// PLAYERS LIMIT
+const playersLimitIdx = process.argv.indexOf('--limit');
+const playersLimit = process.argv[playersLimitIdx + 1];
+
 console.info(`Deploying for ${env} env at ${execDate}.`);
 
 async function deploy(processName) {
@@ -95,10 +99,9 @@ async function doIt() {
       { name: 'Chat-Module-Tx', value: chatSrcId },
       { name: 'Hub-Process-Tx', value: hubProcessId },
     ],
-    treasures,
   });
 
-  const customConfig = gameCustomConfig(hubProcessId, execDate.getTime());
+  const customConfig = gameCustomConfig(hubProcessId, execDate.getTime(), playersLimit, treasures);
   customConfig.chatProcessId = chatProcessId;
   customConfig.chatModuleId = chatSrcId;
 

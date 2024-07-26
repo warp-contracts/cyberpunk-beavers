@@ -12,13 +12,13 @@ const hourSessionDelayMS = [
 ];
 const gameDurationMS = 5 * 60 * 1_000; // 5 minutes
 
-export function hourSessionGamesConfig(hubProcessId, dateOfFirstGame) {
+export function hourSessionGamesConfig(hubProcessId, dateOfFirstGame, playersLimit, treasures) {
   return hourSessionDelayMS.map((delay) => {
-    return gameCustomConfig(hubProcessId, dateOfFirstGame.getTime() + delay);
+    return gameCustomConfig(hubProcessId, dateOfFirstGame.getTime() + delay, playersLimit, treasures);
   });
 }
 
-export function gameCustomConfig(hubProcessId, date) {
+export function gameCustomConfig(hubProcessId, date, playersLimit, treasures) {
   if (date) {
     return {
       cmd: 'setup',
@@ -26,27 +26,35 @@ export function gameCustomConfig(hubProcessId, date) {
       hubProcessId,
       start: date,
       end: date + gameDurationMS,
+      playersLimit,
+      treasures,
     };
   } else {
     return {
       cmd: 'setup',
       type: 'custom',
       hubProcessId,
+      playersLimit,
+      treasures,
     };
   }
 }
 
-export function activeGamesConfig(hubProcessId) {
+export function activeGamesConfig(hubProcessId, playersLimit, treasures) {
   return [
     {
       cmd: 'setup',
       type: 'custom',
       hubProcessId,
+      playersLimit,
+      treasures,
     },
     {
       cmd: 'setup',
       type: 'custom',
       hubProcessId,
+      playersLimit,
+      treasures,
     },
   ];
 }
