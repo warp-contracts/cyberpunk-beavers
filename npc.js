@@ -5,14 +5,14 @@ import { ArweaveSigner, createData } from 'warp-arbundles/build/node/esm/index.j
 
 const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
-const moduleId = 'jPVgQURGNYHKUi2BcyV1SJqZZ9452ZodxeiCUDRecEE';
+const moduleId = 'iZWVADl_rjTu2FQA7jN6zyQYWa3dUbvxztNnCL2gWKM';
 const processIds = [
-  '2lcEc-jZ9yrYY8PMsc0iv5xsRXt1z-_K4p6gihF3Vhc',
+  'FcoTY1iSlrXeVfy9MQ9wYT7xLHARTJKr5pvN6o2jQ3Q',
   /*'oKolyRBKWf5Y8rdlXh9rd8F4R7Nk0HMnmxS5-WMZ_KM'*/
 ];
 
 async function runNpc() {
-  for (let i = 0; i < 29; i++) {
+  for (let i = 0; i < 13; i++) {
     const warp = WarpFactory.forMainnet();
     const { address, jwk } = await warp.generateWallet();
     const signer = new ArweaveSigner(jwk);
@@ -49,7 +49,7 @@ const sendDataItem = async (message, signer, moduleId, processId) => {
   });
   await dataItem.sign(signer);
 
-  const response = await fetch('http://localhost:8080', {
+  const response = await fetch('https://mu.warp.cc', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/octet-stream',
