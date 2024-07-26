@@ -28,6 +28,8 @@ export const MAX_LAST_TXS = 20;
 
 const DEATH_SOUND_OPTIONS = 3;
 
+const TREASURES_RARITY = 50;
+
 const Kills = {
   headshot: 'headshot',
   slice: 'slice',
@@ -197,4 +199,5 @@ export default {
   HIGH_AP_COST,
   Kills,
   DEATH_SOUND_OPTIONS,
+  TREASURES_RARITY,
 };

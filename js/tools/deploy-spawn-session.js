@@ -29,6 +29,10 @@ const execDate = dateFromArg(timeArg);
 const treasuresIdx = process.argv.indexOf('--treasures');
 const treasures = process.argv[treasuresIdx + 1];
 
+// PLAYERS LIMIT
+const playersLimitIdx = process.argv.indexOf('--limit');
+const playersLimit = process.argv[playersLimitIdx + 1];
+
 console.info(`Full deployment for ${env} env starting at ${execDate}.`, muUrl);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -88,7 +92,9 @@ async function doIt() {
   replaceId(`hub_processId_${env}`, hubProcessId);
   console.log(`----- deployed hub`, hubSrcId, hubProcessId);
 
-  let setups = execDate ? hourSessionGamesConfig(hubProcessId, execDate) : activeGamesConfig(hubProcessId);
+  let setups = execDate
+    ? hourSessionGamesConfig(hubProcessId, execDate, playersLimit, treasures)
+    : activeGamesConfig(hubProcessId, playersLimit, treasures);
 
   const gameProcesses = [];
   for (let s of setups) {
@@ -111,7 +117,6 @@ async function doIt() {
         { name: 'Chat-Module-Tx', value: chatSrcId },
         { name: 'Hub-Process-Tx', value: hubProcessId },
       ],
-      treasures,
     });
     gameProcesses.push(gameProcessId);
 
