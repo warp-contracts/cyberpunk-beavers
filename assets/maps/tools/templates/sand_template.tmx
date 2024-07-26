@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="48" tileheight="48" infinite="0" nextlayerid="4" nextobjectid="1">
  <editorsettings>
-  <export target="../../../../../../Downloads/map_test.json" format="json"/>
+  <export target="sand_template.json" format="json"/>
  </editorsettings>
- <tileset firstgid="1" source="../../../../../beavers/tilesets/ground/ground_tileset.tsx"/>
- <tileset firstgid="29" source="../../../../../beavers/tilesets/decorations/decorations_tileset.tsx"/>
- <tileset firstgid="43" source="../../../../../beavers/tilesets/obstacles/obstacles_tileset.tsx"/>
+ <tileset firstgid="1" source="../tilesets/ground/ground_tileset.tsx"/>
+ <tileset firstgid="29" source="../tilesets/decorations/decorations_tileset.tsx"/>
+ <tileset firstgid="43" source="../tilesets/obstacles/obstacles_tileset.tsx"/>
  <layer id="1" name="ground_layer" width="30" height="30">
   <data encoding="csv">
 13,14,25,26,27,27,25,26,27,27,27,25,26,27,28,27,25,26,13,13,13,25,26,13,13,13,13,27,27,28,
