@@ -210,8 +210,7 @@ export default class StatsScene extends Phaser.Scene {
           </div>
         </div>
         ${this.label('hp', 'stats-scene-hp', this.stats?.hp.current, { marginTop: 10, paddingLeft: 0, inline: 'padding-right: 10px;' })}
-        ${this.label('frags', 'stats-scene-frags', this.stats?.kills.frags, { marginTop: 10, paddingLeft: 0, inline: 'padding-right: 10px;' })}
-        ${this.label('deaths', 'stats-scene-deaths', this.stats?.kills.deaths, { marginTop: 10, paddingLeft: 0, inline: 'padding-right: 10px;' })}
+        ${this.label('frags/deaths', 'stats-scene-frags', `${this.stats?.kills.frags}/${this.stats?.kills.deaths}`, { marginTop: 10, paddingLeft: 0, inline: 'padding-right: 10px;' })}
         ${this.label('cbcoins', 'stats-scene-cbcoins-process', `<a style="color: black;" target="_blank" href='https://www.ao.link/#/token/${this.tokenProcessId}'>${trimString(this.tokenProcessId)}</a>`, { marginTop: 10, paddingLeft: 0, inline: 'padding-right: 10px;' })}
         ${this.label('owned', 'stats-scene-cbcoins', this.stats?.coins.balance, { marginTop: 5, paddingLeft: 15, inline: 'padding-right: 10px;' })}
         ${this.label('gained', 'stats-scene-gained', this.stats?.coins.gained, { marginTop: 5, paddingLeft: 15, inline: 'padding-right: 10px;' })}
@@ -263,8 +262,7 @@ export default class StatsScene extends Phaser.Scene {
           <div style="align-self: flex-end;" id="stats-scene-wallet-address">${this.displayName(player)}</div>
           <div style="display: flex; justify-content: space-between; flex-direction: column;">
             ${this.label('hp', `stats-scene-hp-${player.walletAddress}`, player.stats.hp.current, { marginTop: 10, paddingLeft: 0, inline: '' })}
-            ${this.label('frags', `stats-scene-frags-${player.walletAddress}`, player.stats.kills.frags, { marginTop: 10, paddingLeft: 0, inline: '' })}
-            ${this.label('deaths', `stats-scene-deaths-${player.walletAddress}`, player.stats.kills.deaths, { marginTop: 10, paddingLeft: 0, inline: '' })}
+            ${this.label('frags/deaths', `stats-scene-frags-${player.walletAddress}`, `${player.stats?.kills.frags}/${player.stats?.kills.deaths}`, { marginTop: 10, paddingLeft: 0, inline: '' })}
             ${this.label('cbcoins', `stats-scene-cbcoins-${player.walletAddress}`, player.stats?.coins.balance, { marginTop: 10, paddingLeft: 0, inline: '' })}
             ${this.label('gained', `stats-scene-gained-${player.walletAddress}`, player.stats?.coins.gained, { marginTop: 10, paddingLeft: 0, inline: '' })}
           </div>
@@ -356,8 +354,7 @@ export default class StatsScene extends Phaser.Scene {
 
   onUpdateStats(stats) {
     document.getElementById('stats-scene-hp').innerText = stats?.player?.hp?.current;
-    document.getElementById('stats-scene-frags').innerText = stats?.player?.kills.frags;
-    document.getElementById('stats-scene-deaths').innerText = stats?.player?.kills.deaths;
+    document.getElementById('stats-scene-frags').innerText = `${stats?.player?.kills.frags}/${stats?.player?.kills.deaths}`
     document.getElementById('stats-scene-cbcoins').innerText = stats?.player?.coins.balance;
     document.getElementById('stats-scene-gained').innerText = stats?.player?.coins.gained;
     this.subtitle.setText(`AP: ${stats?.player?.ap?.current}`);
@@ -407,8 +404,7 @@ export default class StatsScene extends Phaser.Scene {
       this.shufflePlayersList();
     }
     document.getElementById(`stats-scene-hp-${player.walletAddress}`).innerText = player.hp.current;
-    document.getElementById(`stats-scene-frags-${player.walletAddress}`).innerText = player.kills.frags;
-    document.getElementById(`stats-scene-deaths-${player.walletAddress}`).innerText = player.kills.deaths;
+    document.getElementById(`stats-scene-frags-${player.walletAddress}`).innerText = `${player.kills.frags}/${player.kills.deaths}`;
     document.getElementById(`stats-scene-cbcoins-${player.walletAddress}`).innerText = player.coins.balance;
     document.getElementById(`stats-scene-gained-${player.walletAddress}`).innerText = player.coins.gained;
   }

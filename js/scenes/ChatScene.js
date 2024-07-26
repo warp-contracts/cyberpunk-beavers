@@ -60,7 +60,7 @@ export default class ChatScene extends Phaser.Scene {
   addChatBox(id) {
     const resultDiv = document.createElement('div');
     const input = document.createElement('textarea');
-    input.style = `outline: none; width: 350px;`;
+    input.style = `outline: none; width: 300px;`;
     input.addEventListener('keyup', this.sendMessage.bind(this));
     input.onfocus = () => {
       this.mainScene.input.keyboard.disableGlobalCapture();
@@ -72,7 +72,7 @@ export default class ChatScene extends Phaser.Scene {
       this.mainScene.input.keyboard.enabled = true;
     };
     resultDiv.id = id;
-    resultDiv.style = ` width: 400px; height: 400px;
+    resultDiv.style = ` width: 300px; height: 200px;
       border: 0; outline: none;
       background-color: #fcee09;
       position: absolute;
@@ -82,12 +82,10 @@ export default class ChatScene extends Phaser.Scene {
     resultDiv.innerHTML = `
     <div style="font-family: 'Press Start 2P'; position: relative; height: 100%">
     <div style='margin: 10px 20px 5px 20px'>CHAT MESSAGES <a style="color: black;" target="_blank" href='https://www.ao.link/#/entity/${this.processId}'>${trimString(this.processId)}</a></div>
-    <div id="chat-msg-logs" style="height: 320px;
+    <div id="chat-msg-logs" style="height: 165px;
     overflow-y: auto;
     margin-bottom: 10px;">${this.messagesFormatted()}</div>
-    <div class="msg-input" style="
-        position: absolute;
-        left: 20px;"></div>
+    <div class="msg-input" style="position: absolute;"></div>
     </div>
     `;
     resultDiv.getElementsByClassName('msg-input')[0].appendChild(input);

@@ -3,7 +3,7 @@ import { Text } from '../objects/Text.js';
 import { colors } from '../utils/style.js';
 import { ArweaveSigner } from 'warp-arbundles';
 import { WarpFactory } from 'warp-contracts';
-import { connectWalletSceneKey, gameHubSceneKey } from '../config/config.js';
+import {connectWalletSceneKey, gameHubSceneKey, leaderboardSceneKey} from '../config/config.js';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {

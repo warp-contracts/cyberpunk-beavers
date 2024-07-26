@@ -14,6 +14,7 @@ import {
   gameHubSceneKey,
 } from '../config/config.js';
 import { trimString } from '../utils/utils.js';
+import {TextButton} from "../objects/TextButton.js";
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -80,15 +81,27 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   addReturnToHubButton() {
     const self = this;
-    const backBtn = new Text(self, 150, 100 + this.title.height / 2, `Back`, {
-      fontSize: '30px',
-    });
-    backBtn.setDepth(11);
-    backBtn.setInteractive({ useHandCursor: true }).on('pointerdown', async () => {
-      self.scene.start(gameHubSceneKey, {
-        walletAddress: self.walletAddress,
-      });
-    });
+    const textBorder = self.add.rectangle(200, 125, 200, 50, 0xffffff, 0);
+    textBorder.setStrokeStyle(2, 0x00ff00);
+    textBorder.setDepth(50);
+
+    this.backButton = new TextButton(
+      this,
+      0, 0,
+      '< Back',
+      {
+        fill: colors.green,
+        font: '30px',
+      },
+      () => {
+        self.scene.start(gameHubSceneKey, {
+          walletAddress: self.walletAddress,
+        });
+      }
+    );
+    this.backButton.setDepth(50);
+
+    Phaser.Display.Align.In.Center(this.backButton, textBorder);
   }
 
   createGridTable() {
