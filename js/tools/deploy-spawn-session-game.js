@@ -24,6 +24,10 @@ const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
 const timeIdx = process.argv.indexOf('--time');
 const execDate = timeIdx > 0 ? dateFromArg(process.argv[timeIdx + 1]) : null;
 
+// TREASURES AMOUNT
+const treasuresIdx = process.argv.indexOf('--treasures');
+const treasures = process.argv[treasuresIdx + 1];
+
 console.info(`Deploying for ${env} env at ${execDate}.`);
 
 async function deploy(processName) {
@@ -91,6 +95,7 @@ async function doIt() {
       { name: 'Chat-Module-Tx', value: chatSrcId },
       { name: 'Hub-Process-Tx', value: hubProcessId },
     ],
+    treasures,
   });
 
   const customConfig = gameCustomConfig(hubProcessId, execDate.getTime());

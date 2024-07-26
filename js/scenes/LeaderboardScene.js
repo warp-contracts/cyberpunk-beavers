@@ -42,7 +42,6 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver/hacker_beaver_portrait.png');
     this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver/heavy_beaver_portrait.png');
     this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver/speedy_beaver_portrait.png');
-    this.load.image('back_button', 'assets/images/back_button.png');
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
@@ -81,9 +80,11 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   addReturnToHubButton() {
     const self = this;
-    const img = this.add.image(150, 100 + this.title.height / 2, `back_button`);
-    img.setDepth(11);
-    img.setInteractive({ useHandCursor: true }).on('pointerdown', async () => {
+    const backBtn = new Text(self, 150, 100 + this.title.height / 2, `Back`, {
+      fontSize: '30px',
+    });
+    backBtn.setDepth(11);
+    backBtn.setInteractive({ useHandCursor: true }).on('pointerdown', async () => {
       self.scene.start(gameHubSceneKey, {
         walletAddress: self.walletAddress,
       });
