@@ -63,12 +63,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     switch (playerPosition) {
       case 1:
         this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_gold');
+        this.medal.setDepth(8);
         break;
       case 2:
         this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_silver');
+        this.medal.setDepth(8);
         break;
       case 3:
         this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_brown');
+        this.medal.setDepth(8);
         break;
     }
   }
@@ -116,7 +119,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   baseMoveTo(pos, onStart, onComplete) {
-    // console.log(`baseMoveTo`, pos);
     let movementTemplate = {
       targets: this,
       ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'

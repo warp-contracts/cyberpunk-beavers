@@ -26,7 +26,7 @@ async function readMapFromArweave() {
   throw new Error('could not load map tx from Arweave');
 }
 
-export async function spawnGame({ muUrl, moduleId, additionalTags = [] }) {
+export async function spawnGame({ muUrl, moduleId, additionalTags = [], treasures = null }) {
   const { mapTxId, mapJson } = await readMapFromArweave();
   console.log(`got me some map`, mapTxId, mapJson.type, mapJson.height);
 
@@ -47,7 +47,7 @@ export async function spawnGame({ muUrl, moduleId, additionalTags = [] }) {
     processTags.push(new Tag(tag.name, tag.value));
   }
 
-  const data = JSON.stringify({ rawMap: mapJson, mapApi: 'v1' });
+  const data = JSON.stringify({ rawMap: mapJson, mapApi: 'v1', gameTreasuresRarity: treasures });
   const processDataItem = createData(data, signer, { tags: processTags });
   await processDataItem.sign(signer);
   const processResponse = await fetch(muUrl, {

@@ -14,6 +14,7 @@ import { checkProfile } from '../utils/utils.js';
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId;
   enqueueButton;
+  running;
 
   constructor() {
     super(loungeAreaSceneKey);
@@ -61,11 +62,11 @@ export default class LoungeAreaScene extends Phaser.Scene {
     });
   }
 
-  update() {
-    this.countdown();
+  async update() {
+    await this.countdown();
   }
 
-  countdown() {
+  async countdown() {
     if (this.gameError && this.gameEnd) {
       const now = new Date();
       let diff = Math.round((this.gameEnd - now) / 1000);
@@ -86,11 +87,16 @@ export default class LoungeAreaScene extends Phaser.Scene {
             gameEnd: this.gameEnd,
           });
         } else if (!this.gameError) {
-          this.scene.start(playerPickSceneKey, {
-            walletAddress: this.walletAddress,
-            gameStart: this.gameStart,
-            gameEnd: this.gameEnd,
-          });
+          if (!this.running) {
+            this.running = true;
+            const userName = (await this.profilePromise)?.Profile?.UserName;
+            this.scene.start(playerPickSceneKey, {
+              userName,
+              walletAddress: this.walletAddress,
+              gameStart: this.gameStart,
+              gameEnd: this.gameEnd,
+            });
+          }
         }
       } else {
         this.tt.setText(this.formatCountdownTo(diff));
@@ -143,12 +149,15 @@ export default class LoungeAreaScene extends Phaser.Scene {
                   gameEnd: response.end,
                 });
               } else {
-                this.scene.start(playerPickSceneKey, {
-                  userName,
-                  walletAddress: this.walletAddress,
-                  gameStart: response.start,
-                  gameEnd: response.end,
-                });
+                if (!this.running) {
+                  this.running = true;
+                  this.scene.start(playerPickSceneKey, {
+                    userName,
+                    walletAddress: this.walletAddress,
+                    gameStart: response.start,
+                    gameEnd: response.end,
+                  });
+                }
               }
             } else if (Date.now() < response.start) {
               if (
@@ -159,7 +168,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
               } else if (this.enqueueButton) {
                 this.enqueueButton.destroy();
               }
-              this.countdown();
+              await this.countdown();
             } else {
               this.scene.start(leaderboardSceneKey, {
                 players: response.players,

@@ -25,6 +25,10 @@ const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
 const timeArg = process.argv[process.argv.indexOf('--time') + 1];
 const execDate = dateFromArg(timeArg);
 
+// TREASURES AMOUNT
+const treasuresIdx = process.argv.indexOf('--treasures');
+const treasures = process.argv[treasuresIdx + 1];
+
 console.info(`Full deployment for ${env} env starting at ${execDate}.`, muUrl);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -107,6 +111,7 @@ async function doIt() {
         { name: 'Chat-Module-Tx', value: chatSrcId },
         { name: 'Hub-Process-Tx', value: hubProcessId },
       ],
+      treasures,
     });
     gameProcesses.push(gameProcessId);
 

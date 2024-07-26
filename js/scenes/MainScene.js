@@ -472,7 +472,7 @@ export default class MainScene extends Phaser.Scene {
             opponent.baseMoveTo(
               response.opponent.pos,
               () => {},
-              () => self.blink()
+              () => opponent.blink()
             );
             opponent.unlock();
           });
