@@ -108,8 +108,8 @@ export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
     ap: {
-      current: 15,
-      max: 15,
+      current: 19,
+      max: 19,
     },
     hp: {
       current: 100,
@@ -129,8 +129,8 @@ export const BEAVER_TYPES = {
   heavy_beaver: {
     name: 'heavy_beaver',
     ap: {
-      current: 13,
-      max: 13,
+      current: 18,
+      max: 16,
     },
     hp: {
       current: 200,
@@ -150,8 +150,8 @@ export const BEAVER_TYPES = {
   speedy_beaver: {
     name: 'speedy_beaver',
     ap: {
-      current: 20,
-      max: 20,
+      current: 22,
+      max: 22,
     },
     hp: {
       current: 100,
