@@ -86,7 +86,7 @@ export function setup(state, action, message) {
 }
 
 function calculateTotalRounds(state) {
-  return ~~((state.playWindow.end - state.playWindow.begin) / state.round.interval);
+  return ~~((state.playWindow.end - state.round.start) / state.round.interval);
 }
 
 function sendHubNotification(state) {
