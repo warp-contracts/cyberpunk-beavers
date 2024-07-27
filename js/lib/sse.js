@@ -22,6 +22,7 @@ export async function initSubscription(moduleId, processId, verifyNonce, verifyL
     unsubscribe: () => {
       sse.onmessage = () => {};
       sse.close();
+      window.warpAO.nonce = -1;
     },
     subscribe: (target) => {
       sse.onmessage = messageListener(target, processId, verifyNonce, verifyLag);

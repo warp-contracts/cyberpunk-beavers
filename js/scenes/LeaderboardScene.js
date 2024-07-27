@@ -95,6 +95,8 @@ export default class LeaderboardScene extends Phaser.Scene {
         font: '30px',
       },
       () => {
+        self.server.unsubscribe();
+        self.serverChat.unsubscribe();
         self.restartScenes();
         self.scene.start(gameHubSceneKey, {
           walletAddress: self.walletAddress,
