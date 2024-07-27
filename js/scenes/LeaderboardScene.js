@@ -14,7 +14,7 @@ import {
   gameHubSceneKey,
 } from '../config/config.js';
 import { trimString } from '../utils/utils.js';
-import {TextButton} from "../objects/TextButton.js";
+import { TextButton } from '../objects/TextButton.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -87,13 +87,15 @@ export default class LeaderboardScene extends Phaser.Scene {
 
     this.backButton = new TextButton(
       this,
-      0, 0,
+      0,
+      0,
       '< Back',
       {
         fill: colors.green,
         font: '30px',
       },
       () => {
+        self.restartScenes();
         self.scene.start(gameHubSceneKey, {
           walletAddress: self.walletAddress,
         });
