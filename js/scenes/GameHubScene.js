@@ -4,6 +4,7 @@ import { serverConnection } from '../lib/serverConnection.js';
 import { TextButton } from '../objects/TextButton.js';
 import { loungeAreaSceneKey, connectWalletSceneKey, gameHubSceneKey } from '../config/config.js';
 import { trimString } from '../utils/utils.js';
+import { Scrollbar } from '../objects/Scrollbar.js';
 
 export default class GameHubScene extends Phaser.Scene {
   beaverId;
@@ -24,6 +25,12 @@ export default class GameHubScene extends Phaser.Scene {
 
   preload() {
     console.log('Game Hub - 2. Preload');
+    this.load.scenePlugin(
+      'rexuiplugin',
+      'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+      'rexUI',
+      'rexUI'
+    );
   }
 
   async create() {
@@ -44,12 +51,13 @@ export default class GameHubScene extends Phaser.Scene {
       font: '20px',
     });
 
-    this.container = this.add.container(50, 0);
+    this.container = this.add.container();
   }
 
   update() {}
 
   handleMessage(response) {
+    const self = this;
     console.log(`Got message`, response);
     switch (response.cmd) {
       case Const.Command.hubStats: {
@@ -115,7 +123,7 @@ export default class GameHubScene extends Phaser.Scene {
             this.gameButtons[i] = new TextButton(
               this,
               100,
-              75 + i * 100,
+              -75 + i * 100,
               bLabel,
               {
                 fill: colors.green,
@@ -134,7 +142,7 @@ export default class GameHubScene extends Phaser.Scene {
             if (activeGames.includes(processId)) {
               this.textBorders[i] = this.add.rectangle(
                 100 + (this.gameButtons[i].width / 2 + 100 / 2),
-                50 + i * 150,
+                -75 + i * 150,
                 this.gameButtons[i].width + 100,
                 100,
                 0xffffff,
@@ -142,12 +150,27 @@ export default class GameHubScene extends Phaser.Scene {
               );
               this.textBorders[i].setStrokeStyle(2, 0x00ff00);
               Phaser.Display.Align.In.Center(this.gameButtons[i], this.textBorders[i]);
+              this.container.add(this.textBorders[i], false);
             }
+
+            this.container.add(this.gameButtons[i], false);
           }
         }
 
         break;
       }
     }
+
+    const bounds = self.container.getBounds();
+    console.log(window.innerHeight);
+    self.scrollbar = new Scrollbar(
+      self,
+      300,
+      500,
+      window.innerHeight - 300,
+      'y',
+      self.container.setSize(bounds.width + 200, bounds.height + 50),
+      { track: colors.lightGreen, thumb: colors.darkGreen }
+    );
   }
 }
