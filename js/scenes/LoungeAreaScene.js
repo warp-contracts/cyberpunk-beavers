@@ -10,6 +10,7 @@ import {
   leaderboardSceneKey,
 } from '../config/config.js';
 import { checkProfile } from '../utils/utils.js';
+import { Scrollbar } from '../objects/Scrollbar.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId;
@@ -28,6 +29,12 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
   preload() {
     console.log('Lounge Area - 2. Preload');
+    this.load.scenePlugin(
+      'rexuiplugin',
+      'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+      'rexUI',
+      'rexUI'
+    );
   }
 
   async create() {
@@ -211,6 +218,18 @@ export default class LoungeAreaScene extends Phaser.Scene {
       \n${walletQueue}\n
       \nWaiting for next games:\n
       \n${walletBench}`
+    );
+    this.scrollbar = new Scrollbar(
+      this,
+      420,
+      600,
+      window.innerHeight - 400,
+      'y',
+      this.wallets.setSize(this.wallets.width + 100, this.wallets.height + 50),
+      {
+        track: colors.lightGreen,
+        thumb: colors.darkGreen,
+      }
     );
   }
 }

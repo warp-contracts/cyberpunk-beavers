@@ -27,6 +27,7 @@ export class Scrollbar {
         slider: {
           track: this.scene.rexUI.add.roundRectangle({ width: 20, radius: 0, color: this.colors.track }),
           thumb: this.scene.add.rectangle(0, 0, 20, 25, this.colors.thumb),
+          hideUnscrollableSlider: true,
         },
 
         mouseWheelScroller: {

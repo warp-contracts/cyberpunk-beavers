@@ -162,7 +162,6 @@ export default class GameHubScene extends Phaser.Scene {
     }
 
     const bounds = self.container.getBounds();
-    console.log(window.innerHeight);
     self.scrollbar = new Scrollbar(
       self,
       300,
