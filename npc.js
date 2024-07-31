@@ -1,6 +1,5 @@
 import Const from './js/common/const.mjs';
 import { Tag, WarpFactory } from 'warp-contracts';
-import ids from './js/config/warp-ao-ids.js';
 import { ArweaveSigner, createData } from 'warp-arbundles/build/node/esm/index.js';
 
 const direction = Object.values(Const.Direction);

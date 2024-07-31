@@ -1,0 +1,18 @@
+.connect-wallet {
+  padding-left: 8rem;
+  padding-right: 8rem;
+  padding-top: 8rem;
+  color: var(--yellow);
+  font-size: var(--regular);
+  font-weight: bold;
+  display: inline-block;
+
+  .title {
+    margin-bottom: 2rem;
+  }
+
+  .text {
+    margin-top: 1rem;
+    color: var(--red);
+  }
+}

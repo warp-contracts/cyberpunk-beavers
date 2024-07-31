@@ -1,0 +1,13 @@
+.button {
+  padding: 1rem;
+  margin: 1rem 0;
+  cursor: pointer;
+  &.green {
+    border: 2px solid var(--green);
+    color: var(--green);
+  }
+  &.red {
+    border: 2px solid var(--red);
+    color: var(--red);
+  }
+}
