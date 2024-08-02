@@ -102,6 +102,9 @@ async function doIt() {
     treasures,
   });
 
+  console.log(`Transferring token to game ${gameProcessId}`);
+  await transferToken(ids[`token_processId_${env}`], gameProcessId);
+
   const customConfig = gameCustomConfig(hubProcessId, execDate.getTime(), playersLimit);
   customConfig.chatProcessId = chatProcessId;
   customConfig.chatModuleId = chatSrcId;
