@@ -221,7 +221,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
     );
     this.scrollbar = new Scrollbar(
       this,
-      420,
+      walletQueue ? 420 : 300,
       600,
       window.innerHeight - 400,
       'y',

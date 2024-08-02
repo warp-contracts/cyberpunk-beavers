@@ -142,7 +142,7 @@ export default class GameHubScene extends Phaser.Scene {
             if (activeGames.includes(processId)) {
               this.textBorders[i] = this.add.rectangle(
                 100 + (this.gameButtons[i].width / 2 + 100 / 2),
-                -75 + i * 150,
+                -100 + i * 150,
                 this.gameButtons[i].width + 100,
                 100,
                 0xffffff,
@@ -164,7 +164,7 @@ export default class GameHubScene extends Phaser.Scene {
     const bounds = self.container.getBounds();
     self.scrollbar = new Scrollbar(
       self,
-      300,
+      this.textBorders.length > 0 ? 360 : 310,
       500,
       window.innerHeight - 300,
       'y',

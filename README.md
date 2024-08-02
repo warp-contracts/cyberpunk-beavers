@@ -8,7 +8,7 @@ After a limited number of rounds, the game ends and a living beaver with the max
 ### In order to run the game
 
 1. Build the game contract
-`yarn build`
+   `yarn build`
 
 2. Start backend node.js server (Only if you prefer websockets, otherwise skip it)
    `yarn dev `
