@@ -4,7 +4,7 @@ import { createData } from 'warp-arbundles';
 import { readFileSync } from 'fs';
 import { replaceId } from './replace-id.js';
 import ids from '../../js/config/warp-ao-ids.js';
-import { setupGameContract, spawnGame } from './game-common.js';
+import { setupGameContract, spawnGame, transferToken } from './game-common.js';
 import { dateFromArg } from './common.mjs';
 import { gameCustomConfig } from './deploy-spawn-session-config.js';
 
