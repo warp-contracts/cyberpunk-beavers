@@ -17,6 +17,7 @@ import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
 import { WebFontFile } from '../WebFontFile.js';
 import { ANIM_SETTINGS } from './anim/settings.js';
+import { MUSIC_SETTINGS } from './music/settings.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -60,6 +61,7 @@ export default class MainScene extends Phaser.Scene {
     this.loadBeaverAssets('speedy_beaver');
 
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
+    this.load.audio('background_music_metal', ['assets/audio/background_music_metal.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
     this.load.audio('dig_sound', ['assets/audio/dig.mp3']);
     this.load.audio('treasure_sound', ['assets/audio/treasure_arcade.mp3']);
@@ -729,6 +731,7 @@ export default class MainScene extends Phaser.Scene {
 
   addSounds() {
     this.backgroundMusic = this.sound.add('background_music', { loop: true, volume: 0.25 });
+    this.backgroundMusicMetal = this.sound.add('background_music_metal', { loop: true, volume: 0.25 });
     this.pickUpSound = this.sound.add('pick_up_sound', { loop: false, volume: 3 });
     this.digSound = this.sound.add('dig_sound', { loop: false, volume: 0.5 });
     this.treasureSound = this.sound.add('treasure_sound', { loop: false, volume: 0.5 });
@@ -748,15 +751,16 @@ export default class MainScene extends Phaser.Scene {
     this.revengeSound = this.sound.add('revenge', { loop: false, volume: 4.0 });
     this.forDeathSounds((k, i) => this.addDeathSound(k, i, this));
 
+    const backgroundMusic = this[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];
     if (window.warpAO.config.env !== 'local') {
-      this.backgroundMusic.play();
+      backgroundMusic.play();
     }
     const musicKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     musicKey.on('up', () => {
-      if (this.backgroundMusic.isPlaying) {
-        this.backgroundMusic.stop();
+      if (backgroundMusic.isPlaying) {
+        backgroundMusic.stop();
       } else {
-        this.backgroundMusic.play();
+        backgroundMusic.play();
       }
     });
   }

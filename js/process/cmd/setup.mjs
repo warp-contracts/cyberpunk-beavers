@@ -35,7 +35,6 @@ export function setup(state, action, message) {
       state.chatProcessId = action.chatProcessId;
       state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
-
       state.playersLimit = action.playersLimit || Const.Queue.limit;
       console.log(`Setup ${action.type}`, action);
       sendHubNotification(state);
@@ -100,6 +99,7 @@ function sendHubNotification(state) {
         players: state.walletsQueue,
         chatProcessId: state.chatProcessId,
         chatModuleId: state.chatModuleId,
+        mapTxId: state.mapTxId,
       },
     }),
   });

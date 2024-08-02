@@ -11,9 +11,10 @@ export const serverConnection = await (async () => {
     true
   );
 
-  conn.initGame = async (module, process) => {
+  conn.initGame = async (module, process, mapTxId) => {
     conn.game = await initServerConnection(module, process, true, true, false);
     window.warpAO.processId = () => process;
+    window.warpAO.mapTxId = () => mapTxId;
   };
   conn.initChat = async (module, process) => {
     conn.chat = await initServerConnection(module, process, false, false, true);

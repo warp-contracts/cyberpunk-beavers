@@ -47,7 +47,7 @@ export async function spawnGame({ muUrl, moduleId, additionalTags = [], treasure
     processTags.push(new Tag(tag.name, tag.value));
   }
 
-  const data = JSON.stringify({ rawMap: mapJson, mapApi: 'v1', gameTreasuresRarity: treasures });
+  const data = JSON.stringify({ rawMap: mapJson, mapApi: 'v1', gameTreasuresRarity: treasures, mapTxId });
   const processDataItem = createData(data, signer, { tags: processTags });
   await processDataItem.sign(signer);
   const processResponse = await fetch(muUrl, {
