@@ -35,7 +35,7 @@ export default class StatsScene extends Phaser.Scene {
     this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver/heavy_beaver_portrait.png');
     this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver/speedy_beaver_portrait.png');
     this.load.image('time_bar', 'assets/images/time_bar.png');
-    this.load.image('AO', 'assets/images/ao.png');
+    this.load.image('AO', 'assets/images/token.png');
 
     this.load.image('ARROWDOWN', 'assets/images/keys/ARROWDOWN.png');
     this.load.image('ARROWLEFT', 'assets/images/keys/ARROWLEFT.png');
