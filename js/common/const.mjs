@@ -129,8 +129,8 @@ export const BEAVER_TYPES = {
   heavy_beaver: {
     name: 'heavy_beaver',
     ap: {
-      current: 21,
-      max: 21,
+      current: 19,
+      max: 19,
     },
     hp: {
       current: 200,
