@@ -433,10 +433,9 @@ export default class MainScene extends Phaser.Scene {
         break;
 
       case Const.Command.attacked:
-        if (
-          response.player?.walletAddress === self.mainPlayer?.walletAddress ||
-          response.opponent?.walletAddress === self.mainPlayer?.walletAddress
-        ) {
+        const isKillerMainPlayer = response.player?.walletAddress === self.mainPlayer?.walletAddress;
+        const isOpponentMainPlayer = response.opponent?.walletAddress === self.mainPlayer?.walletAddress;
+        if (isKillerMainPlayer || isOpponentMainPlayer) {
           switch (response.player.beaverId) {
             case BEAVER_TYPES.heavy_beaver.name:
               this.attackHeavyBeaverSound.play();
@@ -459,7 +458,7 @@ export default class MainScene extends Phaser.Scene {
         if (response.opponentFinished) {
           const opponent = self.allPlayers[response.opponent?.walletAddress];
           opponent?.lock();
-          if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
+          if (isKillerMainPlayer) {
             setTimeout(() => {
               self.opponentFinishedSound(response.player, response.revenge);
             }, 900);
@@ -468,14 +467,16 @@ export default class MainScene extends Phaser.Scene {
               this.beaverEliminatedSound.play();
             }
           }
-          opponent?.deathAnim(response.player.beaverId).once('animationcomplete', () => {
-            opponent.baseMoveTo(
-              response.opponent.pos,
-              () => {},
-              () => opponent.blink()
-            );
-            opponent.unlock();
-          });
+          opponent
+            ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer)
+            .once('animationcomplete', () => {
+              opponent.baseMoveTo(
+                response.opponent.pos,
+                () => {},
+                () => opponent.blink()
+              );
+              opponent.unlock();
+            });
         }
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
           forOpponent: {
