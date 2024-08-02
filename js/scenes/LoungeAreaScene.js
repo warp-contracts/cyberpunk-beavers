@@ -137,6 +137,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
           }
           this.gameStart = response.start;
           this.gameEnd = response.end;
+          this.scrollbar = null;
           this.displayWaitingList(response);
           if (response.error) {
             console.error('Failed to fetch game info', response.error);
@@ -219,17 +220,17 @@ export default class LoungeAreaScene extends Phaser.Scene {
       \nWaiting for next games:\n
       \n${walletBench}`
     );
-    this.scrollbar = new Scrollbar(
-      this,
-      walletQueue ? 420 : 300,
-      600,
-      window.innerHeight - 400,
-      'y',
-      this.wallets.setSize(this.wallets.width + 100, this.wallets.height + 50),
-      {
-        track: colors.lightGreen,
-        thumb: colors.darkGreen,
-      }
-    );
+    // this.scrollbar = new Scrollbar(
+    //   this,
+    //   walletQueue ? 420 : 300,
+    //   600,
+    //   window.innerHeight - 400,
+    //   'y',
+    //   this.wallets.setSize(this.wallets.width + 100, this.wallets.height + 50),
+    //   {
+    //     track: colors.lightGreen,
+    //     thumb: colors.darkGreen,
+    //   }
+    // );
   }
 }
