@@ -12,17 +12,17 @@ const commonEsbuildSettings = {
 
 const processes = [
   {
-    entryPoints: ['js/process/hub.mjs'],
+    entryPoints: ['src/game/process/hub.mjs'],
     outfile: 'dist/output-hub.js',
     ...commonEsbuildSettings,
   },
   {
-    entryPoints: ['js/process/game.mjs'],
+    entryPoints: ['src/game/process/game.mjs'],
     outfile: 'dist/output-game.js',
     ...commonEsbuildSettings,
   },
   {
-    entryPoints: ['js/process/chat.mjs'],
+    entryPoints: ['src/game/process/chat.mjs'],
     outfile: 'dist/output-chat.js',
     ...commonEsbuildSettings,
   },

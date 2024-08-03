@@ -2,31 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cyber Beavers</title>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@v3.80.1/dist/phaser.js"></script>
-    <script src="https://bundle.run/buffer@6.0.3"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js"></script>
-    <script>
-      Buffer = buffer.Buffer;
-    </script>
-    <link rel="stylesheet" href="css/main.css" />
     <link rel="icon" type="image/png" href="/assets/images/token.png" />
-    <script></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/main.css" />
+    <title>Cyberpunk Beavers</title>
   </head>
+
   <body>
-    <div id="beavers-game"></div>
-    <script type="importmap">
-      {
-        "imports": {
-          "warp-contracts": "https://unpkg.com/warp-contracts@1.4.45/bundles/web.bundle.min.js",
-          "warp-contracts-plugin-signature": "https://unpkg.com/warp-contracts-plugin-signature@1.0.20/bundles/web.bundle.min.js",
-          "warp-arbundles": "https://unpkg.com/warp-arbundles@1.0.4/build/web/esm/bundle.js",
-          "@permaweb/aoconnect": "https://unpkg.com/@permaweb/aoconnect@0.0.55/dist/browser.js"
-        }
-      }
-    </script>
-    <script type="module" src="js/config/warp-ao.js"></script>
-    <script type="module" src="js/config/config.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/game/config/warp-ao.js"></script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
