@@ -121,10 +121,10 @@ export default class MainScene extends Phaser.Scene {
 
   async create() {
     console.log('Main Scene - 3. Create');
-    this.addSounds();
-    this.initAnimations();
     this.allPlayers = {};
     this.ranking = [];
+    this.addSounds();
+    this.initAnimations();
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnection.game;
       this.server.subscribe(this);
@@ -291,7 +291,6 @@ export default class MainScene extends Phaser.Scene {
 
     this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
 
-    this.mainPlayer?.update();
     Object.keys(this.allPlayers).forEach((p) => {
       this.allPlayers[p].update();
     });
@@ -756,14 +755,14 @@ export default class MainScene extends Phaser.Scene {
 
     const backgroundMusic = this[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];
     if (window.warpAO.config.env !== 'local') {
-      backgroundMusic.play();
+      backgroundMusic?.play();
     }
     const musicKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     musicKey.on('up', () => {
-      if (backgroundMusic.isPlaying) {
-        backgroundMusic.stop();
+      if (backgroundMusic?.isPlaying) {
+        backgroundMusic?.stop();
       } else {
-        backgroundMusic.play();
+        backgroundMusic?.play();
       }
     });
   }
