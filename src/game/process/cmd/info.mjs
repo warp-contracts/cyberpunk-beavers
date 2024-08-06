@@ -17,8 +17,21 @@ export function standInQueue(state, action) {
     walletsBench.push(walletAddress);
   } else {
     walletsQueue.push(walletAddress);
+    sendHubNotification(state);
   }
   return { walletsQueue, walletsBench };
+}
+
+function sendHubNotification(state) {
+  console.log(`---- GAME -- updating wallets queue`, state.hubProcessId);
+  ao.send({
+    Target: state.hubProcessId,
+    Data: '1234',
+    Action: JSON.stringify({
+      cmd: Const.Command.hubGamePlayers,
+      players: state.walletsQueue,
+    }),
+  });
 }
 
 export function gameStats(state) {

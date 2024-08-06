@@ -29,11 +29,19 @@ export function handle(state, message) {
         ...action.game,
       };
       console.log(`-- HUB registered game`, state.games[gameProcess]);
+      ao.result({
+        cmd: Const.Command.hubStats,
+        games: state.games,
+      });
       break;
 
     case Const.Command.hubGamePlayers:
       console.log(`-- HUB updating players`, action);
       state.games[gameProcess].players = action.players;
+      ao.result({
+        cmd: Const.Command.hubStats,
+        games: state.games,
+      });
       break;
 
     default:

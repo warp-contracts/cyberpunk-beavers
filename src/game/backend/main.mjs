@@ -65,7 +65,11 @@ wss.on('connection', (ws, request) => {
             msg?.Tags?.push({ name: 'From-Process', value: processTagValue });
           }
           console.log(`-- Sending message to ${msg.Target} `, msg);
-          addresseeProcess.state = await sendMessage(addresseeProcess.quickJS, addresseeProcess.state, msg);
+          const addresseeResult = await sendMessage(addresseeProcess.quickJS, addresseeProcess.state, msg);
+          addresseeProcess.state = addresseeResult.State;
+          if (addresseeResult.Output) {
+            logAndBroadcast(addresseeResult.Output, msg.Target);
+          }
         } else {
           // no process spawned in dev, probably aimed for AO, like transfer action
           console.log(`-- No process, sending debit notice back to ${msg.Target} `, msg);
@@ -96,8 +100,7 @@ function logAndBroadcast(message, processId) {
 async function sendMessage(quickJs, state, message) {
   return await new Promise((resolve, reject) => {
     setTimeout(async () => {
-      const result = await quickJs.handle(message, processEnv, state);
-      resolve(result.State);
+      resolve(await quickJs.handle(message, processEnv, state));
     }, 10);
   });
 }
