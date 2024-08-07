@@ -10,7 +10,6 @@ import {
   leaderboardSceneKey,
 } from '../main.js';
 import { checkProfile } from '../utils/utils.js';
-import { Scrollbar } from '../objects/Scrollbar.js';
 import Phaser from 'phaser';
 import { EventBus } from '../EventBus.js';
 
@@ -54,7 +53,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       font: '20px',
     });
 
-    this.tt = this.add.text(100, 150, '--:--:--', {
+    this.subHeader = this.add.text(100, 150, '--:--:--', {
       fill: colors.yellow,
       font: '20px',
     });
@@ -67,44 +66,38 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   async update() {
+    if (
+      this.enqueueButton &&
+      this.walletsQueue.indexOf(this.walletAddress) > -1 &&
+      this.walletsBench.indexOf(this.walletAddress) > -1
+    ) {
+      this.enqueueButton.destroy();
+    }
     await this.countdown();
   }
 
   async countdown() {
-    if (this.gameError && this.gameEnd) {
+    if (!this.gameError) {
       const now = new Date();
-      let diff = Math.round((this.gameEnd - now) / 1000);
-      if (diff >= 0) {
-        this.tt.setText(`The game will finish in\n${this.formatCountdownTo(diff)}`);
-      } else {
-        this.server.send({ cmd: Const.Command.info });
-      }
-    } else if (this.gameStart) {
-      const now = new Date();
-      let diff = Math.round((this.gameStart - now) / 1000);
-      if (diff <= 0) {
-        if (this.beaverId) {
-          this.scene.start(mainSceneKey, {
-            walletAddress: this.walletAddress,
-            beaverId: this.beaverId,
-            gameStart: this.gameStart,
-            gameEnd: this.gameEnd,
-          });
-        } else if (!this.gameError) {
-          if (!this.running) {
-            this.running = true;
-            const userName = (await this.profilePromise)?.Profile?.UserName;
-            this.scene.start(playerPickSceneKey, {
-              userName,
-              walletAddress: this.walletAddress,
-              gameStart: this.gameStart,
-              gameEnd: this.gameEnd,
-            });
-          }
+      let subHeaderTxt = '--:--:--';
+      if (this.gameEnd) {
+        let diff = Math.round((this.gameEnd - now) / 1000);
+        if (diff >= 0) {
+          subHeaderTxt = `The game will finish in\n${this.formatCountdownTo(diff)}`;
+        } else {
+          // We don't want to go directly to leaderboard until we don't have the latest players stats
+          this.server.send({ cmd: Const.Command.info });
         }
-      } else {
-        this.tt.setText(this.formatCountdownTo(diff));
       }
+      if (this.gameStart) {
+        let diff = Math.round((this.gameStart - now) / 1000);
+        if (diff <= 0) {
+          await this.gameActive();
+        } else {
+          subHeaderTxt = this.formatCountdownTo(diff);
+        }
+      }
+      this.subHeader.setText(subHeaderTxt);
     }
   }
 
@@ -124,17 +117,16 @@ export default class LoungeAreaScene extends Phaser.Scene {
         {
           console.log(`Got me some stats`, response);
           if (response.end && response.end < new Date()) {
-            this.scene.start(leaderboardSceneKey, {
-              players: response.players,
-              mainPlayer: {
-                walletAddress: this.walletAddress,
-              },
-            });
+            this.goToLeaderboard(response);
             return;
           }
           this.gameStart = response.start;
           this.gameEnd = response.end;
+          this.walletsQueue = response.walletsQueue;
+          this.walletsBench = response.walletsBench;
+          this.playersLimit = response.playersLimit;
           this.scrollbar = null;
+
           this.displayWaitingList(response);
           if (response.error) {
             console.error('Failed to fetch game info', response.error);
@@ -144,47 +136,84 @@ export default class LoungeAreaScene extends Phaser.Scene {
               this.beaverId = response.players[this.walletAddress].beaverId;
             }
             if (response.active) {
-              const userName = (await this.profilePromise)?.Profile?.UserName;
-              if (this.beaverId) {
-                this.scene.start(mainSceneKey, {
-                  userName,
-                  walletAddress: this.walletAddress,
-                  beaverId: this.beaverId,
-                  gameStart: response.start,
-                  gameEnd: response.end,
-                });
-              } else {
-                if (!this.running) {
-                  this.running = true;
-                  this.scene.start(playerPickSceneKey, {
-                    userName,
-                    walletAddress: this.walletAddress,
-                    gameStart: response.start,
-                    gameEnd: response.end,
-                  });
-                }
-              }
+              await this.gameActive();
             } else if (Date.now() < response.start) {
-              if (
-                !response.walletsQueue.includes(this.walletAddress) &&
-                !response.walletsBench.includes(this.walletAddress)
-              ) {
+              if (!this.walletsQueue.includes(this.walletAddress) && !this.walletsBench.includes(this.walletAddress)) {
                 this.displayEnqueueButton();
               } else if (this.enqueueButton) {
                 this.enqueueButton.destroy();
               }
-              await this.countdown();
             } else {
-              this.scene.start(leaderboardSceneKey, {
-                players: response.players,
-                mainPlayer: {
-                  walletAddress: this.walletAddress,
-                },
-              });
+              this.goToLeaderboard(response);
             }
           }
         }
         break;
+    }
+  }
+
+  canParticipate() {
+    const logPref = `Lounge Area - canParticipate`;
+    if (!this.playersLimit) {
+      console.log(`${logPref} no player limit`);
+      return true;
+    }
+    if (!this.walletsQueue) {
+      console.log(`${logPref} no wallets queue`);
+      return true;
+    }
+    if (this.playersLimit > this.walletsQueue.length) {
+      console.log(`${logPref} no limit not yet reached`);
+      return true;
+    }
+    if (this.walletsQueue.indexOf(this.walletAddress) > -1) {
+      console.log(`${logPref} player on the wallets queue`);
+      return true;
+    }
+    console.log(`${logPref} - nope, limit reached ${this.playersLimit}`);
+    return false;
+  }
+
+  async gameActive() {
+    if (this.beaverId) {
+      await this.goToMainScene();
+    } else if (this.canParticipate()) {
+      await this.goToPlayerPick();
+    } else {
+      this.header.setText(`The game has started and reached players limit.`);
+    }
+  }
+
+  goToLeaderboard(response) {
+    this.scene.start(leaderboardSceneKey, {
+      players: response.players,
+      mainPlayer: {
+        walletAddress: this.walletAddress,
+      },
+    });
+  }
+
+  async goToMainScene() {
+    const userName = (await this.profilePromise)?.Profile?.UserName;
+    this.scene.start(mainSceneKey, {
+      userName,
+      walletAddress: this.walletAddress,
+      beaverId: this.beaverId,
+      gameStart: this.gameStart,
+      gameEnd: this.gameEnd,
+    });
+  }
+
+  async goToPlayerPick() {
+    if (!this.running) {
+      this.running = true;
+      const userName = (await this.profilePromise)?.Profile?.UserName;
+      this.scene.start(playerPickSceneKey, {
+        userName,
+        walletAddress: this.walletAddress,
+        gameStart: this.gameStart,
+        gameEnd: this.gameEnd,
+      });
     }
   }
 

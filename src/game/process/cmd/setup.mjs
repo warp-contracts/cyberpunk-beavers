@@ -35,7 +35,7 @@ export function setup(state, action, message) {
       state.chatProcessId = action.chatProcessId;
       state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
-      state.playersLimit = action.playersLimit || Const.Queue.limit;
+      state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
       console.log(`Setup ${action.type}`, action);
       sendHubNotification(state);
       break;
@@ -55,7 +55,7 @@ export function setup(state, action, message) {
       state.chatProcessId = action.chatProcessId;
       state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
-      state.playersLimit = action.playersLimit || Const.Queue.limit;
+      state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
       console.log(`Setup ${action.type}`, action);
       sendHubNotification(state);
       break;
@@ -68,7 +68,7 @@ export function setup(state, action, message) {
       state.chatProcessId = action.chatProcessId;
       state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
-      state.playersLimit = action.playersLimit || Const.Queue.limit;
+      state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
       console.log(`Setup custom`, action);
       sendHubNotification(state);
       break;
@@ -96,7 +96,7 @@ function sendHubNotification(state) {
       game: {
         playWindow: state.playWindow,
         playersLimit: state.playersLimit,
-        players: state.walletsQueue,
+        walletsQueue: state.walletsQueue,
         chatProcessId: state.chatProcessId,
         chatModuleId: state.chatModuleId,
         mapTxId: state.mapTxId,

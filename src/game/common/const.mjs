@@ -172,7 +172,7 @@ export const BEAVER_TYPES = {
 
 // ------- Queue Config
 const Queue = {
-  limit: 15,
+  defaultLimit: 15,
 };
 
 export default {

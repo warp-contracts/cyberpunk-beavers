@@ -17,7 +17,7 @@ export function registerPlayer(state, action) {
 
   if (!walletsQueue.includes(walletAddress)) {
     // List is full, forget about it
-    if (walletsQueue.length >= Const.Queue.limit) {
+    if (walletsQueue.length >= state.playersLimit) {
       const error = `Failed to register ${action.walletAddress}. Players limit exceeded ${walletsQueue.length}`;
       console.log(error);
       return { player: { walletAddress, error } };
@@ -86,7 +86,7 @@ function sendHubNotification(state) {
     Data: '1234',
     Action: JSON.stringify({
       cmd: Const.Command.hubGamePlayers,
-      players: Object.keys(state.players),
+      walletsQueue: state.walletsQueue,
     }),
   });
 }

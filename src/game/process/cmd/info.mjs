@@ -13,7 +13,7 @@ export function standInQueue(state, action) {
     return { walletsQueue, walletsBench };
   }
 
-  if (walletsQueue.length >= Const.Queue.limit) {
+  if (walletsQueue.length >= state.playersLimit) {
     walletsBench.push(walletAddress);
   } else {
     walletsQueue.push(walletAddress);
@@ -29,7 +29,7 @@ function sendHubNotification(state) {
     Data: '1234',
     Action: JSON.stringify({
       cmd: Const.Command.hubGamePlayers,
-      players: state.walletsQueue,
+      walletsQueue: state.walletsQueue,
     }),
   });
 }
@@ -48,6 +48,7 @@ export function gameInfo(state, owner, ts) {
     active: isGameActive(state, ts),
     walletsQueue,
     walletsBench,
+    playersLimit: state.playersLimit,
     start: playWindow.begin,
     end: playWindow.end,
     players,

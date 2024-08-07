@@ -100,8 +100,8 @@ export default class GameHubScene extends Phaser.Scene {
           for (const [processId, game] of games) {
             console.log(`${++i} ${processId}: ${game}`);
             let bLabel = `${i} ${trimString(processId, 5, 2, 4)}`;
-            if (game.players && game.playersLimit) {
-              bLabel += `\nPlayers: ${game.players.length}/${game.playersLimit}`;
+            if (game.walletsQueue && game.playersLimit) {
+              bLabel += `\nPlayers: ${game.walletsQueue.length}/${game.playersLimit}`;
             }
             if (game.playWindow) {
               if (game.playWindow.begin && game.playWindow.begin > Date.now()) {

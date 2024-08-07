@@ -37,7 +37,7 @@ export function handle(state, message) {
 
     case Const.Command.hubGamePlayers:
       console.log(`-- HUB updating players`, action);
-      state.games[gameProcess].players = action.players;
+      state.games[gameProcess].walletsQueue = action.walletsQueue;
       ao.result({
         cmd: Const.Command.hubStats,
         games: state.games,
