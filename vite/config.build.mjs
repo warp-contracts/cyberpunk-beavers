@@ -38,12 +38,13 @@ export default defineConfig({
         },
       },
     },
-    minify: 'terser',
+    minify: false,
     terserOptions: {
       compress: {
         passes: 2,
       },
       mangle: true,
+      keep_classnames: true,
       format: {
         comments: false,
       },

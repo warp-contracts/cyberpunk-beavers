@@ -17,7 +17,9 @@ export default class ConnectWalletScene extends Phaser.Scene {
 
   async create() {
     console.log('Connect Wallet Scene - 3. Create');
-    EventBus.emit('current-scene-ready', this);
+    setTimeout(() => {
+      EventBus.emit('current-scene-ready', this);
+    });
   }
 
   changeScene(address) {
