@@ -123,7 +123,7 @@ async function doIt() {
 
     // Transfer tokens
     console.log(`Transferring token to game ${gameProcessId}`);
-    // await transferToken(ids[`token_processId_${env}`], gameProcessId);
+    await transferToken(ids[`token_processId_${env}`], gameProcessId);
 
     // Setup game
     await sleep(1000);
