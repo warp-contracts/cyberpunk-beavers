@@ -11,7 +11,6 @@ import {
   loungeAreaSceneKey,
   mainSceneLoadingKey,
   statsSceneKey,
-  chatSceneKey,
 } from '../main.js';
 import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
@@ -235,7 +234,7 @@ export default class MainScene extends Phaser.Scene {
     this.scene.launch(statsSceneKey, {
       beaverChoice: this.beaverChoice,
     });
-    this.scene.launch(chatSceneKey, { userName: playerInfo.userName });
+    // this.scene.launch(chatSceneKey, { userName: playerInfo.userName });
     this.statsScene = this.scene.get(statsSceneKey);
     this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
     this.statsScene.userName = this.mainPlayer?.userName;
@@ -276,7 +275,7 @@ export default class MainScene extends Phaser.Scene {
       this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
       setTimeout(() => {
         this.scene.remove(statsSceneKey);
-        this.scene.remove(chatSceneKey);
+        // this.scene.remove(chatSceneKey);
         this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
       }, 2000);
     }
