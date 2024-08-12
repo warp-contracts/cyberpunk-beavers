@@ -12,9 +12,9 @@ import GameHubScene from './scenes/GameHubScene.js';
 import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
 export const scenes = {
+  loadingScene: { key: 'loading-scene', scene: LoadingScene },
   connectWalletScene: { key: 'connect-wallet-scene', scene: ConnectWalletScene },
   gameHubScene: { key: 'game-hub-scene', scene: GameHubScene },
-  loadingScene: { key: 'loading-scene', scene: LoadingScene },
   loungeAreaScene: { key: 'lounge-area-scene', scene: LoungeAreaScene },
   playerPickScene: { key: 'player-pick-scene', scene: PlayerPickScene },
   mainScene: { key: 'main-scene', scene: MainScene },
@@ -24,13 +24,13 @@ export const scenes = {
   chatScene: { key: 'chat-scene', scene: ChatScene },
 };
 
+export const loadingSceneKey = scenes.loadingScene.key;
 export const mainSceneKey = scenes.mainScene.key;
 export const mainSceneLoadingKey = scenes.mainSceneLoading.key;
 export const gameHubSceneKey = scenes.gameHubScene.key;
 export const connectWalletSceneKey = scenes.connectWalletScene.key;
 export const leaderboardSceneKey = scenes.leaderboardScene.key;
 export const statsSceneKey = scenes.statsScene.key;
-export const loadingSceneKey = scenes.loadingScene.key;
 export const loungeAreaSceneKey = scenes.loungeAreaScene.key;
 export const playerPickSceneKey = scenes.playerPickScene.key;
 export const chatSceneKey = scenes.chatScene.key;
