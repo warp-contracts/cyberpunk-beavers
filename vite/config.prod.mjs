@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     watch: false,
     hmr: false,
-    host: '0.0.0.o',
+    host: '0.0.0.0',
     port: 9001,
     open: 'index.html',
   },
