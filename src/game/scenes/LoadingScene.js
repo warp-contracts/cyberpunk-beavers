@@ -18,6 +18,5 @@ export default class LoadingScene extends Phaser.Scene {
   create() {
     console.log('Loading Scene - 3. Create');
     this.scene.start(connectWalletSceneKey);
-    EventBus.emit('current-scene-ready', this);
   }
 }
