@@ -104,6 +104,43 @@ const Combat = {
 const BonusType = {
   KillBonus: 'KillBonus',
 };
+
+export const WEAPONS = {
+  sniper_rifle_basic: {
+    type: 'sniper_rifle_basic',
+    name: 'Sniper Rifle',
+    img: null,
+    attack_range: 5,
+    damage: [20, 18, 16, 14, 12],
+    hit_chance: [0.95, 0.9, 0.85, 0.8, 0.75],
+    critical_hit_chance: [0.25, 0.2, 0.15, 0.1, 0.05],
+    critical_hit_multiplier: [2.4, 2.3, 2.2, 2.1, 2.0],
+    attack_recovery_ms: 1500,
+  },
+  shotgun_basic: {
+    type: 'shotgun_basic',
+    name: 'Shotgun',
+    img: null,
+    attack_range: 3,
+    damage: [22, 19, 15],
+    hit_chance: [0.9, 0.8, 0.7],
+    critical_hit_chance: [0.15, 0.1, 0.05],
+    critical_hit_multiplier: [2.2, 1.8, 1.6],
+    attack_recovery_ms: 1250,
+  },
+  katana_basic: {
+    type: 'katana_basic',
+    name: 'Katana',
+    img: null,
+    attack_range: 1,
+    damage: [25],
+    hit_chance: [0.95],
+    critical_hit_chance: [0.1],
+    critical_hit_multiplier: [2.0],
+    attack_recovery_ms: 1000,
+  },
+};
+
 export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
@@ -115,11 +152,7 @@ export const BEAVER_TYPES = {
       current: 100,
       max: 100,
     },
-    attack_range: 5,
-    damage: [20, 18, 16, 14, 12],
-    hit_chance: [0.95, 0.9, 0.85, 0.8, 0.75],
-    critical_hit_chance: [0.25, 0.2, 0.15, 0.1, 0.05],
-    critical_hit_multiplier: [2.4, 2.3, 2.2, 2.1, 2.0],
+    weapon: WEAPONS.sniper_rifle_basic,
     bonus: {
       [GameObject.treasure.type]: 100,
       [BonusType.KillBonus]: 200,
@@ -136,11 +169,7 @@ export const BEAVER_TYPES = {
       current: 200,
       max: 200,
     },
-    attack_range: 3,
-    damage: [22, 19, 15],
-    hit_chance: [0.9, 0.8, 0.7],
-    critical_hit_chance: [0.15, 0.1, 0.05],
-    critical_hit_multiplier: [2.2, 1.8, 1.6],
+    weapon: WEAPONS.shotgun_basic,
     bonus: {
       [GameObject.treasure.type]: 0,
       [BonusType.KillBonus]: 220,
@@ -157,11 +186,7 @@ export const BEAVER_TYPES = {
       current: 100,
       max: 100,
     },
-    damage: [25],
-    hit_chance: [0.95],
-    critical_hit_chance: [0.2],
-    critical_hit_multiplier: [2.5],
-    attack_range: 1,
+    weapon: WEAPONS.katana_basic,
     bonus: {
       [GameObject.treasure.type]: 20,
       [BonusType.KillBonus]: 180,

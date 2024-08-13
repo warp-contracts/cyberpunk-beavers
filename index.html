@@ -4,12 +4,28 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/assets/images/token.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/css/mithril/weapon-info.css" />
     <title>Cyberpunk Beavers</title>
   </head>
+  <style>
+    #mithril-gui {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    .mithril-component {
+      position: relative;
+    }
+  </style>
 
   <body>
+    <script src="https://unpkg.com/mithril/mithril.js"></script>
     <div id="root"></div>
+    <div id="mithril-gui"></div>
     <script type="module" src="/src/game/config/warp-ao.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>

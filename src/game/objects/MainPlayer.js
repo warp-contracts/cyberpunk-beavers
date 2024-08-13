@@ -18,9 +18,44 @@ export default class MainPlayer extends Player {
 
     this.rangeBarX = scene.add.grid(x, y, attackMarkers * 48, 48, 48, 48, 0xff0000, 0.2);
     this.rangeBarY = scene.add.grid(x, y, 48, attackMarkers * 48, 48, 48, 0xff0000, 0.2);
+
+    const self = this;
+
+    const WeaponInfo = {
+      view: function (vnode) {
+        return m('div', { id: 'weapon-info', class: 'mithril-component' }, [
+          m('div', { class: 'recovery-bar', style: `width: ${vnode.attrs.recoveryPercent}%;` }),
+          m('img', { src: `/assets/images/weapons/${vnode.attrs.weapon}.png` }),
+        ]);
+      },
+    };
+    const mithrilRoot = document.getElementById('mithril-gui');
+    m.mount(mithrilRoot, {
+      view: function () {
+        return m(WeaponInfo, { weapon: self.stats.weapon.type, recoveryPercent: self.calculateRecoveryPercent() });
+      },
+    });
+  }
+
+  calculateRecoveryPercent() {
+    if (this.stats.previousAttackTs === null) {
+      return 100;
+    }
+
+    const now = Date.now();
+    const diff = Math.min((now - this.stats.previousAttackTs) / this.stats.weapon.attack_recovery_ms, 1);
+
+    return Math.ceil(diff * 100);
+  }
+
+  removedFromScene() {
+    const mithrilRoot = document.getElementById('mithril-gui');
+    m.mount(mithrilRoot, null);
+    super.removedFromScene();
   }
 
   async update() {
+    m.redraw();
     if (this.stats.ap.current === 0) {
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
       if (!this.mainScene.notEnoughApSound.isPlaying && !this.mainScene.beaverEliminatedSound.isPlaying) {
@@ -78,8 +113,19 @@ export default class MainPlayer extends Player {
         break;
     }
     if (this.combatMode) {
-      await this.send({ cmd: attack, dir });
-      this.attackAnim();
+      const now = Date.now();
+      if (!this.stats.previousAttackTs || now - this.stats.previousAttackTs > this.stats.weapon.attack_recovery_ms) {
+        await this.send({ cmd: attack, dir });
+        this.scene.playAttackSound(this.beaverChoice);
+        this.attackAnim();
+      } else {
+        console.log('Recovering', {
+          now,
+          prevAttackMs: this.stats.previousAttackTs,
+          recovery: this.stats.weapon.attack_recovery_ms,
+          diff: now - this.stats.previousAttackTs,
+        });
+      }
     } else {
       await this.send({ cmd: move, dir });
     }

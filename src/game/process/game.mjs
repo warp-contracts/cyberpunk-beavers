@@ -99,7 +99,7 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.attack:
-      const attackRes = attack(state, action);
+      const attackRes = attack(state, action, message.Timestamp);
       ao.result({
         cmd: Const.Command.attacked,
         ...attackRes,

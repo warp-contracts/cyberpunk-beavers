@@ -57,8 +57,6 @@ export default class StatsScene extends Phaser.Scene {
     if (this.walletAddress) {
       const beaverStatsBoxEl = this.createStatsBox();
       this.beaverStatsBox = this.add.dom(100, 100 + beaverStatsBoxEl.width, beaverStatsBoxEl);
-      const interactionLogs = this.addInteractionLogs();
-      this.interactionLogsDiv = this.add.dom(100, 100 + interactionLogs.width, interactionLogs);
     }
     this.initListeners();
     this.addCounterAO();
@@ -286,28 +284,6 @@ export default class StatsScene extends Phaser.Scene {
     return '';
   }
 
-  addInteractionLogs() {
-    const resultDiv = document.createElement('div');
-    resultDiv.id = 'incoming-messages-box';
-    resultDiv.style = ` width: 400px; height: 150px;
-      border: 0; outline: none;
-      background-color: #fcee09;
-      position: absolute;
-      bottom: 10px;left: 0px;
-      font-size: 0.5rem;
-      clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);`;
-    resultDiv.innerHTML = `
-      <div style="font-family: 'Press Start 2P'">
-        <div style='margin: 18px 0 0 40px'>INCOMING MESSAGES</div>
-        <div id="stats-scene-interaction-logs">${this.interactionsFormatted()}</div>
-      </div>`;
-    return resultDiv;
-  }
-
-  interactionsFormatted() {
-    return this.messageLogQueue.map(this.formatMessageLog).join('');
-  }
-
   formatLag(lag) {
     return lag ? `${lag.total}(${lag.cuCalc})ms` : 'N/A';
   }
@@ -429,7 +405,6 @@ export default class StatsScene extends Phaser.Scene {
       if (newLen > 4) {
         this.messageLogQueue.shift();
       }
-      document.getElementById('stats-scene-interaction-logs').innerHTML = this.interactionsFormatted();
     }
   }
 

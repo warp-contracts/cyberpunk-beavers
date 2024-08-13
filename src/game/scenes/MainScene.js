@@ -5,10 +5,10 @@ import { Text } from '../objects/Text.js';
 import { EVENTS_NAME } from '../utils/events.js';
 import { serverConnection } from '../lib/serverConnection.js';
 import {
-  mainSceneKey,
   connectWalletSceneKey,
   leaderboardSceneKey,
   loungeAreaSceneKey,
+  mainSceneKey,
   mainSceneLoadingKey,
   statsSceneKey,
 } from '../main.js';
@@ -438,20 +438,8 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.attacked:
         const isKillerMainPlayer = response.player?.walletAddress === self.mainPlayer?.walletAddress;
         const isOpponentMainPlayer = response.opponent?.walletAddress === self.mainPlayer?.walletAddress;
-        if (isKillerMainPlayer || isOpponentMainPlayer) {
-          switch (response.player.beaverId) {
-            case BEAVER_TYPES.heavy_beaver.name:
-              this.attackHeavyBeaverSound.play();
-              break;
-            case BEAVER_TYPES.hacker_beaver.name:
-              this.attackHackerBeaverSound.play();
-              break;
-            case BEAVER_TYPES.speedy_beaver.name:
-              this.attackSpeedyBeaverSound.play();
-              break;
-            default:
-              console.log('Beaver type not found');
-          }
+        if (isOpponentMainPlayer) {
+          this.playAttackSound(response.player.beaverId);
         }
         this.updateStats(response.player, response.gameStats);
         this.updateStats(response.opponent, response.gameStats);
@@ -565,6 +553,26 @@ export default class MainScene extends Phaser.Scene {
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         break;
       }
+    }
+  }
+
+  playAttackSound(beaverId) {
+    let sound = null;
+    switch (beaverId) {
+      case BEAVER_TYPES.heavy_beaver.name:
+        sound = this.attackHeavyBeaverSound;
+        break;
+      case BEAVER_TYPES.hacker_beaver.name:
+        sound = this.attackHackerBeaverSound;
+        break;
+      case BEAVER_TYPES.speedy_beaver.name:
+        sound = this.attackSpeedyBeaverSound;
+        break;
+      default:
+        console.log('Beaver type not found');
+    }
+    if (sound != null && !sound.isPlaying) {
+      sound.play();
     }
   }
 
