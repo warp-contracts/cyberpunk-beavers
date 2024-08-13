@@ -1,0 +1,10 @@
+#weapon-info {
+  width: 100px;
+  height: 110px;
+  top: calc(100% - 110px);
+}
+
+#weapon-info .recovery-bar {
+  height: 10px;
+  background: blueviolet;
+}

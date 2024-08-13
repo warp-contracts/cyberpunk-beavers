@@ -2,14 +2,28 @@ import Const from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
-export function attack(state, action) {
+export function attack(state, action, timestamp) {
   const player = state.players[action.walletAddress];
   if (player.stats.ap.current < 1) {
-    console.log(`Cannot perform attack ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
     return { player, tokenTransfer: 0 };
   }
+  console.log({
+    'player.stats.previousAttackTs': player.stats.previousAttackTs,
+    timestamp: timestamp,
+    diff: timestamp - player.stats.previousAttackTs,
+    recovery: player.stats.weapon.attack_recovery_ms,
+  });
+
+  if (
+    player.stats.previousAttackTs !== null &&
+    timestamp - player.stats.previousAttackTs < player.stats.weapon.attack_recovery_ms
+  ) {
+    return { player, tokenTransfer: 0 };
+  }
+
+  player.stats.previousAttackTs = timestamp;
   player.stats.ap.current -= 1;
-  const attackRange = player.stats.attack_range;
+  const attackRange = player.stats.weapon.attack_range;
   let range = 0;
   let opponent = null;
   let prevPos = player.pos;
@@ -29,7 +43,6 @@ export function attack(state, action) {
   }
 
   if (opponent) {
-    console.log(`Player ${player.walletAddress} attacked ${attackPos.x} ${attackPos.y} ${opponent.walletAddress}`);
     const { finished, revenge, loot, tokenTransfer, damage } = finishHim(player, opponent, range, state);
     if (finished) {
       opponent.pos = calculatePlayerRandomPos(state);
@@ -60,14 +73,14 @@ export function attack(state, action) {
 }
 
 function calculateDamage(player, range, state) {
-  const baseDmg = player.stats.damage[range];
-  const criticalChance = player.stats.critical_hit_chance[range];
+  const baseDmg = player.stats.weapon.damage[range];
+  const criticalChance = player.stats.weapon.critical_hit_chance[range];
   const criticalHitRandom = Math.random(++state.randomCounter);
   let dmgMultiplier = 1;
   if (criticalHitRandom <= criticalChance) {
-    dmgMultiplier = player.stats.critical_hit_multiplier[range];
+    dmgMultiplier = player.stats.weapon.critical_hit_multiplier[range];
   }
-  const hitChance = player.stats.hit_chance[range];
+  const hitChance = player.stats.weapon.hit_chance[range];
   const hitRandom = Math.random(++state.randomCounter);
   let finalDmg = Math.floor(baseDmg * dmgMultiplier);
   if (hitRandom > hitChance) {

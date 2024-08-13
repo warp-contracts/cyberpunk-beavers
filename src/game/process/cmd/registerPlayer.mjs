@@ -47,6 +47,7 @@ export function registerPlayer(state, action) {
         deaths: 0,
         killedBy: '',
       },
+      previousAttackTs: null,
       coins: {
         balance: balance || 0,
         gained: 0, // info of tokens gained in the game
