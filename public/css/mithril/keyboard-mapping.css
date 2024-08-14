@@ -1,0 +1,35 @@
+#keyboard-mapping {
+  font-family: 'Press Start 2P';
+  font-size: 14px;
+  text-transform: uppercase;
+  color: white;
+  height: 280px;
+  width: 230px;
+  top: calc(100% - 280px);
+  left: calc(100% - 230px);
+}
+
+#keyboard-mapping .row {
+  margin-bottom: 3px;
+}
+
+#keyboard-mapping .row.attack-wrapper {
+  display: inline-block;
+}
+
+#keyboard-mapping .row.single {
+  margin-left: 78px;
+}
+
+#keyboard-mapping div.plus {
+  margin-left: 40px;
+}
+
+#keyboard-mapping img {
+  margin-right: 7px;
+}
+
+#keyboard-mapping div.label {
+  display: inline-block;
+  margin-left: 10px;
+}
