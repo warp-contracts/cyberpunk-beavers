@@ -9,6 +9,8 @@ import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
 import { setNextProcess } from './cmd/setNextProcess.mjs';
 import { end, sendTokens } from './cmd/end.mjs';
+import { useLandmine } from './cmd/landmine.mjs';
+import { teleportPlayer } from './cmd/teleport.mjs';
 
 function restrictedAccess(state, action, ts) {
   return (
@@ -112,6 +114,21 @@ export function handle(state, message) {
         cmd: Const.Command.moved,
         player: moveRes.player,
         scoreToDisplay: moveRes.scoreToDisplay,
+        ...gameStats(state),
+      });
+      break;
+    case Const.Command.use_landmine:
+      useLandmine(state, action);
+      ao.result({
+        cmd: Const.Command.stats,
+        ...gameInfo(state, message.Owner, message.Timestamp),
+        ...gameStats(state),
+      });
+      break;
+    case Const.Command.use_teleport:
+      ao.result({
+        cmd: Const.Command.moved,
+        ...teleportPlayer(state, action),
         ...gameStats(state),
       });
       break;

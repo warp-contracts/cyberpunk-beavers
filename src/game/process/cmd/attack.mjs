@@ -43,7 +43,7 @@ export function attack(state, action, timestamp) {
   }
 
   if (opponent) {
-    const { finished, revenge, loot, tokenTransfer, damage } = finishHim(player, opponent, range, state);
+    const { finished, revenge, loot, tokenTransfer, damage } = finishHim(player, opponent, { range }, state);
     if (finished) {
       opponent.pos = calculatePlayerRandomPos(state);
       state.playersOnTiles[attackPos.y][attackPos.x] = null;
@@ -72,8 +72,9 @@ export function attack(state, action, timestamp) {
   return { player, pos: attackPos, tokenTransfer: 0 };
 }
 
-function calculateDamage(player, range, state) {
-  const baseDmg = player.stats.weapon.damage[range];
+function calculateDamage(player, damageFigures, state) {
+  const { range } = damageFigures;
+  const baseDmg = damageFigures.baseDmg || player.stats.weapon.damage[range];
   const criticalChance = player.stats.weapon.critical_hit_chance[range];
   const criticalHitRandom = Math.random(++state.randomCounter);
   let dmgMultiplier = 1;
@@ -100,9 +101,9 @@ function calculateDamage(player, range, state) {
   };
 }
 
-function finishHim(player, opponent, range, state) {
-  const damage = calculateDamage(player, range, state);
-  console.log(damage);
+export function finishHim(player, opponent, damageFigures, state) {
+  const damage = calculateDamage(player, damageFigures, state);
+  console.log(`Player ${player.walletAddress} dealt ${damage} to opponent ${opponent.walletAddress}`);
   opponent.stats.hp.current -= damage.finalDmg;
   if (opponent.stats.hp.current <= 0) {
     const loot = lootPlayer(opponent) + Const.BEAVER_TYPES[player.beaverId].bonus[Const.BonusType.KillBonus];

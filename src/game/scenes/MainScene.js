@@ -52,7 +52,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('map_layer_decoration', 'assets/maps/tilemaps/decorations_tilemap.png');
     this.load.image('map_layer_obstacles', 'assets/maps/tilemaps/obstacles_tilemap.png');
 
-    this.load.image('cyberpunk_game_objects', 'assets/images/ap_hp.png');
+    this.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
 
     this.load.image('medal_gold', 'assets/images/medal-gold.png');

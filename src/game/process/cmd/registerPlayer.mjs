@@ -36,6 +36,10 @@ export function registerPlayer(state, action) {
     walletAddress,
     userName,
     beaverId,
+    equipment: {
+      mines: 0,
+      teleports: 0,
+    },
     stats: {
       ...BEAVER_TYPES[beaverId],
       round: {
