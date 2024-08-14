@@ -1,5 +1,6 @@
 import Const from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
+import { triggerLandmine } from './landmine.mjs';
 const {
   GameObject,
   Map,
@@ -52,6 +53,12 @@ export function movePlayer(state, action) {
     player.pos = newPos;
 
     player.stats.ap.current -= apCost;
+
+    const hiddenObject = state.gameHiddenObjects[newPos.y][newPos.x];
+    if (hiddenObject && hiddenObject.type === GameObject.active_mine.type) {
+      triggerLandmine(state, player, hiddenObject);
+    }
+
     return {
       player,
       scoreToDisplay: scoreToDisplay([{ value: -apCost, type: GameObject.ap.type }]),

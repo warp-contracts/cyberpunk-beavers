@@ -175,6 +175,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
       p: Phaser.Input.Keyboard.KeyCodes.P,
       d: Phaser.Input.Keyboard.KeyCodes.D,
+      m: Phaser.Input.Keyboard.KeyCodes.M,
+      t: Phaser.Input.Keyboard.KeyCodes.T,
     });
   }
 

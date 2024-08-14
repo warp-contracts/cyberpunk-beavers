@@ -52,6 +52,8 @@ const Command = {
   picked: 'picked',
   dig: 'dig',
   digged: 'digged',
+  use_landmine: 'use_landmine',
+  use_teleport: 'use_teleport',
   msg: 'msg',
   setNextProcess: 'setNextProcess',
   nextProcessSet: 'nextProcessSet',
@@ -77,11 +79,14 @@ const Tile = {
 };
 
 const GameObject = {
-  hp: { type: 'hp', tile: 1, value: 10 },
+  hp: { type: 'hp', tile: 1, value: 25 },
   ap: { type: 'ap', tile: 0, value: 5 },
   treasure: { type: 'treasure', tile: 0, value: 500 },
+  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20 },
+  active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 20 },
+  teleport_device: { type: 'teleport_device', tile: 3, value: 50 },
   hole: { type: 'hole', tile: 1, value: 0 },
-  none: { type: 'none', tile: 2, value: 0 },
+  none: { type: 'none', tile: 4, value: 0 },
 };
 
 const Scores = {

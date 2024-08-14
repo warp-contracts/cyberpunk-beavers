@@ -3,7 +3,7 @@ import Player from './Player.js';
 import { EVENTS_NAME } from '../utils/events.js';
 
 const { up, left, right, down } = Const.Direction;
-const { attack, move, pick, dig } = Const.Command;
+const { attack, move, pick, dig, use_landmine, use_teleport } = Const.Command;
 
 export default class MainPlayer extends Player {
   combatMode = false;
@@ -52,6 +52,12 @@ export default class MainPlayer extends Player {
       }
     } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.d) && this.stats.ap.current >= 2) {
       await this.send({ cmd: dig });
+      this.digAnim();
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.m) && this.stats.ap.current >= 4) {
+      await this.send({ cmd: use_landmine });
+      this.digAnim();
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.t) && this.stats.ap.current >= 4) {
+      await this.send({ cmd: use_teleport });
       this.digAnim();
     } else {
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);

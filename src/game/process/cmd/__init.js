@@ -55,8 +55,17 @@ function initState(message, state) {
       height: groundLayer.height,
     },
     lastTxs: [],
-    gameObjectsTiles: [GameObject.ap, GameObject.hp, GameObject.none],
-    gameObjectsRarity: 10,
+    gameObjectsTiles: [
+      GameObject.ap,
+      GameObject.hp,
+      GameObject.none,
+      GameObject.teleport_device,
+      GameObject.equipment_mine,
+    ],
+    gameObjectsRarity: 15,
+    gameHiddenObjects: Array(Map.size)
+      .fill([])
+      .map(() => Array(Map.size)),
     gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],
     gameTreasuresTilesForClient: [GameObject.none],
     gameTreasuresRarity: state.gameTreasuresRarity || Const.TREASURES_RARITY,
