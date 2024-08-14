@@ -19,6 +19,8 @@ import { ANIM_SETTINGS } from './anim/settings.js';
 import Phaser from 'phaser';
 import { EventBus } from '../EventBus.js';
 import { MUSIC_SETTINGS } from './music/settings.js';
+import { mithrilRoot } from '../../components/mithril/utils.js';
+import { MainSceneGui } from '../gui/MainSceneGui.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -132,6 +134,16 @@ export default class MainScene extends Phaser.Scene {
       this.scene.start(connectWalletSceneKey);
     }
     EventBus.emit('current-scene-ready', this);
+
+    console.log(m);
+
+    let self = this;
+
+    m.mount(mithrilRoot(), {
+      view: function () {
+        return m(MainSceneGui, { mainPlayerStats: self.mainPlayer?.stats });
+      },
+    });
   }
 
   initAnimations() {
@@ -242,6 +254,10 @@ export default class MainScene extends Phaser.Scene {
     this.statsScene.stats = this.mainPlayer.stats;
     this.statsScene.allPlayers = this.allPlayers;
 
+    console.log('Mithril redraw', this.mihtril);
+
+    m.redraw();
+
     return this.mainPlayer;
   }
 
@@ -263,6 +279,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
+    m.redraw();
     if (this.gameOver) {
       return;
     }

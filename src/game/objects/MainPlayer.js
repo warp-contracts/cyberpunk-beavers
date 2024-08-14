@@ -1,6 +1,8 @@
 import Const from '../common/const.mjs';
 import Player from './Player.js';
 import { EVENTS_NAME } from '../utils/events.js';
+import { WeaponInfo } from '../../components/mithril/WeaponInfo.js';
+import { mithrilRoot, mountComponentTo } from '../../components/mithril/utils.js';
 
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig } = Const.Command;
@@ -14,48 +16,13 @@ export default class MainPlayer extends Player {
     let { stats, scene, x, y } = data;
     super(data);
 
-    const attackMarkers = stats.attack_range * 2 + 1;
+    const attackMarkers = stats.weapon.attack_range * 2 + 1;
 
     this.rangeBarX = scene.add.grid(x, y, attackMarkers * 48, 48, 48, 48, 0xff0000, 0.2);
     this.rangeBarY = scene.add.grid(x, y, 48, attackMarkers * 48, 48, 48, 0xff0000, 0.2);
-
-    const self = this;
-
-    const WeaponInfo = {
-      view: function (vnode) {
-        return m('div', { id: 'weapon-info', class: 'mithril-component' }, [
-          m('div', { class: 'recovery-bar', style: `width: ${vnode.attrs.recoveryPercent}%;` }),
-          m('img', { src: `/assets/images/weapons/${vnode.attrs.weapon}.png` }),
-        ]);
-      },
-    };
-    const mithrilRoot = document.getElementById('mithril-gui');
-    m.mount(mithrilRoot, {
-      view: function () {
-        return m(WeaponInfo, { weapon: self.stats.weapon.type, recoveryPercent: self.calculateRecoveryPercent() });
-      },
-    });
-  }
-
-  calculateRecoveryPercent() {
-    if (this.stats.previousAttackTs === null) {
-      return 100;
-    }
-
-    const now = Date.now();
-    const diff = Math.min((now - this.stats.previousAttackTs) / this.stats.weapon.attack_recovery_ms, 1);
-
-    return Math.ceil(diff * 100);
-  }
-
-  removedFromScene() {
-    const mithrilRoot = document.getElementById('mithril-gui');
-    m.mount(mithrilRoot, null);
-    super.removedFromScene();
   }
 
   async update() {
-    m.redraw();
     if (this.stats.ap.current === 0) {
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
       if (!this.mainScene.notEnoughApSound.isPlaying && !this.mainScene.beaverEliminatedSound.isPlaying) {
