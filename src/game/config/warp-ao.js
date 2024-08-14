@@ -8,6 +8,7 @@ const env = urlParams.get('env') || 'prod';
 console.log(`running in ${env} mode`);
 
 window.warpAO = {
+  mithril: m,
   config: {
     ...ids,
     env,
