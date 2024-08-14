@@ -1,8 +1,6 @@
 import Const from '../common/const.mjs';
 import Player from './Player.js';
 import { EVENTS_NAME } from '../utils/events.js';
-import { WeaponInfo } from '../../components/mithril/WeaponInfo.js';
-import { mithrilRoot, mountComponentTo } from '../../components/mithril/utils.js';
 
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig } = Const.Command;

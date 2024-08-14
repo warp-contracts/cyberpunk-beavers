@@ -1,18 +1,10 @@
 import { EVENTS_NAME } from '../utils/events.js';
 import { Text } from '../objects/Text.js';
-import Const from '../common/const.mjs';
 import { colors } from '../utils/style.js';
 import { mainSceneKey, statsSceneKey } from '../main.js';
 import { trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { EventBus } from '../EventBus.js';
-
-const defaultStyle = {
-  fontFamily: '"Press Start 2P"',
-  fontSize: '18px',
-  textTransform: 'uppercase',
-  color: 'white',
-};
 
 export default class StatsScene extends Phaser.Scene {
   walletAddress;
@@ -38,14 +30,6 @@ export default class StatsScene extends Phaser.Scene {
     this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver/speedy_beaver_portrait.png');
     this.load.image('time_bar', 'assets/images/time_bar.png');
     this.load.image('AO', 'assets/images/token.png');
-
-    this.load.image('ARROWDOWN', 'assets/images/keys/ARROWDOWN.png');
-    this.load.image('ARROWLEFT', 'assets/images/keys/ARROWLEFT.png');
-    this.load.image('ARROWRIGHT', 'assets/images/keys/ARROWRIGHT.png');
-    this.load.image('ARROWUP', 'assets/images/keys/ARROWUP.png');
-    this.load.image('D', 'assets/images/keys/D.png');
-    this.load.image('P', 'assets/images/keys/P.png');
-    this.load.image('SPACE', 'assets/images/keys/SPACE.png');
   }
 
   create() {
@@ -63,45 +47,7 @@ export default class StatsScene extends Phaser.Scene {
     this.addTitle();
     this.addRoundBar();
     this.addSubtitle();
-    this.addLegend();
     EventBus.emit('current-scene-ready', this);
-  }
-
-  addLegend() {
-    const self = this;
-    const height = 200;
-    const width = 300;
-    const baseHeight = this.gameHeight - 32 - height;
-    const baseWidth = this.gameWidth - width;
-    const addImage = (w, h, t) => this.add.image(baseWidth + w, baseHeight + h, t).setScale(1.5);
-    const addLabelRight = (key, t) => {
-      const text = new Text(self, 0, 0, t, defaultStyle);
-      Phaser.Display.Bounds.SetLeft(text, Phaser.Display.Bounds.GetCenterX(key) + key.width + 30);
-      Phaser.Display.Bounds.SetCenterY(text, Phaser.Display.Bounds.GetCenterY(key));
-    };
-
-    const moveL = addImage(0, 0, 'ARROWLEFT');
-    const moveU = addImage(moveL.width * 2, 0, 'ARROWUP');
-    const moveD = addImage(moveL.width * 4, 0, 'ARROWDOWN');
-    const moveR = addImage(moveL.width * 6, 0, 'ARROWRIGHT');
-    addLabelRight(moveR, 'MOVE');
-
-    const digKey = addImage(moveL.width * 6, 40, 'D');
-    addLabelRight(digKey, 'DIG');
-
-    const pickKey = addImage(moveL.width * 6, 80, 'P');
-    addLabelRight(pickKey, 'PICK');
-
-    const attackKey = addImage(moveL.width * 3 - 2, 120, 'SPACE');
-    const plus = this.add.text(baseWidth + moveL.width * 3 - 2, baseHeight + 135, '+', defaultStyle);
-    addImage(0, 170, 'ARROWLEFT');
-    addImage(moveL.width * 2, 170, 'ARROWUP');
-    addImage(moveL.width * 4, 170, 'ARROWDOWN');
-    addImage(moveL.width * 6, 170, 'ARROWRIGHT');
-
-    const attack = new Text(this, 0, 0, 'ATTACK', defaultStyle);
-    Phaser.Display.Bounds.SetLeft(attack, Phaser.Display.Bounds.GetCenterX(attackKey) + attackKey.width / 1.25 + 30);
-    Phaser.Display.Bounds.SetCenterY(attack, Phaser.Display.Bounds.GetCenterY(plus));
   }
 
   addCounterAO() {
@@ -286,49 +232,6 @@ export default class StatsScene extends Phaser.Scene {
 
   formatLag(lag) {
     return lag ? `${lag.total}(${lag.cuCalc})ms` : 'N/A';
-  }
-
-  formatMessageLog(ml) {
-    let data = ``;
-
-    switch (ml.cmd) {
-      case Const.Command.moved: {
-        data = `<div style='display: inline-block'>NEW POS ${ml.player.pos.x},${ml.player.pos.y}</div>`;
-        break;
-      }
-      case Const.Command.attacked: {
-        let attackMsg = '';
-        if (ml.damage) {
-          attackMsg = `POS ${ml.pos.x},${ml.pos.y} (${ml.damage.finalDmg}HP)`;
-          if (ml.damage.dmgMultiplier > 1) {
-            attackMsg += ' C!';
-          }
-        } else {
-          attackMsg = `MISSED`;
-        }
-        data = `<div style='display: inline-block'>${attackMsg}</div>`;
-        if (ml.scoreToDisplay && ml.scoreToDisplay.length > 0) {
-          const score = ml.scoreToDisplay[0];
-          data = `<div style='display: inline-block'>${score.value}${score.type}</div>`;
-        }
-        break;
-      }
-      // case Const.Command.token:
-      case Const.Command.picked:
-      case Const.Command.digged: {
-        if (ml.scoreToDisplay && ml.scoreToDisplay.length > 0) {
-          const score = ml.scoreToDisplay[0];
-          data = `<div style='display: inline-block'>${score.value}${score.type}</div>`;
-        }
-        break;
-      }
-    }
-    return `
-      <div id="stats-message" style='margin: 18px 0 0 40px'>
-        <span style='display: inline-block; width: 80px; text-transform: uppercase;'>${ml.cmd}</span>
-        <a style="display: inline-block; width: 120px; color: black;" target="_blank" href='https://www.ao.link/#/message/${ml.txId}'>${ml.txId.substr(0, 5) + '...' + ml.txId.substr(ml.txId.length - 5)}</a>
-        ${data}
-      </div>`;
   }
 
   onUpdateStats(stats) {
