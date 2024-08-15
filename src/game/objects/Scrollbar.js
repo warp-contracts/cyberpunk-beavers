@@ -12,7 +12,7 @@ export class Scrollbar {
   }
 
   initScrollbar() {
-    this.scene.rexUI.add
+    this.scrollablePanel = this.scene.rexUI.add
       .scrollablePanel({
         x: this.x,
         y: this.y,
