@@ -1,18 +1,34 @@
 .connect-wallet {
-  padding-left: 8rem;
-  padding-right: 8rem;
-  padding-top: 8rem;
   color: var(--yellow);
   font-size: var(--regular);
   font-weight: bold;
-  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/images/title-background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
 
-  .title {
-    margin-bottom: 2rem;
-  }
+  .container {
+    position: absolute;
+    left: 20%;
+    top: 5%;
 
-  .text {
-    margin-top: 1rem;
-    color: var(--red);
+    div {
+      position: relative;
+    }
+
+    .title {
+      margin-bottom: 2rem;
+    }
+
+    .text {
+      margin-top: 1rem;
+      color: var(--red);
+    }
+
+    .button {
+      width: 200px;
+    }
   }
 }
