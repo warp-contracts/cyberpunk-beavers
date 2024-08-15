@@ -58,7 +58,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       font: '20px',
     });
 
-    this.wallets = this.add.text(600, 300, 'Queue is empty', {
+    this.wallets = this.add.text(100, 300, 'Queue is empty', {
       fill: colors.yellow,
       font: '20px',
     });
@@ -125,7 +125,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
           this.walletsQueue = response.walletsQueue;
           this.walletsBench = response.walletsBench;
           this.playersLimit = response.playersLimit;
-          this.scrollbar = null;
+          //this.scrollbar = null;
 
           this.displayWaitingList(response);
           if (response.error) {
