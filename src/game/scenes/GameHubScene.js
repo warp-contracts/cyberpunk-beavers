@@ -42,7 +42,7 @@ export default class GameHubScene extends Phaser.Scene {
 
     const headerText = this.gameError ? `Games are currently unavailable.\n${this.gameError}\n\n` : 'Games\n\n';
 
-    this.header = this.add.text(100, 100, headerText, {
+    this.header = this.add.text(100, 50, headerText, {
       fill: colors.yellow,
       font: '20px',
     });
@@ -99,7 +99,7 @@ export default class GameHubScene extends Phaser.Scene {
           let games = gamesToSort.sort(([k1, v1], [k2, v2]) => v1.finish - v2.finish);
           for (const [processId, game] of games) {
             console.log(`${++i} ${processId}: ${game}`);
-            let bLabel = `${i} ${trimString(processId, 5, 2, 4)}`;
+            let bLabel = `${i}. ${trimString(processId, 5, 2, 4)}`;
             if (game.walletsQueue && game.playersLimit) {
               bLabel += `\nPlayers: ${game.walletsQueue.length}/${game.playersLimit}`;
             }
@@ -119,7 +119,7 @@ export default class GameHubScene extends Phaser.Scene {
 
             this.gameButtons[i] = new TextButton(
               this,
-              100,
+              50,
               -75 + i * 100,
               bLabel,
               {
@@ -138,10 +138,10 @@ export default class GameHubScene extends Phaser.Scene {
 
             if (activeGames.includes(processId)) {
               this.textBorders[i] = this.add.rectangle(
-                100 + (this.gameButtons[i].width / 2 + 100 / 2),
-                -100 + i * 150,
-                this.gameButtons[i].width + 100,
-                100,
+                80 + (this.gameButtons[i].width / 2 + 100 / 2),
+                20 + i * 100,
+                this.gameButtons[i].width + 50,
+                75,
                 0xffffff,
                 0
               );
@@ -159,7 +159,7 @@ export default class GameHubScene extends Phaser.Scene {
     }
 
     const bounds = self.container.getBounds();
-    self.scrollbar = new Scrollbar(
+    /*self.scrollbar = new Scrollbar(
       self,
       this.textBorders.length > 0 ? 360 : 310,
       500,
@@ -167,6 +167,6 @@ export default class GameHubScene extends Phaser.Scene {
       'y',
       self.container.setSize(bounds.width + 200, bounds.height + 50),
       { track: colors.lightGreen, thumb: colors.darkGreen }
-    );
+    );*/
   }
 }

@@ -47,24 +47,26 @@ function ConnectWallet() {
 
   return (
     <div className="connect-wallet">
-      <div className="title">
-        <Typewriter delay={100} setDone={setTitleAnimationDone}>
-          Hey stranger...
-        </Typewriter>
-      </div>
-      {titleAnimationDone && (
-        <>
-          <Button color="green" handleClick={async () => await handleArconnect()}>
-            Connect wallet
-          </Button>
-          {warpAO && warpAO.config.env != 'prod' && (
-            <Button color="red" handleClick={async () => await handleGenerateWallet()}>
-              Generate wallet
+      <div className="container">
+        <div className="title">
+          <Typewriter delay={100} setDone={setTitleAnimationDone}>
+            Hey stranger...
+          </Typewriter>
+        </div>
+        {titleAnimationDone && (
+          <>
+            <Button color="green" handleClick={async () => await handleArconnect()}>
+              Connect wallet
             </Button>
-          )}
-          <p className="text">{walletConnectionText}</p>
-        </>
-      )}
+            {warpAO && warpAO.config.env != 'prod' && (
+              <Button color="red" handleClick={async () => await handleGenerateWallet()}>
+                Generate wallet
+              </Button>
+            )}
+            <p className="text">{walletConnectionText}</p>
+          </>
+        )}
+      </div>
     </div>
   );
 }
