@@ -1,4 +1,5 @@
 export function KeyboardMapping(initialVnode) {
+
   return {
     view: function (vnode) {
       return m('div', { id: 'keyboard-mapping', class: 'mithril-component' }, [
