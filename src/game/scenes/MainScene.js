@@ -227,7 +227,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createMainPlayer(playerInfo) {
-    // console.log(playerInfo);
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
       userName: playerInfo.userName,
@@ -255,7 +254,6 @@ export default class MainScene extends Phaser.Scene {
     this.statsScene.allPlayers = this.allPlayers;
 
     console.log('Mithril redraw', this.mihtril);
-
     m.redraw();
 
     return this.mainPlayer;
@@ -291,8 +289,8 @@ export default class MainScene extends Phaser.Scene {
       this.gameOverSound.play();
       this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
       setTimeout(() => {
+        m.mount(mithrilRoot(), null);
         this.scene.remove(statsSceneKey);
-        // this.scene.remove(chatSceneKey);
         this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
       }, 2000);
     }
