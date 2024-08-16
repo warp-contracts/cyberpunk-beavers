@@ -140,7 +140,7 @@ export default class GameHubScene extends Phaser.Scene {
               this.textBorders[i] = this.add.rectangle(
                 80 + (this.gameButtons[i].width / 2 + 100 / 2),
                 20 + i * 100,
-                this.gameButtons[i].width + 50,
+                this.gameButtons[i].width + 100,
                 75,
                 0xffffff,
                 0
