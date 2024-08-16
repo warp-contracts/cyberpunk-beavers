@@ -106,7 +106,7 @@ export function finishHim(player, opponent, damageFigures, state) {
   console.log(`Player ${player.walletAddress} dealt ${damage?.baseDmg} to opponent ${opponent.walletAddress}`);
   opponent.stats.hp.current -= damage.finalDmg;
   if (opponent.stats.hp.current <= 0) {
-    const loot = lootPlayer(opponent) + Const.BEAVER_TYPES[player.beaverId].bonus[Const.BonusType.KillBonus];
+    const loot = lootPlayer(opponent) + player.bonus[Const.BonusType.KillBonus];
     const revenge = player.stats.kills.killedBy === opponent.walletAddress;
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
     opponent.stats.hp.current = opponent.stats.hp.max;
