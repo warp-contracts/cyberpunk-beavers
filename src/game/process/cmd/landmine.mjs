@@ -17,13 +17,13 @@ export function useLandmine(state, action) {
     );
     return { player };
   }
-  if (player.equipment.landmines.current < 1) {
+  if (player.equipment.landmines < 1) {
     console.log(`Cannot use landmine ${walletAddress}. There are no available.`);
     return { player };
   }
 
   player.stats.ap.current -= LANDMINE_AP_COST;
-  player.equipment.landmines.current -= 1;
+  player.equipment.landmines -= 1;
   state.gameHiddenObjects[player.pos.y][player.pos.x] = {
     type: Const.GameObject.active_mine.type,
     owner: walletAddress,
@@ -31,7 +31,7 @@ export function useLandmine(state, action) {
 
   return {
     player,
-    scoreToDisplay: scoreToDisplay([{ value: -LANDMINE_AP_COST, type: Const.Scores.ap }]),
+    scoreToDisplay: scoreToDisplay([{ value: -LANDMINE_AP_COST, type: Scores.ap }]),
   };
 }
 

@@ -151,90 +151,54 @@ export const WEAPONS = {
 export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
-    stats: {
-      ap: {
-        current: 22,
-        max: 22,
-      },
-      hp: {
-        current: 100,
-        max: 100,
-      },
-      weapon: WEAPONS.sniper_rifle_basic,
-      bonus: {
-        [GameObject.treasure.type]: 100,
-        [BonusType.KillBonus]: 200,
-      },
-      kill: Kills.headshot,
+    ap: {
+      current: 22,
+      max: 22,
     },
-    equipment: {
-      teleports: {
-        current: 0,
-        max: 5,
-      },
-      landmines: {
-        current: 0,
-        max: 5,
-      },
+    hp: {
+      current: 100,
+      max: 100,
     },
+    weapon: WEAPONS.sniper_rifle_basic,
+    bonus: {
+      [GameObject.treasure.type]: 100,
+      [BonusType.KillBonus]: 200,
+    },
+    kill: Kills.headshot,
   },
   heavy_beaver: {
     name: 'heavy_beaver',
-    stats: {
-      ap: {
-        current: 19,
-        max: 19,
-      },
-      hp: {
-        current: 200,
-        max: 200,
-      },
-      weapon: WEAPONS.shotgun_basic,
-      bonus: {
-        [GameObject.treasure.type]: 0,
-        [BonusType.KillBonus]: 220,
-      },
-      kill: Kills.tankshot,
+    ap: {
+      current: 19,
+      max: 19,
     },
-    equipment: {
-      teleports: {
-        current: 0,
-        max: 5,
-      },
-      landmines: {
-        current: 0,
-        max: 5,
-      },
+    hp: {
+      current: 200,
+      max: 200,
     },
+    weapon: WEAPONS.shotgun_basic,
+    bonus: {
+      [GameObject.treasure.type]: 0,
+      [BonusType.KillBonus]: 220,
+    },
+    kill: Kills.tankshot,
   },
   speedy_beaver: {
     name: 'speedy_beaver',
-    stats: {
-      ap: {
-        current: 25,
-        max: 25,
-      },
-      hp: {
-        current: 100,
-        max: 100,
-      },
-      weapon: WEAPONS.katana_basic,
-      bonus: {
-        [GameObject.treasure.type]: 20,
-        [BonusType.KillBonus]: 180,
-      },
-      kill: Kills.slice,
+    ap: {
+      current: 25,
+      max: 25,
     },
-    equipment: {
-      teleports: {
-        current: 0,
-        max: 5,
-      },
-      landmines: {
-        current: 0,
-        max: 5,
-      },
+    hp: {
+      current: 100,
+      max: 100,
     },
+    weapon: WEAPONS.katana_basic,
+    bonus: {
+      [GameObject.treasure.type]: 20,
+      [BonusType.KillBonus]: 180,
+    },
+    kill: Kills.slice,
   },
 };
 
