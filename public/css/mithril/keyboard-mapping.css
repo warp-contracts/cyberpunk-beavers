@@ -4,9 +4,9 @@
   text-transform: uppercase;
   color: white;
   height: 280px;
-  width: 230px;
-  top: calc(100% - 335px);
-  left: calc(100% - 230px);
+  width: 245px;
+  top: calc(100% - 355px);
+  left: calc(100% - 255px);
 }
 
 #keyboard-mapping .row {
@@ -19,6 +19,10 @@
 
 #keyboard-mapping .row.single {
   margin-left: 78px;
+}
+
+#keyboard-mapping .row.equipment {
+  margin-left: 52px;
 }
 
 #keyboard-mapping div.plus {

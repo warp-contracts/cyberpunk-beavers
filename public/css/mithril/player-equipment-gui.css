@@ -30,20 +30,3 @@
   position: relative;
   color: white;
 }
-
-.circle {
-  display: inline-block;
-  line-height: 0px;
-  border-radius: 50%;
-  font-size: 32px;
-  background-color: green;
-  color: white;
-}
-
-.circle span {
-  display: inline-block;
-  padding-top: 50%;
-  padding-bottom: 50%;
-  margin-left: 8px;
-  margin-right: 8px;
-}

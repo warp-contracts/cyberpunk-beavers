@@ -40,6 +40,11 @@ export function KeyboardMapping(initialVnode) {
               ]),
               m('div', { class: 'label' }, 'ATTACK'),
             ]),
+            m('div', { class: 'row equipment' }, [
+              m('img', { src: 'assets/images/keys/1.png' }),
+              m('img', { src: 'assets/images/keys/2.png' }),
+              m('div', { class: 'label' }, 'EQUIPMENT'),
+            ]),
           ])
         : null;
     },
