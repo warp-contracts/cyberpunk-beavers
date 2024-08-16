@@ -18,14 +18,14 @@ export function teleportPlayer(state, action) {
     );
     return { player, moved: false };
   }
-  if (player.equipment.teleports.current < 1) {
+  if (player.equipment.teleports < 1) {
     console.log(`Cannot use teleport ${walletAddress}. There are no available.`);
     return { player, moved: false };
   }
 
   player.pos = calculatePlayerRandomPos(state);
   player.stats.ap.current -= TELEPORT_AP_COST;
-  player.equipment.teleports.current -= 1;
+  player.equipment.teleports -= 1;
 
   return {
     player,

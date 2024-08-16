@@ -37,11 +37,11 @@ export function registerPlayer(state, action) {
     userName,
     beaverId,
     equipment: {
-      ...BEAVER_TYPES[beaverId].equipment,
+      landmines: 0,
+      teleports: 0,
     },
     stats: {
-      name: BEAVER_TYPES[beaverId].name,
-      ...BEAVER_TYPES[beaverId].stats,
+      ...BEAVER_TYPES[beaverId],
       round: {
         last: 0,
       },
