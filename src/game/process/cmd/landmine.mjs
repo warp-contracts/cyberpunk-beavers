@@ -1,5 +1,7 @@
 import Const from '../../common/const.mjs';
 import { finishHim } from './attack.mjs';
+import { scoreToDisplay } from '../../common/tools.mjs';
+
 const LANDMINE_AP_COST = 4;
 
 export function useLandmine(state, action) {
@@ -13,11 +15,11 @@ export function useLandmine(state, action) {
     console.log(
       `Cannot use landmine ${walletAddress}. Not enough ap: ${player.stats.ap.current}. Required: ${LANDMINE_AP_COST}`
     );
-    return { player, tokenTransfer: 0 };
+    return { player };
   }
   if (player.equipment.landmines < 1) {
     console.log(`Cannot use landmine ${walletAddress}. There are no available.`);
-    return { player, tokenTransfer: 0 };
+    return { player };
   }
 
   player.stats.ap.current -= LANDMINE_AP_COST;
@@ -27,7 +29,10 @@ export function useLandmine(state, action) {
     owner: walletAddress,
   };
 
-  return { player };
+  return {
+    player,
+    scoreToDisplay: scoreToDisplay([{ value: -LANDMINE_AP_COST, type: Scores.ap }]),
+  };
 }
 
 export function triggerLandmine(state, player, landmine) {

@@ -17,9 +17,16 @@
   position: relative;
 }
 
+#player-equipment-gui .equipment-slot-container .equipment-number {
+  bottom: 77px;
+  right: -3px;
+  position: relative;
+  color: white;
+}
+
 #player-equipment-gui .equipment-slot-container .equipment-counter {
-  bottom: 75px;
-  right: -5px;
+  bottom: 25px;
+  right: -42px;
   position: relative;
   color: white;
 }
