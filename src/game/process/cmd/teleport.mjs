@@ -23,7 +23,9 @@ export function teleportPlayer(state, action) {
     return { player, moved: false };
   }
 
+  state.playersOnTiles[player.pos.y][player.pos.x] = null;
   player.pos = calculatePlayerRandomPos(state);
+  state.playersOnTiles[player.pos.y][player.pos.x] = player.walletAddress;
   player.stats.ap.current -= TELEPORT_AP_COST;
   player.equipment.teleports -= 1;
 
