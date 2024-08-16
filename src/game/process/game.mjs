@@ -115,15 +115,14 @@ export function handle(state, message) {
         ...gameStats(state),
       });
       break;
-    case Const.Command.use_landmine:
-      useLandmine(state, action);
+    case Const.Command.useLandmine:
       ao.result({
-        cmd: Const.Command.stats,
-        ...gameInfo(state, message.Owner, message.Timestamp),
+        cmd: Const.Command.landmineActivated,
+        ...useLandmine(state, action),
         ...gameStats(state),
       });
       break;
-    case Const.Command.use_teleport:
+    case Const.Command.useTeleport:
       ao.result({
         cmd: Const.Command.teleported,
         ...teleportPlayer(state, action),
