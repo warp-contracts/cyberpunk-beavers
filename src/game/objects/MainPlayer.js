@@ -71,6 +71,7 @@ export default class MainPlayer extends Player {
       targets: [this.rangeBarX, this.rangeBarY],
       x: `+=${moveHorizontal}`,
       y: `+=${moveVertical}`,
+      onComplete: (_) => {},
     });
   }
 

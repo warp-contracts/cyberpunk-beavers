@@ -554,14 +554,19 @@ export default class MainScene extends Phaser.Scene {
               this.teleportSound.play();
             }
           }
-          if (
-            response.player.walletAddress === self.mainPlayer?.walletAddress &&
-            response.encounter === Const.GameObject.active_mine.type
-          ) {
-            if (!this.explosionSound.isPlaying) {
-              this.explosionSound.play();
+          if (response.encounter === Const.GameObject.active_mine.type) {
+            if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
+              if (!this.explosionSound.isPlaying) {
+                this.explosionSound.play();
+              }
+              setTimeout(() => {
+                self.mainPlayer.explosionAnim();
+              });
+            } else {
+              setTimeout(() => {
+                self.allPlayers[response.player.walletAddress].explosionAnim();
+              });
             }
-            self.mainPlayer.explosionAnim();
           }
         }
         break;
