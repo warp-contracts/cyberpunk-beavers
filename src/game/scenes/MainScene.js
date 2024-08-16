@@ -142,7 +142,10 @@ export default class MainScene extends Phaser.Scene {
 
     m.mount(mithrilRoot(), {
       view: function () {
-        return m(MainSceneGui, { mainPlayerStats: self.mainPlayer?.stats });
+        return m(MainSceneGui, {
+          mainPlayerStats: self.mainPlayer?.stats,
+          mainPlayerEquipment: self.mainPlayer?.equipment,
+        });
       },
     });
   }
@@ -231,6 +234,7 @@ export default class MainScene extends Phaser.Scene {
     this.mainPlayer = new MainPlayer({
       walletAddress: playerInfo.walletAddress,
       userName: playerInfo.userName,
+      equipment: playerInfo.equipment,
       stats: playerInfo.stats,
       scene: this,
       x: 24 + playerInfo.pos.x * Const.Tile.size,
@@ -492,6 +496,7 @@ export default class MainScene extends Phaser.Scene {
           },
         });
         break;
+      case Const.Command.teleported:
       case Const.Command.moved:
         {
           // console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
@@ -523,16 +528,20 @@ export default class MainScene extends Phaser.Scene {
             if (!this.notEnoughApSound.isPlaying) {
               this.notEnoughApSound.play();
             }
+          } else if (response.cmd === Const.Command.teleported) {
+            if (!this.teleportSound.isPlaying) {
+              this.teleportSound.play();
+            }
           }
         }
         break;
-
       case Const.Command.picked:
         {
           if (response.picked) {
             // console.log(`Player picked a game object.`);
             if (this.mainPlayer?.walletAddress === response.player.walletAddress) {
               this.pickUpSound.play();
+              this.mainPlayer.equipment = response.player.equipment;
             } else {
               this.allPlayers[response.player.walletAddress]?.pickAnim();
             }
@@ -646,6 +655,7 @@ export default class MainScene extends Phaser.Scene {
     if (responsePlayer?.walletAddress === self.mainPlayer?.walletAddress) {
       currentCoinsGained = self.mainPlayer?.stats.coins.gained;
       newCoinsGained = responsePlayer.stats.coins.gained;
+      self.mainPlayer.equipment = responsePlayer.equipment;
       self.mainPlayer.updateStats(responsePlayer.stats);
       this.game.events.emit(EVENTS_NAME.updateStats, {
         player: responsePlayer.stats,
