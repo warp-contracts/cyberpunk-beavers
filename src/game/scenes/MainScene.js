@@ -509,6 +509,14 @@ export default class MainScene extends Phaser.Scene {
           },
         });
         break;
+
+      case Const.Command.landmineActivated:
+        {
+          if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
+            this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+          }
+        }
+        break;
       case Const.Command.teleported:
       case Const.Command.moved:
         {
