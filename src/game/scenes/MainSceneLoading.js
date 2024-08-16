@@ -14,7 +14,7 @@ export default class MainSceneLoading extends Phaser.Scene {
 
   preload() {
     console.log('Main Scene Loading - 2. Preload');
-    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.png');
+    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.jpg');
   }
 
   create() {
