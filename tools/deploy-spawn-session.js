@@ -6,6 +6,7 @@ import { spawnGame, transferToken, setupGameContract } from './game-common.js';
 import { replaceId } from './replace-id.js';
 import { dateFromArg } from './common.mjs';
 import { activeGamesConfig, hourSessionGamesConfig } from './deploy-spawn-session-config.js';
+import ids from '../src/game/config/warp-ao-ids.js';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
