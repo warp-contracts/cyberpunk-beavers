@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
-import ids from './src/game/warp-ao-ids.js';
+import ids from '../src/game/config/warp-ao-ids.js';
 
 const envIdx = process.argv.indexOf('--env');
 if (envIdx < 0) {
