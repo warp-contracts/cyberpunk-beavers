@@ -59,7 +59,7 @@ export function movePlayer(state, action) {
 
     const hiddenObject = state.gameHiddenObjects[newPos.y][newPos.x];
     let encounter = false;
-    if (hiddenObject?.type === GameObject.active_mine.type /*&& hiddenObject.owner !== player.walletAddress*/) {
+    if (hiddenObject?.type === GameObject.active_mine.type && hiddenObject.owner !== player.walletAddress) {
       encounter = GameObject.active_mine.type;
     }
 
