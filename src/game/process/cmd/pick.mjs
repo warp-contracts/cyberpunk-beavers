@@ -67,7 +67,7 @@ function pickAP(state, player, value) {
 function pickMine(state, player, value) {
   console.log(`Player stands on an unclaimed equipment: mine`);
   player.stats.ap.current -= 1;
-  player.equipment.mines += 1;
+  player.equipment.landmines += 1;
   addCoins(player, value);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
   return {

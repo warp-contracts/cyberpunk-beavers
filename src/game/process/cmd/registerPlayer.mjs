@@ -37,7 +37,7 @@ export function registerPlayer(state, action) {
     userName,
     beaverId,
     equipment: {
-      mines: 0,
+      landmines: 0,
       teleports: 0,
     },
     stats: {
