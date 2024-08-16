@@ -18,7 +18,7 @@ export function teleportPlayer(state, action) {
     );
     return { player, moved: false };
   }
-  if (player.equipment.teleports < 1) {
+  if (player.equipment.teleports.current < 1) {
     console.log(`Cannot use teleport ${walletAddress}. There are no available.`);
     return { player, moved: false };
   }
@@ -27,7 +27,7 @@ export function teleportPlayer(state, action) {
   player.pos = calculatePlayerRandomPos(state);
   state.playersOnTiles[player.pos.y][player.pos.x] = player.walletAddress;
   player.stats.ap.current -= TELEPORT_AP_COST;
-  player.equipment.teleports -= 1;
+  player.equipment.teleports.current -= 1;
 
   return {
     player,
