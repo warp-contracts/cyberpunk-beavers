@@ -58,12 +58,17 @@ export function movePlayer(state, action) {
     const opponentScores = [];
 
     const hiddenObject = state.gameHiddenObjects[newPos.y][newPos.x];
-    if (hiddenObject && hiddenObject.type === GameObject.active_mine.type) {
+    let encounter = false;
+    if (hiddenObject?.type === GameObject.active_mine.type && hiddenObject.owner !== player.walletAddress) {
+      encounter = GameObject.active_mine.type;
+    }
+
+    if (encounter === GameObject.active_mine.type) {
       const { finished, revenge, loot, tokenTransfer, damage } = triggerLandmine(state, player, hiddenObject);
       if (finished) {
         player.pos = calculatePlayerRandomPos(state);
         state.playersOnTiles[newPos.y][newPos.x] = null;
-        state.playersOnTiles[player.pos.y][player.pos.x] = opponent.walletAddress;
+        state.playersOnTiles[player.pos.y][player.pos.x] = player.walletAddress;
       }
 
       scores.push({ value: -damage.finalDmg, type: Const.GameObject.hp.type });
@@ -76,7 +81,7 @@ export function movePlayer(state, action) {
 
     return {
       player,
-      encounter: hiddenObject?.type,
+      encounter,
       opponent: hiddenObject?.owner,
       scoreToDisplay: scoreToDisplay(scores),
       opponentScoreToDisplay: scoreToDisplay(opponentScores),
