@@ -41,7 +41,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     const sliderUrl =
       'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexsliderplugin.min.js';
     this.load.plugin('rexsliderplugin', sliderUrl, true);
-    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.png');
+    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.jpg');
     this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver/hacker_beaver_portrait.png');
     this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver/heavy_beaver_portrait.png');
     this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver/speedy_beaver_portrait.png');
