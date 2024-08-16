@@ -127,7 +127,7 @@ export function handle(state, message) {
       break;
     case Const.Command.use_teleport:
       ao.result({
-        cmd: Const.Command.moved,
+        cmd: Const.Command.teleported,
         ...teleportPlayer(state, action),
         ...gameStats(state),
       });

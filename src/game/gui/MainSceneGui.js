@@ -1,4 +1,5 @@
 import { WeaponInfo } from '../../components/mithril/WeaponInfo.js';
+import { EquipmentGui } from '../../components/mithril/EquipmentGui.js';
 import { KeyboardMapping } from '../../components/mithril/KeyboardMapping.js';
 
 export function MainSceneGui(initialVnode) {
@@ -9,8 +10,10 @@ export function MainSceneGui(initialVnode) {
       console.log('init a closure component');
     },
     view: function (vnode) {
+      const { mainPlayerStats: stats, mainPlayerEquipment: equipment } = vnode.attrs;
       return [
-        vnode.attrs.mainPlayerStats ? m(WeaponInfo, { stats: vnode.attrs.mainPlayerStats }) : null,
+        stats ? m(WeaponInfo, { stats }) : null,
+        equipment ? m(EquipmentGui, { equipment }) : null,
         m(KeyboardMapping),
       ];
     },

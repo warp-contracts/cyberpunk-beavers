@@ -57,6 +57,7 @@ const Command = {
   msg: 'msg',
   setNextProcess: 'setNextProcess',
   nextProcessSet: 'nextProcessSet',
+  teleported: 'teleported',
   end: 'end',
   hubRegisterGame: 'hubRegisterGame',
   hubGamePlayers: 'hubGamePlayers',

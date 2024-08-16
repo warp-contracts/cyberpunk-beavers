@@ -1,0 +1,42 @@
+#player-equipment-gui {
+  width: 168px;
+  height: 84px;
+  top: calc(100% - 200px);
+  left: calc(50% - 100px);
+  background: linear-gradient(#091833, #133e7c);
+}
+
+#player-equipment-gui .equipment-slot-container {
+  border: 2px solid yellow;
+  display: inline-block;
+  width: 78px;
+  height: 78px;
+}
+
+#player-equipment-gui .equipment-slot-container .equipment-slot {
+  position: relative;
+}
+
+#player-equipment-gui .equipment-slot-container .equipment-counter {
+  bottom: 78px;
+  right: -5px;
+  position: relative;
+  color: white;
+}
+
+.circle {
+  display: inline-block;
+  line-height: 0px;
+  border-radius: 50%;
+  font-size: 32px;
+  background-color: green;
+  color: white;
+}
+
+.circle span {
+  display: inline-block;
+  padding-top: 50%;
+  padding-bottom: 50%;
+  margin-left: 8px;
+  margin-right: 8px;
+}

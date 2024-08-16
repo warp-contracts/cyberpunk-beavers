@@ -4,12 +4,13 @@ import Phaser from 'phaser';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { walletAddress, userName, stats, scene, x, y, texture, animated, beaverChoice } = data;
+    let { walletAddress, userName, stats, equipment, scene, x, y, texture, animated, beaverChoice } = data;
     super(scene, x, y, texture);
     this.walletAddress = walletAddress;
     this.beaverChoice = beaverChoice;
     this.userName = userName;
     this.stats = stats;
+    this.equipment = equipment;
     this.animated = animated;
     this.locked = false;
     scene.add.existing(this);

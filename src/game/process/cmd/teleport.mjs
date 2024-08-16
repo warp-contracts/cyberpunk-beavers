@@ -16,11 +16,11 @@ export function teleportPlayer(state, action) {
     console.log(
       `Cannot use teleport ${walletAddress}. Not enough ap: ${player.stats.ap.current}. Required: ${TELEPORT_AP_COST}`
     );
-    return { player };
+    return { player, moved: false };
   }
   if (player.equipment.teleports < 1) {
     console.log(`Cannot use teleport ${walletAddress}. There are no available.`);
-    return { player };
+    return { player, moved: false };
   }
 
   player.pos = calculatePlayerRandomPos(state);
