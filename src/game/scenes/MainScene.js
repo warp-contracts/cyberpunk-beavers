@@ -618,7 +618,7 @@ export default class MainScene extends Phaser.Scene {
       default:
         console.log('Beaver type not found');
     }
-    if (sound != null && !sound.isPlaying) {
+    if (sound != null) {
       sound.play();
     }
   }

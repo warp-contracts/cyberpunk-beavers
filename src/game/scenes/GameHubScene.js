@@ -119,8 +119,8 @@ export default class GameHubScene extends Phaser.Scene {
 
             this.gameButtons[i] = new TextButton(
               this,
-              50,
-              -75 + i * 100,
+              80,
+              -25 + i * 100,
               bLabel,
               {
                 fill: colors.green,
