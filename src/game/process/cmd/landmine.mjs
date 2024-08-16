@@ -32,7 +32,7 @@ export function useLandmine(state, action) {
 
 export function triggerLandmine(state, player, landmine) {
   const damage = {
-    baseDmg: Const.GameObject.active_mine.value,
+    baseDmg: Const.GameObject.active_mine.damage,
     range: 0,
   };
   state.gameHiddenObjects[player.pos.y][player.pos.x] = undefined;

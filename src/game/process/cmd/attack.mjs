@@ -103,7 +103,7 @@ function calculateDamage(player, damageFigures, state) {
 
 export function finishHim(player, opponent, damageFigures, state) {
   const damage = calculateDamage(player, damageFigures, state);
-  console.log(`Player ${player.walletAddress} dealt ${damage} to opponent ${opponent.walletAddress}`);
+  console.log(`Player ${player.walletAddress} dealt ${damage?.baseDmg} to opponent ${opponent.walletAddress}`);
   opponent.stats.hp.current -= damage.finalDmg;
   if (opponent.stats.hp.current <= 0) {
     const loot = lootPlayer(opponent) + Const.BEAVER_TYPES[player.beaverId].bonus[Const.BonusType.KillBonus];
