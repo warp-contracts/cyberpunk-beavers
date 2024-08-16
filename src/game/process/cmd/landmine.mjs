@@ -31,7 +31,7 @@ export function useLandmine(state, action) {
 
   return {
     player,
-    scoreToDisplay: scoreToDisplay([{ value: -LANDMINE_AP_COST, type: Scores.ap }]),
+    scoreToDisplay: scoreToDisplay([{ value: -LANDMINE_AP_COST, type: Const.Scores.ap }]),
   };
 }
 
