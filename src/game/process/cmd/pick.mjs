@@ -23,7 +23,7 @@ export function pick(state, action) {
     case GameObject.ap.type:
       return pickAP(state, player, value);
     case GameObject.equipment_mine.type:
-      return pickMine(state, player, value);
+      return pickLandmine(state, player, value);
     case GameObject.teleport_device.type:
       return pickTeleportDevice(state, player, value);
     case GameObject.none.type:
@@ -64,30 +64,42 @@ function pickAP(state, player, value) {
   };
 }
 
-function pickMine(state, player, value) {
-  console.log(`Player stands on an unclaimed equipment: mine`);
-  player.stats.ap.current -= 1;
-  player.equipment.landmines += 1;
-  addCoins(player, value);
-  state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-  return {
-    player,
-    picked: { type: GameObject.equipment_mine.type },
-    scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
-  };
+function pickLandmine(state, player, value) {
+  console.log(`Player stands on an unclaimed equipment: landmine`);
+  const limit = player.equipment.landmines.max;
+  if (player.equipment.landmines.current >= limit) {
+    console.log(`Player ${player?.walletAddress} cannot pick landmine. Limit reached ${limit}`);
+    return { player, picked: false };
+  } else {
+    player.stats.ap.current -= 1;
+    player.equipment.landmines.current += 1;
+    addCoins(player, value);
+    state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
+    return {
+      player,
+      picked: { type: GameObject.equipment_mine.type },
+      scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
+    };
+  }
 }
 
 function pickTeleportDevice(state, player, value) {
   console.log(`Player stands on an unclaimed equipment: teleport_device`);
-  player.stats.ap.current -= 1;
-  player.equipment.teleports += 1;
-  addCoins(player, value);
-  state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-  return {
-    player,
-    picked: { type: GameObject.teleport_device.type },
-    scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
-  };
+  const limit = player.equipment.teleports.max;
+  if (player.equipment.teleports.current >= limit) {
+    console.log(`Player ${player?.walletAddress} cannot pick teleport. Limit reached ${limit}`);
+    return { player, picked: false };
+  } else {
+    player.stats.ap.current -= 1;
+    player.equipment.teleports.current += 1;
+    addCoins(player, value);
+    state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
+    return {
+      player,
+      picked: { type: GameObject.teleport_device.type },
+      scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
+    };
+  }
 }
 
 function pickTreasure(state, player) {
