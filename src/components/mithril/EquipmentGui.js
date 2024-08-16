@@ -12,7 +12,7 @@ export function EquipmentGui(initialVnode) {
         m('div', { class: 'equipment-slot-container' }, [
           m('div', { class: 'equipment-slot' }, [
             m('img', { src: `/assets/images/equipment/valmara69.png` }),
-            m('span', { class: 'equipment-counter' }, vnode.attrs.equipment.mines),
+            m('span', { class: 'equipment-counter' }, vnode.attrs.equipment.landmines),
           ]),
         ]),
       ]);

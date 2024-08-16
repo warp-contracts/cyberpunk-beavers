@@ -123,6 +123,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.anims.play(`${this.beaverChoice}_pick`, true);
   }
 
+  explosionAnim() {
+    this.anims.play(`explosion_anim`, true);
+  }
+
   baseMoveTo(pos, onStart, onComplete) {
     let movementTemplate = {
       targets: this,

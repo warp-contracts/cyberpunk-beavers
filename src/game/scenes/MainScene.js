@@ -63,6 +63,12 @@ export default class MainScene extends Phaser.Scene {
     this.loadBeaverAssets('heavy_beaver');
     this.loadBeaverAssets('speedy_beaver');
 
+    this.load.atlas(
+      `explosion_anim`,
+      `assets/images/anims/explosion/explosion_anim.png`,
+      `assets/images/anims/explosion/explosion_anim_atlas.json`
+    );
+
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('background_music_metal', ['assets/audio/background_music_metal.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
@@ -83,6 +89,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('god_like', ['assets/audio/god_like.m4a']);
     this.load.audio('revenge', ['assets/audio/revenge.m4a']);
     this.load.audio('teleport', ['assets/audio/teleport.mp3']);
+    this.load.audio('explosion', ['assets/audio/explosion_powerful_dynamite.mp3']);
     this.forDeathSounds((k, i) => this.loadDeathSound(k, i, this));
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
@@ -151,6 +158,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   initAnimations() {
+    this.anims.create({
+      key: `explosion_anim`,
+      frames: this.anims.generateFrameNames(`explosion_anim`, { prefix: 'explosion-f', start: 1, end: 8 }),
+      frameRate: 24,
+    });
+
     for (const [beaver, anims] of Object.entries(ANIM_SETTINGS)) {
       for (const [anim, config] of Object.entries(anims)) {
         const { prefix, start, end, frameRate } = config;
@@ -499,7 +512,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.teleported:
       case Const.Command.moved:
         {
-          // console.log('Player', response.cmd, response.player.pos, response.player.onGameObject);
+          // console.log('Player', response);
           if (!self.allPlayers[response.player.walletAddress]) {
             self.addOtherPlayer(response.player);
           } else {
@@ -532,6 +545,15 @@ export default class MainScene extends Phaser.Scene {
             if (!this.teleportSound.isPlaying) {
               this.teleportSound.play();
             }
+          }
+          if (
+            response.player.walletAddress === self.mainPlayer?.walletAddress &&
+            response.encounter === Const.GameObject.active_mine.type
+          ) {
+            if (!this.explosionSound.isPlaying) {
+              this.explosionSound.play();
+            }
+            self.mainPlayer.explosionAnim();
           }
         }
         break;
@@ -785,6 +807,7 @@ export default class MainScene extends Phaser.Scene {
     this.godLikeSound = this.sound.add('god_like', { loop: false, volume: 4.0 });
     this.revengeSound = this.sound.add('revenge', { loop: false, volume: 4.0 });
     this.teleportSound = this.sound.add('teleport', { loop: false, volume: 1.0 });
+    this.explosionSound = this.sound.add('explosion', { loop: false, volume: 1.0 });
     this.forDeathSounds((k, i) => this.addDeathSound(k, i, this));
 
     const backgroundMusic = this[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];

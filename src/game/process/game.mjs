@@ -109,11 +109,9 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.move:
-      const moveRes = movePlayer(state, action);
       ao.result({
         cmd: Const.Command.moved,
-        player: moveRes.player,
-        scoreToDisplay: moveRes.scoreToDisplay,
+        ...movePlayer(state, action),
         ...gameStats(state),
       });
       break;

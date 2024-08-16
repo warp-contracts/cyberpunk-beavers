@@ -1,6 +1,7 @@
 import Const from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
 import { triggerLandmine } from './landmine.mjs';
+import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 const {
   GameObject,
   Map,
@@ -53,15 +54,32 @@ export function movePlayer(state, action) {
     player.pos = newPos;
 
     player.stats.ap.current -= apCost;
+    const scores = [{ value: -apCost, type: GameObject.ap.type }];
+    const opponentScores = [];
 
     const hiddenObject = state.gameHiddenObjects[newPos.y][newPos.x];
     if (hiddenObject && hiddenObject.type === GameObject.active_mine.type) {
-      triggerLandmine(state, player, hiddenObject);
+      const { finished, revenge, loot, tokenTransfer, damage } = triggerLandmine(state, player, hiddenObject);
+      if (finished) {
+        player.pos = calculatePlayerRandomPos(state);
+        state.playersOnTiles[newPos.y][newPos.x] = null;
+        state.playersOnTiles[player.pos.y][player.pos.x] = opponent.walletAddress;
+      }
+
+      scores.push({ value: -damage.finalDmg, type: Const.GameObject.hp.type });
+
+      if (parseInt(loot) > 0) {
+        opponentScores.push({ value: loot, type: Const.Scores.coin });
+        scores.push({ value: -loot, type: Const.Scores.coin });
+      }
     }
 
     return {
       player,
-      scoreToDisplay: scoreToDisplay([{ value: -apCost, type: GameObject.ap.type }]),
+      encounter: hiddenObject?.type,
+      opponent: hiddenObject?.owner,
+      scoreToDisplay: scoreToDisplay(scores),
+      opponentScoreToDisplay: scoreToDisplay(opponentScores),
     };
   }
 }
