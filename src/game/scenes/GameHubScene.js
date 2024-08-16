@@ -119,7 +119,7 @@ export default class GameHubScene extends Phaser.Scene {
 
             this.gameButtons[i] = new TextButton(
               this,
-              80,
+              100,
               -25 + i * 100,
               bLabel,
               {
