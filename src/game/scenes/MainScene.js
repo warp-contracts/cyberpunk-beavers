@@ -819,8 +819,8 @@ export default class MainScene extends Phaser.Scene {
     this.tripleKillSound = this.sound.add('triple_kill', { loop: false, volume: 4.0 });
     this.godLikeSound = this.sound.add('god_like', { loop: false, volume: 4.0 });
     this.revengeSound = this.sound.add('revenge', { loop: false, volume: 4.0 });
-    this.teleportSound = this.sound.add('teleport', { loop: false, volume: 4.0 });
-    this.explosionSound = this.sound.add('explosion', { loop: false, volume: 3.0 });
+    this.teleportSound = this.sound.add('teleport', { loop: false, volume: 5.0 });
+    this.explosionSound = this.sound.add('explosion', { loop: false, volume: 2.0 });
     this.forDeathSounds((k, i) => this.addDeathSound(k, i, this));
 
     const backgroundMusic = this[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];
