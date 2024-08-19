@@ -5,6 +5,9 @@ import { EVENTS_NAME } from '../utils/events.js';
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig, useLandmine, useTeleport } = Const.Command;
 
+const RANGE_COLOR = 0x008000;
+const AIM_COLOR = 0xff0000;
+
 export default class MainPlayer extends Player {
   combatMode = false;
   mainScene;
@@ -14,10 +17,13 @@ export default class MainPlayer extends Player {
     let { stats, scene, x, y } = data;
     super(data);
 
-    const attackMarkers = stats.weapon.attack_range * 2 + 1;
+    const range = stats.weapon.attack_range;
+    const diff = Math.ceil(range / 2); //there's sth super fucked up with the coordinates..
 
-    this.rangeBarX = scene.add.grid(x, y, attackMarkers * 48, 48, 48, 48, 0xff0000, 0.2);
-    this.rangeBarY = scene.add.grid(x, y, 48, attackMarkers * 48, 48, 48, 0xff0000, 0.2);
+    this.rangeBarXLeft = scene.add.grid(x - 48 * diff, y, range * 48, 48, 48, 48, RANGE_COLOR, 0.4);
+    this.rangeBarXRight = scene.add.grid(x + 48 * diff, y, range * 48, 48, 48, 48, RANGE_COLOR, 0.4);
+    this.rangeBarYUp = scene.add.grid(x, y - 48 * diff, 48, range * 48, 48, 48, RANGE_COLOR, 0.4);
+    this.rangeBarYDown = scene.add.grid(x, y + 48 * diff, 48, range * 48, 48, 48, RANGE_COLOR, 0.4);
   }
 
   async update() {
@@ -68,7 +74,7 @@ export default class MainPlayer extends Player {
     const { movementTemplate, moveHorizontal, moveVertical } = super.baseMoveTo(pos, onStart, onComplete);
     this.scene.tweens.add({
       ...movementTemplate,
-      targets: [this.rangeBarX, this.rangeBarY],
+      targets: [this.rangeBarXLeft, this.rangeBarXRight, this.rangeBarYUp, this.rangeBarYDown],
       x: `+=${moveHorizontal}`,
       y: `+=${moveVertical}`,
       onComplete: (_) => {},
@@ -90,15 +96,26 @@ export default class MainPlayer extends Player {
         await this.send({ cmd: attack, dir });
         this.scene.playAttackSound(this.beaverChoice);
         this.attackAnim();
-      } else {
-        console.log('Recovering', {
-          now,
-          prevAttackMs: this.stats.previousAttackTs,
-          recovery: this.stats.weapon.attack_recovery_ms,
-          diff: now - this.stats.previousAttackTs,
-        });
+      }
+      if (dir == left) {
+        this.rangeBarXLeft.fillColor = AIM_COLOR;
+        this.rangeBarXRight.fillColor = this.rangeBarYUp.fillColor = this.rangeBarYDown.fillColor = RANGE_COLOR;
+      } else if (dir == right) {
+        this.rangeBarXRight.fillColor = AIM_COLOR;
+        this.rangeBarXLeft.fillColor = this.rangeBarYUp.fillColor = this.rangeBarYDown.fillColor = RANGE_COLOR;
+      } else if (dir == down) {
+        this.rangeBarYDown.fillColor = AIM_COLOR;
+        this.rangeBarXLeft.fillColor = this.rangeBarXRight.fillColor = this.rangeBarYUp.fillColor = RANGE_COLOR;
+      } else if (dir == up) {
+        this.rangeBarYUp.fillColor = AIM_COLOR;
+        this.rangeBarXLeft.fillColor = this.rangeBarXRight.fillColor = this.rangeBarYDown.fillColor = RANGE_COLOR;
       }
     } else {
+      this.rangeBarXLeft.fillColor =
+        this.rangeBarXRight.fillColor =
+        this.rangeBarYDown.fillColor =
+        this.rangeBarYUp.fillColor =
+          RANGE_COLOR;
       await this.send({ cmd: move, dir });
     }
   }
