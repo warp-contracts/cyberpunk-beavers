@@ -51,6 +51,7 @@ export default class MainPlayer extends Player {
       await this.action(down);
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
       this.combatMode = false;
+      this.resetAimingBar();
     } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.p)) {
       if (this.onGameObject) {
         await this.send({ cmd: pick });
@@ -111,13 +112,16 @@ export default class MainPlayer extends Player {
         this.rangeBarXLeft.fillColor = this.rangeBarXRight.fillColor = this.rangeBarYDown.fillColor = RANGE_COLOR;
       }
     } else {
-      this.rangeBarXLeft.fillColor =
-        this.rangeBarXRight.fillColor =
-        this.rangeBarYDown.fillColor =
-        this.rangeBarYUp.fillColor =
-          RANGE_COLOR;
       await this.send({ cmd: move, dir });
     }
+  }
+
+  resetAimingBar() {
+    this.rangeBarXLeft.fillColor =
+      this.rangeBarXRight.fillColor =
+      this.rangeBarYDown.fillColor =
+      this.rangeBarYUp.fillColor =
+        RANGE_COLOR;
   }
 
   nextRound() {
