@@ -1,0 +1,26 @@
+#game-hub {
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: var(--yellow);
+  font-size: 20px;
+  font-weight: var(--regular);
+  padding: 20px 20px;
+}
+
+#game-hub .games-list .list .element {
+  margin-top: 10px;
+  padding: 10px 10px;
+  white-space: pre-wrap;
+  text-align: left;
+  color: var(--yellow);
+  border: var(--yellow) 1px solid;
+  cursor: pointer;
+  width: 450px;
+}
+
+#game-hub .games-list .list .element.active {
+  color: var(--green);
+  border: var(--green) 1px solid;
+  font-weight: bold;
+}
