@@ -19,7 +19,7 @@ import { ANIM_SETTINGS } from './anim/settings.js';
 import Phaser from 'phaser';
 import { EventBus } from '../EventBus.js';
 import { MUSIC_SETTINGS } from './music/settings.js';
-import { mithrilRoot } from '../../components/mithril/utils.js';
+import { hideGui, showGui } from '../../components/mithril/utils.js';
 import { MainSceneGui } from '../gui/MainSceneGui.js';
 
 export default class MainScene extends Phaser.Scene {
@@ -139,11 +139,8 @@ export default class MainScene extends Phaser.Scene {
     }
     EventBus.emit('current-scene-ready', this);
 
-    console.log(m);
-
     let self = this;
-
-    m.mount(mithrilRoot(), {
+    m.mount(showGui(), {
       view: function () {
         return m(MainSceneGui, {
           mainPlayerStats: self.mainPlayer?.stats,
@@ -267,7 +264,6 @@ export default class MainScene extends Phaser.Scene {
     this.statsScene.stats = this.mainPlayer.stats;
     this.statsScene.allPlayers = this.allPlayers;
 
-    console.log('Mithril redraw', this.mihtril);
     m.redraw();
 
     return this.mainPlayer;
@@ -303,7 +299,7 @@ export default class MainScene extends Phaser.Scene {
       this.gameOverSound.play();
       this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
       setTimeout(() => {
-        m.mount(mithrilRoot(), null);
+        hideGui();
         this.scene.remove(statsSceneKey);
         this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
       }, 2000);
@@ -801,9 +797,9 @@ export default class MainScene extends Phaser.Scene {
     this.pickUpSound = this.sound.add('pick_up_sound', { loop: false, volume: 3 });
     this.digSound = this.sound.add('dig_sound', { loop: false, volume: 0.5 });
     this.treasureSound = this.sound.add('treasure_sound', { loop: false, volume: 0.5 });
-    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', { loop: false, volume: 1.0 });
-    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 1.0 });
-    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 1.0 });
+    this.attackHeavyBeaverSound = this.sound.add('attack_heavy_beaver_sound', { loop: false, volume: 0.5 });
+    this.attackHackerBeaverSound = this.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 0.5 });
+    this.attackSpeedyBeaverSound = this.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 0.5 });
     this.beaverEliminatedSound = this.sound.add('beaver_eliminated_sound', { loop: false, volume: 2.0 });
     this.notEnoughApSound = this.sound.add('not_enough_ap', { loop: false, volume: 1.0 });
     this.newChallengerSound = this.sound.add('new_challenger', { loop: false, volume: 2.0 });

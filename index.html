@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/mithril/weapon-info.css" />
     <link rel="stylesheet" href="/css/mithril/keyboard-mapping.css" />
     <link rel="stylesheet" href="/css/mithril/player-equipment-gui.css" />
+    <link rel="stylesheet" href="/css/mithril/lounge-arena.css" />
     <title>Cyberpunk Beavers</title>
   </head>
   <style>
@@ -16,7 +17,14 @@
       left: 0;
       height: 100%;
       width: 100%;
-      pointer-events: none;
+    }
+
+    .mithril-gui-hide {
+      display: none;
+    }
+
+    .mithril-gui-show {
+      display: block;
     }
 
     .mithril-component {
@@ -27,7 +35,7 @@
   <body>
     <script src="https://unpkg.com/mithril/mithril.js"></script>
     <div id="root"></div>
-    <div id="mithril-gui"></div>
+    <div id="mithril-gui" class="mithril-gui-hide"></div>
     <script type="module" src="/src/game/config/warp-ao.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>

@@ -146,10 +146,14 @@ async function spawnGameAndChat() {
     binaryType: 'release_sync',
   });
   const processRandomId = Math.random().toString(36).substring(2);
+  const now = Date.now();
   const setupMessage = mockDataItem(
     {
       cmd: 'setup',
       type: 'custom',
+      start: Date.now() + 1000 * 30,
+      end: Date.now() + 1000 * 60,
+      playersLimit: 1,
       chatProcessId: Object.keys(chatProcess)[0],
       chatModuleId: Object.values(chatProcess)[0].moduleId,
       hubProcessId: ids.hub_processId_dev,
