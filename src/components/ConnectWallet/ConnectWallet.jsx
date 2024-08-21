@@ -53,7 +53,7 @@ function ConnectWallet() {
             Hey stranger...
           </Typewriter>
         </div>
-        {titleAnimationDone && (
+        {true && (
           <>
             <Button color="green" handleClick={async () => await handleArconnect()}>
               Connect wallet

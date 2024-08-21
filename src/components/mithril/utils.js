@@ -1,3 +1,18 @@
-export function mithrilRoot() {
-  return document.getElementById('mithril-gui');
+export function showGui(component, model) {
+  const guiRoot = document.getElementById('mithril-gui');
+  guiRoot.classList.toggle('mithril-gui-show', true);
+
+  return guiRoot;
+  /* does not work :/
+  m.mount(guiRoot, {
+    view: function () {
+      return m(component, model);
+    },
+  });*/
+}
+
+export function hideGui() {
+  const guiRoot = document.getElementById('mithril-gui');
+  guiRoot.classList.toggle('mithril-gui-show', false);
+  m.mount(guiRoot, null);
 }

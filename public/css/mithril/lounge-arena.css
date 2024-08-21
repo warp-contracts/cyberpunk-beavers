@@ -1,0 +1,61 @@
+#lounge-arena {
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: var(--yellow);
+  font-size: 20px;
+  font-weight: var(--regular);
+  padding: 20px 20px;
+}
+
+#lounge-arena .element .title,
+.element .value {
+  display: inline-block;
+}
+
+#lounge-arena .element .title {
+  width: 170px;
+}
+
+#lounge-arena .players-lists {
+  margin-top: 30px;
+}
+
+#lounge-arena .players-lists .column {
+  display: inline-block;
+  vertical-align: top;
+  width: 560px;
+}
+
+#lounge-arena .players-lists .column:first-child + .column {
+  margin-left: 40px;
+}
+
+#lounge-arena .element .value {
+  color: var(--green);
+}
+
+#lounge-arena .players-list {
+}
+
+#lounge-arena .players-list .list {
+  margin-top: 0px;
+}
+
+#lounge-arena .players-list .element {
+  margin-top: 2px;
+  color: var(--yellow);
+}
+
+#lounge-arena .players-list .element.player {
+  color: var(--green);
+}
+
+#lounge-arena .button {
+  color: var(--red);
+  border: var(--red) 1px solid;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  width: 250px;
+}

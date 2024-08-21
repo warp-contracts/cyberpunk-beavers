@@ -1,21 +1,20 @@
 import Const from '../common/const.mjs';
-import { colors } from '../utils/style.js';
 import { serverConnection } from '../lib/serverConnection.js';
-import { TextButton } from '../objects/TextButton.js';
 import {
-  mainSceneKey,
-  loungeAreaSceneKey,
   connectWalletSceneKey,
-  playerPickSceneKey,
   leaderboardSceneKey,
+  loungeAreaSceneKey,
+  mainSceneKey,
+  playerPickSceneKey,
 } from '../main.js';
 import { checkProfile } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { EventBus } from '../EventBus.js';
+import { hideGui, showGui } from '../../components/mithril/utils.js';
+import { LoungeArenaSceneGui } from '../gui/LoungeArenaSceneGui.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId;
-  enqueueButton;
   running;
 
   constructor() {
@@ -40,74 +39,55 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.server.subscribe(this);
       this.profilePromise = checkProfile(this.walletAddress);
       this.server.send({ cmd: Const.Command.info });
+      var self = this;
+      m.mount(showGui(), {
+        view: function () {
+          return m(LoungeArenaSceneGui, {
+            gameTxId: self.gameTxId,
+            walletAddress: self.walletAddress,
+            gameError: self.gameError,
+            gameStart: self.gameStart,
+            gameEnd: self.gameEnd,
+            walletsQueue: self.walletsQueue,
+            walletsBench: self.walletsBench,
+            playersLimit: self.playersLimit,
+            diff: self.diff,
+            onJoin: () =>
+              setTimeout(async () => {
+                await self.server.send({ cmd: Const.Command.enqueue }, true);
+              }),
+          });
+        },
+      });
     } else {
       this.scene.start(connectWalletSceneKey);
     }
 
-    const headerText = this.gameError
-      ? `Cannot join the game.\n${this.gameError}\n\n`
-      : 'Please, have a seat and relax... The game will start when the time comes..\n\n';
-
-    this.header = this.add.text(100, 100, headerText, {
-      fill: colors.yellow,
-      font: '20px',
-    });
-
-    this.subHeader = this.add.text(100, 150, '--:--:--', {
-      fill: colors.yellow,
-      font: '20px',
-    });
-
-    this.wallets = this.add.text(100, 300, 'Queue is empty', {
-      fill: colors.yellow,
-      font: '20px',
-    });
     EventBus.emit('current-scene-ready', this);
   }
 
   async update() {
-    if (
-      this.enqueueButton &&
-      this.walletsQueue.indexOf(this.walletAddress) > -1 &&
-      this.walletsBench.indexOf(this.walletAddress) > -1
-    ) {
-      this.enqueueButton.destroy();
-    }
     await this.countdown();
   }
 
   async countdown() {
     if (!this.gameError) {
       const now = new Date();
-      let subHeaderTxt = '--:--:--';
       if (this.gameEnd) {
-        let diff = Math.round((this.gameEnd - now) / 1000);
-        if (diff >= 0) {
-          subHeaderTxt = `The game will finish in\n${this.formatCountdownTo(diff)}`;
-        } else {
+        this.diff = Math.round((this.gameEnd - now) / 1000);
+        if (this.diff < 0) {
           // We don't want to go directly to leaderboard until we don't have the latest players stats
           this.server.send({ cmd: Const.Command.info });
         }
       }
       if (this.gameStart) {
-        let diff = Math.round((this.gameStart - now) / 1000);
-        if (diff <= 0) {
+        this.diff = Math.round((this.gameStart - now) / 1000);
+        if (this.diff <= 0) {
           await this.gameActive();
-        } else {
-          subHeaderTxt = this.formatCountdownTo(diff);
         }
       }
-      this.subHeader.setText(subHeaderTxt);
+      m.redraw();
     }
-  }
-
-  formatCountdownTo(diff) {
-    const hour = Math.floor(diff / 3600);
-    diff -= hour * 3600;
-    const min = Math.floor(diff / 60);
-    const sec = diff - min * 60;
-    const padZero = (x) => x.toString().padStart(2, '0');
-    return `${padZero(hour)}:${padZero(min)}:${padZero(sec)}`;
   }
 
   async handleMessage(response) {
@@ -115,7 +95,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
     switch (response.cmd) {
       case Const.Command.stats:
         {
-          console.log(`Got me some stats`, response);
           if (response.end && response.end < new Date()) {
             this.goToLeaderboard(response);
             return;
@@ -125,11 +104,11 @@ export default class LoungeAreaScene extends Phaser.Scene {
           this.walletsQueue = response.walletsQueue;
           this.walletsBench = response.walletsBench;
           this.playersLimit = response.playersLimit;
-          //this.scrollbar = null;
+          this.gameTxId = response.txId;
 
-          this.displayWaitingList(response);
           if (response.error) {
             console.error('Failed to fetch game info', response.error);
+            hideGui();
             this.scene.start(connectWalletSceneKey);
           } else if (!this.gameError) {
             if (response.players && response.players[this.walletAddress]) {
@@ -137,16 +116,11 @@ export default class LoungeAreaScene extends Phaser.Scene {
             }
             if (response.active) {
               await this.gameActive();
-            } else if (Date.now() < response.start) {
-              if (!this.walletsQueue.includes(this.walletAddress) && !this.walletsBench.includes(this.walletAddress)) {
-                this.displayEnqueueButton();
-              } else if (this.enqueueButton) {
-                this.enqueueButton.destroy();
-              }
-            } else {
-              this.goToLeaderboard(response);
-            }
+            } /*else if (Date.now() > response.end) {
+            this.goToLeaderboard(response);
+          }*/
           }
+          m.redraw();
         }
         break;
     }
@@ -176,15 +150,16 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
   async gameActive() {
     if (this.beaverId) {
+      hideGui();
       await this.goToMainScene();
     } else if (this.canParticipate()) {
+      hideGui();
       await this.goToPlayerPick();
-    } else {
-      this.header.setText(`The game has started and reached players limit.`);
     }
   }
 
   goToLeaderboard(response) {
+    hideGui();
     this.scene.start(leaderboardSceneKey, {
       players: response.players,
       mainPlayer: {
@@ -194,6 +169,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   async goToMainScene() {
+    hideGui();
     const userName = (await this.profilePromise)?.Profile?.UserName;
     this.scene.start(mainSceneKey, {
       userName,
@@ -207,6 +183,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   async goToPlayerPick() {
     if (!this.running) {
       this.running = true;
+      hideGui();
       const userName = (await this.profilePromise)?.Profile?.UserName;
       this.scene.start(playerPickSceneKey, {
         userName,
@@ -215,48 +192,5 @@ export default class LoungeAreaScene extends Phaser.Scene {
         gameEnd: this.gameEnd,
       });
     }
-  }
-
-  displayEnqueueButton() {
-    const self = this;
-    this.enqueueButton = new TextButton(
-      this,
-      100,
-      200,
-      'Click here to join',
-      {
-        fill: colors.red,
-        font: '20px',
-      },
-      async () => {
-        setTimeout(async () => {
-          await self.server.send({ cmd: Const.Command.enqueue }, true);
-        });
-      }
-    );
-  }
-
-  displayWaitingList(response) {
-    console.log(`Waiting queue`, response.walletsQueue);
-    const walletQueue = (response.walletsQueue || []).join('\n\n');
-    const walletBench = (response.walletsBench || []).join('\n\n');
-    this.wallets.setText(
-      `Waiting list:\n
-      \n${walletQueue}\n
-      \nWaiting for next games:\n
-      \n${walletBench}`
-    );
-    // this.scrollbar = new Scrollbar(
-    //   this,
-    //   walletQueue ? 420 : 300,
-    //   600,
-    //   window.innerHeight - 400,
-    //   'y',
-    //   this.wallets.setSize(this.wallets.width + 100, this.wallets.height + 50),
-    //   {
-    //     track: colors.lightGreen,
-    //     thumb: colors.darkGreen,
-    //   }
-    // );
   }
 }
