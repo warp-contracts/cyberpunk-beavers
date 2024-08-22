@@ -1,7 +1,7 @@
 import { connectWalletSceneKey, gameHubSceneKey } from '../main.js';
 import Phaser from 'phaser';
 import { ConnectWalletSceneGui } from '../gui/ConnectWalletGui.js';
-import { showGui } from '../utils/mithril.js';
+import { showGui, hideGui } from '../utils/mithril.js';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {
@@ -27,6 +27,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
   }
 
   changeScene(address) {
+    hideGui();
     this.scene.start(gameHubSceneKey, {
       walletAddress: address,
     });
