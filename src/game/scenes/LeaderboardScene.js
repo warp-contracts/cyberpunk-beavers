@@ -16,6 +16,8 @@ import {
 import { trimString } from '../utils/utils.js';
 import { TextButton } from '../objects/TextButton.js';
 import Phaser from 'phaser';
+import { hideGui, showGui } from '../utils/mithril.js';
+import { LeaderboardGui } from '../gui/LeaderboardGui.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -27,23 +29,12 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.allPlayers = data.players;
     this.mainPlayer = data.mainPlayer;
     this.walletAddress = data.mainPlayer?.walletAddress || data.walletAddress;
-    this.gameWidth = window.innerWidth;
-    this.gameHeight = window.innerHeight;
     this.mainScene = this.scene.get(mainSceneKey);
     this.statsScene = this.scene.get(statsSceneKey);
   }
 
   preload() {
     console.log('Leaderboard Scene - 2. Preload');
-    const url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexgridtableplugin.min.js';
-    this.load.plugin('rexgridtableplugin', url, true);
-    const sliderUrl =
-      'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexsliderplugin.min.js';
-    this.load.plugin('rexsliderplugin', sliderUrl, true);
-    this.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.jpg');
-    this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver/hacker_beaver_portrait.png');
-    this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver/heavy_beaver_portrait.png');
-    this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver/speedy_beaver_portrait.png');
     this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
@@ -54,153 +45,73 @@ export default class LeaderboardScene extends Phaser.Scene {
       this.serverChat = serverConnection.chat;
       this.server.subscribe(this);
       this.serverChat.subscribe(this);
+
+      var self = this;
+      m.mount(showGui(), {
+        view: function () {
+          return m(LeaderboardGui, {
+            data: /*[
+              [1,{"img":"heavy_beaver","address":"just_ppe"},0,69544,5,2],
+              [2,{"img":"speedy_beaver","address":"just_ppe"},0,10000,20,0],
+              [3,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,30],
+              [4,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
+              [5,{"img":"hacker_beaver","address":"just_ppe"},0,69544,0,0],
+              [6,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
+              [7,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
+              [8,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
+              [9,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
+              [10,{"img":"hacker_beaver","address":"just_ppe"},0,69544,0,0],
+              [11,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
+              [14,{"img":"hacker_beaver","address":"just_ppe"},0,69544,0,0],
+              [15,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
+              [16,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
+              [17,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
+              [18,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
+              [19,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
+              [20,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
+              [21,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
+              [22,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
+
+            ]*/ self.prepareCellsData(),
+            back: () => {
+              self.server.unsubscribe();
+              self.serverChat.unsubscribe();
+              self.restartScenes();
+              self.scene.start(gameHubSceneKey, {
+                walletAddress: self.walletAddress,
+              });
+            },
+          });
+        },
+      });
     } else {
       this.scene.start(connectWalletSceneKey);
     }
-    this.addBackground();
-    this.addAndPositionTitle();
-    this.addReturnToHubButton();
-    this.createGridTable(this);
-  }
-
-  addBackground() {
-    this.background = this.add.image(this.gameWidth / 2, this.gameHeight / 2, 'post_apocalyptic_background');
-    this.background.setDisplaySize(this.gameWidth, this.gameHeight);
-    this.background.setDepth(10);
-  }
-
-  addAndPositionTitle() {
-    this.title = new Text(this, this.gameWidth / 2, 100, 'TOP BEAVERS', {
-      fontFamily: '"Press Start 2P"',
-      fontSize: '50px',
-      textTransform: 'uppercase',
-      color: colors.yellow,
-    });
-    this.title.x = this.gameWidth / 2 - this.title.width / 2;
-    this.title.setDepth(11);
-  }
-
-  addReturnToHubButton() {
-    const self = this;
-    const textBorder = self.add.rectangle(200, 125, 200, 50, 0xffffff, 0);
-    textBorder.setStrokeStyle(2, 0x00ff00);
-    textBorder.setDepth(50);
-
-    this.backButton = new TextButton(
-      this,
-      0,
-      0,
-      '< Back',
-      {
-        fill: colors.green,
-        font: '30px',
-      },
-      () => {
-        self.server.unsubscribe();
-        self.serverChat.unsubscribe();
-        self.restartScenes();
-        self.scene.start(gameHubSceneKey, {
-          walletAddress: self.walletAddress,
-        });
-      }
-    );
-    this.backButton.setDepth(50);
-
-    Phaser.Display.Align.In.Center(this.backButton, textBorder);
-  }
-
-  createGridTable() {
-    const self = this;
-    const cells = this.prepareCellsData();
-
-    const newCellObject = function (scene, cell) {
-      let input;
-      if (cells[cell.index].img) {
-        const img = self.add.image(5, 5, `${cells[cell.index].img}_portrait`);
-        const txt = new Text(self, 5, 5, cells[cell.index].address, {
-          fontFamily: '"Press Start 2P"',
-          fontSize: '20px',
-          textTransform: 'uppercase',
-          color: colors.white,
-        });
-        Phaser.Display.Bounds.SetRight(img, Phaser.Display.Bounds.GetLeft(txt) - 10);
-        const container = self.add.container(5, 5, [img, txt]);
-        container.sendToBack(txt);
-        input = container;
-      } else {
-        input = new Text(self, 5, 5, cells[cell.index], {
-          fontFamily: '"Press Start 2P"',
-          fontSize: '20px',
-          textTransform: 'uppercase',
-          color: colors.white,
-        });
-      }
-      const container = scene.add.container(0, 0, [input]);
-      return container;
-    };
-
-    const onCellVisible = function (cell) {
-      cell.setContainer(newCellObject(this, cell));
-    };
-    this.table = this.add.rexGridTable(
-      this.gameWidth / 2,
-      this.gameHeight / 2,
-      this.gameWidth - this.gameWidth / 5,
-      this.gameHeight / 2,
-      {
-        cellHeight: 105,
-        cellWidth: (this.gameWidth - this.gameWidth / 5) / 5,
-        cellsCount: cells.length,
-        columns: 5,
-        cellVisibleCallback: onCellVisible.bind(this),
-      }
-    );
-
-    this.table.setDepth(12);
-    this.add.graphics().lineStyle(3, 0xff0000).strokeRectShape(this.table.getBounds());
-
-    const topRight = this.table.getTopRight();
-    const bottomRight = this.table.getBottomRight();
-    const thumb = this.add.rectangle(0, 0, 25, 50, 0xffffff);
-    thumb.setDepth(13);
-    thumb.slider = this.plugins.get('rexsliderplugin').add(thumb, {
-      endPoints: [
-        {
-          x: topRight.x + 10,
-          y: topRight.y + 10,
-        },
-        {
-          x: bottomRight.x + 10,
-          y: bottomRight.y - 10,
-        },
-      ],
-      valuechangeCallback: function (newValue) {
-        self.table.setTableOYByPercentage(newValue).updateTable().setDepth(12);
-      },
-    });
   }
 
   prepareCellsData() {
-    const cells = [['RANK', 'PLAYER', 'CBCOINS', 'GAINED', 'HP']];
+    const cells = [];
     if (!this.allPlayers || Object.keys(this.allPlayers).length == 0) {
-      return cells.flat(1);
+      return cells;
     }
     let allPlayersKeys = Object.keys(this.allPlayers);
     allPlayersKeys.sort((a, b) => this.allPlayers[b].stats.coins?.gained - this.allPlayers[a].stats.coins?.gained);
     for (let i = 0; i < allPlayersKeys.length; i++) {
       const key = allPlayersKeys[i];
+      const player = this.allPlayers[key];
       cells.push([
         i + 1,
         {
-          img: this.allPlayers[key].beaverChoice || this.allPlayers[key].beaverId,
-          address: this.displayName(this.allPlayers[key]),
+          img: player.beaverChoice || player.beaverId,
+          name: player.userName || player.walletAddress,
         },
-        this.allPlayers[key].stats?.coins?.balance + this.allPlayers[key].stats?.coins?.gained,
-        this.allPlayers[key].stats?.coins?.gained,
-        this.allPlayers[key].stats?.hp?.current,
+        player.stats?.coins?.gained,
+        player.stats?.coins?.balance + player.stats?.coins?.gained,
+        player.stats?.kills?.frags,
+        player.stats?.kills?.deaths,
       ]);
     }
-    return cells.flat(1);
+    return cells;
   }
 
   displayName(player) {
@@ -242,6 +153,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         window.warpAO.chatModuleId = () => {
           return response.chatModuleId;
         };
+        hideGui();
         this.restartScenes();
         this.scene.start(loungeAreaSceneKey, { walletAddress: this.walletAddress });
       }

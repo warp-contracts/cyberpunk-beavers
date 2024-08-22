@@ -16,3 +16,8 @@ export function hideGui() {
   guiRoot.classList.toggle('mithril-gui-show', false);
   m.mount(guiRoot, null);
 }
+
+export function playClick() {
+  const audio = document.getElementById('button-click-sound');
+  audio.play();
+}

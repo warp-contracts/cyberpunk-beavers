@@ -1,3 +1,5 @@
+import { playClick } from '../utils/mithril.js';
+
 export function LoungeArenaSceneGui(initialVnode) {
   function showJoinButton(gameStart, walletsQueue, walletsBench, walletAddress) {
     const result =
@@ -105,7 +107,18 @@ function PlayersList() {
 function JoinButton() {
   return {
     view: function (vnode) {
-      return [m('.button', { onclick: vnode.attrs.onJoin }, 'Click here to join')];
+      return [
+        m(
+          '.button',
+          {
+            onclick: () => {
+              playClick();
+              vnode.attrs.onJoin();
+            },
+          },
+          'Click here to join'
+        ),
+      ];
     },
   };
 }
