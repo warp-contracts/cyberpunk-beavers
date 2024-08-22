@@ -1,6 +1,7 @@
 import { connectWalletSceneKey, gameHubSceneKey } from '../main.js';
-import { EventBus } from '../EventBus.js';
 import Phaser from 'phaser';
+import { ConnectWalletSceneGui } from '../gui/ConnectWalletGui.js';
+import { showGui } from '../utils/mithril.js';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {
@@ -17,7 +18,12 @@ export default class ConnectWalletScene extends Phaser.Scene {
 
   create() {
     console.log('Connect Wallet Scene - 3. Create');
-    EventBus.emit('current-scene-ready', this);
+    const self = this;
+    m.mount(showGui(), {
+      view: () => {
+        return m(ConnectWalletSceneGui, { changeScene: (address) => self.changeScene(address) });
+      },
+    });
   }
 
   changeScene(address) {

@@ -1,8 +1,5 @@
 import { useRef, useState } from 'react';
 import { PhaserGame } from './game/PhaserGame';
-import { connectWalletSceneKey } from './game/main';
-import ConnectWallet from './components/ConnectWallet/ConnectWallet';
-import { PhaserSceneContext, WindowContext } from './contexts/Contexts';
 import './App.css';
 
 function App() {
@@ -14,16 +11,9 @@ function App() {
   };
 
   return (
-    <PhaserSceneContext.Provider value={phaserRef?.current?.scene}>
-      <WindowContext.Provider value={window.warpAO}>
-        <div id="app">
-          <div className="wrapper">
-            {currentSceneKey == connectWalletSceneKey && <ConnectWallet />}
-            <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
-          </div>
-        </div>
-      </WindowContext.Provider>
-    </PhaserSceneContext.Provider>
+    <div id="app">
+      <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+    </div>
   );
 }
 

@@ -22,13 +22,24 @@
       margin-bottom: 2rem;
     }
 
-    .text {
+    .connection-text {
       margin-top: 1rem;
       color: var(--red);
     }
 
     .button {
       width: 200px;
+      padding: 1rem;
+      margin: 1rem 0;
+      cursor: pointer;
+      &.green {
+        border: 2px solid var(--green);
+        color: var(--green);
+      }
+      &.red {
+        border: 2px solid var(--red);
+        color: var(--red);
+      }
     }
   }
 }
