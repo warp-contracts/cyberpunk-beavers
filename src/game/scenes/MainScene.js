@@ -19,8 +19,8 @@ import { ANIM_SETTINGS } from './anim/settings.js';
 import Phaser from 'phaser';
 import { EventBus } from '../EventBus.js';
 import { MUSIC_SETTINGS } from './music/settings.js';
-import { hideGui, showGui } from '../../components/mithril/utils.js';
 import { MainSceneGui } from '../gui/MainSceneGui.js';
+import { hideGui, showGui } from '../utils/mithril.js';
 
 export default class MainScene extends Phaser.Scene {
   round;

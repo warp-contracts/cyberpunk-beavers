@@ -10,8 +10,8 @@ import {
 import { checkProfile } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { EventBus } from '../EventBus.js';
-import { hideGui, showGui } from '../../components/mithril/utils.js';
 import { LoungeArenaSceneGui } from '../gui/LoungeArenaSceneGui.js';
+import { hideGui, showGui } from '../utils/mithril.js';
 
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId;

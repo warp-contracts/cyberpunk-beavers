@@ -1,0 +1,83 @@
+#player-equipment-gui {
+  width: 158px;
+  height: 79px;
+  top: calc(100% - 200px);
+  left: calc(50% - 100px);
+  background: linear-gradient(#091833, #133e7c);
+}
+
+#player-equipment-gui .equipment-slot-container {
+  border: 2px solid yellow;
+  display: inline-block;
+  width: 75px;
+  height: 75px;
+}
+
+#player-equipment-gui .equipment-slot-container .equipment-slot {
+  position: relative;
+}
+
+#player-equipment-gui .equipment-slot-container .equipment-number {
+  bottom: 77px;
+  right: -3px;
+  position: relative;
+  color: white;
+}
+
+#player-equipment-gui .equipment-slot-container .equipment-counter {
+  bottom: 25px;
+  right: -42px;
+  position: relative;
+  color: white;
+}
+
+#keyboard-mapping {
+  font-family: 'Press Start 2P';
+  font-size: 14px;
+  text-transform: uppercase;
+  color: white;
+  height: 280px;
+  width: 245px;
+  top: calc(100% - 355px);
+  left: calc(100% - 255px);
+}
+
+#keyboard-mapping .row {
+  margin-bottom: 3px;
+}
+
+#keyboard-mapping .row.attack-wrapper {
+  display: inline-block;
+}
+
+#keyboard-mapping .row.single {
+  margin-left: 78px;
+}
+
+#keyboard-mapping .row.equipment {
+  margin-left: 52px;
+}
+
+#keyboard-mapping div.plus {
+  margin-left: 40px;
+}
+
+#keyboard-mapping img {
+  margin-right: 7px;
+}
+
+#keyboard-mapping div.label {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#weapon-info {
+  width: 100px;
+  height: 110px;
+  top: calc(100% - 110px);
+}
+
+#weapon-info .recovery-bar {
+  height: 10px;
+  background: blueviolet;
+}
