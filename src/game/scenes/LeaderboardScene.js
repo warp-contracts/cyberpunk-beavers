@@ -12,11 +12,10 @@ import {
   statsSceneKey,
   scenes,
   gameHubSceneKey,
-} from '../main.js';
+} from '../../main.js';
 import { trimString } from '../utils/utils.js';
 import { TextButton } from '../objects/TextButton.js';
 import Phaser from 'phaser';
-import { EventBus } from '../EventBus.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -62,7 +61,6 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.addAndPositionTitle();
     this.addReturnToHubButton();
     this.createGridTable(this);
-    EventBus.emit('current-scene-ready', this);
   }
 
   addBackground() {

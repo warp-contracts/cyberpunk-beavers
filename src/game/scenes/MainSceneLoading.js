@@ -1,7 +1,6 @@
 import { Text } from '../objects/Text.js';
-import { mainSceneLoadingKey } from '../main.js';
+import { mainSceneLoadingKey } from '../../main.js';
 import Phaser from 'phaser';
-import { EventBus } from '../EventBus.js';
 
 export default class MainSceneLoading extends Phaser.Scene {
   constructor() {
@@ -23,7 +22,6 @@ export default class MainSceneLoading extends Phaser.Scene {
     this.gameHeight = window.innerHeight;
     this.addBackground();
     this.addAndPositionTitle();
-    EventBus.emit('current-scene-ready', this);
   }
 
   addBackground() {

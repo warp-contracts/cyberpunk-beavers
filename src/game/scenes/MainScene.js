@@ -11,13 +11,12 @@ import {
   mainSceneKey,
   mainSceneLoadingKey,
   statsSceneKey,
-} from '../main.js';
+} from '../../main.js';
 import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
 import { WebFontFile } from '../objects/WebFontFile.js';
 import { ANIM_SETTINGS } from './anim/settings.js';
 import Phaser from 'phaser';
-import { EventBus } from '../EventBus.js';
 import { MUSIC_SETTINGS } from './music/settings.js';
 import { MainSceneGui } from '../gui/MainSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
@@ -137,7 +136,6 @@ export default class MainScene extends Phaser.Scene {
     } else {
       this.scene.start(connectWalletSceneKey);
     }
-    EventBus.emit('current-scene-ready', this);
 
     let self = this;
     m.mount(showGui(), {

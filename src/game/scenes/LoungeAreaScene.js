@@ -6,10 +6,9 @@ import {
   loungeAreaSceneKey,
   mainSceneKey,
   playerPickSceneKey,
-} from '../main.js';
+} from '../../main.js';
 import { checkProfile } from '../utils/utils.js';
 import Phaser from 'phaser';
-import { EventBus } from '../EventBus.js';
 import { LoungeArenaSceneGui } from '../gui/LoungeArenaSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
 
@@ -62,8 +61,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
     } else {
       this.scene.start(connectWalletSceneKey);
     }
-
-    EventBus.emit('current-scene-ready', this);
   }
 
   async update() {

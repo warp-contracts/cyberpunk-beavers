@@ -1,6 +1,5 @@
-import { connectWalletSceneKey, loadingSceneKey } from '../main.js';
+import { connectWalletSceneKey, loadingSceneKey } from '../../main.js';
 import Phaser from 'phaser';
-import { EventBus } from '../EventBus.js';
 
 export default class LoadingScene extends Phaser.Scene {
   constructor() {

@@ -1,10 +1,9 @@
 import { EVENTS_NAME } from '../utils/events.js';
 import { Text } from '../objects/Text.js';
 import { colors } from '../utils/style.js';
-import { mainSceneKey, statsSceneKey } from '../main.js';
+import { mainSceneKey, statsSceneKey } from '../../main.js';
 import { trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
-import { EventBus } from '../EventBus.js';
 
 export default class StatsScene extends Phaser.Scene {
   walletAddress;
@@ -47,7 +46,6 @@ export default class StatsScene extends Phaser.Scene {
     this.addTitle();
     this.addRoundBar();
     this.addSubtitle();
-    EventBus.emit('current-scene-ready', this);
   }
 
   addCounterAO() {

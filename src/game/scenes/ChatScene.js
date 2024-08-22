@@ -1,9 +1,8 @@
 import { Scene } from 'phaser';
 import Const, { MAX_MSG_LENGTH, MIN_MSG_LENGTH } from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
-import { chatSceneKey } from '../main.js';
+import { chatSceneKey } from '../../main.js';
 import { trimString } from '../utils/utils.js';
-import { EventBus } from '../EventBus';
 
 const defaultStyle = {
   fontFamily: '"Press Start 2P"',
@@ -42,7 +41,6 @@ export default class ChatScene extends Scene {
     const chatBox = this.addChatBox(chatBoxId);
     this.chatBoxDiv = this.add.dom(100, 100 + chatBox.width, chatBox);
     this.removeFocusOnOutsideClick(chatBoxId);
-    EventBus.emit('current-scene-ready', this);
   }
 
   handleMessage(response) {
