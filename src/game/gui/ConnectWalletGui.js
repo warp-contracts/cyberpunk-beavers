@@ -11,26 +11,22 @@ export function ConnectWalletSceneGui(initialVnode) {
       m.redraw();
     },
     view: function () {
-      return m('div', { class: 'connect-wallet' }, [
-        m('div', { class: 'container' }, [
-          m('div', { class: 'title' }, [
-            m(Typewriter, { text: 'Hey stranger...', onFinished: this.onTypewriterFinished }),
-          ]),
+      return m('.connect-wallet', [
+        m('.container', [
+          m('.title', [m(Typewriter, { text: 'Hey stranger...', onFinished: this.onTypewriterFinished })]),
           titleAnimationDone
-            ? m('div', [
+            ? m('', [
                 m(
-                  'div',
+                  '.button green',
                   {
-                    class: `button green`,
                     onclick: async () => await handleArconnect(initialVnode.attrs.changeScene, walletConnectionText),
                   },
                   'Connect wallet'
                 ),
                 warpAO && warpAO.config.env != 'prod'
                   ? m(
-                      'div',
+                      '.button red',
                       {
-                        class: `button red`,
                         onclick: async () => await handleGenerateWallet(initialVnode.attrs.changeScene),
                       },
                       'Generate wallet'
