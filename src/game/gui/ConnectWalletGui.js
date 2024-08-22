@@ -1,8 +1,9 @@
 import { WarpFactory } from 'warp-contracts';
 import { ArweaveSigner } from 'warp-arbundles';
+import { playClick } from '../utils/mithril.js';
 
 export function ConnectWalletSceneGui(initialVnode) {
-  let titleAnimationDone;
+  let titleAnimationDone = warpAO.config.env !== 'prod';
   let walletConnectionText;
 
   return {
@@ -19,7 +20,10 @@ export function ConnectWalletSceneGui(initialVnode) {
                 m(
                   '.button green',
                   {
-                    onclick: async () => await handleArconnect(initialVnode.attrs.changeScene, walletConnectionText),
+                    onclick: async () => {
+                      playClick();
+                      await handleArconnect(initialVnode.attrs.changeScene, walletConnectionText);
+                    },
                   },
                   'Connect wallet'
                 ),
@@ -27,7 +31,10 @@ export function ConnectWalletSceneGui(initialVnode) {
                   ? m(
                       '.button red',
                       {
-                        onclick: async () => await handleGenerateWallet(initialVnode.attrs.changeScene),
+                        onclick: async () => {
+                          playClick();
+                          await handleGenerateWallet(initialVnode.attrs.changeScene);
+                        },
                       },
                       'Generate wallet'
                     )

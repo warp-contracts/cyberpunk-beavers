@@ -1,4 +1,5 @@
 import { trimString } from '../utils/utils.js';
+import { playClick } from '../utils/mithril.js';
 
 export function GameHubGui(initialVnode) {
   return {
@@ -56,7 +57,12 @@ function GamesList() {
             const { label, isActive } = generateLabel(processId, game, index);
             return m(
               `.element ${isActive ? 'active' : ''}`,
-              { onclick: async () => await vnode.attrs.joinGame(processId, game) },
+              {
+                onclick: async () => {
+                  playClick();
+                  await vnode.attrs.joinGame(processId, game);
+                },
+              },
               label
             );
           })

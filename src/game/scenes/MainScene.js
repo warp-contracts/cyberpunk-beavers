@@ -292,7 +292,7 @@ export default class MainScene extends Phaser.Scene {
     const roundInfo = this.roundTick();
     if ((this.gameEnd && this.gameEnd < Date.now()) || roundInfo.roundsToGo == 0) {
       this.gameOver = true;
-      this.statsScene.gameOver();
+      this.statsScene?.gameOver();
       this.backgroundMusic.stop();
       this.gameOverSound.play();
       this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game

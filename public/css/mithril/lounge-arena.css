@@ -52,10 +52,12 @@
 }
 
 #lounge-arena .button {
+  margin-top: 10px;
   color: var(--red);
   border: var(--red) 1px solid;
   font-weight: bold;
   text-align: center;
   cursor: pointer;
+  padding: 20px 20px;
   width: 250px;
 }
