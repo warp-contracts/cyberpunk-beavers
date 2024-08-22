@@ -1,8 +1,7 @@
 import { WebFontFile } from '../objects/WebFontFile.js';
 import { Text } from '../objects/Text.js';
-import { mainSceneKey, playerPickSceneKey, leaderboardSceneKey } from '../main.js';
+import { mainSceneKey, playerPickSceneKey, leaderboardSceneKey } from '../../main.js';
 import Phaser from 'phaser';
-import { EventBus } from '../EventBus.js';
 
 export default class PlayerPickScene extends Phaser.Scene {
   score;
@@ -60,7 +59,6 @@ export default class PlayerPickScene extends Phaser.Scene {
       agility: 3,
       tech: 2,
     });
-    EventBus.emit('current-scene-ready', this);
   }
 
   update() {

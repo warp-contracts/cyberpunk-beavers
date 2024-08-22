@@ -1,8 +1,7 @@
 import Const from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
-import { connectWalletSceneKey, gameHubSceneKey, loungeAreaSceneKey } from '../main.js';
+import { connectWalletSceneKey, gameHubSceneKey, loungeAreaSceneKey } from '../../main.js';
 import Phaser from 'phaser';
-import { EventBus } from '../EventBus.js';
 import { GameHubGui } from '../gui/GameHubGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
 
@@ -53,8 +52,6 @@ export default class GameHubScene extends Phaser.Scene {
     } else {
       this.scene.start(connectWalletSceneKey);
     }
-
-    EventBus.emit('current-scene-ready', this);
   }
 
   update() {}

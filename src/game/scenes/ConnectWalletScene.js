@@ -1,4 +1,4 @@
-import { connectWalletSceneKey, gameHubSceneKey } from '../main.js';
+import { connectWalletSceneKey, gameHubSceneKey } from '../../main.js';
 import Phaser from 'phaser';
 import { ConnectWalletSceneGui } from '../gui/ConnectWalletGui.js';
 import { showGui, hideGui } from '../utils/mithril.js';

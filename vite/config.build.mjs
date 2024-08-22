@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
 
 const phasermsg = () => {
   return {
@@ -19,7 +18,7 @@ const phasermsg = () => {
 
 export default defineConfig({
   base: './',
-  plugins: [react(), phasermsg()],
+  plugins: [phasermsg()],
   logLevel: 'warning',
   server: {
     port: 9001,
