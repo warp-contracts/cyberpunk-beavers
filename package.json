@@ -9,7 +9,7 @@
     "build:ui": "vite build --config vite/config.build.mjs",
     "deploy-session:local": "yarn build && node tools/deploy-spawn-session.js --env local --limit 15 --treasures 40 --time $1",
     "deploy-session-game:local": "yarn build && node tools/deploy-spawn-session-game.js --env local --limit 20 --treasures 40 --time $1",
-    "deploy-session:prod": "yarn build && node tools/deploy-spawn-session.js --env prod --limit 15 --treasures 40 --time $1",
+    "deploy-session:prod": "yarn build && node tools/deploy-spawn-session.js --env prod --limit 20 --treasures 40 --time $1",
     "deploy-session-game:prod": "yarn build && node tools/deploy-spawn-session-game.js --env prod --limit 20 --treasures 40 --time $1",
     "deploy-contract:local": "yarn build && node tools/deploy-spawn.js --env local --treasures 40 && node tools/transfer-token.mjs --env local",
     "deploy-contract:local-6m": "yarn build && node tools/wait.js --ms 30000 && node tools/deploy-spawn.js --env local --treasures 40 && node tools/transfer-token.mjs --env local && node tools/wait.js --ms 10000 && node tools/setup-game-contract.mjs --env local",
