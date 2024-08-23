@@ -60,10 +60,13 @@ export function movePlayer(state, action) {
     const hiddenObject = state.gameHiddenObjects[newPos.y][newPos.x];
     let encounter = false;
     if (hiddenObject?.type === GameObject.active_mine.type && hiddenObject.owner !== player.walletAddress) {
-      encounter = GameObject.active_mine.type;
+      encounter = {
+        type: GameObject.active_mine.type,
+        leftBy: hiddenObject.owner,
+      };
     }
 
-    if (encounter === GameObject.active_mine.type) {
+    if (encounter?.type === GameObject.active_mine.type) {
       const { finished, revenge, loot, tokenTransfer, damage } = triggerLandmine(state, player, hiddenObject);
       if (finished) {
         player.pos = calculatePlayerRandomPos(state);
