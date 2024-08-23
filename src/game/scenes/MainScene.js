@@ -28,6 +28,7 @@ export default class MainScene extends Phaser.Scene {
   roundsCountdownTotal;
   gameOver = false;
   lockingTx = null;
+  gameStats = {};
 
   constructor() {
     super(mainSceneKey);
@@ -142,6 +143,9 @@ export default class MainScene extends Phaser.Scene {
         return m(MainSceneGui, {
           mainPlayerStats: self.mainPlayer?.stats,
           mainPlayerEquipment: self.mainPlayer?.equipment,
+          gameStats: self.gameStats,
+          roundInfo: self.roundInfo,
+          gameOver: self.gameOver,
         });
       },
     });
@@ -288,10 +292,9 @@ export default class MainScene extends Phaser.Scene {
     if (this.gameOver) {
       return;
     }
-    const roundInfo = this.roundTick();
-    if ((this.gameEnd && this.gameEnd < Date.now()) || roundInfo.roundsToGo == 0) {
+    this.roundInfo = this.roundTick();
+    if ((this.gameEnd && this.gameEnd < Date.now()) || this.roundInfo.roundsToGo == 0) {
       this.gameOver = true;
-      this.statsScene?.gameOver();
       this.backgroundMusic.stop();
       this.gameOverSound.play();
       this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
@@ -301,16 +304,16 @@ export default class MainScene extends Phaser.Scene {
         this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
       }, 2000);
     }
-    if (roundInfo.roundsToGo == 3 && !this.threeRoundsPlayed) {
+    if (this.roundInfo.roundsToGo == 3 && !this.threeRoundsPlayed) {
       this.threeRoundsPlayed = true;
       this.threeRoundsLeftSound.play();
     }
-    if (roundInfo.roundsToGo == 1 && !this.lastRoundPlayed) {
+    if (this.roundInfo.roundsToGo == 1 && !this.lastRoundPlayed) {
       this.lastRoundPlayed = true;
       this.lastRoundSound.play();
     }
 
-    this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
+    // this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
 
     Object.keys(this.allPlayers).forEach((p) => {
       this.allPlayers[p].update();
@@ -687,6 +690,7 @@ export default class MainScene extends Phaser.Scene {
       newCoinsGained = responsePlayer.stats.coins.gained;
       self.mainPlayer.equipment = responsePlayer.equipment;
       self.mainPlayer.updateStats(responsePlayer.stats);
+      self.gameStats = gameStats;
       this.game.events.emit(EVENTS_NAME.updateStats, {
         player: responsePlayer.stats,
         game: gameStats,
