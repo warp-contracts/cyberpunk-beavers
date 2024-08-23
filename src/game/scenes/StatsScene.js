@@ -1,6 +1,4 @@
 import { EVENTS_NAME } from '../utils/events.js';
-import { Text } from '../objects/Text.js';
-import { colors } from '../utils/style.js';
 import { mainSceneKey, statsSceneKey } from '../../main.js';
 import { trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
@@ -8,7 +6,6 @@ import Phaser from 'phaser';
 export default class StatsScene extends Phaser.Scene {
   walletAddress;
   stats;
-  roundInfo;
   beaverChoice;
   processId;
   allPlayers;
@@ -27,7 +24,6 @@ export default class StatsScene extends Phaser.Scene {
     this.load.image('hacker_beaver_portrait', 'assets/images/beavers/hacker_beaver/hacker_beaver_portrait.png');
     this.load.image('heavy_beaver_portrait', 'assets/images/beavers/heavy_beaver/heavy_beaver_portrait.png');
     this.load.image('speedy_beaver_portrait', 'assets/images/beavers/speedy_beaver/speedy_beaver_portrait.png');
-    this.load.image('time_bar', 'assets/images/time_bar.png');
     this.load.image('AO', 'assets/images/token.png');
   }
 
@@ -42,71 +38,10 @@ export default class StatsScene extends Phaser.Scene {
       this.beaverStatsBox = this.add.dom(100, 100 + beaverStatsBoxEl.width, beaverStatsBoxEl);
     }
     this.initListeners();
-    this.addCounterAO();
-    this.addTitle();
-    this.addRoundBar();
-    this.addSubtitle();
-  }
-
-  addCounterAO() {
-    this.aoCounter = new Text(this, this.gameWidth / 2, 30, 'Find the treasure...', {
-      backgroundColor: 'black',
-      fontFamily: '"Press Start 2P"',
-      fontSize: '20px',
-      textTransform: 'uppercase',
-      color: 'white',
-    }).setDepth(1);
-    this.aoCounter.x = this.gameWidth / 2 - this.aoCounter.width / 2;
-    this.aoCounterImg = this.add.image(
-      this.gameWidth / 2 + this.aoCounter.width / 2 + 24,
-      this.aoCounter.y + this.aoCounter.height / 2,
-      'AO'
-    );
-    this.aoCounterImg.setDepth(2);
-    this.aoCounterImg.visible = false;
-  }
-
-  addTitle() {
-    this.title = new Text(this, this.gameWidth / 2, 80, 'ROUNDS LEFT 700', {
-      backgroundColor: 'black',
-      fontFamily: '"Press Start 2P"',
-      fontSize: '20px',
-      textTransform: 'uppercase',
-      color: 'white',
-    }).setDepth(1);
-    this.title.x = this.gameWidth / 2 - this.title.width / 2;
-  }
-
-  addSubtitle() {
-    this.subtitle = new Text(this, this.gameWidth / 2, this.timeBar.y + this.timeBar.height, 'AP: 10', {
-      backgroundColor: 'black',
-      fontFamily: '"Press Start 2P"',
-      fontSize: '20px',
-      textTransform: 'uppercase',
-      color: colors.white,
-    }).setDepth(1);
-    this.subtitle.x = this.gameWidth / 2 - this.subtitle.width / 2;
-  }
-
-  addRoundBar() {
-    this.timeBar = this.add
-      .image(window.innerWidth / 2, this.title.y + this.title.height + 50, 'time_bar')
-      .setDepth(100);
-
-    this.timeMask = this.add.sprite(this.timeBar.x, this.timeBar.y, 'time_bar').setDepth(100);
-    this.timeMask.visible = false;
-    this.initialtimeMaskPosition = this.timeMask.x;
-    this.timeBar.mask = new Phaser.Display.Masks.BitmapMask(this, this.timeMask);
-    this.stepWidth = this.timeMask.displayWidth / 10;
-  }
-
-  gameOver() {
-    this.title.setText(`GAME OVER`);
   }
 
   initListeners() {
     this.game.events.on(EVENTS_NAME.updateStats, (stats) => this.onUpdateStats(stats));
-    this.game.events.on(EVENTS_NAME.updateRoundInfo, (roundInfo) => this.onUpdateRoundInfo(roundInfo));
     this.game.events.on(EVENTS_NAME.updatePlayers, (player) => this.onUpdatePlayers(player));
     this.game.events.on(EVENTS_NAME.updateOtherPlayerStats, (player) => this.onUpdateOtherPlayerStats(player));
     this.game.events.on(EVENTS_NAME.nextMessage, ({ response, lag }) => this.onNexMessage(response, lag));
@@ -238,26 +173,6 @@ export default class StatsScene extends Phaser.Scene {
       `${stats?.player?.kills.frags}/${stats?.player?.kills.deaths}`;
     document.getElementById('stats-scene-cbcoins').innerText = stats?.player?.coins.balance;
     document.getElementById('stats-scene-gained').innerText = stats?.player?.coins.gained;
-    this.subtitle.setText(`AP: ${stats?.player?.ap?.current}`);
-    if (stats?.player?.ap?.current === 0) {
-      this.subtitle.setColor(colors.red);
-    } else {
-      this.subtitle.setColor(colors.white);
-    }
-    if (stats?.game?.gameTreasuresCounter) {
-      this.aoCounter.setText(`${stats?.game?.gameTreasuresCounter}   HIDDEN`);
-      this.aoCounter.x = this.gameWidth / 2 - this.aoCounter.width / 2;
-      this.aoCounterImg.x = this.gameWidth / 2 + this.aoCounter.width / 2 - 150;
-      this.aoCounterImg.visible = true;
-      this.aoCounterImg.setDepth(2);
-    }
-  }
-
-  onUpdateRoundInfo(roundInfo) {
-    if (!this.mainScene.gameOver) {
-      this.timeMask.x = this.initialtimeMaskPosition - this.stepWidth * roundInfo.gone;
-      this.title.setText(`ROUNDS LEFT ${roundInfo.roundsToGo || roundInfo.currentRound}`);
-    }
   }
 
   onUpdatePlayers(player) {
