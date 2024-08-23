@@ -28,6 +28,7 @@ function GamesList() {
     const i = index + 1;
     let label = `${i}. ${trimString(processId, 5, 2, 4)}`;
     let isActive = false;
+    let isFinished = false;
     if (game.walletsQueue && game.playersLimit) {
       label += `\nPlayers: ${game.walletsQueue.length}/${game.playersLimit}`;
     }
@@ -36,6 +37,7 @@ function GamesList() {
         label += `\nStart at: ${new Date(game.playWindow.begin).toLocaleString()}`;
       } else if (game.playWindow.end && game.playWindow.end < Date.now()) {
         label += `\nFinished at: ${new Date(game.playWindow.end).toLocaleString()}`;
+        isFinished = true;
       } else {
         isActive = true;
         const termination = game.playWindow.end ? `until ${new Date(game.playWindow.end).toLocaleString()}` : '';
@@ -43,20 +45,18 @@ function GamesList() {
       }
     }
 
-    return { label, isActive };
+    return { label, isActive, isFinished };
   }
 
   return {
     view: function (vnode) {
-      console.log(vnode.attrs.games);
-
       return m('.games-list', [
         m(
           '.list',
           vnode.attrs.games.map(([processId, game], index) => {
-            const { label, isActive } = generateLabel(processId, game, index);
+            const { label, isActive, isFinished } = generateLabel(processId, game, index);
             return m(
-              `.element ${isActive ? 'active' : ''}`,
+              `.element ${isActive ? 'active' : ''} ${isFinished ? 'finished' : ''}`,
               {
                 onclick: async () => {
                   playClick();
