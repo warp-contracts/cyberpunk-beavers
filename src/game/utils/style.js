@@ -6,3 +6,5 @@ export const colors = {
   lightGreen: 0x0d260e,
   darkGreen: 0x215f23,
 };
+
+export const MINE_ACTIVATED_COLOR = 0xff0000;
