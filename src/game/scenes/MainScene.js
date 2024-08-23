@@ -504,7 +504,7 @@ export default class MainScene extends Phaser.Scene {
           if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
             this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
             this.gameObjectsLayer.putTileAt(2, response.player.pos.x, response.player.pos.y);
-            const mineGrid = this.add.grid(
+            this[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`] = this.add.grid(
               self.mainPlayer?.x,
               self.mainPlayer?.y,
               48,
@@ -551,7 +551,12 @@ export default class MainScene extends Phaser.Scene {
               this.teleportSound.play();
             }
           }
-          if (response.encounter === Const.GameObject.active_mine.type) {
+          if (response.encounter?.type === Const.GameObject.active_mine.type) {
+            if (response.encounter?.leftBy === self.mainPlayer?.walletAddress) {
+              this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
+              this[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`].destroy();
+            }
+
             if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
               self.mainPlayer.exploding = true;
             } else {
