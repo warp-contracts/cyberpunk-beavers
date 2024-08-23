@@ -91,7 +91,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       },
       () => {
         self.anims.stop();
-        self.anims.play(`${self.beaverChoice}_idle`, true);
+        if (this.exploding) {
+          this.scene.explosionSound.play();
+          this.explosionAnim().once('animationcomplete', () => {
+            self.anims.play(`${self.beaverChoice}_idle`, true);
+            this.exploding = false;
+          });
+        } else {
+          self.anims.play(`${self.beaverChoice}_idle`, true);
+        }
       }
     );
   }
@@ -124,7 +132,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   explosionAnim() {
-    this.anims.play(`explosion_anim`, true);
+    return this.anims.play(`explosion_anim`, true);
   }
 
   baseMoveTo(pos, onStart, onComplete) {
@@ -178,7 +186,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
       left: Phaser.Input.Keyboard.KeyCodes.LEFT,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-      p: Phaser.Input.Keyboard.KeyCodes.P,
+      c: Phaser.Input.Keyboard.KeyCodes.C,
       d: Phaser.Input.Keyboard.KeyCodes.D,
       one: Phaser.Input.Keyboard.KeyCodes.ONE,
       two: Phaser.Input.Keyboard.KeyCodes.TWO,

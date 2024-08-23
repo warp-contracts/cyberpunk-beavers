@@ -485,6 +485,7 @@ export default class MainScene extends Phaser.Scene {
               this.beaverEliminatedSound.play();
             }
           }
+          opponent.eliminated = true;
           opponent
             ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer)
             .once('animationcomplete', () => {
@@ -514,7 +515,6 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.teleported:
       case Const.Command.moved:
         {
-          // console.log('Player', response);
           if (!self.allPlayers[response.player.walletAddress]) {
             self.addOtherPlayer(response.player);
           } else {
@@ -525,7 +525,6 @@ export default class MainScene extends Phaser.Scene {
             response.player.onGameObject != null &&
             response.player.walletAddress === self.mainPlayer?.walletAddress
           ) {
-            // console.log(`Main player stood on a game object: ${JSON.stringify(response.player.onGameObject)}`);
             this.mainPlayer.onGameObject = response.player.onGameObject;
           }
 
@@ -533,7 +532,6 @@ export default class MainScene extends Phaser.Scene {
             response.player.onGameTreasure != null &&
             response.player.walletAddress === self.mainPlayer?.walletAddress
           ) {
-            // console.log(`Main player stood on a game treasure: ${JSON.stringify(response.player.onGameTreasure)}`);
             this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
           }
 
@@ -550,16 +548,9 @@ export default class MainScene extends Phaser.Scene {
           }
           if (response.encounter === Const.GameObject.active_mine.type) {
             if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
-              if (!this.explosionSound.isPlaying) {
-                this.explosionSound.play();
-              }
-              setTimeout(() => {
-                self.mainPlayer.explosionAnim();
-              });
+              self.mainPlayer.exploding = true;
             } else {
-              setTimeout(() => {
-                self.allPlayers[response.player.walletAddress].explosionAnim();
-              });
+              self.allPlayers[response.player.walletAddress].exploding = true;
             }
           }
         }

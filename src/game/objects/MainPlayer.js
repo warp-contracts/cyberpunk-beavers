@@ -52,7 +52,7 @@ export default class MainPlayer extends Player {
     } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
       this.combatMode = false;
       this.resetAimingBar();
-    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.p)) {
+    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.c)) {
       if (this.onGameObject) {
         await this.send({ cmd: pick });
         this.pickAnim();
