@@ -2,6 +2,7 @@ import { connectWalletSceneKey, gameHubSceneKey } from '../../main.js';
 import Phaser from 'phaser';
 import { ConnectWalletSceneGui } from '../gui/ConnectWalletGui.js';
 import { showGui, hideGui } from '../utils/mithril.js';
+import { WebFontFile } from '../objects/WebFontFile.js';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {
@@ -14,6 +15,7 @@ export default class ConnectWalletScene extends Phaser.Scene {
 
   preload() {
     console.log('Connect Wallet Scene - 2. Preload');
+    this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
   create() {
