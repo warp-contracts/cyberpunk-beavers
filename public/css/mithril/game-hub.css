@@ -24,3 +24,8 @@
   border: var(--green) 1px solid;
   font-weight: bold;
 }
+
+#game-hub .games-list .list .element.finished {
+  color: lightgray;
+  border: lightgray 1px solid;
+}
