@@ -118,22 +118,22 @@ export const WEAPONS = {
     name: 'Sniper Rifle',
     img: null,
     attack_range: 5,
-    damage: [20, 18, 16, 14, 12],
-    hit_chance: [0.95, 0.9, 0.85, 0.8, 0.75],
-    critical_hit_chance: [0.25, 0.2, 0.15, 0.1, 0.05],
+    damage: [20, 19, 18, 17, 16],
+    hit_chance: [0.95, 0.92, 0.9, 0.88, 0.85],
+    critical_hit_chance: [0.3, 0.25, 0.22, 0.2, 0.15],
     critical_hit_multiplier: [2.4, 2.3, 2.2, 2.1, 2.0],
-    attack_recovery_ms: 700,
+    attack_recovery_ms: 600,
   },
   shotgun_basic: {
     type: 'shotgun_basic',
     name: 'Shotgun',
     img: null,
     attack_range: 3,
-    damage: [22, 19, 15],
+    damage: [25, 19, 15],
     hit_chance: [0.9, 0.8, 0.7],
-    critical_hit_chance: [0.15, 0.1, 0.05],
-    critical_hit_multiplier: [2.2, 1.8, 1.6],
-    attack_recovery_ms: 500,
+    critical_hit_chance: [0.25, 0.1, 0.05],
+    critical_hit_multiplier: [2.5, 1.8, 1.6],
+    attack_recovery_ms: 400,
   },
   katana_basic: {
     type: 'katana_basic',
@@ -144,7 +144,7 @@ export const WEAPONS = {
     hit_chance: [0.95],
     critical_hit_chance: [0.1],
     critical_hit_multiplier: [2.0],
-    attack_recovery_ms: 300,
+    attack_recovery_ms: 250,
   },
 };
 
@@ -157,8 +157,8 @@ export const BEAVER_TYPES = {
         max: 22,
       },
       hp: {
-        current: 100,
-        max: 100,
+        current: 130,
+        max: 130,
       },
       weapon: WEAPONS.sniper_rifle_basic,
       bonus: {
@@ -182,8 +182,8 @@ export const BEAVER_TYPES = {
     name: 'heavy_beaver',
     stats: {
       ap: {
-        current: 19,
-        max: 19,
+        current: 20,
+        max: 20,
       },
       hp: {
         current: 200,
