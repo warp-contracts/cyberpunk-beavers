@@ -19,6 +19,7 @@ import Phaser from 'phaser';
 import { MUSIC_SETTINGS } from './music/settings.js';
 import { MainSceneGui } from '../gui/MainSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
+import { MINE_ACTIVATED_COLOR } from '../utils/style.js';
 
 export default class MainScene extends Phaser.Scene {
   round;
@@ -483,7 +484,6 @@ export default class MainScene extends Phaser.Scene {
               this.beaverEliminatedSound.play();
             }
           }
-          opponent.eliminated = true;
           opponent
             ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer)
             .once('animationcomplete', () => {
@@ -507,6 +507,17 @@ export default class MainScene extends Phaser.Scene {
         {
           if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
             this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+            this.gameObjectsLayer.putTileAt(2, response.player.pos.x, response.player.pos.y);
+            const mineGrid = this.add.grid(
+              self.mainPlayer?.x,
+              self.mainPlayer?.y,
+              48,
+              48,
+              48,
+              48,
+              MINE_ACTIVATED_COLOR,
+              0.4
+            );
           }
         }
         break;
