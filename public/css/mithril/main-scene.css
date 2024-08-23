@@ -83,3 +83,63 @@
   height: 10px;
   background: blueviolet;
 }
+
+.info-panel {
+  position: absolute;
+  top: 2rem;
+  margin: 0 auto;
+  left: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  .element {
+    background-color: black;
+    font-family: 'Press Start 2P';
+    font-size: 18px;
+    text-transform: uppercase;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    height: 30px;
+
+    &.warn {
+      color: var(--red);
+    }
+
+    &.info {
+      color: var(--white);
+    }
+
+    img {
+      padding: 0 5px;
+    }
+  }
+
+  .timebar-container {
+    width: 300px;
+    height: 25px;
+    padding: 5px;
+    background-color: var(--darkgrey);
+  }
+
+  .timebar {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+
+  .timebar-progress {
+    height: 100%;
+    background-color: var(--green);
+    image-rendering: pixelated;
+    background-image: repeating-linear-gradient(45deg, var(--green) 0px, var(--green) 2px, black 2px, black 4px);
+  }
+}
