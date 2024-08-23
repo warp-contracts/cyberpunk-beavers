@@ -44,6 +44,8 @@
 
 #keyboard-mapping .row {
   margin-bottom: 3px;
+  display: flex;
+  align-items: center;
 }
 
 #keyboard-mapping .row.attack-wrapper {

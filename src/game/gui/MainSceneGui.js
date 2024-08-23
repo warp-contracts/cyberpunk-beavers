@@ -61,8 +61,8 @@ function KeyboardMapping(initialVnode) {
               m('div', { class: 'label' }, 'DIG'),
             ]),
             m('div', { class: 'row single' }, [
-              m('img', { src: 'assets/images/keys/P.png' }),
-              m('div', { class: 'label' }, 'PICK'),
+              m('img', { src: 'assets/images/keys/C.png' }),
+              m('div', { class: 'label' }, 'COLLECT'),
             ]),
             m('div', { class: 'row' }, [
               m('div', { class: 'row attack-wrapper' }, [

@@ -14,7 +14,6 @@ import {
 } from '../../main.js';
 import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
-import { WebFontFile } from '../objects/WebFontFile.js';
 import { ANIM_SETTINGS } from './anim/settings.js';
 import Phaser from 'phaser';
 import { MUSIC_SETTINGS } from './music/settings.js';
@@ -87,7 +86,6 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('teleport', ['assets/audio/teleport.mp3']);
     this.load.audio('explosion', ['assets/audio/explosion_powerful_dynamite.mp3']);
     this.forDeathSounds((k, i) => this.loadDeathSound(k, i, this));
-    this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'));
   }
 
   forDeathSounds(execute) {
