@@ -68,9 +68,10 @@
 
   .portrait {
     background-repeat: no-repeat;
-    padding-left: 16px;
+    padding-left: 30px;
     background-size: contain;
     background-position: left;
+    text-align: left !important;
 
     &.hacker_beaver {
       background-image: url('/assets/images/beavers/hacker_beaver/hacker_beaver_portrait.png');

@@ -50,29 +50,28 @@ export default class LeaderboardScene extends Phaser.Scene {
       m.mount(showGui(), {
         view: function () {
           return m(LeaderboardGui, {
-            data: /*[
-              [1,{"img":"heavy_beaver","address":"just_ppe"},0,69544,5,2],
-              [2,{"img":"speedy_beaver","address":"just_ppe"},0,10000,20,0],
-              [3,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,30],
-              [4,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
-              [5,{"img":"hacker_beaver","address":"just_ppe"},0,69544,0,0],
-              [6,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
-              [7,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
-              [8,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
-              [9,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
-              [10,{"img":"hacker_beaver","address":"just_ppe"},0,69544,0,0],
-              [11,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
-              [14,{"img":"hacker_beaver","address":"just_ppe"},0,69544,0,0],
-              [15,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
-              [16,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
-              [17,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
-              [18,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
-              [19,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
-              [20,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
-              [21,{"img":"speedy_beaver","address":"just_ppe"},0,69544,0,0],
-              [22,{"img":"heavy_beaver","address":"just_ppe"},0,69544,0,0],
-
-            ]*/ self.prepareCellsData(),
+            data: [
+              [1, { img: 'heavy_beaver', name: 'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY' }, 0, 69544, 5, 2],
+              [2, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 10000, 20, 0],
+              [3, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 30],
+              [4, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [5, { img: 'hacker_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [6, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [7, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [8, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [9, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [10, { img: 'hacker_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [11, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [14, { img: 'hacker_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [15, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [16, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [17, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [18, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [19, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [20, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [21, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [22, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+            ], //self.prepareCellsData(),
             back: () => {
               self.server.unsubscribe();
               self.serverChat.unsubscribe();
