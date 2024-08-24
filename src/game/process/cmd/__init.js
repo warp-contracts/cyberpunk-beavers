@@ -62,7 +62,6 @@ function initState(message, state) {
       GameObject.equipment_mine,
       GameObject.none,
     ],
-    gameObjectsRarity: 15,
     gameHiddenObjects: Array(Map.size)
       .fill([])
       .map(() => Array(Map.size)),

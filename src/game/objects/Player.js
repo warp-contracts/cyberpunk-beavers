@@ -91,15 +91,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       },
       () => {
         self.anims.stop();
-        if (this.exploding) {
-          this.scene.explosionSound.play();
-          this.explosionAnim().once('animationcomplete', () => {
-            self.anims.play(`${self.beaverChoice}_idle`, true);
-            this.exploding = false;
-          });
-        } else {
-          self.anims.play(`${self.beaverChoice}_idle`, true);
-        }
+        self.anims.play(`${self.beaverChoice}_idle`, true);
+      }
+    );
+  }
+
+  moveAndExplode(response, isMainPlayer) {
+    const self = this;
+    this.baseMoveTo(
+      response.movedPos,
+      () => {
+        self.anims.stop();
+        self.anims.play(`${self.beaverChoice}_walk`, true);
+      },
+      () => {
+        self.anims.stop();
+        if (isMainPlayer) this.scene.explosionSound.play();
+        this.explosionAnim().once('animationcomplete', () => {
+          self.moveTo(response);
+        });
       }
     );
   }
