@@ -527,7 +527,20 @@ export default class MainScene extends Phaser.Scene {
           if (!self.allPlayers[response.player.walletAddress]) {
             self.addOtherPlayer(response.player);
           } else {
-            self.allPlayers[response.player.walletAddress].moveTo(response.player);
+            if (response.encounter?.type === Const.GameObject.active_mine.type) {
+              if (response.encounter?.leftBy === self.mainPlayer?.walletAddress) {
+                this.gameObjectsLayer.removeTileAt(response.player.movedPos.x, response.player.movedPos.y);
+                this[`mineGrid_${response.player.movedPos.x}_${response.player.movedPos.y}`].destroy();
+              }
+
+              if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
+                self.mainPlayer.moveAndExplode(response.player, true);
+              } else {
+                self.allPlayers[response.player.walletAddress].moveAndExplode(response.player, false);
+              }
+            } else {
+              self.allPlayers[response.player.walletAddress].moveTo(response.player);
+            }
           }
 
           if (
@@ -555,24 +568,11 @@ export default class MainScene extends Phaser.Scene {
               this.teleportSound.play();
             }
           }
-          if (response.encounter?.type === Const.GameObject.active_mine.type) {
-            if (response.encounter?.leftBy === self.mainPlayer?.walletAddress) {
-              this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
-              this[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`].destroy();
-            }
-
-            if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
-              self.mainPlayer.exploding = true;
-            } else {
-              self.allPlayers[response.player.walletAddress].exploding = true;
-            }
-          }
         }
         break;
       case Const.Command.picked:
         {
           if (response.picked) {
-            // console.log(`Player picked a game object.`);
             if (this.mainPlayer?.walletAddress === response.player.walletAddress) {
               this.pickUpSound.play();
               this.mainPlayer.equipment = response.player.equipment;
@@ -819,7 +819,7 @@ export default class MainScene extends Phaser.Scene {
     this.godLikeSound = this.sound.add('god_like', { loop: false, volume: 4.0 });
     this.revengeSound = this.sound.add('revenge', { loop: false, volume: 4.0 });
     this.teleportSound = this.sound.add('teleport', { loop: false, volume: 5.0 });
-    this.explosionSound = this.sound.add('explosion', { loop: false, volume: 2.0 });
+    this.explosionSound = this.sound.add('explosion', { loop: false, volume: 0.5 });
     this.forDeathSounds((k, i) => this.addDeathSound(k, i, this));
 
     const backgroundMusic = this[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];

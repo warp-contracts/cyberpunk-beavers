@@ -52,6 +52,8 @@ export function movePlayer(state, action) {
     state.playersOnTiles[player.pos.y][player.pos.x] = null;
     state.playersOnTiles[newPos.y][newPos.x] = player.walletAddress;
     player.pos = newPos;
+    // we need to know and send the position of moving along with the position calculated after dying
+    player.movedPos = newPos;
 
     player.stats.ap.current -= apCost;
     const scores = [{ value: -apCost, type: GameObject.ap.type }];

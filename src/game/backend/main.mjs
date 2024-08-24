@@ -151,8 +151,8 @@ async function spawnGameAndChat() {
     {
       cmd: 'setup',
       type: 'custom',
-      start: Date.now() + 1000 * 10,
-      end: Date.now() + 1000 * 20,
+      /*start: Date.now() + 1000 * 10,
+      end: Date.now() + 1000 * 20,*/
       playersLimit: 2,
       chatProcessId: Object.keys(chatProcess)[0],
       chatModuleId: Object.values(chatProcess)[0].moduleId,
