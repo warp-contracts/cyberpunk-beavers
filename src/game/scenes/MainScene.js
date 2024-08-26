@@ -59,9 +59,9 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('medal_silver', 'assets/images/medal-silver.png');
     this.load.image('medal_brown', 'assets/images/medal-brown.png');
 
-    this.loadBeaverAssets('hacker_beaver');
-    this.loadBeaverAssets('heavy_beaver');
-    this.loadBeaverAssets('speedy_beaver');
+    Object.keys(Const.BEAVER_TYPES).forEach((b) => {
+      this.loadBeaverAssets(b);
+    });
 
     this.load.atlas(
       `explosion_anim`,
@@ -74,9 +74,6 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
     this.load.audio('dig_sound', ['assets/audio/dig.mp3']);
     this.load.audio('treasure_sound', ['assets/audio/treasure_arcade.mp3']);
-    this.load.audio('attack_heavy_beaver_sound', ['assets/audio/attack_heavy_beaver.mp3']);
-    this.load.audio('attack_speedy_beaver_sound', ['assets/audio/attack_speedy_beaver.mp3']);
-    this.load.audio('attack_hacker_beaver_sound', ['assets/audio/attack_hacker_beaver.mp3']);
     this.load.audio('beaver_eliminated_sound', ['assets/audio/beaver_eliminated.m4a']);
     this.load.audio('not_enough_ap', ['assets/audio/not_enough_ap.m4a']);
     this.load.audio('new_challenger', ['assets/audio/new_challenger.m4a']);
@@ -115,9 +112,8 @@ export default class MainScene extends Phaser.Scene {
     this.loadBeaverAnim(beaver, 'attack');
     this.loadBeaverAnim(beaver, 'dig');
     this.loadBeaverAnim(beaver, 'pick');
-    Object.values(Const.BEAVER_TYPES).forEach((b) => {
-      Object.values(Const.Kills).forEach((k) => this.loadBeaverAnim(b.name, `death_${k}`));
-    });
+    Object.values(Const.Kills).forEach((k) => this.loadBeaverAnim(beaver, `death_${k}`));
+    this.load.audio(`attack_${beaver}_sound`, [`assets/audio/attack_${beaver}.mp3`]);
   }
 
   loadBeaverAnim(beaver, asset) {
