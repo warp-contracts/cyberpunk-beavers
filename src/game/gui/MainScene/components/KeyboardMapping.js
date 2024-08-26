@@ -9,41 +9,35 @@ export function KeyboardMapping() {
   };
 
   return {
-    view: function (vnode) {
+    view: function () {
       return visible
-        ? m('div', { id: 'keyboard-mapping', class: 'mithril-component' }, [
-            m('div', { class: 'row' }, [
+        ? m('.mithril-component', { id: 'keyboard-mapping' }, [
+            m('.row', [
               m('img', { src: 'assets/images/keys/ARROWLEFT.png' }),
               m('img', { src: 'assets/images/keys/ARROWUP.png' }),
               m('img', { src: 'assets/images/keys/ARROWDOWN.png' }),
               m('img', { src: 'assets/images/keys/ARROWRIGHT.png' }),
-              m('div', { class: 'label' }, 'MOVE'),
+              m('.label', 'MOVE'),
             ]),
-            m('div', { class: 'row single' }, [
-              m('img', { src: 'assets/images/keys/D.png' }),
-              m('div', { class: 'label' }, 'DIG'),
-            ]),
-            m('div', { class: 'row single' }, [
-              m('img', { src: 'assets/images/keys/C.png' }),
-              m('div', { class: 'label' }, 'COLLECT'),
-            ]),
-            m('div', { class: 'row' }, [
-              m('div', { class: 'row attack-wrapper' }, [
+            m('.row single', [m('img', { src: 'assets/images/keys/D.png' }), m('.label', 'DIG')]),
+            m('.row single', [m('img', { src: 'assets/images/keys/C.png' }), m('.label', 'COLLECT')]),
+            m('.row', [
+              m('.row attack-wrapper', [
                 m('img', { src: 'assets/images/keys/SPACE.png' }),
-                m('div', { class: 'plus' }, '+'),
-                m('div', { class: 'row' }, [
+                m('.plus', '+'),
+                m('.row', [
                   m('img', { src: 'assets/images/keys/ARROWLEFT.png' }),
                   m('img', { src: 'assets/images/keys/ARROWUP.png' }),
                   m('img', { src: 'assets/images/keys/ARROWDOWN.png' }),
                   m('img', { src: 'assets/images/keys/ARROWRIGHT.png' }),
                 ]),
               ]),
-              m('div', { class: 'label' }, 'ATTACK'),
+              m('.label', 'ATTACK'),
             ]),
-            m('div', { class: 'row equipment' }, [
+            m('.row equipment', [
               m('img', { src: 'assets/images/keys/1.png' }),
               m('img', { src: 'assets/images/keys/2.png' }),
-              m('div', { class: 'label' }, 'EQUIPMENT'),
+              m('.label', 'EQUIPMENT'),
             ]),
           ])
         : null;

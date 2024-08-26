@@ -6,7 +6,7 @@ export function LeaderboardGui(initialVnode) {
       const { data, back } = vnode.attrs;
       console.log(data);
       return [
-        m('div', { id: 'leaderboard', class: 'mithril-component' }, [
+        m('.mithril-component', { id: 'leaderboard' }, [
           m(
             '.button',
             {
