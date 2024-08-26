@@ -1,6 +1,5 @@
 import Const from '../common/const.mjs';
 import Player from './Player.js';
-import { EVENTS_NAME } from '../utils/events.js';
 
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig, useLandmine, useTeleport } = Const.Command;
@@ -127,7 +126,6 @@ export default class MainPlayer extends Player {
   nextRound() {
     this.stats.ap.current = this.stats.ap.max;
     this.updateStats(this.stats);
-    this.scene.game.events.emit(EVENTS_NAME.updateStats, { player: this.stats });
   }
 
   async send(message) {

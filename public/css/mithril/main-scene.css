@@ -143,3 +143,115 @@
     background-image: repeating-linear-gradient(45deg, var(--green) 0px, var(--green) 2px, black 2px, black 4px);
   }
 }
+
+.stats {
+  width: 350px;
+  border: 0px;
+  outline: none;
+  position: absolute;
+  font-family: Tomorrow, sans-serif;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  clip-path: polygon(92% 0px, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0px 0px);
+  z-index: 0;
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+  mix-blend-mode: normal;
+  transform-origin: 50% 50%;
+  position: absolute;
+  top: 0;
+
+  .stats-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--yellow);
+    font-family: 'Press Start 2P';
+    font-size: 0.5rem;
+    padding: 30px 20px 30px 30px;
+    clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);
+
+    .stats-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .stats-empty {
+        display: flex;
+        flex-grow: 1;
+      }
+
+      .stats-labels {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+      }
+    }
+
+    .stats-other-beavers {
+      display: flex;
+      justify-content: center;
+      margin-top: 25px;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 12px;
+    }
+  }
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &.mt-18 {
+    margin-top: 18px;
+  }
+
+  &.mt-10 {
+    margin-top: 10px;
+  }
+
+  &.mt-5 {
+    margin-top: 5px;
+  }
+
+  &.pl-15 {
+    padding-left: 15px;
+  }
+
+  &.pl-5 {
+    padding-left: 5px;
+  }
+
+  &.pl-0 {
+    padding-left: 0;
+  }
+
+  .label-container {
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      color: black;
+    }
+
+    .label-element {
+      &.pr-10 {
+        padding-right: 10px;
+      }
+
+      &.w-170 {
+        width: 170;
+      }
+
+      &.text-right {
+        text-align: right;
+      }
+    }
+  }
+}

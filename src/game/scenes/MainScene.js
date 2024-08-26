@@ -2,7 +2,6 @@ import Player from '../objects/Player.js';
 import Const, { BEAVER_TYPES } from '../common/const.mjs';
 import MainPlayer from '../objects/MainPlayer.js';
 import { Text } from '../objects/Text.js';
-import { EVENTS_NAME } from '../utils/events.js';
 import { serverConnection } from '../lib/serverConnection.js';
 import {
   connectWalletSceneKey,
@@ -10,14 +9,13 @@ import {
   loungeAreaSceneKey,
   mainSceneKey,
   mainSceneLoadingKey,
-  statsSceneKey,
 } from '../../main.js';
 import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
 import { createData } from 'warp-arbundles';
 import { ANIM_SETTINGS } from './anim/settings.js';
 import Phaser from 'phaser';
 import { MUSIC_SETTINGS } from './music/settings.js';
-import { MainSceneGui } from '../gui/MainSceneGui.js';
+import { MainSceneGui } from '../gui/MainScene/MainSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
 import { MINE_ACTIVATED_COLOR } from '../utils/style.js';
 
@@ -141,11 +139,17 @@ export default class MainScene extends Phaser.Scene {
     m.mount(showGui(), {
       view: function () {
         return m(MainSceneGui, {
-          mainPlayerStats: self.mainPlayer?.stats,
+          mainPlayer: {
+            stats: self.mainPlayer?.stats,
+            walletAddress: self.mainPlayer?.walletAddress,
+            userName: self.mainPlayer?.userName,
+            beaverChoice: self.beaverId || self.beaverChoice,
+          },
           mainPlayerEquipment: self.mainPlayer?.equipment,
           gameStats: self.gameStats,
           roundInfo: self.roundInfo,
           gameOver: self.gameOver,
+          playersTotal: Object.keys(self.allPlayers).length,
         });
       },
     });
@@ -174,7 +178,6 @@ export default class MainScene extends Phaser.Scene {
     const balance = await this.checkBalance();
     const generatedWalletAddress =
       warpAO.signingMode == 'arconnect' ? localStorage.getItem('generated_wallet_address') : null;
-    // console.log(balance);
     if (this.beaverId) {
       console.log(`Beaver has already been registered previously, joining game...`, this.beaverId);
       await this.server.send(
@@ -254,16 +257,6 @@ export default class MainScene extends Phaser.Scene {
 
     this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
     this.updateRanking();
-    this.scene.launch(statsSceneKey, {
-      beaverChoice: this.beaverChoice,
-    });
-    // this.scene.launch(chatSceneKey, { userName: playerInfo.userName });
-    this.statsScene = this.scene.get(statsSceneKey);
-    this.statsScene.walletAddress = this.mainPlayer?.walletAddress;
-    this.statsScene.userName = this.mainPlayer?.userName;
-    this.statsScene.beaverChoice = this.beaverId || this.beaverChoice;
-    this.statsScene.stats = this.mainPlayer.stats;
-    this.statsScene.allPlayers = this.allPlayers;
 
     m.redraw();
 
@@ -300,7 +293,6 @@ export default class MainScene extends Phaser.Scene {
       this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
       setTimeout(() => {
         hideGui();
-        this.scene.remove(statsSceneKey);
         this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
       }, 2000);
     }
@@ -312,8 +304,6 @@ export default class MainScene extends Phaser.Scene {
       this.lastRoundPlayed = true;
       this.lastRoundSound.play();
     }
-
-    // this.game.events.emit(EVENTS_NAME.updateRoundInfo, roundInfo);
 
     Object.keys(this.allPlayers).forEach((p) => {
       this.allPlayers[p].update();
@@ -413,7 +403,6 @@ export default class MainScene extends Phaser.Scene {
 
   handleMessage(response, lag) {
     const self = this;
-    this.game.events.emit(EVENTS_NAME.nextMessage, { response, lag });
     if (this.allPlayers[response.player?.walletAddress]?.locked) return;
     switch (response.cmd) {
       case Const.Command.registered:
@@ -596,7 +585,6 @@ export default class MainScene extends Phaser.Scene {
           this.allPlayers[response.player.walletAddress]?.digAnim();
         }
         if (response.digged?.type == Const.GameObject.treasure.type) {
-          // console.log(`Player digged a game treasure.`);
           if (this.mainPlayer?.walletAddress == response.player.walletAddress) this.treasureSound.play();
           this.gameTreasuresLayer.putTileAt(0, response.player.pos.x, response.player.pos.y);
         } else {
@@ -676,7 +664,6 @@ export default class MainScene extends Phaser.Scene {
     if (!this.allPlayers[pInfo.walletAddress]) {
       console.log('Setting up new player', pInfo.walletAddress);
       const player = this.createPlayer(pInfo);
-      this.game.events.emit(EVENTS_NAME.updatePlayers, player);
     }
     return this.allPlayers[pInfo.walletAddress];
   }
@@ -691,18 +678,10 @@ export default class MainScene extends Phaser.Scene {
       self.mainPlayer.equipment = responsePlayer.equipment;
       self.mainPlayer.updateStats(responsePlayer.stats);
       self.gameStats = gameStats;
-      this.game.events.emit(EVENTS_NAME.updateStats, {
-        player: responsePlayer.stats,
-        game: gameStats,
-      });
     } else if (responsePlayer && this.allPlayers[responsePlayer.walletAddress]) {
       currentCoinsGained = this.allPlayers[responsePlayer?.walletAddress].stats.coins.gained;
       newCoinsGained = responsePlayer.stats.coins.gained;
       this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
-      this.game.events.emit(EVENTS_NAME.updateOtherPlayerStats, {
-        ...responsePlayer.stats,
-        walletAddress: responsePlayer.walletAddress,
-      });
     }
     if (currentCoinsGained != newCoinsGained) {
       self.updateRanking();

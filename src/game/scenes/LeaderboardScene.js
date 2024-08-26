@@ -1,20 +1,15 @@
-import { Text } from '../objects/Text.js';
-import { colors } from '../utils/style.js';
 import { WebFontFile } from '../objects/WebFontFile.js';
 import Const from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
-import { EVENTS_NAME } from '../utils/events.js';
 import {
   mainSceneKey,
   connectWalletSceneKey,
   leaderboardSceneKey,
   loungeAreaSceneKey,
-  statsSceneKey,
   scenes,
   gameHubSceneKey,
 } from '../../main.js';
 import { trimString } from '../utils/utils.js';
-import { TextButton } from '../objects/TextButton.js';
 import Phaser from 'phaser';
 import { hideGui, showGui } from '../utils/mithril.js';
 import { LeaderboardGui } from '../gui/LeaderboardGui.js';
@@ -30,7 +25,6 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.mainPlayer = data.mainPlayer;
     this.walletAddress = data.mainPlayer?.walletAddress || data.walletAddress;
     this.mainScene = this.scene.get(mainSceneKey);
-    this.statsScene = this.scene.get(statsSceneKey);
   }
 
   preload() {
@@ -167,12 +161,6 @@ export default class LeaderboardScene extends Phaser.Scene {
       const scene = scenes[s];
       if (scene.key != leaderboardSceneKey) self.scene.remove(scene.key);
     });
-
-    this.game.events.removeAllListeners(EVENTS_NAME.updateRoundInfo);
-    this.game.events.removeAllListeners(EVENTS_NAME.nextMessage);
-    this.game.events.removeAllListeners(EVENTS_NAME.updatePlayers);
-    this.game.events.removeAllListeners(EVENTS_NAME.updateStats);
-    this.game.events.removeAllListeners(EVENTS_NAME.updateOtherPlayerStats);
 
     scenesToRestartKeys.forEach((s) => {
       const scene = scenes[s];
