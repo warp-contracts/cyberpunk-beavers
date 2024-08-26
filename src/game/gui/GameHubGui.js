@@ -1,12 +1,12 @@
 import { trimString } from '../utils/utils.js';
 import { playClick } from '../utils/mithril.js';
 
-export function GameHubGui(initialVnode) {
+export function GameHubGui() {
   return {
     view: function (vnode) {
       const { games, gameError, joinGame } = vnode.attrs;
       return [
-        m('div', { id: 'game-hub', class: 'mithril-component' }, [
+        m('.mithril-component', { id: 'game-hub' }, [
           m(Header, { gameError }),
           vnode.attrs.games ? m(GamesList, { games, joinGame }) : null,
         ]),

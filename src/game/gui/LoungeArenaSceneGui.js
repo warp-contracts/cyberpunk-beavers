@@ -14,7 +14,7 @@ export function LoungeArenaSceneGui(initialVnode) {
         vnode.attrs;
 
       return [
-        m('div', { id: 'lounge-arena', class: 'mithril-component' }, [
+        m('.mithril-component', { id: 'lounge-arena' }, [
           gameError
             ? m(HeaderError, { gameError })
             : [
