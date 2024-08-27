@@ -48,3 +48,17 @@ export async function checkProfile(wallet) {
   }
   return profile;
 }
+
+export function convertToCamelCase(input) {
+  return input
+    .split('_')
+    .map((word, index) => {
+      if (index === 0) {
+        return word.toLowerCase();
+      } else {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }
+    })
+    .join('')
+    .replace(/[^\w\s]/gi, '');
+}

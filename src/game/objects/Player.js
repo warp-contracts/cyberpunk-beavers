@@ -1,5 +1,5 @@
 import Const, { BEAVER_TYPES } from '../common/const.mjs';
-import { trimString } from '../utils/utils.js';
+import { convertToCamelCase, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
@@ -33,6 +33,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       align: 'center',
     });
     this.name.setDepth(8);
+    this.addLayeredSprites();
+  }
+
+  addLayeredSprites() {
+    const self = this;
+    ['blood_splat_1', 'blood_splat_2'].forEach((bs) => {
+      self[bs] = self.scene.add.sprite(self.x, self.y, bs);
+      self[bs].setOrigin(self.originX, self.originY);
+      self[bs].setDepth(self.depth + 1);
+      self[bs].setVisible(false);
+    });
   }
 
   calculateBarWidth(stats) {
@@ -143,6 +154,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   explosionAnim() {
     return this.anims.play(`explosion_anim`, true);
+  }
+
+  bloodSplatAnim(isMainPlayer) {
+    const self = this;
+    const bloodSplat = `blood_splat_${self.stats.hp.current >= self.stats.hp.max * 0.5 ? '1' : '2'}`;
+    const bloodSplatSprite = self[bloodSplat];
+    const bloodSplatSound = self.scene[`${convertToCamelCase(bloodSplat)}Sound`];
+    bloodSplatSprite.setPosition(self.x, self.y);
+    bloodSplatSprite.setVisible(true);
+    bloodSplatSprite.anims.play(bloodSplat, true);
+    if (isMainPlayer) bloodSplatSound.play();
+    bloodSplatSprite.on('animationcomplete', () => {
+      bloodSplatSprite.setVisible(false);
+    });
   }
 
   baseMoveTo(pos, onStart, onComplete) {

@@ -67,6 +67,18 @@ export default class MainScene extends Phaser.Scene {
       `assets/images/anims/explosion/explosion_anim_atlas.json`
     );
 
+    this.load.atlas(
+      `blood_splat_1`,
+      `assets/images/anims/blood_splat/blood_splat_1.png`,
+      `assets/images/anims/blood_splat/blood_splat_1_atlas.json`
+    );
+
+    this.load.atlas(
+      `blood_splat_2`,
+      `assets/images/anims/blood_splat/blood_splat_2.png`,
+      `assets/images/anims/blood_splat/blood_splat_2_atlas.json`
+    );
+
     this.load.audio('background_music', ['assets/audio/background_music.mp3']);
     this.load.audio('background_music_metal', ['assets/audio/background_music_metal.mp3']);
     this.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
@@ -85,6 +97,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio('revenge', ['assets/audio/revenge.m4a']);
     this.load.audio('teleport', ['assets/audio/teleport.mp3']);
     this.load.audio('explosion', ['assets/audio/explosion_powerful_dynamite.mp3']);
+    this.load.audio('blood_splat_1', ['assets/audio/blood_splat/blood_splat_1.mp3']);
+    this.load.audio('blood_splat_2', ['assets/audio/blood_splat/blood_splat_2.mp3']);
     this.forDeathSounds((k, i) => this.loadDeathSound(k, i, this));
   }
 
@@ -160,6 +174,26 @@ export default class MainScene extends Phaser.Scene {
       key: `explosion_anim`,
       frames: this.anims.generateFrameNames(`explosion_anim`, { prefix: 'explosion-f', start: 1, end: 8 }),
       frameRate: 24,
+    });
+
+    this.anims.create({
+      key: `blood_splat_1`,
+      frames: this.anims.generateFrameNames(`blood_splat_1`, {
+        prefix: 'frame-',
+        start: 1,
+        end: 7,
+        frameRate: 8,
+      }),
+    });
+
+    this.anims.create({
+      key: `blood_splat_2`,
+      frames: this.anims.generateFrameNames(`blood_splat_2`, {
+        prefix: 'frame-',
+        start: 1,
+        end: 7,
+        frameRate: 8,
+      }),
     });
 
     for (const [beaver, anims] of Object.entries(ANIM_SETTINGS)) {
@@ -460,8 +494,8 @@ export default class MainScene extends Phaser.Scene {
         if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
           this.allPlayers[response.player.walletAddress]?.attackAnim();
         }
+        const opponent = self.allPlayers[response.opponent?.walletAddress];
         if (response.opponentFinished) {
-          const opponent = self.allPlayers[response.opponent?.walletAddress];
           opponent?.lock();
           if (isKillerMainPlayer) {
             setTimeout(() => {
@@ -482,6 +516,8 @@ export default class MainScene extends Phaser.Scene {
               );
               opponent.unlock();
             });
+        } else {
+          opponent.bloodSplatAnim(isOpponentMainPlayer || isKillerMainPlayer);
         }
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
           forOpponent: {
@@ -799,6 +835,8 @@ export default class MainScene extends Phaser.Scene {
     this.revengeSound = this.sound.add('revenge', { loop: false, volume: 4.0 });
     this.teleportSound = this.sound.add('teleport', { loop: false, volume: 5.0 });
     this.explosionSound = this.sound.add('explosion', { loop: false, volume: 0.5 });
+    this.bloodSplat1Sound = this.sound.add('blood_splat_1', { loop: false, volume: 1.0 });
+    this.bloodSplat2Sound = this.sound.add('blood_splat_2', { loop: false, volume: 1.5 });
     this.forDeathSounds((k, i) => this.addDeathSound(k, i, this));
 
     const backgroundMusic = this[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];
