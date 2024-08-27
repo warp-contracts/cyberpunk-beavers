@@ -81,14 +81,22 @@ const Tile = {
 };
 
 const GameObject = {
-  hp: { type: 'hp', tile: 1, value: 25, rarity: 30 },
   ap: { type: 'ap', tile: 0, value: 5, rarity: 30 },
-  treasure: { type: 'treasure', tile: 0, value: 500 },
+  hp: { type: 'hp', tile: 1, value: 25, rarity: 30 },
   equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 10 },
-  active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 100 },
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 20 },
-  hole: { type: 'hole', tile: 1, value: 0 },
   none: { type: 'none', tile: 4, value: 0 },
+
+  // invisible
+  active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 100 },
+};
+
+const GameTreasure = {
+  hole: { type: 'hole', tile: 0, value: 0 },
+  cbcoin: { type: 'cbcoin', tile: 1, value: 500 },
+  tlo: { type: 'tlo', tile: 2, value: 40 },
+  war: { type: 'war', tile: 3, value: 26 },
+  trunk: { type: 'trunk', tile: 4, value: 80 },
 };
 
 const Scores = {
@@ -162,7 +170,7 @@ export const BEAVER_TYPES = {
       },
       weapon: WEAPONS.sniper_rifle_basic,
       bonus: {
-        [GameObject.treasure.type]: 100,
+        [GameTreasure.cbcoin.type]: 100,
         [BonusType.KillBonus]: 200,
       },
       kill: Kills.headshot,
@@ -191,7 +199,7 @@ export const BEAVER_TYPES = {
       },
       weapon: WEAPONS.shotgun_basic,
       bonus: {
-        [GameObject.treasure.type]: 0,
+        [GameTreasure.cbcoin.type]: 0,
         [BonusType.KillBonus]: 220,
       },
       kill: Kills.tankshot,
@@ -220,7 +228,7 @@ export const BEAVER_TYPES = {
       },
       weapon: WEAPONS.katana_basic,
       bonus: {
-        [GameObject.treasure.type]: 20,
+        [GameTreasure.cbcoin.type]: 20,
         [BonusType.KillBonus]: 180,
       },
       kill: Kills.slice,
@@ -252,6 +260,7 @@ export default {
   EVENTS_NAME,
   Errors,
   GameObject,
+  GameTreasure,
   Map,
   Queue,
   Scores,

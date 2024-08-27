@@ -1,12 +1,11 @@
 import Const from '../../common/const.mjs';
 
-const { GameObject, Scores, Map, EMPTY_TILE } = Const;
+const { GameObject, GameTreasure, Scores, Map, EMPTY_TILE } = Const;
 
 export function __init(state, message) {
   state = Object.assign(state, initState(message, state));
   setVisibleGameObjects(state);
-  setInvisibleGameObjects(state);
-  setInvisibleGameObjectsForClient(state);
+  setInvisibleGameTreasures(state);
   delete state.rawMap;
 }
 
@@ -65,8 +64,12 @@ function initState(message, state) {
     gameHiddenObjects: Array(Map.size)
       .fill([])
       .map(() => Array(Map.size)),
-    gameTreasuresTiles: [GameObject.treasure, GameObject.hole, GameObject.none],
-    gameTreasuresTilesForClient: [GameObject.none],
+    gameTreasuresTilemap: Array(Map.size)
+      .fill([])
+      .map(() => Array(Map.size)),
+    gameTreasuresTilemapForClient: Array(Map.size)
+      .fill([])
+      .map(() => Array(Map.size)),
     gameTreasuresRarity: state.gameTreasuresRarity || Const.TREASURES_RARITY,
     gameTreasuresCounter: state.gameTreasuresRarity || Const.TREASURES_RARITY,
     round: {
@@ -104,15 +107,28 @@ function setVisibleGameObjects(state) {
   }
 }
 
-function setInvisibleGameObjects(state) {
-  state.gameTreasuresTilemap = setGameObjectsTilesOnMap(state, [GameObject.none], 0);
-  setObjectsOnRandomPositions(state, GameObject.treasure, state.gameTreasuresRarity, state.gameTreasuresTilemap, [
-    GameObject.treasure,
-  ]);
-}
-
-function setInvisibleGameObjectsForClient(state) {
-  state.gameTreasuresTilemapForClient = setGameObjectsTilesOnMap(state, state.gameTreasuresTilesForClient, 0);
+function setInvisibleGameTreasures(state) {
+  setObjectsOnRandomPositions(
+    state,
+    GameTreasure.cbcoin,
+    state.gameTreasuresRarity,
+    state.gameTreasuresTilemap,
+    Object.values(GameTreasure)
+  );
+  setObjectsOnRandomPositions(
+    state,
+    GameTreasure.tlo,
+    state.gameTreasuresRarity,
+    state.gameTreasuresTilemap,
+    Object.values(GameTreasure)
+  );
+  setObjectsOnRandomPositions(
+    state,
+    GameTreasure.war,
+    state.gameTreasuresRarity,
+    state.gameTreasuresTilemap,
+    Object.values(GameTreasure)
+  );
 }
 
 function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
