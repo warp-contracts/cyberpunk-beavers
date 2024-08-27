@@ -4,6 +4,7 @@ import { triggerLandmine } from './landmine.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 const {
   GameObject,
+  GameTreasure,
   Map,
   NO_AP_GROUND_TILES,
   LOW_AP_GROUND_TILES,
@@ -45,7 +46,7 @@ export function movePlayer(state, action) {
 
     player.onGameObject = state.gameObjectsTiles.find((t) => t.tile === state.gameObjectsTilemap[newPos.y][newPos.x]);
 
-    player.onGameTreasure = state.gameTreasuresTiles.find(
+    player.onGameTreasure = Object.values(GameTreasure).find(
       (t) => t.tile === state.gameTreasuresTilemapForClient[newPos.y][newPos.x]
     );
 

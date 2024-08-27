@@ -1,59 +1,80 @@
 import { scoreToDisplay } from '../../common/tools.mjs';
 import Const from '../../common/const.mjs';
 
-const { GameObject, Scores } = Const;
+const { GameObject, GameTreasure, Scores } = Const;
 
 export function dig(state, action) {
-  const walletAddress = action.walletAddress;
-  const player = state.players[walletAddress];
-  if (player.stats.ap.current < 2) {
-    console.log(`Cannot perform dig ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
+  const player = state.players[action.walletAddress];
+  if (notEnoughAP(player)) {
+    return { player, digged: false };
+  }
+  if (standsOnGameObject(state, player)) {
+    return { player, digged: false };
+  }
+  if (alreadyDug(state, player)) {
     return { player, digged: false };
   }
 
+  const treasureTile = state.gameTreasuresTilemap[player.pos.y][player.pos.x];
+  if (!treasureTile) {
+    return foundNothing(state, player);
+  }
+  if (treasureTile === GameTreasure.hole.tile) {
+    console.log(`Player ${player.walletAddress} tried to dig already existing hole.`);
+    return { player, digged: false };
+  } else {
+    return foundTreasure(state, player, treasureTile);
+  }
+}
+
+function notEnoughAP(player) {
+  if (player.stats.ap.current < 2) {
+    console.log(`Cannot perform dig ${player.walletAddress}. Not enough ap ${player.stats.ap.current}`);
+    return true;
+  }
+  return false;
+}
+
+function standsOnGameObject(state, player) {
   const gameObjectTile = state.gameObjectsTiles.find(
     (t) => t.tile === state.gameObjectsTilemap[player.pos.y][player.pos.x]
   );
   let { type: objectTile } = gameObjectTile;
   if (objectTile !== GameObject.none.type) {
     console.log(`Cannot perform dig ${player.walletAddress}. Player stands on a game object.`);
-    return { player, digged: false };
+    return true;
   }
+  return false;
+}
 
-  const tile = state.gameTreasuresTiles.find((t) => t.tile === state.gameTreasuresTilemap[player.pos.y][player.pos.x]);
-  const { type } = tile;
+function alreadyDug(state, player) {
+  return state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] > 0;
+}
 
-  if (type === GameObject.hole.type) {
-    console.log(`Player ${player.walletAddress} tried to dig already existing hole.`);
-    return { player, digged: false };
-  }
-
+function foundNothing(state, player) {
+  console.log(`Player ${player.walletAddress} digged nothing.`);
   player.stats.ap.current -= 2;
+  state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
+  state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
 
-  if (type === GameObject.none.type) {
-    console.log(`Player ${player.walletAddress} digged nothing.`);
-    state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
-    state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameObject.hole.tile;
+  return {
+    player,
+    digged: GameTreasure.hole,
+    scoreToDisplay: scoreToDisplay([{ value: -2, type: Scores.ap }]),
+  };
+}
 
-    return {
-      player,
-      digged: { type },
-      scoreToDisplay: scoreToDisplay([{ value: -2, type: Scores.ap }]),
-    };
-  }
-
-  if (type == GameObject.treasure.type) {
-    console.log(`Player stands on a game treasure: ${type}.`);
-    state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameObject.treasure.tile;
-    state.gameTreasuresCounter -= 1;
-    state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
-    player.onGameTreasure = Const.GameObject.treasure;
-    return {
-      player,
-      digged: { type },
-      scoreToDisplay: scoreToDisplay([{ value: -2, type: Scores.ap }]),
-    };
-  }
-
-  return { player, digged: false };
+function foundTreasure(state, player, treasureTile) {
+  const treasure = Object.values(GameTreasure).find((t) => t.tile === treasureTile);
+  const { type, tile } = treasure;
+  console.log(`Player digged on a game treasure: ${type}.`);
+  player.stats.ap.current -= 2;
+  state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = tile;
+  state.gameTreasuresTilemap[player.pos.y][player.pos.x] = tile;
+  player.onGameTreasure = treasure;
+  return {
+    player,
+    digged: { type, tile },
+    scoreToDisplay: scoreToDisplay([{ value: -2, type: Scores.ap }]),
+  };
 }

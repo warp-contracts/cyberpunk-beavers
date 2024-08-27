@@ -19,6 +19,8 @@ import { MainSceneGui } from '../gui/MainScene/MainSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
 import { MINE_ACTIVATED_COLOR } from '../utils/style.js';
 
+const { GameTreasure } = Const;
+
 export default class MainScene extends Phaser.Scene {
   round;
   gameObjectsLayer;
@@ -51,7 +53,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('map_layer_obstacles', 'assets/maps/tilemaps/obstacles_tilemap.png');
 
     this.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
-    this.load.image('cyberpunk_game_treasures', 'assets/images/treasures.png');
+    this.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
     this.load.image('medal_gold', 'assets/images/medal-gold.png');
     this.load.image('medal_silver', 'assets/images/medal-silver.png');
@@ -604,8 +606,9 @@ export default class MainScene extends Phaser.Scene {
               this.allPlayers[response.player.walletAddress]?.pickAnim();
             }
             this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
-            if (response.player.onGameTreasure.type === Const.GameObject.treasure.type) {
-              this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
+            if (response.player.onGameTreasure?.tile > 0) {
+              //FIXME: create some dedicated fun for this
+              this.gameTreasuresLayer.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
             }
           }
           this.updateStats(response.player, response.gameStats);
@@ -620,16 +623,12 @@ export default class MainScene extends Phaser.Scene {
         if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
           this.allPlayers[response.player.walletAddress]?.digAnim();
         }
-        if (response.digged?.type == Const.GameObject.treasure.type) {
-          if (this.mainPlayer?.walletAddress == response.player.walletAddress) this.treasureSound.play();
-          this.gameTreasuresLayer.putTileAt(0, response.player.pos.x, response.player.pos.y);
+        if (response.digged?.tile > 0) {
+          if (this.mainPlayer?.walletAddress === response.player.walletAddress) this.treasureSound.play();
+          this.gameTreasuresLayer.putTileAt(response.digged.tile, response.player.pos.x, response.player.pos.y);
         } else {
-          if (this.mainPlayer?.walletAddress == response.player.walletAddress) this.digSound.play();
-          const gameObjectTile = this.gameObjectsLayer.getTileAt(response.player.pos.x, response.player.pos.y)?.index;
-          if (gameObjectTile == 2 || gameObjectTile == null) {
-            this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
-          }
-          this.gameTreasuresLayer.putTileAt(1, response.player.pos.x, response.player.pos.y);
+          if (this.mainPlayer?.walletAddress === response.player.walletAddress) this.digSound.play();
+          this.gameTreasuresLayer.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
         }
         this.updateStats(response.player, response.gameStats);
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);

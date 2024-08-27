@@ -1,7 +1,7 @@
 import { addCoins, scoreToDisplay } from '../../common/tools.mjs';
 import Const from '../../common/const.mjs';
 
-const { GameObject, Scores } = Const;
+const { GameObject, GameTreasure, Scores } = Const;
 
 export function pick(state, action) {
   const walletAddress = action.walletAddress;
@@ -103,26 +103,25 @@ function pickTeleportDevice(state, player, value) {
 }
 
 function pickTreasure(state, player) {
-  const gameTreasureTile = state.gameTreasuresTiles.find(
-    (t) => t.tile === state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x]
-  );
-  const { type, value } = gameTreasureTile;
-  if (type === GameObject.none.type) {
-    console.log(`Cannot perform pick ${player.walletAddress}. Player does not stand on a game object`);
+  const treasureTile = state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x];
+  if (!treasureTile || treasureTile === GameTreasure.hole.tile) {
+    console.log(`Cannot perform pick ${player.walletAddress}. Player does not stand on a treasure`);
     return { player, picked: false };
-  } else if (type === GameObject.treasure.type) {
-    player.stats.ap.current -= 1;
-    state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameObject.hole.tile;
-    state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameObject.hole.tile;
-    const valueWithBonus = value + player.stats.bonus[GameObject.treasure.type];
-    addCoins(player, valueWithBonus);
-    return {
-      player,
-      picked: { type },
-      scoreToDisplay: scoreToDisplay([
-        { value: valueWithBonus, type: Scores.coin },
-        { value: -1, type: Scores.ap },
-      ]),
-    };
   }
+
+  const treasure = Object.values(GameTreasure).find((t) => t.tile === treasureTile);
+  const { type, value } = treasure;
+  player.stats.ap.current -= 1;
+  state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
+  state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
+  const valueWithBonus = value + (player.stats.bonus[type] || 0);
+  addCoins(player, valueWithBonus);
+  return {
+    player,
+    picked: { type, tile: treasureTile },
+    scoreToDisplay: scoreToDisplay([
+      { value: valueWithBonus, type: Scores.coin },
+      { value: -1, type: Scores.ap },
+    ]),
+  };
 }
