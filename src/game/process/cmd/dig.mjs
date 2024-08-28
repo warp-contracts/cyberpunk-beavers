@@ -71,6 +71,7 @@ function foundTreasure(state, player, treasureTile) {
   player.stats.ap.current -= 2;
   state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = tile;
   state.gameTreasuresTilemap[player.pos.y][player.pos.x] = tile;
+  state.gameTreasuresCounter[type] -= 1;
   player.onGameTreasure = treasure;
   return {
     player,

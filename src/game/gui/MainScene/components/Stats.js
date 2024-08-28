@@ -69,6 +69,24 @@ export function Stats() {
             style: `mt-5 pl-15`,
             inlineStyle: `pr-10`,
           }),
+          Object.entries(stats?.additionalTokens || {}).map(([name, info]) => [
+            m(Label, {
+              name,
+              content: m(
+                'a',
+                { target: '__blank', href: `https://www.ao.link/#/token/${tokenProcessId}` },
+                `${trimString(tokenProcessId)}`
+              ),
+              style: `mt-10 pl-0`,
+              inlineStyle: `pr-10`,
+            }),
+            m(Label, {
+              name: 'gained',
+              content: `${info.gained}/${info.total}`,
+              style: `mt-5 pl-15`,
+              inlineStyle: `pr-10`,
+            }),
+          ]),
           m('div', [m('.stats-other-beavers', `OTHER BEAVERS`, m('span', `(${playersTotal - 1 || 0})`))]),
         ]),
       ]);

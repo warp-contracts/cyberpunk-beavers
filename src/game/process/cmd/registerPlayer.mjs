@@ -1,7 +1,7 @@
 import Const from '../../common/const.mjs';
 import { calculateRandomPos } from './__init';
 
-const { BEAVER_TYPES, Map, EMPTY_TILE } = Const;
+const { BEAVER_TYPES, Map, EMPTY_TILE, GameTreasure } = Const;
 
 export function registerPlayer(state, action) {
   const { beaverId, walletAddress, userName, balance, generatedWalletAddress } = action;
@@ -32,6 +32,14 @@ export function registerPlayer(state, action) {
     return { player: { walletAddress, error } };
   }
 
+  const additionalTokens = Object.fromEntries(
+    Object.entries(state.gameTreasuresRarity)
+      .filter(([key]) => key !== GameTreasure.cbcoin.type)
+      .filter(([, value]) => value > 0)
+      .map(([key, value]) => [key, { gained: 0, total: value }])
+  );
+  console.log(`additional tokens`, additionalTokens);
+
   let newPlayer = {
     walletAddress,
     userName,
@@ -56,6 +64,7 @@ export function registerPlayer(state, action) {
         balance: balance || 0,
         gained: 0, // info of tokens gained in the game
       },
+      additionalTokens,
     },
     pos: calculatePlayerRandomPos(state),
   };
