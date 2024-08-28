@@ -42,12 +42,6 @@ export function Stats() {
             ]),
           ]),
           m(Label, {
-            name: 'hp',
-            content: stats?.hp.current,
-            style: `mt-10 pl-0`,
-            inlineStyle: `pr-10`,
-          }),
-          m(Label, {
             name: 'frags/deaths',
             content: `${stats?.kills.frags}/${stats?.kills.deaths}`,
             style: `mt-10 pl-0`,

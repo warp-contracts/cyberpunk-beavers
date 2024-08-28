@@ -4,7 +4,7 @@ import Player from './Player.js';
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig, useLandmine, useTeleport } = Const.Command;
 
-const RANGE_COLOR = 0x008000;
+const RANGE_COLOR = 0x00ff00;
 const AIM_COLOR = 0xff0000;
 
 export default class MainPlayer extends Player {

@@ -20,7 +20,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.position = this.addInfoText(x, y - 55, ``);
     this.healthBar = scene.add.rectangle(x, y - 32, this.calculateBarWidth(this.stats.hp), 6, 0xdc143c);
-    this.apBar = scene.add.rectangle(x, y - 40, this.calculateBarWidth(this.stats.ap), 6, 0x00ff00);
+    this.apBar = scene.add.rectangle(x, y - 40, this.calculateBarWidth(this.stats.ap), 6, 0x25a31f);
     this.healthBar.setDepth(10);
     this.apBar.setDepth(10);
     this.position.setDepth(10);
