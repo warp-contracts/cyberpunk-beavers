@@ -5,7 +5,7 @@ export function InfoPanel() {
       return m('.info-panel', [
         gameOver ? m('.element', 'GAME OVER') : null,
         m('.element', `ROUNDS LEFT ${roundInfo.roundsToGo || roundInfo.currentRound || '700'}`),
-        m(Timebar, { progress: roundInfo.gone * 10, pause: gameOver }),
+        m(Timebar, { progress: roundInfo.gone * 10, pause: gameOver, type: 'rounds' }),
         m(`.element ${stats?.ap?.current == 0 ? 'warn' : 'info'}`, `AP: ${stats?.ap?.current || 0}`),
       ]);
     },
@@ -29,7 +29,7 @@ function Timebar() {
     view: function (vnode) {
       return m('.timebar-container', [
         m('.timebar', [
-          m('.timebar-progress', {
+          m(`.timebar-progress ${vnode.attrs.type}`, {
             style: {
               width: width + '%',
             },
