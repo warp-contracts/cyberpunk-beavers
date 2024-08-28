@@ -13,6 +13,15 @@
     <title>Cyberpunk Beavers</title>
   </head>
   <style>
+    /* https://phaser.discourse.group/t/scroll-bar-with-scale/1586 */
+    html,
+    body {
+      margin: 0px;
+      padding: 0px;
+      overflow: hidden;
+      height: 100%;
+    }
+
     #mithril-gui {
       position: absolute;
       top: 0;
@@ -36,7 +45,7 @@
 
   <body>
     <script src="https://unpkg.com/mithril/mithril.js"></script>
-    <div id="root"></div>
+    <div id="game"></div>
     <div id="mithril-gui" class="mithril-gui-hide"></div>
     <script type="module" src="/src/game/config/warp-ao.js"></script>
     <script type="module" src="/src/main.js"></script>

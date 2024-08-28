@@ -2,19 +2,7 @@ import Const from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
 import { triggerLandmine } from './landmine.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
-const {
-  GameObject,
-  GameTreasure,
-  Map,
-  NO_AP_GROUND_TILES,
-  LOW_AP_GROUND_TILES,
-  MED_AP_GROUND_TILES,
-  HIGH_AP_DECO_TILES,
-  NO_AP_COST,
-  LOW_AP_COST,
-  MED_AP_COST,
-  HIGH_AP_COST,
-} = Const;
+const { GameObject, Map, LOW_AP_COST, EMPTY_TILE, GameTreasure } = Const;
 
 export function movePlayer(state, action) {
   const { walletAddress, dir } = action;
@@ -34,7 +22,7 @@ export function movePlayer(state, action) {
       `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${state.playersOnTiles[newPos.y][newPos.x]}`
     );
     return { player };
-  } else if (state.obstaclesTilemap[newPos.y][newPos.x] >= 0) {
+  } else if (state.obstaclesTilemap[newPos.y][newPos.x] > EMPTY_TILE) {
     console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
     return { player };
   } else {
@@ -96,18 +84,5 @@ export function movePlayer(state, action) {
 }
 
 function calculateApCost(state, y, x) {
-  if (HIGH_AP_DECO_TILES.includes(state.decorationTilemap[y][x])) {
-    return HIGH_AP_DECO_TILES;
-  }
-  if (NO_AP_GROUND_TILES.includes(state.groundTilemap[y][x])) {
-    return NO_AP_COST;
-  }
-  if (LOW_AP_GROUND_TILES.includes(state.groundTilemap[y][x])) {
-    return LOW_AP_COST;
-  }
-  if (MED_AP_GROUND_TILES.includes(state.groundTilemap[y][x])) {
-    return MED_AP_COST;
-  }
-
   return LOW_AP_COST;
 }

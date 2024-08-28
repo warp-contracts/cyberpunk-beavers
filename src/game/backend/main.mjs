@@ -160,8 +160,10 @@ async function spawnGameAndChat() {
     },
     processEnv.Process.Owner
   );
+  const map = JSON.parse(fs.readFileSync('./public/assets/maps/v2/map_ppe.json', 'utf-8'));
+
   const result = await quickJS.handle(setupMessage, processEnv, {
-    rawMap: JSON.parse(fs.readFileSync('./public/assets/maps/map-2-30x30.json', 'utf-8')),
+    rawMap: map,
   });
   if (result.Error) {
     console.error(result.Error);
