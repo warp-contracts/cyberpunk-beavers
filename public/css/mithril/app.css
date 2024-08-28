@@ -3,10 +3,12 @@
   --yellow: #fcee09;
   --white: #ffffff;
   --green: #00ff00;
+  --darkgreen: darkgreen;
   --red: #ff0000;
   --darkgrey: #333;
   --lightgrey: #555;
   --blue: rgba(0, 140, 255, 0.83);
+  --ap: #25a31f;
 
   /* font sizes */
   --regular: 22px;

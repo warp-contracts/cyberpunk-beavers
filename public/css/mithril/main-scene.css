@@ -86,7 +86,7 @@
 
 .info-panel {
   position: absolute;
-  top: 2rem;
+  top: 1rem;
   margin: 0 auto;
   left: 50%;
   -ms-transform: translateY(-50%);
@@ -97,7 +97,7 @@
   gap: 10px;
 
   .element {
-    background-color: black;
+    position: absolute;
     font-family: 'Press Start 2P';
     font-size: 18px;
     text-transform: uppercase;
@@ -106,12 +106,24 @@
     align-items: center;
     height: 30px;
 
+    &.rounds {
+      top: -1px;
+    }
+
+    &.ap {
+      top: 35px;
+    }
+
+    &.hp {
+      top: 71px;
+    }
+
     &.warn {
       color: var(--red);
     }
 
     &.info {
-      color: var(--white);
+      color: white;
     }
 
     img {
@@ -121,8 +133,8 @@
 
   .timebar-container {
     width: 300px;
-    height: 25px;
-    padding: 5px;
+    height: 20px;
+    padding: 3px;
     background-color: var(--darkgrey);
   }
 
@@ -140,6 +152,14 @@
     &.rounds {
       background-color: var(--blue);
       background-image: repeating-linear-gradient(45deg, var(--blue) 0px, var(--blue) 2px, black 2px, black 4px);
+    }
+    &.ap {
+      background-color: var(--ap);
+      background-image: repeating-linear-gradient(45deg, var(--ap) 0px, var(--ap) 2px, black 2px, black 4px);
+    }
+    &.hp {
+      background-color: var(--red);
+      background-image: repeating-linear-gradient(45deg, var(--red) 0px, var(--red) 2px, black 2px, black 4px);
     }
     height: 100%;
 
