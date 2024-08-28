@@ -2,19 +2,9 @@ const EVENTS_NAME = {
   currentMove: 'currentMove',
 };
 
-const EMPTY_TILE = -1;
+const EMPTY_TILE = 0;
 
-// road tiles
-const NO_AP_GROUND_TILES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
-
-// light sand tiles
-const LOW_AP_GROUND_TILES = [26, 27];
-
-// dark sand tiles
-const MED_AP_GROUND_TILES = [12, 13];
-
-// "stones"
-const HIGH_AP_DECO_TILES = [5];
+export const COLLISIONS_LAYER = 'collisions';
 
 const NO_AP_COST = 1; // because fuck logic and naming :)
 const LOW_AP_COST = 1;
@@ -266,10 +256,6 @@ export default {
   Scores,
   Tile,
   EMPTY_TILE,
-  NO_AP_GROUND_TILES,
-  LOW_AP_GROUND_TILES,
-  MED_AP_GROUND_TILES,
-  HIGH_AP_DECO_TILES,
   NO_AP_COST,
   LOW_AP_COST,
   MED_AP_COST,

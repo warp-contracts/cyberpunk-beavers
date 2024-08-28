@@ -1,5 +1,5 @@
 import Player from '../objects/Player.js';
-import Const, { BEAVER_TYPES } from '../common/const.mjs';
+import Const, { BEAVER_TYPES, COLLISIONS_LAYER } from '../common/const.mjs';
 import MainPlayer from '../objects/MainPlayer.js';
 import { Text } from '../objects/Text.js';
 import { serverConnection } from '../lib/serverConnection.js';
@@ -48,10 +48,14 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     console.log('Main Scene - 2. Preload');
-    this.load.image('map_layer_ground', 'assets/maps/tilemaps/ground_tilemap.png');
-    this.load.image('map_layer_decoration', 'assets/maps/tilemaps/decorations_tilemap.png');
-    this.load.image('map_layer_obstacles', 'assets/maps/tilemaps/obstacles_tilemap.png');
 
+    // ===== MAP V2
+    // load the PNG file
+    this.load.image('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png');
+
+    // load the JSON file
+    this.load.tilemapTiledJSON('tilemap', 'assets/maps/v2/map_ppe.json');
+    // ===== MAP V2
     this.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
@@ -139,6 +143,19 @@ export default class MainScene extends Phaser.Scene {
 
   async create() {
     console.log('Main Scene - 3. Create');
+
+    // create the Tilemap
+    const map = this.make.tilemap({ key: 'tilemap' });
+    const tileset = map.addTilesetImage('Sprite_Map_Sheet', 'map_sheet');
+    const layers = map.getTileLayerNames();
+    for (const layer of layers) {
+      console.log('creating layer', layer);
+      if (layer === COLLISIONS_LAYER) {
+        continue;
+      }
+      map.createLayer(layer, tileset);
+    }
+
     this.allPlayers = {};
     this.ranking = [];
     this.addSounds();
@@ -325,6 +342,7 @@ export default class MainScene extends Phaser.Scene {
     if ((this.gameEnd && this.gameEnd < Date.now()) || this.roundInfo.roundsToGo == 0) {
       this.gameOver = true;
       this.backgroundMusic.stop();
+      this.backgroundMusicMetal.stop();
       this.gameOverSound.play();
       this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
       setTimeout(() => {
@@ -363,10 +381,7 @@ export default class MainScene extends Phaser.Scene {
     };
   }
 
-  initMap({ groundLayer, decorationLayer, obstaclesLayer, treasuresLayer, objectsLayer }) {
-    this.groundLayer = this.createLayer(groundLayer, 'map_layer_ground', 0);
-    this.decorationLayer = this.createLayer(decorationLayer, 'map_layer_decoration', 1);
-    this.obstaclesLayer = this.createLayer(obstaclesLayer, 'map_layer_obstacles', 2);
+  initMap({ treasuresLayer, objectsLayer }) {
     this.gameTreasuresLayer = this.createLayer(treasuresLayer, 'cyberpunk_game_treasures', 3);
     this.gameObjectsLayer = this.createLayer(objectsLayer, 'cyberpunk_game_objects', 4);
   }
@@ -375,7 +390,7 @@ export default class MainScene extends Phaser.Scene {
     const camera = this.cameras.main;
 
     camera.setSize(this.game.scale.width, this.game.scale.height);
-    camera.startFollow(this.mainPlayer, true, 0.09, 0.09);
+    camera.startFollow(this.mainPlayer, false);
     camera.setZoom(1);
 
     let cameraDragStartX;
@@ -460,9 +475,6 @@ export default class MainScene extends Phaser.Scene {
               if (wallet === this.walletAddress && !this.mainPlayer) {
                 this.beaverId = player.beaverId;
                 self.initMap({
-                  groundLayer: response.map.groundTilemap,
-                  decorationLayer: response.map.decorationTilemap,
-                  obstaclesLayer: response.map.obstaclesTilemap,
                   treasuresLayer: response.map.gameTreasuresTilemapForClient,
                   objectsLayer: response.map.gameObjectsTilemap,
                 });
