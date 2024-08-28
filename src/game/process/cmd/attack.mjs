@@ -31,7 +31,7 @@ export function attack(state, action, timestamp) {
   while (range < attackRange) {
     attackPos = step(prevPos, action.dir);
     // note: hacker beaver can shoot over obstacles, because why not.
-    if (state.obstaclesTilemap[attackPos.y][attackPos.x] >= 0 && player.beaverId != 'hacker_beaver') {
+    if (state.obstaclesTilemap[attackPos.y][attackPos.x] > EMPTY_TILE && player.beaverId != 'hacker_beaver') {
       break;
     }
     opponent = state.players[state.playersOnTiles[attackPos.y][attackPos.x]];

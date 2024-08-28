@@ -8,10 +8,11 @@ const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
 
 const maps = [
-  'qtcpzuuGoVKVQGMuq_PMaRHEL071Ja1SV8dvC-gur2Q', // - 'default' map
+  /*'qtcpzuuGoVKVQGMuq_PMaRHEL071Ja1SV8dvC-gur2Q', // - 'default' map
   'AeSkeoKPIpM71iapW6Onv4681CAXOU9DEr2XcgDZPI0', // - ao 'tutorial' map
   'IOcu1uK7ViJc9OOA2PeUbAh1hAUlibeqOYbV2fmMZ6U', // Greg map 1
-  '0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM', // Greg map 2
+  '0ZhvZfjkwDOOfG1ns-afJNHVYysaMsshYdMfIeUb_hM', // Greg map 2*/
+  '--YBDNmBAIuT-XstUI795v1DUDdpd8iNZKnYD3Esxzs', // map v2 1
 ];
 
 const randomIntegerInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;

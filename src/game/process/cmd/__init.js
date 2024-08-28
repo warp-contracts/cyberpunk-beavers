@@ -1,4 +1,4 @@
-import Const from '../../common/const.mjs';
+import Const, { COLLISIONS_LAYER } from '../../common/const.mjs';
 
 const { GameObject, GameTreasure, Scores, Map, EMPTY_TILE } = Const;
 
@@ -15,30 +15,11 @@ function tryLoadLayer(type, rawMap) {
     throw new ProcessError(`No "${type}" found in map data`);
   }
 
-  // note: https://discourse.mapeditor.org/t/option-to-export-tile-data-with-0-based-indexes/2672/4
-  // - when using multiple tilesets, Tiles map editor assigns values globally - as if there was one tileset
-  // - for whatever the fuck reason
-  const tilesetId = type.replace('_layer', '');
-  const tileset = rawMap.tilesets.find((t) => t.source.includes(tilesetId));
-  if (!tileset) {
-    throw new ProcessError(`Tileset containin words "${tilesetId}" not found`);
-  }
-  let firstgid = tileset.firstgid;
-  if (type == 'obstacles_layer') {
-    // for some reason the exported data for obstacles have values increased by 3
-    // in comparison to what is set in 'firstgid' in the tileset
-    firstgid += 3;
-  }
-
-  layer.data = layer.data.map((t) => t - firstgid);
-
   return layer;
 }
 
 function initState(message, state) {
-  const groundLayer = tryLoadLayer('ground_layer', state.rawMap);
-  const decorationLayer = tryLoadLayer('decoration_layer', state.rawMap);
-  const obstaclesLayer = tryLoadLayer('obstacles_layer', state.rawMap);
+  const obstaclesLayer = tryLoadLayer(COLLISIONS_LAYER, state.rawMap);
 
   const result = {
     nextProcessId: null,
@@ -50,8 +31,8 @@ function initState(message, state) {
     pos: 1,
     playWindow: {},
     map: {
-      width: groundLayer.width,
-      height: groundLayer.height,
+      width: obstaclesLayer.width,
+      height: obstaclesLayer.height,
     },
     lastTxs: [],
     gameObjectsTiles: [
@@ -84,8 +65,6 @@ function initState(message, state) {
     playersOnTiles: Array(Map.size)
       .fill([])
       .map(() => Array(Map.size)),
-    groundTilemap: generateTilemap(groundLayer.data, groundLayer.width),
-    decorationTilemap: generateTilemap(decorationLayer.data, decorationLayer.width),
     obstaclesTilemap: generateTilemap(obstaclesLayer.data, obstaclesLayer.width),
   };
 
@@ -97,6 +76,7 @@ function generateTilemap(input, width) {
   while (input.length) {
     result.push(input.splice(0, width));
   }
+
   return result;
 }
 
@@ -132,20 +112,9 @@ function setInvisibleGameTreasures(state) {
 }
 
 function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
-  for (let i = 0; i < noneTileFrequency; i++) {
-    tilesToPropagate.push(GameObject.none);
-  }
-
   return state.obstaclesTilemap.map((a) => {
-    return a.map((b) => {
-      if (b <= EMPTY_TILE) {
-        state.randomCounter++;
-        const randomValue = getRandomNumber(0, tilesToPropagate.length - 1, state.randomCounter);
-        const drawnTile = tilesToPropagate[randomValue];
-        return drawnTile.tile;
-      } else {
-        return EMPTY_TILE;
-      }
+    return a.map(() => {
+      return GameObject.none.tile;
     });
   });
 }
@@ -171,7 +140,8 @@ function setObjectsOnRandomPositions(state, gameObject, rarity, tilemap, tiles) 
 
   while (gameObjectCount < rarity) {
     const pos = calculateRandomPos(state, Map.size);
-    const isAllowedPosition = !(state.obstaclesTilemap[pos.y][pos.x] >= 0 || tiles.includes(tilemap[pos.y][pos.x]));
+    const isAllowedPosition =
+      state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE && !tiles.includes(tilemap[pos.y][pos.x]);
     if (isAllowedPosition) {
       tilemap[pos.y][pos.x] = gameObject.tile;
       gameObjectCount++;

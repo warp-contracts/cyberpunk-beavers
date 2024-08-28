@@ -27,7 +27,6 @@ function addToLastTxs(message, state) {
 }
 
 export function handle(state, message) {
-  console.log("We're in");
   state.randomCounter = 0;
   if (state.hasOwnProperty('rawMap')) {
     __init(state, message);

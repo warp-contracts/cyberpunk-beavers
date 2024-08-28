@@ -1,7 +1,7 @@
 import Const from '../../common/const.mjs';
 import { calculateRandomPos } from './__init';
 
-const { BEAVER_TYPES, Map } = Const;
+const { BEAVER_TYPES, Map, EMPTY_TILE } = Const;
 
 export function registerPlayer(state, action) {
   const { beaverId, walletAddress, userName, balance, generatedWalletAddress } = action;
@@ -75,11 +75,11 @@ export function calculatePlayerRandomPos(state) {
   while (!isAllowedPosition) {
     pos = calculateRandomPos(state, Map.size);
 
-    isAllowedPosition = !(state.playersOnTiles[pos.y][pos.x] || state.obstaclesTilemap[pos.y][pos.x] >= 0);
+    isAllowedPosition = !(state.playersOnTiles[pos.y][pos.x] || state.obstaclesTilemap[pos.y][pos.x] > EMPTY_TILE);
   }
-  console.log(
+  /*console.log(
     `random pos ${pos.x} ${pos.y} ${state.playersOnTiles[pos.y][pos.x]} ${state.obstaclesTilemap[pos.y][pos.x]} ${isAllowedPosition}`
-  );
+  );*/
 
   return pos;
 }
