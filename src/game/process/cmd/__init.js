@@ -89,21 +89,28 @@ function setInvisibleGameTreasures(state) {
   setObjectsOnRandomPositions(
     state,
     GameTreasure.cbcoin,
-    state.gameTreasuresRarity,
+    state.gameTreasuresRarity[GameTreasure.cbcoin.type],
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );
   setObjectsOnRandomPositions(
     state,
     GameTreasure.tlo,
-    state.gameTreasuresRarity,
+    state.gameTreasuresRarity[GameTreasure.tlo.type],
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );
   setObjectsOnRandomPositions(
     state,
     GameTreasure.war,
-    state.gameTreasuresRarity,
+    state.gameTreasuresRarity[GameTreasure.war.type],
+    state.gameTreasuresTilemap,
+    Object.values(GameTreasure)
+  );
+  setObjectsOnRandomPositions(
+    state,
+    GameTreasure.trunk,
+    state.gameTreasuresRarity[GameTreasure.trunk.type],
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );

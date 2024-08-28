@@ -23,8 +23,6 @@ export const MAX_LAST_TXS = 20;
 
 const DEATH_SOUND_OPTIONS = 3;
 
-const TREASURES_RARITY = 50;
-
 const Kills = {
   headshot: 'headshot',
   slice: 'slice',
@@ -92,6 +90,13 @@ export const GameTreasure = {
   tlo: { type: 'tlo', tile: 2, value: 40 },
   war: { type: 'war', tile: 3, value: 26 },
   trunk: { type: 'trunk', tile: 4, value: 80 },
+};
+
+const TREASURES_RARITY = {
+  [GameTreasure.cbcoin.type]: 50,
+  [GameTreasure.tlo.type]: 50,
+  [GameTreasure.war.type]: 50,
+  [GameTreasure.trunk.type]: 50,
 };
 
 const Scores = {

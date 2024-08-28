@@ -36,7 +36,7 @@ function pickHP(state, player, value) {
   console.log(`Player ${player.walletAddress} stands on HP, increasing by ${value}.`);
   player.stats.ap.current -= 1;
   player.stats.hp.current += value;
-  addCoins(player, value);
+  addCoins(player, GameTreasure.cbcoin.type, value);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
   return {
     player,
@@ -52,7 +52,7 @@ function pickAP(state, player, value) {
   console.log(`Player stands on a AP object, increasing by ${value}. `);
   player.stats.ap.current -= 1;
   player.stats.ap.current += value;
-  addCoins(player, value);
+  addCoins(player, GameTreasure.cbcoin.type, value);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
   return {
     player,
@@ -73,7 +73,7 @@ function pickLandmine(state, player, value) {
   } else {
     player.stats.ap.current -= 1;
     player.equipment.landmines.current += 1;
-    addCoins(player, value);
+    addCoins(player, GameTreasure.cbcoin.type, value);
     state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
     return {
       player,
@@ -92,7 +92,7 @@ function pickTeleportDevice(state, player, value) {
   } else {
     player.stats.ap.current -= 1;
     player.equipment.teleports.current += 1;
-    addCoins(player, value);
+    addCoins(player, GameTreasure.cbcoin.type, value);
     state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
     return {
       player,
@@ -115,7 +115,8 @@ function pickTreasure(state, player) {
   state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
   state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
   const valueWithBonus = value + (player.stats.bonus[type] || 0);
-  addCoins(player, valueWithBonus);
+  addCoins(player, GameTreasure.cbcoin.type, valueWithBonus);
+  addCoins(player, type, 1);
   return {
     player,
     picked: { type, tile: treasureTile },
