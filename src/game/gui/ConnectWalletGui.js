@@ -83,9 +83,9 @@ const handleArconnect = async (changeScene, walletConnectionText) => {
       'SIGNATURE',
     ]);
     const walletAddress = await window.arweaveWallet.getActiveAddress();
+    changeScene(walletAddress);
     walletConnectionText = 'Wallet connected';
     localStorage.setItem('wallet_address', walletAddress);
-    changeScene(walletAddress);
     const { signer, address } = await generateSigner();
     localStorage.setItem('generated_wallet_address', address);
     warpAO.generatedSigner = signer;
