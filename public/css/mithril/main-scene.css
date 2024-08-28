@@ -137,10 +137,13 @@
   }
 
   .timebar-progress {
+    &.rounds {
+      background-color: var(--blue);
+      background-image: repeating-linear-gradient(45deg, var(--blue) 0px, var(--blue) 2px, black 2px, black 4px);
+    }
     height: 100%;
-    background-color: var(--green);
+
     image-rendering: pixelated;
-    background-image: repeating-linear-gradient(45deg, var(--green) 0px, var(--green) 2px, black 2px, black 4px);
   }
 }
 
