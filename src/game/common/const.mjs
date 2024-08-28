@@ -81,7 +81,7 @@ const GameObject = {
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 100 },
 };
 
-const GameTreasure = {
+export const GameTreasure = {
   hole: { type: 'hole', tile: 0, value: 0 },
   cbcoin: { type: 'cbcoin', tile: 1, value: 500 },
   tlo: { type: 'tlo', tile: 2, value: 40 },
@@ -106,7 +106,7 @@ const Combat = {
 };
 
 // ------- Beaver Config
-const BonusType = {
+export const BonusType = {
   KillBonus: 'KillBonus',
 };
 

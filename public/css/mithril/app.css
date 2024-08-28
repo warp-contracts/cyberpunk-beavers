@@ -9,9 +9,14 @@
   --lightgrey: #555;
   --blue: rgba(0, 140, 255, 0.83);
   --ap: #25a31f;
+  --boxblack: #050a0e;
 
   /* font sizes */
   --regular: 22px;
+  --big-title: 50px;
+
+  /* font families */
+  --ff-main: 'Press Start 2P';
 }
 
 body {
@@ -69,4 +74,32 @@ body {
 
 .list-item.shuffling {
   animation: fade-out-in 0.5s ease-in-out;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.justify-evenly {
+  justify-content: space-evenly;
+}
+
+.align-items-center {
+  align-items: center;
 }
