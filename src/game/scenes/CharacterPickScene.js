@@ -2,7 +2,7 @@ import { WebFontFile } from '../objects/WebFontFile.js';
 import { mainSceneKey, characterPickSceneKey, leaderboardSceneKey } from '../../main.js';
 import Phaser from 'phaser';
 import { CharacterPickGui } from '../gui/CharacterPickGui.js';
-import { showGui } from '../utils/mithril.js';
+import { hideGui, showGui } from '../utils/mithril.js';
 
 export default class CharacterPickScene extends Phaser.Scene {
   score;
@@ -27,7 +27,12 @@ export default class CharacterPickScene extends Phaser.Scene {
     const self = this;
     m.mount(showGui(), {
       view: () => {
-        return m(CharacterPickGui, { changeScene: (beaverChoice) => self.changeScene(beaverChoice) });
+        return m(CharacterPickGui, {
+          changeScene: (beaverChoice) => {
+            hideGui();
+            self.changeScene(beaverChoice);
+          },
+        });
       },
     });
   }
