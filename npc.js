@@ -1,17 +1,17 @@
-import Const from './js/common/const.mjs';
 import { Tag, WarpFactory } from 'warp-contracts';
 import { ArweaveSigner, createData } from 'warp-arbundles/build/node/esm/index.js';
+import Const from './src/game/common/const.mjs';
 
 const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
 const moduleId = 'iZWVADl_rjTu2FQA7jN6zyQYWa3dUbvxztNnCL2gWKM';
 const processIds = [
-  'FcoTY1iSlrXeVfy9MQ9wYT7xLHARTJKr5pvN6o2jQ3Q',
+  'fmqCpvS9sPDnYVqRvucz4JDNOyM0amAhZt4F581v6f8',
   /*'oKolyRBKWf5Y8rdlXh9rd8F4R7Nk0HMnmxS5-WMZ_KM'*/
 ];
 
 async function runNpc() {
-  for (let i = 0; i < 13; i++) {
+  for (let i = 0; i < 18; i++) {
     const warp = WarpFactory.forMainnet();
     const { address, jwk } = await warp.generateWallet();
     const signer = new ArweaveSigner(jwk);
@@ -48,7 +48,7 @@ const sendDataItem = async (message, signer, moduleId, processId) => {
   });
   await dataItem.sign(signer);
 
-  const response = await fetch('https://mu.warp.cc', {
+  const response = await fetch('http://localhost:8080', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/octet-stream',

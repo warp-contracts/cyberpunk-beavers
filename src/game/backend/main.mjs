@@ -4,6 +4,7 @@ import ids from '../config/warp-ao-ids.js';
 import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
 import { readMapFromArweave } from '../../../tools/game-common.js';
+import { maps } from '../common/const.mjs';
 
 const WS_PORT = 8097;
 
@@ -157,7 +158,7 @@ async function spawnGame() {
     },
     processEnv.Process.Owner
   );
-  const { mapTxId, mapJson } = await readMapFromArweave();
+  const { mapTxId, mapJson } = await readMapFromArweave(maps[1]);
 
   console.log(mapTxId);
 

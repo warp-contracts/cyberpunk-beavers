@@ -1,4 +1,5 @@
 import { dryrun } from '@permaweb/aoconnect';
+import { maps } from '../common/const.mjs';
 
 export function getEnv() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -66,7 +67,7 @@ export function convertToCamelCase(input) {
 export async function loadMapTxId() {
   const env = window.warpAO.config.env;
   if (env === 'dev') {
-    return '--YBDNmBAIuT-XstUI795v1DUDdpd8iNZKnYD3Esxzs';
+    return maps[1];
   }
 
   const processId = window.warpAO.processId();
