@@ -5,7 +5,7 @@ import { readFileSync } from 'fs';
 import { spawnGame, transferToken, setupGameContract } from './game-common.js';
 import { replaceId } from './replace-id.js';
 import { dateFromArg } from './common.mjs';
-import { activeGamesConfig, hourSessionGamesConfig } from './deploy-spawn-session-config.js';
+import { activeGamesConfig, hourSessionGamesConfig, TOKEN_CONTRACT_MOCK } from './deploy-spawn-session-config.js';
 import ids from '../src/game/config/warp-ao-ids.js';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
@@ -104,7 +104,7 @@ async function doIt() {
       muUrl,
       moduleId: gameSrcId,
       additionalTags: [{ name: 'Hub-Process-Tx', value: hubProcessId }],
-      treasures,
+      gameTokens: TOKEN_CONTRACT_MOCK,
     });
     gameProcesses.push(gameProcessId);
 

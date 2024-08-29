@@ -13,7 +13,7 @@ export function MainSceneGui() {
         equipment ? m(Equipment, { equipment }) : null,
         m(KeyboardMapping),
         m(InfoPanel, { gameStats, stats: mainPlayer.stats, roundInfo, gameOver }),
-        mainPlayer ? m(Stats, { mainPlayer, playersTotal }) : null,
+        mainPlayer ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} }) : null,
       ];
     },
   };

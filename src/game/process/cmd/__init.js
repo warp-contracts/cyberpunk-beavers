@@ -49,8 +49,10 @@ function initState(message, state) {
     gameTreasuresTilemapForClient: Array(Map.size)
       .fill([])
       .map(() => Array(Map.size)),
-    gameTreasuresRarity: state.gameTreasuresRarity || Const.TREASURES_RARITY,
-    gameTreasuresCounter: state.gameTreasuresRarity || Const.TREASURES_RARITY,
+    gameTokens: state.gameTokens || Const.DEFAULT_GAME_TOKENS,
+    gameTreasuresCounter: Object.fromEntries(
+      Object.entries(state.gameTokens || Const.DEFAULT_GAME_TOKENS).map(([k, v]) => [k, v.amount])
+    ),
     round: {
       current: 0,
       start: message.Timestamp, //ms
@@ -89,28 +91,28 @@ function setInvisibleGameTreasures(state) {
   setObjectsOnRandomPositions(
     state,
     GameTreasure.cbcoin,
-    state.gameTreasuresRarity[GameTreasure.cbcoin.type],
+    state.gameTokens[GameTreasure.cbcoin.type].amount,
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );
   setObjectsOnRandomPositions(
     state,
     GameTreasure.tlo,
-    state.gameTreasuresRarity[GameTreasure.tlo.type],
+    state.gameTokens[GameTreasure.tlo.type].amount,
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );
   setObjectsOnRandomPositions(
     state,
     GameTreasure.war,
-    state.gameTreasuresRarity[GameTreasure.war.type],
+    state.gameTokens[GameTreasure.war.type].amount,
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );
   setObjectsOnRandomPositions(
     state,
     GameTreasure.trunk,
-    state.gameTreasuresRarity[GameTreasure.trunk.type],
+    state.gameTokens[GameTreasure.trunk.type].amount,
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );
