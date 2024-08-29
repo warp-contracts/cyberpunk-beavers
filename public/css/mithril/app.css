@@ -14,6 +14,8 @@
   /* font sizes */
   --regular: 22px;
   --big-title: 50px;
+  --fs-small-title: 12px;
+  --fs-small: 9px;
 
   /* font families */
   --ff-main: 'Press Start 2P';

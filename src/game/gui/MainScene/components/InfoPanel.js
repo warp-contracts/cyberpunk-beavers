@@ -26,7 +26,6 @@ function Timebar() {
       const pause = vnode.attrs.pause;
       if (!pause) {
         const progress = vnode.attrs.progress || 0;
-        console.log(progress);
         width = 100 - Math.max(0, Math.min(100, progress));
       }
     },

@@ -40,7 +40,7 @@
 
   .character-box {
     width: 25vw;
-    min-height: 400px;
+    min-height: 380px;
     border: 0;
     outline: none;
     background-color: var(--boxblack);
@@ -51,6 +51,7 @@
     color: var(--boxblack);
     clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);
     margin-top: 1rem;
+    font-size: var(--fs-small);
 
     .character-box-container {
       display: flex;
@@ -70,6 +71,7 @@
         justify-content: center;
         padding-bottom: 15px;
         padding-top: 15px;
+        font-size: var(--fs-small-title);
       }
 
       .character-box-interrior {
@@ -87,11 +89,19 @@
 
 .character-ability {
   margin-bottom: 0.5rem;
+
+  .ap {
+    color: var(--ap);
+  }
+
+  .hp {
+    color: var(--red);
+  }
 }
 
 .character-box-with-corners {
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
   border: 2px solid black;
   position: relative;
   display: inline-block;
@@ -106,9 +116,20 @@
     cursor: pointer;
   }
 
+  .corner.middle {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: var(--fs-small-title);
+  }
+
   .corner.top-left {
     top: 0;
     left: 0;
+  }
+
+  .corner.top-left.hp {
+    color: var(--red);
   }
 
   .corner.top-right {
