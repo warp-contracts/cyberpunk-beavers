@@ -27,8 +27,8 @@ const processEnv = {
 let txId = null;
 let ongoingProcesses = await spawnGameHub();
 const hub = ongoingProcesses[ids.hub_processId_dev];
-Object.assign(ongoingProcesses, await spawnGameAndChat());
-Object.assign(ongoingProcesses, await spawnGameAndChat());
+Object.assign(ongoingProcesses, await spawnGame());
+Object.assign(ongoingProcesses, await spawnGame());
 
 // Event listener for WebSocket connections
 wss.on('connection', (ws, request) => {
@@ -139,9 +139,7 @@ async function spawnGameHub() {
   };
 }
 
-async function spawnGameAndChat() {
-  const chatProcess = await spawnChat();
-
+async function spawnGame() {
   const quickJS = await quickJSPlugin.process({
     contractSource: fs.readFileSync('./dist/output-game.js', 'utf-8'),
     binaryType: 'release_sync',
@@ -155,8 +153,6 @@ async function spawnGameAndChat() {
       /*start: Date.now() + 1000 * 10,
       end: Date.now() + 1000 * 20,*/
       playersLimit: 2,
-      chatProcessId: Object.keys(chatProcess)[0],
-      chatModuleId: Object.values(chatProcess)[0].moduleId,
       hubProcessId: ids.hub_processId_dev,
     },
     processEnv.Process.Owner
@@ -178,25 +174,9 @@ async function spawnGameAndChat() {
     hub.state = (await hub.quickJS.handle(result.Messages[0], processEnv, hub.state)).State;
   }
   return {
-    ...chatProcess,
     [processRandomId]: {
       quickJS: quickJS,
       state: result.State,
-    },
-  };
-}
-
-async function spawnChat() {
-  const chatQuickJs = await quickJSPlugin.process({
-    contractSource: fs.readFileSync('./dist/output-chat.js', 'utf-8'),
-    binaryType: 'release_sync',
-  });
-  const processRandomId = Math.random().toString(36).substring(2);
-  return {
-    [processRandomId]: {
-      moduleId: processRandomId,
-      quickJS: chatQuickJs,
-      state: {},
     },
   };
 }

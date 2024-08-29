@@ -5,7 +5,6 @@ import ConnectWalletScene from './game/scenes/ConnectWalletScene.js';
 import MainSceneLoading from './game/scenes/MainSceneLoading.js';
 import LeaderboardScene from './game/scenes/LeaderboardScene.js';
 import LoungeAreaScene from './game/scenes/LoungeAreaScene.js';
-import ChatScene from './game/scenes/ChatScene.js';
 import GameHubScene from './game/scenes/GameHubScene.js';
 
 export const scenes = {
@@ -17,7 +16,6 @@ export const scenes = {
   mainScene: { key: 'main-scene', scene: MainScene },
   mainSceneLoading: { key: 'main-scene-loading', scene: MainSceneLoading },
   leaderboardScene: { key: 'leaderboard-scene', scene: LeaderboardScene },
-  chatScene: { key: 'chat-scene', scene: ChatScene },
 };
 
 export const mainSceneKey = scenes.mainScene.key;
@@ -28,7 +26,6 @@ export const leaderboardSceneKey = scenes.leaderboardScene.key;
 export const loadingSceneKey = scenes.loadingScene.key;
 export const loungeAreaSceneKey = scenes.loungeAreaScene.key;
 export const characterPickSceneKey = scenes.characterPickScene.key;
-export const chatSceneKey = scenes.chatScene.key;
 
 const config = {
   title: 'CyberBeavers',
