@@ -30,12 +30,6 @@ window.warpAO = {
   moduleId: () => {
     return window.warpAO.config[`moduleId_${env}`];
   },
-  chatProcessId: () => {
-    return window.warpAO.config[`chat_processId_${env}`];
-  },
-  chatModuleId: () => {
-    return window.warpAO.config[`chat_moduleId_${env}`];
-  },
   tokenProcessId: () => {
     return window.warpAO.config[`token_processId_${env}`];
   },

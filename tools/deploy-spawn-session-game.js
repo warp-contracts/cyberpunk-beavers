@@ -85,20 +85,11 @@ async function spawn({ processName, moduleId }) {
 
 async function doIt() {
   const hubProcessId = ids[`hub_processId_${env}`];
-  const [gameSrcId, chatSrcId] = await Promise.all([deploy('game'), deploy('chat')]);
-  const chatProcessId = await spawn({
-    processName: 'chat',
-    moduleId: chatSrcId,
-  });
-
+  const [gameSrcId] = await Promise.all([deploy('game')]);
   const gameProcessId = await spawnGame({
     muUrl,
     moduleId: gameSrcId,
-    additionalTags: [
-      { name: 'Chat-Process-Tx', value: chatProcessId },
-      { name: 'Chat-Module-Tx', value: chatSrcId },
-      { name: 'Hub-Process-Tx', value: hubProcessId },
-    ],
+    additionalTags: [{ name: 'Hub-Process-Tx', value: hubProcessId }],
     treasures,
   });
 
@@ -108,8 +99,6 @@ async function doIt() {
   }
 
   const customConfig = gameCustomConfig(hubProcessId, execDate.getTime(), playersLimit);
-  customConfig.chatProcessId = chatProcessId;
-  customConfig.chatModuleId = chatSrcId;
 
   console.log(`Setting up contract ${gameProcessId} with config`, customConfig);
   setTimeout(async () => {
@@ -119,8 +108,6 @@ async function doIt() {
   return {
     [`processId_${env}`]: gameProcessId,
     [`moduleId_${env}`]: gameSrcId,
-    [`chat_processId_${env}`]: chatProcessId,
-    [`chat_moduleId_${env}`]: chatSrcId,
     [`hub_processId_${env}`]: hubProcessId,
   };
 }
