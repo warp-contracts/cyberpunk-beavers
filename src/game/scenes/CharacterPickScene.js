@@ -1,16 +1,15 @@
 import { WebFontFile } from '../objects/WebFontFile.js';
-import { Text } from '../objects/Text.js';
-import { mainSceneKey, playerPickSceneKey, leaderboardSceneKey } from '../../main.js';
+import { mainSceneKey, characterPickSceneKey, leaderboardSceneKey } from '../../main.js';
 import Phaser from 'phaser';
 import { CharacterPickGui } from '../gui/CharacterPickGui.js';
 import { showGui } from '../utils/mithril.js';
 
-export default class PlayerPickScene extends Phaser.Scene {
+export default class CharacterPickScene extends Phaser.Scene {
   score;
   playerAgileOne;
 
   constructor() {
-    super(playerPickSceneKey);
+    super(characterPickSceneKey);
   }
 
   init(data) {
