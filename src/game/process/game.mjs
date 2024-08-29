@@ -134,9 +134,6 @@ export function handle(state, message) {
         ...registerPlayer(state, action),
         players: state.players,
         map: {
-          groundTilemap: state.groundTilemap,
-          decorationTilemap: state.decorationTilemap,
-          obstaclesTilemap: state.obstaclesTilemap,
           gameObjectsTilemap: state.gameObjectsTilemap,
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
@@ -155,9 +152,6 @@ export function handle(state, message) {
         cmd: Const.Command.registered,
         players: state.players,
         map: {
-          groundTilemap: state.groundTilemap,
-          decorationTilemap: state.decorationTilemap,
-          obstaclesTilemap: state.obstaclesTilemap,
           gameObjectsTilemap: state.gameObjectsTilemap,
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },

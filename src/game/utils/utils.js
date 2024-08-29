@@ -62,3 +62,22 @@ export function convertToCamelCase(input) {
     .join('')
     .replace(/[^\w\s]/gi, '');
 }
+
+export async function loadMapTxId() {
+  const env = window.warpAO.config.env;
+  if (env === 'dev') {
+    return '--YBDNmBAIuT-XstUI795v1DUDdpd8iNZKnYD3Esxzs';
+  }
+
+  const processId = window.warpAO.processId();
+  const response = await fetch(`https://arweave.net/${processId}`);
+  if (!response.ok) {
+    throw new Error('Could not load map tx from Arweave');
+  }
+  const initState = await response.json();
+  if (!initState.mapTxId) {
+    throw new Error('Initial state does not contain mapTxId');
+  }
+
+  return initState.mapTxId;
+}
