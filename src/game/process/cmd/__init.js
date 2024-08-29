@@ -119,11 +119,6 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
   });
 }
 
-function getRandomNumber(min, max, randomCounter) {
-  const randomValue = Math.random(randomCounter);
-  return Math.floor(randomValue * (max - min + 1)) + min;
-}
-
 export function calculateRandomPos(state, max) {
   state.randomCounter++;
   const x = Math.floor(Math.random(state.randomCounter) * max);

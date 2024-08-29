@@ -5,9 +5,6 @@ import { CharacterPickGui } from '../gui/CharacterPickGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
 
 export default class CharacterPickScene extends Phaser.Scene {
-  score;
-  playerAgileOne;
-
   constructor() {
     super(characterPickSceneKey);
   }

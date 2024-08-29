@@ -44,6 +44,7 @@ export default class MainScene extends Phaser.Scene {
     this.gameStart = data.gameStart;
     this.gameEnd = data.gameEnd;
     this.userName = data.userName;
+    this.mapTxId = data.mapTxId;
   }
 
   preload() {
@@ -54,7 +55,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png');
 
     // load the JSON file
-    this.load.tilemapTiledJSON('tilemap', 'assets/maps/v2/map_ppe.json');
+    this.load.tilemapTiledJSON('tilemap', `https://arweave.net/${this.mapTxId}`);
     // ===== MAP V2
     this.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
@@ -309,7 +310,6 @@ export default class MainScene extends Phaser.Scene {
     this.mainPlayer.mainScene = this;
 
     this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
-    this.updateRanking();
 
     m.redraw();
 
@@ -329,7 +329,6 @@ export default class MainScene extends Phaser.Scene {
       beaverChoice: playerInfo.beaverId,
     });
     this.allPlayers[playerInfo.walletAddress] = player;
-    this.updateRanking();
     return player;
   }
 
@@ -730,9 +729,6 @@ export default class MainScene extends Phaser.Scene {
       newCoinsGained = responsePlayer.stats.coins.gained;
       this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
     }
-    if (currentCoinsGained != newCoinsGained) {
-      self.updateRanking();
-    }
   }
 
   displayPlayerScore(scores, walletAddress, options) {
@@ -862,10 +858,5 @@ export default class MainScene extends Phaser.Scene {
         backgroundMusic?.play();
       }
     });
-  }
-
-  updateRanking() {
-    this.ranking = Object.entries(this.allPlayers).sort((a, b) => b[1].stats.coins.gained - a[1].stats.coins.gained);
-    Object.values(this.allPlayers).forEach((p) => p.updatePlayerPosition());
   }
 }

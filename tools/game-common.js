@@ -17,7 +17,7 @@ const maps = [
 
 const randomIntegerInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-async function readMapFromArweave() {
+export async function readMapFromArweave() {
   const mapTxId = maps[randomIntegerInRange(0, maps.length - 1)];
   console.log(`Loading map ${mapTxId}`);
   const response = await fetch(`https://arweave.net/${mapTxId}`);
@@ -48,7 +48,7 @@ export async function spawnGame({ muUrl, moduleId, additionalTags = [], treasure
     processTags.push(new Tag(tag.name, tag.value));
   }
 
-  const data = JSON.stringify({ rawMap: mapJson, mapApi: 'v1', gameTreasuresRarity: treasures, mapTxId });
+  const data = JSON.stringify({ rawMap: mapJson, gameTreasuresRarity: treasures, mapTxId });
   const processDataItem = createData(data, signer, { tags: processTags });
   await processDataItem.sign(signer);
   const processResponse = await fetch(muUrl, {

@@ -7,7 +7,7 @@ import {
   mainSceneKey,
   characterPickSceneKey,
 } from '../../main.js';
-import { checkProfile } from '../utils/utils.js';
+import { checkProfile, loadMapTxId } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { LoungeArenaSceneGui } from '../gui/LoungeArenaSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
@@ -168,8 +168,10 @@ export default class LoungeAreaScene extends Phaser.Scene {
   async goToMainScene() {
     hideGui();
     const userName = (await this.profilePromise)?.Profile?.UserName;
+    const mapTxId = await loadMapTxId();
     this.scene.start(mainSceneKey, {
       userName,
+      mapTxId,
       walletAddress: this.walletAddress,
       beaverId: this.beaverId,
       gameStart: this.gameStart,
@@ -182,8 +184,10 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.running = true;
       hideGui();
       const userName = (await this.profilePromise)?.Profile?.UserName;
+      const mapTxId = await loadMapTxId();
       this.scene.start(characterPickSceneKey, {
         userName,
+        mapTxId,
         walletAddress: this.walletAddress,
         gameStart: this.gameStart,
         gameEnd: this.gameEnd,
