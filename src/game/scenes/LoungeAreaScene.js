@@ -5,7 +5,7 @@ import {
   leaderboardSceneKey,
   loungeAreaSceneKey,
   mainSceneKey,
-  playerPickSceneKey,
+  characterPickSceneKey,
 } from '../../main.js';
 import { checkProfile } from '../utils/utils.js';
 import Phaser from 'phaser';
@@ -182,7 +182,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.running = true;
       hideGui();
       const userName = (await this.profilePromise)?.Profile?.UserName;
-      this.scene.start(playerPickSceneKey, {
+      this.scene.start(characterPickSceneKey, {
         userName,
         walletAddress: this.walletAddress,
         gameStart: this.gameStart,

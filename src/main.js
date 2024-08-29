@@ -1,6 +1,6 @@
 import MainScene from './game/scenes/MainScene.js';
 import LoadingScene from './game/scenes/LoadingScene.js';
-import PlayerPickScene from './game/scenes/PlayerPickScene.js';
+import CharacterPickScene from './game/scenes/CharacterPickScene.js';
 import ConnectWalletScene from './game/scenes/ConnectWalletScene.js';
 import MainSceneLoading from './game/scenes/MainSceneLoading.js';
 import LeaderboardScene from './game/scenes/LeaderboardScene.js';
@@ -13,7 +13,7 @@ export const scenes = {
   gameHubScene: { key: 'game-hub-scene', scene: GameHubScene },
   loadingScene: { key: 'loading-scene', scene: LoadingScene },
   loungeAreaScene: { key: 'lounge-area-scene', scene: LoungeAreaScene },
-  playerPickScene: { key: 'player-pick-scene', scene: PlayerPickScene },
+  characterPickScene: { key: 'character-pick-scene', scene: CharacterPickScene },
   mainScene: { key: 'main-scene', scene: MainScene },
   mainSceneLoading: { key: 'main-scene-loading', scene: MainSceneLoading },
   leaderboardScene: { key: 'leaderboard-scene', scene: LeaderboardScene },
@@ -27,7 +27,7 @@ export const connectWalletSceneKey = scenes.connectWalletScene.key;
 export const leaderboardSceneKey = scenes.leaderboardScene.key;
 export const loadingSceneKey = scenes.loadingScene.key;
 export const loungeAreaSceneKey = scenes.loungeAreaScene.key;
-export const playerPickSceneKey = scenes.playerPickScene.key;
+export const characterPickSceneKey = scenes.characterPickScene.key;
 export const chatSceneKey = scenes.chatScene.key;
 
 const config = {
