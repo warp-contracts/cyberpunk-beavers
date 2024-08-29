@@ -40,7 +40,7 @@
 
   .character-box {
     width: 25vw;
-    min-height: 380px;
+    min-height: 350px;
     border: 0;
     outline: none;
     background-color: var(--boxblack);
@@ -49,7 +49,7 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     color: var(--boxblack);
-    clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);
+    /* clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0); */
     margin-top: 1rem;
     font-size: var(--fs-small);
 
@@ -63,8 +63,7 @@
       bottom: 2px;
       background-color: var(--yellow);
       font-family: var(--ff-main);
-      padding: 10px;
-      clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);
+      /* clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0); */
 
       .character-box-title {
         display: flex;
@@ -75,8 +74,8 @@
       }
 
       .character-box-interrior {
-        padding-left: 2rem;
-        padding-right: 2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
       }
 
       .character-box-with-corners-container {

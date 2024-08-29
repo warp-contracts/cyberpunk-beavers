@@ -39,8 +39,8 @@ function CharacterOption() {
               m('.character-box-interrior', [
                 m('.character-box-title', [m('div', character.split('_').join(' '))]),
                 m('.d-flex flex-column', [
-                  m(CharacterAbility, { name: 'AP', value: stats.ap.max, color: 'ap' }),
-                  m(CharacterAbility, { name: 'HP', value: stats.hp.max, color: 'hp' }),
+                  m(CharacterAbility, { name: 'ACTION POINTS', value: stats.ap.max, color: 'ap' }),
+                  m(CharacterAbility, { name: 'HEALTH POINTS', value: stats.hp.max, color: 'hp' }),
                   m(CharacterAbility, {
                     name: 'CBTOKEN BONUS',
                     value: stats.bonus[GameTreasure.cbcoin.type],
@@ -53,12 +53,12 @@ function CharacterOption() {
                 m('.character-box-title', [m('div', weapon.name)]),
                 m('.d-flex flex-column', [
                   m(CharacterAbility, {
-                    name: 'RECOVERY',
-                    value: `${weapon.attack_recovery_ms}MS`,
+                    name: 'ATTACKS PER SECOND',
+                    value: `${Math.round((1000 / weapon.attack_recovery_ms) * 100) / 100}`,
                   }),
                   m(CharacterAbility, {
                     name: 'RANGE',
-                    value: `${weapon.attack_range} FIELDS`,
+                    value: `${weapon.attack_range} FIELD${weapon.attack_range > 1 ? 's' : ''}`,
                   }),
                   m(
                     '.character-box-with-corners-container with-padding',
