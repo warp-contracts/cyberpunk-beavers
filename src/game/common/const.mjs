@@ -87,16 +87,28 @@ const GameObject = {
 export const GameTreasure = {
   hole: { type: 'hole', tile: 0, value: 0 },
   cbcoin: { type: 'cbcoin', tile: 1, value: 500 },
-  tlo: { type: 'tlo', tile: 2, value: 40 },
-  war: { type: 'war', tile: 3, value: 26 },
-  trunk: { type: 'trunk', tile: 4, value: 80 },
+  tlo: { type: 'tlo', tile: 2, value: 100, baseVal: 33.1 },
+  war: { type: 'war', tile: 3, value: 300, baseVal: 0.022 },
+  trunk: { type: 'trunk', tile: 4, value: 100, baseVal: 0.066 },
 };
 
-const TREASURES_RARITY = {
-  [GameTreasure.cbcoin.type]: 50,
-  [GameTreasure.tlo.type]: 50,
-  [GameTreasure.war.type]: 50,
-  [GameTreasure.trunk.type]: 50,
+const DEFAULT_GAME_TOKENS = {
+  [GameTreasure.cbcoin.type]: {
+    id: `${GameTreasure.cbcoin.type}`,
+    amount: 50,
+  },
+  [GameTreasure.tlo.type]: {
+    id: `${GameTreasure.tlo.type}`,
+    amount: 50,
+  },
+  [GameTreasure.war.type]: {
+    id: `${GameTreasure.war.type}`,
+    amount: 50,
+  },
+  [GameTreasure.trunk.type]: {
+    id: `${GameTreasure.trunk.type}`,
+    amount: 50,
+  },
 };
 
 const Scores = {
@@ -272,5 +284,5 @@ export default {
   HIGH_AP_COST,
   Kills,
   DEATH_SOUND_OPTIONS,
-  TREASURES_RARITY,
+  DEFAULT_GAME_TOKENS,
 };

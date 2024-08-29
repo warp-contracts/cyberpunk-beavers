@@ -35,9 +35,9 @@ function sendHubNotification(state) {
 }
 
 export function gameStats(state) {
-  const { gameTreasuresCounter, lastTxs } = state;
+  const { gameTokens, gameTreasuresCounter, lastTxs } = state;
   return {
-    gameStats: { gameTreasuresCounter, lastTxs },
+    gameStats: { gameTokens, gameTreasuresCounter, lastTxs },
   };
 }
 

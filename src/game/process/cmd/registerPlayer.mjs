@@ -33,10 +33,10 @@ export function registerPlayer(state, action) {
   }
 
   const additionalTokens = Object.fromEntries(
-    Object.entries(state.gameTreasuresRarity)
+    Object.entries(state.gameTokens)
       .filter(([key]) => key !== GameTreasure.cbcoin.type)
-      .filter(([, value]) => value > 0)
-      .map(([key, value]) => [key, { gained: 0, total: value }])
+      .filter(([, token]) => token.amount > 0)
+      .map(([key, token]) => [key, { gained: 0 }])
   );
   console.log(`additional tokens`, additionalTokens);
 
