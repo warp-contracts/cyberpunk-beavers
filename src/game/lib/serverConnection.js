@@ -16,10 +16,6 @@ export const serverConnection = await (async () => {
     window.warpAO.processId = () => process;
     window.warpAO.mapTxId = () => mapTxId;
   };
-  conn.initChat = async (module, process) => {
-    conn.chat = await initServerConnection(module, process, false, false, true);
-    window.warpAO.chatProcessId = () => process;
-  };
   return conn;
 })();
 

@@ -36,9 +36,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     console.log('Leaderboard Scene - 3. Create');
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnection.game;
-      this.serverChat = serverConnection.chat;
       this.server.subscribe(this);
-      this.serverChat.subscribe(this);
 
       var self = this;
       m.mount(showGui(), {
@@ -68,7 +66,6 @@ export default class LeaderboardScene extends Phaser.Scene {
             ],*/ self.prepareCellsData(),
             back: () => {
               self.server.unsubscribe();
-              self.serverChat.unsubscribe();
               self.restartScenes();
               self.scene.start(gameHubSceneKey, {
                 walletAddress: self.walletAddress,
@@ -126,7 +123,6 @@ export default class LeaderboardScene extends Phaser.Scene {
         window.location.reload();
       } else {
         this.server.switchProcess(response.processId, response.moduleId);
-        this.serverChat.switchProcess(response.chatProcessId, response.chatModuleId);
 
         window.warpAO.config[`processId_${env}`] = response.processId;
         window.warpAO.processId = () => {
@@ -136,15 +132,6 @@ export default class LeaderboardScene extends Phaser.Scene {
         window.warpAO.config[`moduleId_${env}`] = response.moduleId;
         window.warpAO.moduleId = () => {
           return response.moduleId;
-        };
-        window.warpAO.config[`chat_processId_${env}`] = response.chatProcessId;
-        window.warpAO.chatProcessId = () => {
-          return response.chatProcessId;
-        };
-
-        window.warpAO.config[`chat_moduleId_${env}`] = response.chatModuleId;
-        window.warpAO.chatModuleId = () => {
-          return response.chatModuleId;
         };
         hideGui();
         this.restartScenes();

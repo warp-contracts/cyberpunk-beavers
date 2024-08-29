@@ -32,8 +32,6 @@ export function setup(state, action, message) {
       };
       state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup ${action.type}`, state.playWindow);
-      state.chatProcessId = action.chatProcessId;
-      state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
       state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
       console.log(`Setup ${action.type}`, action);
@@ -52,8 +50,6 @@ export function setup(state, action, message) {
       };
       state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup ${action.type}`, state.playWindow);
-      state.chatProcessId = action.chatProcessId;
-      state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
       state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
       console.log(`Setup ${action.type}`, action);
@@ -65,8 +61,6 @@ export function setup(state, action, message) {
       state.playWindow.end = action.end;
       state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup custom`, state.playWindow);
-      state.chatProcessId = action.chatProcessId;
-      state.chatModuleId = action.chatModuleId;
       state.hubProcessId = action.hubProcessId;
       state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
       console.log(`Setup custom`, action);
@@ -97,8 +91,6 @@ function sendHubNotification(state) {
         playWindow: state.playWindow,
         playersLimit: state.playersLimit,
         walletsQueue: state.walletsQueue,
-        chatProcessId: state.chatProcessId,
-        chatModuleId: state.chatModuleId,
         mapTxId: state.mapTxId,
       },
     }),

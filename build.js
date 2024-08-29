@@ -21,11 +21,6 @@ const processes = [
     outfile: 'dist/output-game.js',
     ...commonEsbuildSettings,
   },
-  {
-    entryPoints: ['src/game/process/chat.mjs'],
-    outfile: 'dist/output-chat.js',
-    ...commonEsbuildSettings,
-  },
 ];
 
 processes.forEach(async (process) => {

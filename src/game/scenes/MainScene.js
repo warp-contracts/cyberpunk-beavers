@@ -530,7 +530,7 @@ export default class MainScene extends Phaser.Scene {
               opponent.unlock();
             });
         } else {
-          opponent.bloodSplatAnim(isOpponentMainPlayer || isKillerMainPlayer);
+          opponent?.bloodSplatAnim(isOpponentMainPlayer || isKillerMainPlayer);
         }
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
           forOpponent: {

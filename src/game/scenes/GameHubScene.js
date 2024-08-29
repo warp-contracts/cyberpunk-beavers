@@ -40,7 +40,6 @@ export default class GameHubScene extends Phaser.Scene {
             joinGame: async (processId, game) => {
               console.log(`picked ${processId}`);
               await serverConnection.initGame(game.module, processId, game.mapTxId);
-              await serverConnection.initChat(game.chatModuleId, game.chatProcessId);
               hideGui();
               self.scene.start(loungeAreaSceneKey, {
                 walletAddress: self.walletAddress,
