@@ -254,20 +254,20 @@
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
  "tileheight":48,
- "tilesets":[
-        {
-         "columns":11,
-         "firstgid":1,
-         "image":"GSJH_Assets\/Sprite_Map_Sheet.png",
-         "imageheight":1104,
-         "imagewidth":528,
-         "margin":0,
-         "name":"Sprite_Map_Sheet",
-         "spacing":0,
-         "tilecount":253,
-         "tileheight":48,
-         "tilewidth":48
-        }],
+   "tilesets":[
+          {
+           "columns":11,
+           "firstgid":1,
+           "image":"GSJH_Assets\/Sprite_Map_Sheet.png",
+           "imageheight":1104,
+           "imagewidth":528,
+           "margin":0,
+           "name":"Sprite_Map_Sheet",
+           "spacing":0,
+           "tilecount":253,
+           "tileheight":48,
+           "tilewidth":48
+          }],
  "tilewidth":48,
  "type":"map",
  "version":"1.10",

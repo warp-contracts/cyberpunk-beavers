@@ -2,6 +2,11 @@ const EVENTS_NAME = {
   currentMove: 'currentMove',
 };
 
+export const maps = [
+  'GdAsRCknjjudRxmIvGvNCtM3JLxUDW2B6cCF_Tvd7g8', // b1m1
+  'YNFa9YBS_M4GtRF4BF2-aiy-JuX0CqO5nuclaE1yIDQ', // b1m2
+];
+
 const EMPTY_TILE = 0;
 
 export const COLLISIONS_LAYER = 'collisions';

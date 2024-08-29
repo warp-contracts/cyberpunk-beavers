@@ -55,6 +55,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png');
 
     // load the JSON file
+    // this.load.tilemapTiledJSON('tilemap', `assets/maps/v2/b1m2.json`);
     this.load.tilemapTiledJSON('tilemap', `https://arweave.net/${this.mapTxId}`);
     // ===== MAP V2
     this.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
@@ -381,6 +382,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   initMap({ treasuresLayer, objectsLayer }) {
+    if (this.gameTreasuresLayer && this.gameObjectsLayer) {
+      return;
+    }
     this.gameTreasuresLayer = this.createLayer(treasuresLayer, 'cyberpunk_game_treasures', 3);
     this.gameObjectsLayer = this.createLayer(objectsLayer, 'cyberpunk_game_objects', 4);
   }
@@ -473,20 +477,13 @@ export default class MainScene extends Phaser.Scene {
             for (const [wallet, player] of Object.entries(response.players)) {
               if (wallet === this.walletAddress && !this.mainPlayer) {
                 this.beaverId = player.beaverId;
+                self.createMainPlayer(player);
+                self.initCamera();
                 self.initMap({
                   treasuresLayer: response.map.gameTreasuresTilemapForClient,
                   objectsLayer: response.map.gameObjectsTilemap,
                 });
-                self.createMainPlayer(player);
-                self.initCamera();
               } else {
-                if (!this.newChallengerSound.isPlaying) {
-                  const now = Date.now();
-                  if (!this.newChallengerSoundLastTs || now - this.newChallengerSoundLastTs > 5000) {
-                    this.newChallengerSoundLastTs = now;
-                    this.newChallengerSound.play();
-                  }
-                }
                 self.addOtherPlayer(player);
               }
             }
@@ -708,6 +705,13 @@ export default class MainScene extends Phaser.Scene {
       return;
     }
     if (!this.allPlayers[pInfo.walletAddress]) {
+      if (!this.newChallengerSound.isPlaying) {
+        const now = Date.now();
+        if (!this.newChallengerSoundLastTs || now - this.newChallengerSoundLastTs > 5000) {
+          this.newChallengerSoundLastTs = now;
+          this.newChallengerSound.play();
+        }
+      }
       console.log('Setting up new player', pInfo.walletAddress);
       const player = this.createPlayer(pInfo);
     }
