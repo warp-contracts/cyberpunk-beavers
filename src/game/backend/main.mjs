@@ -3,6 +3,7 @@ import { QuickJsPlugin } from 'warp-contracts-plugin-quickjs';
 import ids from '../config/warp-ao-ids.js';
 import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
+import { readMapFromArweave } from '../../../tools/game-common.js';
 
 const WS_PORT = 8097;
 
@@ -160,10 +161,13 @@ async function spawnGameAndChat() {
     },
     processEnv.Process.Owner
   );
-  const map = JSON.parse(fs.readFileSync('./public/assets/maps/v2/map_ppe.json', 'utf-8'));
+  const { mapTxId, mapJson } = await readMapFromArweave();
+
+  console.log(mapTxId);
 
   const result = await quickJS.handle(setupMessage, processEnv, {
-    rawMap: map,
+    rawMap: mapJson,
+    mapTxId,
   });
   if (result.Error) {
     console.error(result.Error);

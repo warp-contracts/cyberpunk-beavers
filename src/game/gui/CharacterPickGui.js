@@ -103,7 +103,7 @@ function CharacterBoxWithCorners() {
         m('.corner.top-left.hp', [`${damage.value}HP`, m('span.hint', damage.hint)]),
         m('.corner.top-right', [formatPercent(hitChance.value), m('span.hint', hitChance.hint)]),
         m('.corner.bottom-left', [formatPercent(criticalHitChance.value), m('span.hint', criticalHitChance.hint)]),
-        m('.corner.bottom-right', [criticalHitMultiplier.value, m('span.hint', criticalHitMultiplier.hint)]),
+        m('.corner.bottom-right', [`${criticalHitMultiplier.value}x`, m('span.hint', criticalHitMultiplier.hint)]),
       ]);
     },
   };
