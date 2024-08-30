@@ -1,8 +1,8 @@
 import { TurboFactory, defaultTurboConfiguration } from '@ardrive/turbo-sdk/node';
 import fs from 'fs';
 
-const file = '../public/assets/maps/v2/b1m1.json';
-const mapName = 'b1m1.json';
+const file = '../public/assets/maps/v2/b1m3.json';
+const mapName = 'b1m3.json';
 
 (async () => {
   /**
@@ -57,6 +57,7 @@ const mapName = 'b1m1.json';
   console.log(JSON.stringify(uploadResult, null, 2));
 
   const transactionId = uploadResult.id;
+  console.log(transactionId);
 
   /**
    * Tops up a wallet with Credits using tokens.
