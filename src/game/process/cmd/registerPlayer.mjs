@@ -38,7 +38,6 @@ export function registerPlayer(state, action) {
       .filter(([, token]) => token.amount > 0)
       .map(([key, token]) => [key, { gained: 0 }])
   );
-  console.log(`additional tokens`, additionalTokens);
 
   let newPlayer = {
     walletAddress,
