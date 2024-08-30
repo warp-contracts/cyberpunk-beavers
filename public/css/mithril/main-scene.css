@@ -106,6 +106,18 @@
     align-items: center;
     height: 30px;
 
+    &.game-over {
+      background: black;
+      font-size: var(--big-title);
+      text-transform: uppercase;
+      color: var(--yellow);
+      text-align: center;
+      padding-top: 2rem;
+      padding-bottom: 3rem;
+      flex-direction: column;
+      width: 500px;
+    }
+
     &.rounds {
       top: -1px;
     }

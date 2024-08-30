@@ -11,7 +11,7 @@
   .character-pick-title {
     font-family: 'Press Start 2P';
     font-size: var(--big-title);
-    text-transform: 'uppercase';
+    text-transform: uppercase;
     color: var(--yellow);
     text-align: center;
     padding-top: 4rem;
