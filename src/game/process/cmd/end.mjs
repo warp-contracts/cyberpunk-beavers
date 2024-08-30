@@ -48,7 +48,7 @@ export function sendTokens(state) {
           const target = state.gameTokens[type].id;
           const action = TOKEN_CONTRACT_ACTION[type].transfer;
           const qty = token.gained * GameTreasure[type].baseVal;
-          console.log(`Transferring ${token.gained} ${type}:${target} to ${player}`);
+          console.log(`Transferring ${qty} ${type}:${target} to ${player}`);
           ao.send({
             Target: target,
             Data: '1234',

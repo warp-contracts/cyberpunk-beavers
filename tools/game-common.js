@@ -60,14 +60,14 @@ export async function spawnGame({ muUrl, moduleId, additionalTags = [], gameToke
   return processResponse.id;
 }
 
-export async function transferToken(tokenProcessId, gameProcessId) {
+export async function transferToken(tokenProcessId, gameProcessId, qty = 1000000) {
   return message({
     process: tokenProcessId,
     tags: [
       { name: 'From-Process', value: tokenProcessId }, // ;)
       { name: 'Recipient', value: gameProcessId }, // game contract
       { name: 'Action', value: 'Transfer' },
-      { name: 'Quantity', value: '1000000' },
+      { name: 'Quantity', value: `${qty}` },
     ],
     signer: createDataItemSigner(jwk),
     data: 'any data',
