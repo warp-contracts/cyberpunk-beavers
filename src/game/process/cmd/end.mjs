@@ -8,7 +8,7 @@ const TOKEN_CONTRACT_ACTION = {
   [GameTreasure.trunk.type]: {
     transfer: 'Transfer',
   },
-  [GameTreasure.tlo.type]: {
+  [GameTreasure.tio.type]: {
     transfer: 'Transfer',
   },
   [GameTreasure.war.type]: {

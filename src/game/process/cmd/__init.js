@@ -97,8 +97,8 @@ function setInvisibleGameTreasures(state) {
   );
   setObjectsOnRandomPositions(
     state,
-    GameTreasure.tlo,
-    state.gameTokens[GameTreasure.tlo.type].amount,
+    GameTreasure.tio,
+    state.gameTokens[GameTreasure.tio.type].amount,
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );

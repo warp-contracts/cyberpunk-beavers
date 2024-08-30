@@ -22,7 +22,7 @@ export const TOKEN_CONTRACT_MOCK = {
     transfer: 'Transfer',
     amount: 0,
   },
-  [GameTreasure.tlo.type]: {
+  [GameTreasure.tio.type]: {
     id: '7QJydVitORyOuKW3vm50CDITiJql5wUAwhnM4XvNpYU',
     transfer: 'Transfer',
     amount: 20,
@@ -45,7 +45,7 @@ export const TOKEN_CONTRACT = {
     transfer: 'Transfer',
     amount: 0,
   },
-  [GameTreasure.tlo.type]: {
+  [GameTreasure.tio.type]: {
     id: 'agYcCFJtrMG6cqMuZfskIkFTGvUPddICmtQSBIoPdiA',
     transfer: 'Transfer',
     amount: 20,
