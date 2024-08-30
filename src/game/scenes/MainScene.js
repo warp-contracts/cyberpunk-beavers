@@ -562,7 +562,8 @@ export default class MainScene extends Phaser.Scene {
             self.addOtherPlayer(response.player);
           } else {
             if (response.encounter?.type === Const.GameObject.active_mine.type) {
-              if (response.encounter?.leftBy === self.mainPlayer?.walletAddress) {
+              const mineLeftByMainPlayer = response.encounter?.leftBy === self.mainPlayer?.walletAddress;
+              if (mineLeftByMainPlayer) {
                 this.gameObjectsLayer.removeTileAt(response.player.movedPos.x, response.player.movedPos.y);
                 this[`mineGrid_${response.player.movedPos.x}_${response.player.movedPos.y}`].destroy();
               }
@@ -570,7 +571,7 @@ export default class MainScene extends Phaser.Scene {
               if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
                 self.mainPlayer.moveAndExplode(response.player, true);
               } else {
-                self.allPlayers[response.player.walletAddress].moveAndExplode(response.player, false);
+                self.allPlayers[response.player.walletAddress].moveAndExplode(response.player, mineLeftByMainPlayer);
               }
             } else {
               self.allPlayers[response.player.walletAddress].moveTo(response.player);
