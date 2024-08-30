@@ -45,7 +45,7 @@ local utils = {
   end
 }
 
-ao.authorities = {"jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M", "fcoN_xJeisVsPXA-trzVAuIiqO3ydLQxM-L4XbrQKzY"}
+ao.authorities = {"jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M", "fcoN_xJeisVsPXA-trzVAuIiqO3ydLQxM-L4XbrQKzY", "jmGGoJaDYDTx4OCM7MP-7l-VLIM4ZEGCS0cHPsSmiNE"}
 
 --[[
      Initialize State
