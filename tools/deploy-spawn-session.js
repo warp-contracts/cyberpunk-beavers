@@ -109,14 +109,6 @@ async function doIt() {
     console.log(`Transferring ${Const.GameTreasure.cbcoin.type} to game ${gameProcessId}`);
     await transferToken(gameTokens[Const.GameTreasure.cbcoin.type].id, gameProcessId);
 
-    for (let [key, token] of Object.entries(gameTokens)
-      .filter(([key]) => key !== Const.GameTreasure.cbcoin.type)
-      .filter(([, token]) => token.amount > 0)) {
-      const qty = token.amount * Const.GameTreasure[key].baseVal;
-      console.log(`Transferring additional ${qty} ${key} to game ${gameProcessId}`);
-      await transferToken(token.id, gameProcessId, qty);
-    }
-
     // Setup game
     await sleep(1000);
     console.log(`Setting up game ${gameProcessId} at ${new Date(s?.start)}`, s);
