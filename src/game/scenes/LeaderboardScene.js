@@ -97,7 +97,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         },
         player.stats?.coins?.gained,
         player.stats?.coins?.balance + player.stats?.coins?.gained,
-        Math.round(player.stats?.additionalTokens['tio']?.gained * GameTreasure['tio']?.baseVal),
+        Math.round(player.stats?.additionalTokens['tio']?.gained * GameTreasure['tio']?.baseVal * 100) / 100,
         player.stats?.kills?.frags,
         player.stats?.kills?.deaths,
       ]);
