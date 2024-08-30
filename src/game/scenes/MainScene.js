@@ -348,7 +348,7 @@ export default class MainScene extends Phaser.Scene {
       setTimeout(() => {
         hideGui();
         this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
-      }, 2000);
+      }, 3000);
     }
     if (this.roundInfo.roundsToGo == 3 && !this.threeRoundsPlayed) {
       this.threeRoundsPlayed = true;

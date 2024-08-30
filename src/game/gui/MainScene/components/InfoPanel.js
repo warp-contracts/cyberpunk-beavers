@@ -3,13 +3,22 @@ export function InfoPanel() {
     view: function (vnode) {
       const { roundInfo, gameOver, stats } = vnode.attrs;
       return m('.info-panel', [
-        gameOver ? m('.element', 'GAME OVER') : null,
-        m('.element rounds', `ROUNDS:${roundInfo.roundsToGo || roundInfo.currentRound || '700'}`),
-        m(Timebar, { progress: roundInfo.gone * 10, pause: gameOver, type: 'rounds' }),
-        m(Timebar, { progress: 100 - Math.floor(((stats?.ap?.current || 0) / stats?.ap?.max) * 100), type: 'ap' }),
-        m(`.element ap ${stats?.ap?.current == 0 ? 'warn' : 'info'}`, `AP:${stats?.ap?.current || 0}`),
-        m(Timebar, { progress: 100 - Math.floor(((stats?.hp?.current || 0) / stats?.hp?.max) * 100), type: 'hp' }),
-        m(`.element hp`, `HP:${stats?.hp?.current || 0}`),
+        gameOver
+          ? m('.element.game-over.blink', 'GAME OVER')
+          : [
+              m('.element rounds', `ROUNDS:${roundInfo.roundsToGo || roundInfo.currentRound || '700'}`),
+              m(Timebar, { progress: roundInfo.gone * 10, pause: gameOver, type: 'rounds' }),
+              m(Timebar, {
+                progress: 100 - Math.floor(((stats?.ap?.current || 0) / stats?.ap?.max) * 100),
+                type: 'ap',
+              }),
+              m(`.element ap ${stats?.ap?.current == 0 ? 'warn' : 'info'}`, `AP:${stats?.ap?.current || 0}`),
+              m(Timebar, {
+                progress: 100 - Math.floor(((stats?.hp?.current || 0) / stats?.hp?.max) * 100),
+                type: 'hp',
+              }),
+              m(`.element hp`, `HP:${stats?.hp?.current || 0}`),
+            ],
       ]);
     },
   };
