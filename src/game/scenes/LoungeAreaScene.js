@@ -7,7 +7,7 @@ import {
   mainSceneKey,
   characterPickSceneKey,
 } from '../../main.js';
-import { checkProfile, loadMapTxId } from '../utils/utils.js';
+import { loadMapTxId } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { LoungeArenaSceneGui } from '../gui/LoungeArenaSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
@@ -36,7 +36,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnection.game;
       this.server.subscribe(this);
-      this.profilePromise = checkProfile(this.walletAddress);
       this.server.send({ cmd: Const.Command.info });
       var self = this;
       m.mount(showGui(), {
@@ -167,10 +166,8 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
   async goToMainScene() {
     hideGui();
-    const userName = (await this.profilePromise)?.Profile?.UserName;
     const mapTxId = await loadMapTxId();
     this.scene.start(mainSceneKey, {
-      userName,
       mapTxId,
       walletAddress: this.walletAddress,
       beaverId: this.beaverId,
@@ -183,10 +180,8 @@ export default class LoungeAreaScene extends Phaser.Scene {
     if (!this.running) {
       this.running = true;
       hideGui();
-      const userName = (await this.profilePromise)?.Profile?.UserName;
       const mapTxId = await loadMapTxId();
       this.scene.start(characterPickSceneKey, {
-        userName,
         mapTxId,
         walletAddress: this.walletAddress,
         gameStart: this.gameStart,

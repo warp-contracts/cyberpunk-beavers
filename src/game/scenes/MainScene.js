@@ -43,8 +43,8 @@ export default class MainScene extends Phaser.Scene {
     this.mainSceneLoading = this.scene.get(mainSceneLoadingKey);
     this.gameStart = data.gameStart;
     this.gameEnd = data.gameEnd;
-    this.userName = data.userName;
     this.mapTxId = data.mapTxId;
+    this.userName = JSON.parse(localStorage.getItem('profiles'))?.[this.walletAddress]?.profile?.Profile?.UserName;
   }
 
   preload() {
