@@ -90,7 +90,7 @@ export function Stats() {
             }),
             m(Label, {
               name: 'gained',
-              content: `${Math.round(info.gained * GameTreasure[name]?.baseVal) || '-'}`,
+              content: `${Math.round(info.gained * GameTreasure[name]?.baseVal * 100) / 100 || '-'}`,
               style: `mt-5 pl-15`,
               inlineStyle: `pr-10`,
             }),
