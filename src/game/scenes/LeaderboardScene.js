@@ -1,5 +1,5 @@
 import { WebFontFile } from '../objects/WebFontFile.js';
-import Const from '../common/const.mjs';
+import Const, { GameTreasure } from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
 import {
   mainSceneKey,
@@ -97,7 +97,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         },
         player.stats?.coins?.gained,
         player.stats?.coins?.balance + player.stats?.coins?.gained,
-        player.stats?.additionalTokens['tio']?.gained,
+        Math.round(player.stats?.additionalTokens['tio']?.gained * GameTreasure['tio']?.baseVal),
         player.stats?.kills?.frags,
         player.stats?.kills?.deaths,
       ]);
