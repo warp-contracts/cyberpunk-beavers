@@ -24,6 +24,7 @@ export function LeaderboardGui(initialVnode) {
               m('.col', 'player'),
               m('.col', 'points'),
               m('.col', 'cbcoins'),
+              m('.col', 'tIO'),
               m('.col', 'frags'),
               m('.col', 'deaths'),
             ]),

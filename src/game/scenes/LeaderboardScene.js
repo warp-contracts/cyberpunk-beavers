@@ -97,6 +97,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         },
         player.stats?.coins?.gained,
         player.stats?.coins?.balance + player.stats?.coins?.gained,
+        player.stats?.additionalTokens['tio']?.gained,
         player.stats?.kills?.frags,
         player.stats?.kills?.deaths,
       ]);
