@@ -73,7 +73,7 @@ export function Stats() {
           }),
           Object.entries(stats?.additionalTokens || {}).map(([name, info]) => [
             m(Label, {
-              name,
+              name: `${GameTreasure[name]?.label}`,
               content: m(
                 'a',
                 { target: '__blank', href: `https://www.ao.link/#/token/${gameTokens[name]?.id || '-'}` },
