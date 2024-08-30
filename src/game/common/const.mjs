@@ -125,7 +125,7 @@ export const WEAPONS = {
     hit_chance: [0.95, 0.92, 0.9, 0.88, 0.85],
     critical_hit_chance: [0.3, 0.25, 0.22, 0.2, 0.15],
     critical_hit_multiplier: [2.4, 2.3, 2.2, 2.1, 2.0],
-    attack_recovery_ms: 600,
+    attack_recovery_ms: 750,
   },
   shotgun_basic: {
     type: 'shotgun_basic',
@@ -136,7 +136,7 @@ export const WEAPONS = {
     hit_chance: [0.9, 0.8, 0.7],
     critical_hit_chance: [0.25, 0.1, 0.05],
     critical_hit_multiplier: [2.5, 1.8, 1.6],
-    attack_recovery_ms: 400,
+    attack_recovery_ms: 500,
   },
   katana_basic: {
     type: 'katana_basic',
@@ -147,7 +147,7 @@ export const WEAPONS = {
     hit_chance: [0.95],
     critical_hit_chance: [0.1],
     critical_hit_multiplier: [2.0],
-    attack_recovery_ms: 250,
+    attack_recovery_ms: 400,
   },
 };
 
