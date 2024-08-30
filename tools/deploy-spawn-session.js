@@ -26,10 +26,6 @@ const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
 const timeArg = process.argv[process.argv.indexOf('--time') + 1];
 const execDate = dateFromArg(timeArg);
 
-// TREASURES AMOUNT
-const treasuresIdx = process.argv.indexOf('--treasures');
-const treasures = process.argv[treasuresIdx + 1];
-
 // PLAYERS LIMIT
 const playersLimitIdx = process.argv.indexOf('--limit');
 const playersLimit = process.argv[playersLimitIdx + 1];
