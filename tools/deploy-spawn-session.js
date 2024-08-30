@@ -5,13 +5,13 @@ import { readFileSync } from 'fs';
 import { spawnGame, transferToken, setupGameContract } from './game-common.js';
 import { replaceId } from './replace-id.js';
 import { dateFromArg } from './common.mjs';
-import { activeGamesConfig, hourSessionGamesConfig, TOKEN_CONTRACT_MOCK } from './deploy-spawn-session-config.js';
+import { activeGamesConfig, hourSessionGamesConfig, TOKEN_CONTRACT } from './deploy-spawn-session-config.js';
 import Const from '../src/game/common/const.mjs';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
 const warp = WarpFactory.forMainnet().use(new DeployPlugin());
-const gameTokens = TOKEN_CONTRACT_MOCK;
+const gameTokens = TOKEN_CONTRACT;
 
 const envIdx = process.argv.indexOf('--env');
 if (envIdx < 0) {
@@ -106,8 +106,10 @@ async function doIt() {
     gameProcesses.push(gameProcessId);
 
     // Transfer tokens
-    console.log(`Transferring ${Const.GameTreasure.cbcoin.type} to game ${gameProcessId}`);
-    await transferToken(gameTokens[Const.GameTreasure.cbcoin.type].id, gameProcessId);
+    if (env === 'prod') {
+      console.log(`Transferring ${Const.GameTreasure.cbcoin.type} to game ${gameProcessId}`);
+      await transferToken(gameTokens[Const.GameTreasure.cbcoin.type].id, gameProcessId);
+    }
 
     // Setup game
     await sleep(1000);
