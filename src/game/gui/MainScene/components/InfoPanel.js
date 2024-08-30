@@ -27,18 +27,12 @@ export function InfoPanel() {
 function Timebar() {
   let width;
   return {
-    oninit: function (vnode) {
-      const progress = vnode.attrs.progress || 0;
-      width = 100 - Math.max(0, Math.min(100, progress));
-    },
-    onbeforeupdate: function (vnode) {
+    view: function (vnode) {
       const pause = vnode.attrs.pause;
       if (!pause) {
         const progress = vnode.attrs.progress || 0;
         width = 100 - Math.max(0, Math.min(100, progress));
       }
-    },
-    view: function (vnode) {
       return m('.timebar-container', [
         m('.timebar', [
           m(`.timebar-progress ${vnode.attrs.type}`, {
