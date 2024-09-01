@@ -56,7 +56,7 @@ export default class MainScene extends Phaser.Scene {
 
     // load the JSON file
     // this.load.tilemapTiledJSON('tilemap', `assets/maps/v2/b1m2.json`);
-    this.load.tilemapTiledJSON('tilemap', `https://arweave.net/${this.mapTxId}`);
+    this.load.tilemapTiledJSON(`map_${this.mapTxId}`, `https://arweave.net/${this.mapTxId}`);
     // ===== MAP V2
     this.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
     this.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
@@ -147,7 +147,7 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 3. Create');
 
     // create the Tilemap
-    const map = this.make.tilemap({ key: 'tilemap' });
+    const map = this.make.tilemap({ key: `map_${this.mapTxId}` });
     const tileset = map.addTilesetImage('Sprite_Map_Sheet', 'map_sheet');
     const layers = map.getTileLayerNames();
     for (const layer of layers) {

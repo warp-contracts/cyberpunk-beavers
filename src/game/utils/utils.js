@@ -79,6 +79,7 @@ export async function loadMapTxId() {
   if (!initState.mapTxId) {
     throw new Error('Initial state does not contain mapTxId');
   }
+  console.log('Loaded map', { processId, mapTxId: initState.mapTxId });
 
   return initState.mapTxId;
 }
