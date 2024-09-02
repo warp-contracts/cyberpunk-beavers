@@ -149,7 +149,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
       hideGui();
       await this.goToMainScene();
     } else if (this.canParticipate()) {
-      hideGui();
       await this.goToPlayerPick();
     }
   }

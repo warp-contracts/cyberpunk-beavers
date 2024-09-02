@@ -143,11 +143,16 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   restartScenes() {
     const self = this;
+    self.mainScene.tileMap?.destroy();
 
     const scenesToRestartKeys = Object.keys(scenes);
     scenesToRestartKeys.forEach((s) => {
       const scene = scenes[s];
-      if (scene.key != leaderboardSceneKey) self.scene.remove(scene.key);
+      if (scene.key != leaderboardSceneKey) {
+        const sceneToDestroy = self.scene.get(scene.key);
+        sceneToDestroy?.load?.reset();
+        self.scene.remove(scene.key);
+      }
     });
 
     scenesToRestartKeys.forEach((s) => {
