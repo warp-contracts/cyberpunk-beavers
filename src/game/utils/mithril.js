@@ -12,7 +12,6 @@ export function showGui(component, model) {
 }
 
 export function hideGui() {
-  console.log('hiding');
   const guiRoot = document.getElementById('mithril-gui');
   guiRoot.classList.toggle('mithril-gui-show', false);
   m.mount(guiRoot, null);

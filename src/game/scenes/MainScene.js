@@ -239,7 +239,7 @@ export default class MainScene extends Phaser.Scene {
       await this.server.send(
         {
           cmd: Const.Command.join,
-          balance: balance && parseInt(balance),
+          balance: this.balance && parseInt(this.balance),
           generatedWalletAddress: generatedWalletAddress(),
         },
         true
