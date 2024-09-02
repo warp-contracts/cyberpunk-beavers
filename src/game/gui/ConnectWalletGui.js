@@ -5,6 +5,80 @@ import { playClick } from '../utils/mithril.js';
 export function ConnectWalletSceneGui(initialVnode) {
   let titleAnimationDone = warpAO.config.env !== 'prod';
   let walletConnectionText;
+  let walletErrorText = null;
+  const hasGeneratedWallet =
+    localStorage.getItem('signing_mode') === 'generated' &&
+    localStorage.getItem('generated_jwk') !== null &&
+    localStorage.getItem('wallet_address') !== null;
+
+  async function handleArconnect(changeScene) {
+    const timeoutId = setTimeout(() => {
+      walletConnectionText = 'No wallet detected. Please install ArConnect.';
+    }, 2000);
+
+    async function doConnectWallet() {
+      window.removeEventListener('arweaveWalletLoaded', doConnectWallet);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      await window.arweaveWallet.connect([
+        'ACCESS_ADDRESS',
+        'DISPATCH',
+        'SIGN_TRANSACTION',
+        'ACCESS_PUBLIC_KEY',
+        'SIGNATURE',
+      ]);
+      const walletAddress = await window.arweaveWallet.getActiveAddress();
+      walletConnectionText = `Wallet ${walletAddress} connected.`;
+      localStorage.setItem('wallet_address', walletAddress);
+      const { signer, address } = await generateSigner();
+      window.warpAO.generatedSigner = signer;
+      window.warpAO.signingMode = 'arconnect';
+      localStorage.setItem('generated_wallet_address', address);
+      localStorage.setItem('signing_mode', window.warpAO.signingMode);
+      console.log('Wallet connected');
+      m.redraw();
+      setTimeout(() => {
+        changeScene(walletAddress);
+      }, 2000);
+    }
+
+    if (window.arweaveWallet) {
+      await doConnectWallet();
+    } else {
+      window.addEventListener('arweaveWalletLoaded', doConnectWallet);
+    }
+  }
+
+  async function handleGenerateWallet(changeScene) {
+    const { signer, address, jwk } = await generateSigner();
+    window.warpAO.generatedSigner = signer;
+    console.log('Generated wallet address', address);
+    localStorage.setItem('wallet_address', address);
+    walletConnectionText = `Wallet ${address} generated.`;
+    window.warpAO.signingMode = 'generated';
+    localStorage.setItem('signing_mode', window.warpAO.signingMode);
+    localStorage.setItem('generated_jwk', JSON.stringify(jwk));
+    m.redraw();
+    setTimeout(() => {
+      changeScene(address);
+    }, 2000);
+  }
+
+  async function useGeneratedWallet(changeScene) {
+    const warpInst = WarpFactory.forMainnet();
+    const generatedJwk = JSON.parse(localStorage.getItem('generated_jwk'));
+    const walletAddress = await warpInst.arweave.wallets.jwkToAddress(generatedJwk);
+    const signer = new ArweaveSigner(generatedJwk);
+    window.warpAO.signingMode = 'generated';
+    window.warpAO.generatedSigner = signer;
+    console.log('Using generated wallet address', walletAddress);
+    walletConnectionText = `Using generated ${walletAddress} wallet.`;
+    m.redraw();
+    setTimeout(() => {
+      changeScene(walletAddress);
+    }, 2000);
+  }
 
   return {
     onTypewriterFinished: function () {
@@ -22,23 +96,35 @@ export function ConnectWalletSceneGui(initialVnode) {
                   {
                     onclick: async () => {
                       playClick();
-                      await handleArconnect(initialVnode.attrs.changeScene, walletConnectionText);
+                      await handleArconnect(initialVnode.attrs.changeScene);
                     },
                   },
                   'Connect wallet'
                 ),
-                warpAO && warpAO.config.env != 'prod'
+                m(
+                  '.button red',
+                  {
+                    onclick: async () => {
+                      playClick();
+                      await handleGenerateWallet(initialVnode.attrs.changeScene);
+                    },
+                  },
+                  'Generate wallet'
+                ),
+                hasGeneratedWallet
                   ? m(
-                      '.button red',
+                      '.button yellow',
                       {
                         onclick: async () => {
                           playClick();
-                          await handleGenerateWallet(initialVnode.attrs.changeScene);
+                          await useGeneratedWallet(initialVnode.attrs.changeScene);
                         },
                       },
-                      'Generate wallet'
+                      'Use generated wallet'
                     )
-                  : m('p', { class: 'connection-text' }, walletConnectionText),
+                  : null,
+                m('.connection-text', walletConnectionText),
+                walletErrorText ? m('.connection-text.error', walletErrorText) : null,
               ])
             : null,
         ]),
@@ -73,39 +159,8 @@ function Typewriter() {
   };
 }
 
-const handleArconnect = async (changeScene, walletConnectionText) => {
-  if (window.arweaveWallet) {
-    await window.arweaveWallet.connect([
-      'ACCESS_ADDRESS',
-      'DISPATCH',
-      'SIGN_TRANSACTION',
-      'ACCESS_PUBLIC_KEY',
-      'SIGNATURE',
-    ]);
-    const walletAddress = await window.arweaveWallet.getActiveAddress();
-    changeScene(walletAddress);
-    walletConnectionText = 'Wallet connected';
-    localStorage.setItem('wallet_address', walletAddress);
-    const { signer, address } = await generateSigner();
-    localStorage.setItem('generated_wallet_address', address);
-    warpAO.generatedSigner = signer;
-    warpAO.signingMode = 'arconnect';
-  } else {
-    walletConnectionText = 'No wallet detected. Please install ArConnect.';
-  }
-};
-
-const handleGenerateWallet = async (changeScene) => {
-  const { signer, address } = await generateSigner();
-  warpAO.generatedSigner = signer;
-  console.log('Generated wallet address', address);
-  localStorage.setItem('wallet_address', address);
-  changeScene(address);
-  window.warpAO.signingMode = 'generated';
-};
-
 const generateSigner = async () => {
   const warpInst = WarpFactory.forMainnet();
   const { jwk, address } = await warpInst.generateWallet();
-  return { signer: new ArweaveSigner(jwk), address };
+  return { signer: new ArweaveSigner(jwk), address, jwk };
 };
