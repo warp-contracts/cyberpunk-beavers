@@ -10,14 +10,13 @@ import {
   mainSceneKey,
   mainSceneLoadingKey,
 } from '../../main.js';
-import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
-import { createData } from 'warp-arbundles';
 import { ANIM_SETTINGS } from './anim/settings.js';
 import Phaser from 'phaser';
 import { MUSIC_SETTINGS } from './music/settings.js';
 import { MainSceneGui } from '../gui/MainScene/MainSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
 import { MINE_ACTIVATED_COLOR } from '../utils/style.js';
+import { checkBalance, generatedWalletAddress, getUsernameFromStorage } from '../utils/utils.js';
 
 const { GameTreasure } = Const;
 
@@ -38,13 +37,15 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 1. Init', data);
     this.beaverId = data.beaverId;
     this.beaverChoice = data.beaverChoice;
+    this.balance = data.balance;
+    this.beaverId = data.beaverId;
     this.walletAddress = data.walletAddress;
     this.scene.launch(mainSceneLoadingKey);
     this.mainSceneLoading = this.scene.get(mainSceneLoadingKey);
     this.gameStart = data.gameStart;
     this.gameEnd = data.gameEnd;
     this.mapTxId = data.mapTxId;
-    this.userName = JSON.parse(localStorage.getItem('profiles'))?.[this.walletAddress]?.profile?.Profile?.UserName;
+    this.userName = getUsernameFromStorage(this.walletAddress);
   }
 
   preload() {
@@ -230,13 +231,17 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async registerPlayer() {
-    const balance = await this.checkBalance();
-    const generatedWalletAddress =
-      warpAO.signingMode == 'arconnect' ? localStorage.getItem('generated_wallet_address') : null;
+    if (!this.balance) {
+      this.balance = await checkBalance(this.walletAddress);
+    }
     if (this.beaverId) {
       console.log(`Beaver has already been registered previously, joining game...`, this.beaverId);
       await this.server.send(
-        { cmd: Const.Command.join, balance: balance && parseInt(balance), generatedWalletAddress },
+        {
+          cmd: Const.Command.join,
+          balance: balance && parseInt(balance),
+          generatedWalletAddress: generatedWalletAddress(),
+        },
         true
       );
     } else {
@@ -246,52 +251,11 @@ export default class MainScene extends Phaser.Scene {
           cmd: Const.Command.register,
           beaverId: this.beaverChoice,
           userName: this.userName,
-          balance: balance && parseInt(balance),
-          generatedWalletAddress,
+          balance: this.balance && parseInt(this.balance),
+          generatedWalletAddress: generatedWalletAddress(),
         },
         true
       );
-    }
-  }
-
-  async checkBalance() {
-    const processId = window.warpAO.tokenProcessId();
-    let dataItemSigner;
-
-    if (window.warpAO.signingMode === 'generated') {
-      const generatedSigner = window.warpAO.generatedSigner;
-      dataItemSigner = async ({ data, tags, target, anchor, createDataItem }) => {
-        const dataItem = createData(data, generatedSigner, {
-          tags,
-          target,
-        });
-        await dataItem.sign(generatedSigner);
-        return {
-          id: await dataItem.id,
-          raw: await dataItem.getRaw(),
-        };
-      };
-    } else {
-      dataItemSigner = createDataItemSigner(window.arweaveWallet);
-    }
-
-    try {
-      let now = Date.now();
-      const result = await dryrun({
-        process: processId,
-        tags: [
-          { name: 'Action', value: 'Balance' },
-          { name: 'Target', value: this.walletAddress },
-        ],
-        signer: dataItemSigner,
-        data: '1234',
-      });
-      const balance = result.Messages[0].Tags.find((t) => t.name === 'Balance').value;
-      console.log(`Checking balance ${balance} took ${Date.now() - now}ms`);
-      return balance;
-    } catch (error) {
-      console.error(error);
-      return '0';
     }
   }
 

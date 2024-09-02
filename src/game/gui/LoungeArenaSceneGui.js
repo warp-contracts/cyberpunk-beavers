@@ -54,18 +54,6 @@ function GameInfo() {
     }
   }
 
-  function formatCountdownTo(diff) {
-    if (!diff) {
-      return '--:--:--';
-    }
-    const hour = Math.floor(diff / 3600);
-    diff -= hour * 3600;
-    const min = Math.floor(diff / 60);
-    const sec = diff - min * 60;
-    const padZero = (x) => x.toString().padStart(2, '0');
-    return `${padZero(hour)}:${padZero(min)}:${padZero(sec)}`;
-  }
-
   return {
     view: function (vnode) {
       const countdownLabel = gameCountdownLabel(vnode.attrs.diff, vnode.attrs.gameStart, vnode.attrs.gameEnd);
@@ -129,4 +117,16 @@ function HeaderError() {
       return [m('.header error', `Cannot join the game.\n${vnode.gameError}\n\n`)];
     },
   };
+}
+
+export function formatCountdownTo(diff) {
+  if (!diff) {
+    return '--:--:--';
+  }
+  const hour = Math.floor(diff / 3600);
+  diff -= hour * 3600;
+  const min = Math.floor(diff / 60);
+  const sec = diff - min * 60;
+  const padZero = (x) => x.toString().padStart(2, '0');
+  return `${padZero(hour)}:${padZero(min)}:${padZero(sec)}`;
 }

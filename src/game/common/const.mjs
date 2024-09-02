@@ -34,6 +34,7 @@ const Command = {
   attack: 'attack',
   attacked: 'attacked',
   enqueue: 'enqueue',
+  dequeue: 'dequeue',
   join: 'join',
   move: 'move',
   moved: 'moved',
@@ -264,6 +265,8 @@ const Queue = {
   defaultLimit: 15,
 };
 
+const GAME_ENTER_DELAY = 30000;
+
 export default {
   BEAVER_TYPES,
   BonusType,
@@ -286,4 +289,5 @@ export default {
   Kills,
   DEATH_SOUND_OPTIONS,
   DEFAULT_GAME_TOKENS,
+  GAME_ENTER_DELAY,
 };
