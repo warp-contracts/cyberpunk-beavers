@@ -24,6 +24,7 @@ function initState(message, state) {
   const result = {
     nextProcessId: null,
     nextModuleId: null,
+    dequeued: false,
     tokensTransferred: false,
     counter: 0,
     pos: 1,

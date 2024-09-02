@@ -18,6 +18,12 @@
     padding-bottom: 4rem;
   }
 
+  .character-pick-countdown {
+    color: var(--yellow);
+    font-size: var(--regular);
+    padding: 10px;
+  }
+
   .characters {
     display: flex;
     justify-content: space-evenly;
@@ -28,13 +34,22 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  cursor: pointer;
+  transition:
+    transform 0.5s ease-in-out,
+    opacity 0.5s ease-in-out;
 
-  .character-image {
-    transition: transform 0.2s;
+  &.selected {
+    transform: scale(1.1);
+  }
 
-    &:hover {
-      transform: scale(1.1);
+  &:not(.selected) {
+    cursor: pointer;
+    .character-image {
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: scale(1.1);
+      }
     }
   }
 
@@ -180,4 +195,8 @@
 
 .blink {
   animation: blink 1.5s infinite;
+}
+
+.hidden {
+  visibility: hidden;
 }

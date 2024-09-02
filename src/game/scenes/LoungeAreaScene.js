@@ -96,6 +96,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
             return;
           }
           this.gameStart = response.start;
+          this.gameEnter = response.enter;
           this.gameEnd = response.end;
           this.walletsQueue = response.walletsQueue;
           this.walletsBench = response.walletsBench;
@@ -184,6 +185,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
         mapTxId,
         walletAddress: this.walletAddress,
         gameStart: this.gameStart,
+        gameEnter: this.gameEnter,
         gameEnd: this.gameEnd,
       });
     }

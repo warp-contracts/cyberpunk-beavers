@@ -28,6 +28,7 @@ export function setup(state, action, message) {
       const duration = action.playMinutes * 60 * 1000 || 5 * 60 * 1000;
       state.playWindow = {
         begin: nextFull,
+        enter: nextFull + Const.GAME_ENTER_DELAY,
         end: nextFull + duration,
       };
       state.playWindow.roundsTotal = calculateTotalRounds(state);
@@ -46,6 +47,7 @@ export function setup(state, action, message) {
       const duration = action.duration || 5 * 60 * 1000;
       state.playWindow = {
         begin: nextFullHour,
+        enter: nextFullHour + Const.GAME_ENTER_DELAY,
         end: nextFullHour + duration,
       };
       state.playWindow.roundsTotal = calculateTotalRounds(state);
@@ -58,6 +60,7 @@ export function setup(state, action, message) {
 
     case SetupTimes.custom:
       state.playWindow.begin = action.start;
+      state.playWindow.enter = action.start + Const.GAME_ENTER_DELAY;
       state.playWindow.end = action.end;
       state.playWindow.roundsTotal = calculateTotalRounds(state);
       console.log(`Setup custom`, state.playWindow);

@@ -1,16 +1,28 @@
 import { BEAVER_TYPES, BonusType, GameTreasure } from '../common/const.mjs';
 import { playClick } from '../utils/mithril';
+import { formatCountdownTo } from './LoungeArenaSceneGui';
 
 export function CharacterPickGui() {
   return {
     view: function (vnode) {
-      const { changeScene } = vnode.attrs;
-      const characters = Object.keys(BEAVER_TYPES);
+      const { setCharacter, diff, beaverChoice } = vnode.attrs;
+      let characters = beaverChoice ? [beaverChoice] : Object.keys(BEAVER_TYPES);
+      async function handleClick(character) {
+        if (!beaverChoice) {
+          playClick();
+          await setCharacter(character);
+        }
+      }
+
       return m('.character-pick', [
-        m('.character-pick-title.blink', 'PICK YOUR CHARACTER'),
+        m('.character-pick-countdown', diff ? formatCountdownTo(vnode.attrs.diff) : '00:00:00'),
+        m(
+          `.character-pick-title${!beaverChoice ? '.blink' : ''}`,
+          `${beaverChoice ? 'GET READY' : 'PICK YOUR CHARACTER'}`
+        ),
         m(
           '.characters',
-          characters.map((c) => m(CharacterOption, { character: c, changeScene }))
+          characters.map((c) => m(CharacterOption, { character: c, beaverChoice, handleClick }))
         ),
       ]);
     },
@@ -20,16 +32,15 @@ export function CharacterPickGui() {
 function CharacterOption() {
   return {
     view: function (vnode) {
-      const { character, changeScene } = vnode.attrs;
+      const { character, handleClick, beaverChoice } = vnode.attrs;
       const stats = BEAVER_TYPES[character].stats;
       const weapon = stats.weapon;
 
       return m(
-        '.character',
+        `.character ${beaverChoice && 'selected'}`,
         {
-          onclick: () => {
-            playClick();
-            changeScene(character);
+          onclick: async () => {
+            await handleClick(character);
           },
         },
         [
@@ -108,6 +119,18 @@ function CharacterBoxWithCorners() {
     },
   };
 }
+
+// function GameInfo() {
+//   return {
+//     view: function (vnode) {
+//       return m('.game-info', [
+//         countdownLabel
+//           ? m('.element', [m('.title', countdownLabel), m('.value', formatCountdownTo(vnode.attrs.diff))])
+//           : null,
+//       ]);
+//     },
+//   };
+// }
 
 function formatPercent(value) {
   return `${Math.round(value * 100)}%`;

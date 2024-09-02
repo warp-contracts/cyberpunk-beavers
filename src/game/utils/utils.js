@@ -1,4 +1,4 @@
-import { dryrun } from '@permaweb/aoconnect';
+import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
 import { maps } from '../common/const.mjs';
 
 export function getEnv() {
@@ -82,4 +82,53 @@ export async function loadMapTxId() {
   console.log('Loaded map', { processId, mapTxId: initState.mapTxId });
 
   return initState.mapTxId;
+}
+
+export async function checkBalance(walletAddress) {
+  const processId = window.warpAO.tokenProcessId();
+  let dataItemSigner;
+
+  if (window.warpAO.signingMode === 'generated') {
+    const generatedSigner = window.warpAO.generatedSigner;
+    dataItemSigner = async ({ data, tags, target, anchor, createDataItem }) => {
+      const dataItem = createData(data, generatedSigner, {
+        tags,
+        target,
+      });
+      await dataItem.sign(generatedSigner);
+      return {
+        id: await dataItem.id,
+        raw: await dataItem.getRaw(),
+      };
+    };
+  } else {
+    dataItemSigner = createDataItemSigner(window.arweaveWallet);
+  }
+
+  try {
+    let now = Date.now();
+    const result = await dryrun({
+      process: processId,
+      tags: [
+        { name: 'Action', value: 'Balance' },
+        { name: 'Target', value: walletAddress },
+      ],
+      signer: dataItemSigner,
+      data: '1234',
+    });
+    const balance = result.Messages[0].Tags.find((t) => t.name === 'Balance').value;
+    console.log(`Checking balance ${balance} took ${Date.now() - now}ms`);
+    return balance;
+  } catch (error) {
+    console.error(error);
+    return '0';
+  }
+}
+
+export function getUsernameFromStorage(walletAddress) {
+  return JSON.parse(localStorage.getItem('profiles'))?.[walletAddress]?.profile?.Profile?.UserName;
+}
+
+export function generatedWalletAddress() {
+  return warpAO.signingMode == 'arconnect' ? localStorage.getItem('generated_wallet_address') : null;
 }

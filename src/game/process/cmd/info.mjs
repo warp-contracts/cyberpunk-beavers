@@ -22,6 +22,16 @@ export function standInQueue(state, action) {
   return { walletsQueue, walletsBench };
 }
 
+export function removeFromQueue(state) {
+  const { walletsQueue, players } = state;
+  if (!state.dequeued) {
+    const walletsDequeued = walletsQueue.filter((w) => players.hasOwnProperty(w));
+    state.walletsQueue = walletsDequeued;
+    sendHubNotification(state);
+    state.dequeued = true;
+  }
+}
+
 function sendHubNotification(state) {
   console.log(`---- GAME -- updating wallets queue`, state.hubProcessId);
   ao.send({
@@ -50,6 +60,7 @@ export function gameInfo(state, owner, ts) {
     walletsBench,
     playersLimit: state.playersLimit,
     start: playWindow.begin,
+    enter: playWindow.enter,
     end: playWindow.end,
     players,
   };
