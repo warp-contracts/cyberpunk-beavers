@@ -45,7 +45,7 @@ export default class CharacterPickScene extends Phaser.Scene {
           setCharacter: async (beaverChoice) => {
             self.beaverChoice = beaverChoice;
             if (!self.gameEnter) {
-              self.goToMainScene(self.beaverChoice);
+              self.goToMainScene();
             } else {
               await self.registerPlayer();
             }
@@ -91,6 +91,7 @@ export default class CharacterPickScene extends Phaser.Scene {
   }
 
   goToMainScene() {
+    const self = this;
     hideGui();
     this.scene.start(mainSceneKey, {
       ...this.initData,
