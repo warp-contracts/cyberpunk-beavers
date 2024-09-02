@@ -147,15 +147,15 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 3. Create');
 
     // create the Tilemap
-    const map = this.make.tilemap({ key: `map_${this.mapTxId}` });
-    const tileset = map.addTilesetImage('Sprite_Map_Sheet', 'map_sheet');
-    const layers = map.getTileLayerNames();
+    this.tileMap = this.make.tilemap({ key: `map_${this.mapTxId}` });
+    const tileset = this.tileMap.addTilesetImage('Sprite_Map_Sheet', 'map_sheet');
+    const layers = this.tileMap.getTileLayerNames();
     for (const layer of layers) {
       console.log('creating layer', layer);
       if (layer === COLLISIONS_LAYER) {
         continue;
       }
-      map.createLayer(layer, tileset);
+      this.tileMap.createLayer(layer, tileset);
     }
 
     this.allPlayers = {};
