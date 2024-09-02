@@ -1,4 +1,4 @@
-import MainScene from './game/scenes/MainScene.js';
+import MainScene from './game/scenes/main-scene/MainScene.js';
 import LoadingScene from './game/scenes/LoadingScene.js';
 import CharacterPickScene from './game/scenes/CharacterPickScene.js';
 import ConnectWalletScene from './game/scenes/ConnectWalletScene.js';
@@ -33,15 +33,12 @@ const config = {
   parent: 'game',
   antialiasGL: false,
   pixelArt: true,
-  render: {
-    pixelArt: true,
-  },
   backgroundColor: '#000000',
-  /*scale: {
+  scale: {
     mode: Phaser.Scale.NONE,
     width: window.innerWidth,
     height: window.innerHeight,
-  },*/
+  },
   physics: {
     default: 'arcade',
     arcade: {

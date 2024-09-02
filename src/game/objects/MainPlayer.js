@@ -1,5 +1,6 @@
 import Const from '../common/const.mjs';
 import Player from './Player.js';
+import { doPlayAttackSound } from '../scenes/main-scene/sounds.js';
 
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig, useLandmine, useTeleport } = Const.Command;
@@ -94,7 +95,7 @@ export default class MainPlayer extends Player {
       const now = Date.now();
       if (!this.stats.previousAttackTs || now - this.stats.previousAttackTs > this.stats.weapon.attack_recovery_ms) {
         await this.send({ cmd: attack, dir });
-        this.scene.playAttackSound(this.beaverChoice);
+        doPlayAttackSound(this.beaverChoice, this.scene);
         this.attackAnim();
       }
       if (dir == left) {
