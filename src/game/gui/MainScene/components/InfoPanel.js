@@ -1,13 +1,19 @@
+import { formatCountdownTo } from '../../LoungeArenaSceneGui';
+
 export function InfoPanel() {
   return {
     view: function (vnode) {
-      const { roundInfo, gameOver, stats } = vnode.attrs;
+      const { roundInfo, gameOver, stats, diff } = vnode.attrs;
       return m('.info-panel', [
         gameOver
           ? m('.element.game-over.blink', 'GAME OVER')
           : [
-              m('.element rounds', `ROUNDS:${roundInfo.roundsToGo || roundInfo.currentRound || '700'}`),
-              m(Timebar, { progress: roundInfo.gone * 10, pause: gameOver, type: 'rounds' }),
+              diff
+                ? m('.countdown', formatCountdownTo(diff))
+                : [
+                    m('.element rounds', `ROUNDS:${roundInfo.roundsToGo || roundInfo.currentRound || '700'}`),
+                    m(Timebar, { progress: roundInfo.gone * 10, pause: gameOver, type: 'rounds' }),
+                  ],
               m(Timebar, {
                 progress: 100 - Math.floor(((stats?.ap?.current || 0) / stats?.ap?.max) * 100),
                 type: 'ap',

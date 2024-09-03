@@ -39,9 +39,7 @@ export default class MainPlayer extends Player {
       return;
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.inputKeys.space)) {
-      this.combatMode = true;
-    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.left)) {
+    if (Phaser.Input.Keyboard.JustDown(this.inputKeys.left)) {
       await this.action(left);
     } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.right)) {
       await this.action(right);
@@ -49,25 +47,31 @@ export default class MainPlayer extends Player {
       await this.action(up);
     } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.down)) {
       await this.action(down);
-    } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
-      this.combatMode = false;
-      this.resetAimingBar();
-    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.c)) {
-      if (this.onGameObject) {
-        await this.send({ cmd: pick });
-        this.pickAnim();
+    }
+
+    if (this.mainScene.gameActive) {
+      if (Phaser.Input.Keyboard.JustDown(this.inputKeys.space)) {
+        this.combatMode = true;
+      } else if (Phaser.Input.Keyboard.JustUp(this.inputKeys.space)) {
+        this.combatMode = false;
+        this.resetAimingBar();
+      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.c)) {
+        if (this.onGameObject) {
+          await this.send({ cmd: pick });
+          this.pickAnim();
+        }
+      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.d) && this.stats.ap.current >= 2) {
+        await this.send({ cmd: dig });
+        this.digAnim();
+      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.one) && this.stats.ap.current >= 4) {
+        await this.send({ cmd: useTeleport });
+        this.digAnim();
+      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.two) && this.stats.ap.current >= 4) {
+        await this.send({ cmd: useLandmine });
+        this.digAnim();
+      } else {
+        if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
       }
-    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.d) && this.stats.ap.current >= 2) {
-      await this.send({ cmd: dig });
-      this.digAnim();
-    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.one) && this.stats.ap.current >= 4) {
-      await this.send({ cmd: useTeleport });
-      this.digAnim();
-    } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.two) && this.stats.ap.current >= 4) {
-      await this.send({ cmd: useLandmine });
-      this.digAnim();
-    } else {
-      if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
     }
   }
 

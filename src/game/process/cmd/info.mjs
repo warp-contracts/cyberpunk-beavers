@@ -23,8 +23,8 @@ export function standInQueue(state, action) {
 }
 
 export function removeFromQueue(state) {
-  const { walletsQueue, players } = state;
   if (!state.dequeued) {
+    const { walletsQueue, players } = state;
     const walletsDequeued = walletsQueue.filter((w) => players.hasOwnProperty(w));
     state.walletsQueue = walletsDequeued;
     sendHubNotification(state);
