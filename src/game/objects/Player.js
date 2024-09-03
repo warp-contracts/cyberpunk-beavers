@@ -172,9 +172,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   baseMoveTo(pos, onStart, onComplete) {
     let movementTemplate = {
-      targets: this,
+      targets: [this, this.name, this.position, this.medal, this.healthBar, this.apBar],
       ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-      duration: 500,
+      duration: 300,
       repeat: 0, // -1: infinity
       yoyo: false,
       onStart,
@@ -187,12 +187,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
     this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
-    this.scene.tweens.add({
-      ...movementTemplate,
-      targets: [this.name, this.position, this.medal, this.healthBar, this.apBar /*this.rangeBarX, this.rangeBarY*/],
-      x: `+=${moveHorizontal}`,
-      y: `+=${moveVertical}`,
-    });
 
     return { movementTemplate, moveHorizontal, moveVertical };
   }
