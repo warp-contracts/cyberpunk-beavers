@@ -18,12 +18,6 @@
     padding-bottom: 4rem;
   }
 
-  .character-pick-countdown {
-    color: var(--yellow);
-    font-size: var(--regular);
-    padding: 10px;
-  }
-
   .characters {
     display: flex;
     justify-content: space-evenly;

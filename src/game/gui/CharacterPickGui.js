@@ -5,7 +5,7 @@ import { formatCountdownTo } from './LoungeArenaSceneGui';
 export function CharacterPickGui() {
   return {
     view: function (vnode) {
-      const { setCharacter, diff, beaverChoice } = vnode.attrs;
+      const { setCharacter, beaverChoice } = vnode.attrs;
       let characters = beaverChoice ? [beaverChoice] : Object.keys(BEAVER_TYPES);
       async function handleClick(character) {
         if (!beaverChoice) {
@@ -15,10 +15,9 @@ export function CharacterPickGui() {
       }
 
       return m('.character-pick', [
-        m('.character-pick-countdown', diff ? formatCountdownTo(vnode.attrs.diff) : '00:00:00'),
         m(
           `.character-pick-title${!beaverChoice ? '.blink' : ''}`,
-          `${beaverChoice ? 'GET READY' : 'PICK YOUR CHARACTER'}`
+          `${beaverChoice ? 'GET READY FOR THE NEXT BATTLE' : 'PICK YOUR CHARACTER'}`
         ),
         m(
           '.characters',
@@ -119,18 +118,6 @@ function CharacterBoxWithCorners() {
     },
   };
 }
-
-// function GameInfo() {
-//   return {
-//     view: function (vnode) {
-//       return m('.game-info', [
-//         countdownLabel
-//           ? m('.element', [m('.title', countdownLabel), m('.value', formatCountdownTo(vnode.attrs.diff))])
-//           : null,
-//       ]);
-//     },
-//   };
-// }
 
 function formatPercent(value) {
   return `${Math.round(value * 100)}%`;

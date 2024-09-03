@@ -1,5 +1,5 @@
 import Player from '../../objects/Player.js';
-import Const, { BEAVER_TYPES, COLLISIONS_LAYER } from '../../common/const.mjs';
+import Const from '../../common/const.mjs';
 import MainPlayer from '../../objects/MainPlayer.js';
 import { Text } from '../../objects/Text.js';
 import { serverConnection } from '../../lib/serverConnection.js';
@@ -40,12 +40,14 @@ export default class MainScene extends Phaser.Scene {
     console.log('Main Scene - 1. Init', data);
     this.beaverId = data.beaverId;
     this.beaverChoice = data.beaverChoice;
-    this.balance = data.balance;
-    this.beaverId = data.beaverId;
     this.walletAddress = data.walletAddress;
     this.scene.launch(mainSceneLoadingKey);
     this.mainSceneLoading = this.scene.get(mainSceneLoadingKey);
     this.gameStart = data.gameStart;
+    this.gameEnter = data.gameEnter;
+    this.server = serverConnection.game;
+    this.server.subscribe(this);
+    this.gameActive = false;
     this.gameEnd = data.gameEnd;
     this.mapTxId = data.mapTxId;
     this.userName = getUsernameFromStorage(this.walletAddress);
@@ -67,8 +69,6 @@ export default class MainScene extends Phaser.Scene {
     doAddSounds(this);
     doInitAnimations(this);
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
-      this.server = serverConnection.game;
-      this.server.subscribe(this);
       await this.registerPlayer();
     } else {
       this.scene.start(connectWalletSceneKey);
@@ -89,21 +89,21 @@ export default class MainScene extends Phaser.Scene {
           roundInfo: self.roundInfo,
           gameOver: self.gameOver,
           playersTotal: Object.keys(self.allPlayers).length,
+          diff: self.diff,
+          gameActive: self.gameActive,
         });
       },
     });
   }
 
   async registerPlayer() {
-    if (!this.balance) {
-      this.balance = await checkBalance(this.walletAddress);
-    }
+    const balance = await checkBalance(this.walletAddress);
     if (this.beaverId) {
       console.log(`Beaver has already been registered previously, joining game...`, this.beaverId);
       await this.server.send(
         {
           cmd: Const.Command.join,
-          balance: this.balance && parseInt(this.balance),
+          balance: balance && parseInt(balance),
           generatedWalletAddress: generatedWalletAddress(),
         },
         true
@@ -115,7 +115,7 @@ export default class MainScene extends Phaser.Scene {
           cmd: Const.Command.register,
           beaverId: this.beaverChoice,
           userName: this.userName,
-          balance: this.balance && parseInt(this.balance),
+          balance: balance && parseInt(balance),
           generatedWalletAddress: generatedWalletAddress(),
         },
         true
@@ -166,6 +166,11 @@ export default class MainScene extends Phaser.Scene {
     if (this.gameOver) {
       return;
     }
+
+    if (this.gameEnter && !this.gameActive) {
+      this.waitForGameEnter();
+    }
+
     this.roundInfo = this.roundTick();
     if ((this.gameEnd && this.gameEnd < Date.now()) || this.roundInfo.roundsToGo == 0) {
       this.gameOver = true;
@@ -190,6 +195,20 @@ export default class MainScene extends Phaser.Scene {
     Object.keys(this.allPlayers).forEach((p) => {
       this.allPlayers[p].update();
     });
+  }
+
+  waitForGameEnter() {
+    const self = this;
+    const now = Date.now();
+    self.diff = Math.round((self.gameEnter - now) / 1000);
+    if (self.diff <= 0) {
+      self.activateGame();
+    }
+  }
+
+  activateGame() {
+    this.gameActive = true;
+    this.server.send({ cmd: Const.Command.dequeue }, true);
   }
 
   roundTick() {
@@ -256,6 +275,9 @@ export default class MainScene extends Phaser.Scene {
             }
 
             this.scene.remove(mainSceneLoadingKey);
+            if (!this.gameEnter || (this.gameEnter && this.gameEnter <= Date.now())) {
+              setTimeout(() => self.activateGame(), 100);
+            }
           }
         }
         break;

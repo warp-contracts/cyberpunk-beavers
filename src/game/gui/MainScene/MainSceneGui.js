@@ -6,15 +6,48 @@ import { KeyboardMapping } from './components/KeyboardMapping';
 
 export function MainSceneGui() {
   return {
+    oninit: function (vnode) {
+      vnode.state.hasEnterAnimated = false;
+    },
     view: function (vnode) {
-      const { mainPlayer, mainPlayerEquipment: equipment, gameStats, roundInfo, gameOver, playersTotal } = vnode.attrs;
+      const {
+        mainPlayer,
+        mainPlayerEquipment: equipment,
+        gameStats,
+        roundInfo,
+        gameOver,
+        playersTotal,
+        diff,
+        gameActive,
+      } = vnode.attrs;
+
+      if (gameActive && !vnode.state.hasEnterAnimated) {
+        animateEnter(vnode);
+      }
+
       return [
         mainPlayer?.stats ? m(WeaponInfo, { stats: mainPlayer.stats }) : null,
         equipment ? m(Equipment, { equipment }) : null,
         m(KeyboardMapping),
-        m(InfoPanel, { gameStats, stats: mainPlayer.stats, roundInfo, gameOver }),
+        m(InfoPanel, { gameStats, stats: mainPlayer.stats, roundInfo, gameOver, diff }),
         mainPlayer ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} }) : null,
+        m(`.main-scene-enter`, 'GO'),
       ];
     },
   };
+}
+
+function animateEnter(vnode) {
+  vnode.state.hasEnterAnimated = true;
+  const enterElement = document.querySelector('.main-scene-enter');
+  if (enterElement) {
+    enterElement.classList.add('animated');
+    enterElement.addEventListener(
+      'animationend',
+      () => {
+        enterElement.classList.remove('animated');
+      },
+      { once: true }
+    );
+  }
 }
