@@ -1,12 +1,16 @@
 .main-scene-enter {
-  font-family: 'Press Start 2P';
-  color: black;
-  font-size: var(--cannot-get-bigger-title);
   position: absolute;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   opacity: 0;
+  font-family: 'Press Start 2P';
+  background: black;
+  font-size: var(--big-title);
+  text-transform: uppercase;
+  color: var(--yellow);
+  text-align: center;
+  padding: 0.5rem;
 
   &.animated {
     animation: fadeInOut 2s linear forwards;
@@ -111,14 +115,6 @@
   align-items: center;
   gap: 10px;
 
-  .countdown {
-    color: var(--yellow);
-    font-size: var(--regular);
-    text-align: center;
-    background: black;
-    margin-top: 1px;
-  }
-
   .element {
     position: absolute;
     font-family: 'Press Start 2P';
@@ -129,16 +125,24 @@
     align-items: center;
     height: 30px;
 
-    &.game-over {
+    &.game-over,
+    &.countdown {
       background: black;
-      font-size: var(--big-title);
       text-transform: uppercase;
       color: var(--yellow);
       text-align: center;
+      position: static;
+    }
+
+    &.game-over {
+      font-size: var(--big-title);
       padding-top: 2rem;
       padding-bottom: 3rem;
-      flex-direction: column;
-      width: 500px;
+    }
+
+    &.countdown {
+      font-size: var(--big);
+      padding: 1rem;
     }
 
     &.rounds {

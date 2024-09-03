@@ -38,6 +38,7 @@ export function doPreloadAssets(mainScene) {
     `assets/images/anims/blood_splat/blood_splat_2_atlas.json`
   );
 
+  mainScene.load.audio('game_active_sound', ['assets/audio/game_active.mp3']);
   mainScene.load.audio('background_music', ['assets/audio/background_music.mp3']);
   mainScene.load.audio('background_music_metal', ['assets/audio/background_music_metal.mp3']);
   mainScene.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);

@@ -31,7 +31,7 @@ export function MainSceneGui() {
         m(KeyboardMapping),
         m(InfoPanel, { gameStats, stats: mainPlayer.stats, roundInfo, gameOver, diff }),
         mainPlayer ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} }) : null,
-        m(`.main-scene-enter`, 'GO'),
+        m(`.main-scene-enter.alert`, 'FIGHT!'),
       ];
     },
   };

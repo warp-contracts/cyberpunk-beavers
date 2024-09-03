@@ -22,13 +22,13 @@ export function standInQueue(state, action) {
   return { walletsQueue, walletsBench };
 }
 
-export function removeFromQueue(state) {
-  if (!state.dequeued) {
+export function activate(state) {
+  if (!state.activated) {
     const { walletsQueue, players } = state;
     const walletsDequeued = walletsQueue.filter((w) => players.hasOwnProperty(w));
     state.walletsQueue = walletsDequeued;
     sendHubNotification(state);
-    state.dequeued = true;
+    state.activated = true;
   }
 }
 
