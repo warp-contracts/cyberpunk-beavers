@@ -4,13 +4,19 @@ import { forDeathSounds } from './sounds.js';
 export function doPreloadAssets(mainScene) {
   // ===== MAP V2
   // load the PNG file
-  mainScene.load.image('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png');
+  // mainScene.load.image('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png');
+  mainScene.load.spritesheet('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png', { frameWidth: 48, spacing: 0 });
+  mainScene.load.spritesheet('cyberpunk_game_treasures', 'assets/images/game_treasures.png', {
+    frameWidth: 48,
+    spacing: 0,
+  });
 
   // load the JSON file
   mainScene.load.tilemapTiledJSON(`map_${mainScene.mapTxId}`, `https://arweave.net/${mainScene.mapTxId}`);
   // ===== MAP V2
   mainScene.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
-  mainScene.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
+
+  //mainScene.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
   mainScene.load.image('medal_gold', 'assets/images/medal-gold.png');
   mainScene.load.image('medal_silver', 'assets/images/medal-silver.png');

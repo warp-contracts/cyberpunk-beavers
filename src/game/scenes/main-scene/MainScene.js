@@ -409,6 +409,18 @@ export default class MainScene extends Phaser.Scene {
               this.allPlayers[response.player.walletAddress]?.pickAnim();
             }
             this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
+            const spriteToRemove = this.gameObjectSprites.find((s) => {
+              return response.player.pos.x === s.tilePosition.x && response.player.pos.y === s.tilePosition.y;
+            });
+            if (spriteToRemove) {
+              spriteToRemove.destroy();
+            } else {
+              console.error('Could not find sprite to remove at tile position', {
+                x: response.player.pos.x,
+                y: response.player.pos.y,
+              });
+            }
+
             if (response.player.onGameTreasure?.tile > 0) {
               //FIXME: create some dedicated fun for this
               this.gameTreasuresLayer.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
