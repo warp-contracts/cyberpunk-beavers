@@ -4,7 +4,7 @@ import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
 import { pick } from './cmd/pick.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
-import { gameFinished, gameInfo, gameNotStarted, gameStats, removeFromQueue, standInQueue } from './cmd/info.mjs';
+import { gameFinished, gameInfo, gameNotStarted, gameStats, activate, standInQueue } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
 import { setNextProcess } from './cmd/setNextProcess.mjs';
@@ -76,8 +76,11 @@ export function handle(state, message) {
         ...gameStats(state),
       });
       break;
-    case Const.Command.dequeue:
-      removeFromQueue(state, action);
+    case Const.Command.activate:
+      activate(state, action);
+      ao.result({
+        cmd: Const.Command.activated,
+      });
       break;
     case Const.Command.setup:
       ao.result({

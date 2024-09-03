@@ -12,7 +12,7 @@ const EMPTY_TILE = 0;
 
 export const COLLISIONS_LAYER = 'collisions';
 
-const NO_AP_COST = 1; // because fuck logic and naming :)
+const NO_AP_COST = 0;
 const LOW_AP_COST = 1;
 const MED_AP_COST = 2;
 const HIGH_AP_COST = 3;
@@ -34,7 +34,8 @@ const Command = {
   attack: 'attack',
   attacked: 'attacked',
   enqueue: 'enqueue',
-  dequeue: 'dequeue',
+  activate: 'activate',
+  activated: 'activated',
   join: 'join',
   move: 'move',
   moved: 'moved',

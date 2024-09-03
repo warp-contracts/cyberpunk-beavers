@@ -2,7 +2,7 @@ import Const from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
 import { triggerLandmine } from './landmine.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
-const { GameObject, Map, LOW_AP_COST, EMPTY_TILE, GameTreasure } = Const;
+const { GameObject, Map, LOW_AP_COST, NO_AP_COST, EMPTY_TILE, GameTreasure } = Const;
 
 export function movePlayer(state, action) {
   const { walletAddress, dir } = action;
@@ -84,5 +84,5 @@ export function movePlayer(state, action) {
 }
 
 function calculateApCost(state, y, x) {
-  return LOW_AP_COST;
+  return state.activated ? LOW_AP_COST : NO_AP_COST;
 }

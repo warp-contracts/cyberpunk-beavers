@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import Const, { BEAVER_TYPES } from '../../common/const.mjs';
 
 export function doAddSounds(mainScene) {
+  mainScene.gameActiveSound = mainScene.sound.add('game_active_sound', { loop: false, volume: 0.5 });
   mainScene.backgroundMusic = mainScene.sound.add('background_music', { loop: true, volume: 0.25 });
   mainScene.backgroundMusicMetal = mainScene.sound.add('background_music_metal', { loop: true, volume: 0.25 });
   mainScene.pickUpSound = mainScene.sound.add('pick_up_sound', { loop: false, volume: 3 });

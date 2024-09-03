@@ -167,7 +167,7 @@ export default class MainScene extends Phaser.Scene {
       return;
     }
 
-    if (this.gameEnter && !this.gameActive) {
+    if (this.gameEnter && this.gameEnter > Date.now() && !this.gameActive && !this.gameEnterTimeUp) {
       this.waitForGameEnter();
     }
 
@@ -207,8 +207,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   activateGame() {
-    this.gameActive = true;
-    this.server.send({ cmd: Const.Command.dequeue }, true);
+    this.gameEnterTimeUp = true;
+    this.server.send({ cmd: Const.Command.activate }, true);
   }
 
   roundTick() {
@@ -244,6 +244,11 @@ export default class MainScene extends Phaser.Scene {
     const self = this;
     if (this.allPlayers[response.player?.walletAddress]?.locked) return;
     switch (response.cmd) {
+      case Const.Command.activated: {
+        self.gameActive = true;
+        self.gameActiveSound.play();
+        break;
+      }
       case Const.Command.registered:
         {
           console.log('Registered player', response);
