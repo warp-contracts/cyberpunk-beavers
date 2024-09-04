@@ -22,7 +22,7 @@ async function doIt() {
 
   const id = await message({
     process: TOKEN_PROCESS,
-    data: `Owner = ${newOwnerAddress}`,
+    data: `Owner = '${newOwnerAddress}'`,
     tags: [{ name: 'Action', value: 'Eval' }],
     signer,
   });
