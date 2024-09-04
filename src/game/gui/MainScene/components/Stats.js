@@ -1,6 +1,54 @@
 import { trimString } from '../../../utils/utils';
 import Const from '../../../common/const.mjs';
+
 const { GameTreasure } = Const;
+
+export function SpectatorStats() {
+  return {
+    view: function (vnode) {
+      const { playersTotal, gameTokens } = vnode.attrs;
+      const processId = window.warpAO.processId();
+
+      return m('.stats', [
+        m('.stats-container', [
+          m('.stats-main', [
+            m('.stats-labels', [
+              m(Label, {
+                name: 'process',
+                content: m(
+                  'a',
+                  { target: '__blank', href: `https://www.ao.link/#/entity/${processId}` },
+                  `${trimString(processId)}`
+                ),
+                style: 'mt-10 pl-0',
+                inlineStyle: `pr-10`,
+              }),
+              Object.entries(gameTokens || {}).map(([name, info]) => [
+                m(Label, {
+                  name: `${GameTreasure[name]?.label}`,
+                  content: m(
+                    'a',
+                    { target: '__blank', href: `https://www.ao.link/#/token/${gameTokens[name]?.id || '-'}` },
+                    `${trimString(gameTokens[name]?.id)}`
+                  ),
+                  style: `mt-10 pl-0`,
+                  inlineStyle: `pr-10`,
+                }),
+                m(Label, {
+                  name: 'treasures',
+                  content: `${gameTokens[name]?.amount || '-'}`,
+                  style: `mt-5 pl-15`,
+                  inlineStyle: `pr-10`,
+                }),
+              ]),
+              m('div', [m('.stats-other-beavers', `BEAVERS`, m('span', `(${playersTotal || 0})`))]),
+            ]),
+          ]),
+        ]),
+      ]);
+    },
+  };
+}
 
 export function Stats() {
   return {

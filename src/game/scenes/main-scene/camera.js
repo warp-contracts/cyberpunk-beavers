@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
 
-export function doInitCamera(mainScene) {
+export function doInitCamera(mainScene, spectatorMode) {
   const camera = mainScene.cameras.main;
 
   camera.setSize(mainScene.game.scale.width, mainScene.game.scale.height);
-  camera.startFollow(mainScene.mainPlayer, true);
+  if (!spectatorMode) {
+    camera.startFollow(mainScene.mainPlayer, true);
+  }
   camera.setZoom(1);
 
   let cameraDragStartX;

@@ -1,9 +1,10 @@
 import Const from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
-import { connectWalletSceneKey, gameHubSceneKey, loungeAreaSceneKey } from '../../main.js';
+import { connectWalletSceneKey, gameHubSceneKey, loungeAreaSceneKey, mainSceneKey } from '../../main.js';
 import Phaser from 'phaser';
 import { GameHubGui } from '../gui/GameHubGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
+import { loadMapTxId } from '../utils/utils.js';
 
 export default class GameHubScene extends Phaser.Scene {
   beaverId;
@@ -44,6 +45,17 @@ export default class GameHubScene extends Phaser.Scene {
               self.scene.start(loungeAreaSceneKey, {
                 walletAddress: self.walletAddress,
                 processId,
+              });
+            },
+            spectateGame: async (processId, game) => {
+              console.log(`spectating ${processId}`);
+              await serverConnection.initGame(game.module, processId, game.mapTxId);
+              window.warpAO.spectatorMode = true;
+              hideGui();
+              const mapTxId = await loadMapTxId();
+              self.scene.start(mainSceneKey, {
+                mapTxId,
+                walletAddress: self.walletAddress,
               });
             },
           });

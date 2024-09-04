@@ -41,7 +41,7 @@ const messageListener = (target) => {
       target.handleTx(response.gameStats.lastTxs);
     }
     if (target.handleMessage) {
-      target.handleMessage(response);
+      target.handleMessage(response, null, localStorage.getItem('wallet_address'));
     }
   };
 };

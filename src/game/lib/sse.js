@@ -88,7 +88,7 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
       if (message.output && message.output.cmd) {
         message.output.txId = message.txId; // FIXME: well..., no the best approach
         if (target.handleMessage) {
-          target.handleMessage(message.output, lag);
+          target.handleMessage(message.output, lag, message.walletAddress);
         }
       }
     } catch (e) {

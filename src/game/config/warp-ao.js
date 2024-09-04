@@ -15,6 +15,7 @@ window.warpAO = {
     cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc',
     reload: true,
   },
+  spectatorMode: false,
   generatedSigner: null,
   signingMode: null, // generated | arconnect
   nonce: -1,

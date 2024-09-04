@@ -1,6 +1,5 @@
 import { BEAVER_TYPES, BonusType, GameTreasure } from '../common/const.mjs';
 import { playClick } from '../utils/mithril';
-import { formatCountdownTo } from './LoungeArenaSceneGui';
 
 export function CharacterPickGui() {
   return {

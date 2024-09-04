@@ -62,6 +62,7 @@ function initState(message, state) {
     walletsQueue: [],
     generatedWalletsMapping: {},
     players: {},
+    spectators: [],
     playersOnTiles: Array(Map.size)
       .fill([])
       .map(() => Array(Map.size)),

@@ -2,6 +2,8 @@ import { WarpFactory } from 'warp-contracts';
 import { ArweaveSigner } from 'warp-arbundles';
 import { playClick } from '../utils/mithril.js';
 
+const CHANGE_SCENE_TIMEOUT_MS = window.warpAO.config.env === 'dev' ? 0 : 2000;
+
 export function ConnectWalletSceneGui(initialVnode) {
   let titleAnimationDone = warpAO.config.env !== 'prod';
   let walletConnectionText;
@@ -46,7 +48,7 @@ export function ConnectWalletSceneGui(initialVnode) {
       m.redraw();
       setTimeout(() => {
         changeScene(walletAddress);
-      }, 2000);
+      }, CHANGE_SCENE_TIMEOUT_MS);
     }
 
     if (window.arweaveWallet) {
@@ -68,7 +70,7 @@ export function ConnectWalletSceneGui(initialVnode) {
     m.redraw();
     setTimeout(() => {
       changeScene(address);
-    }, 2000);
+    }, CHANGE_SCENE_TIMEOUT_MS);
   }
 
   async function useGeneratedWallet(changeScene) {
@@ -83,7 +85,7 @@ export function ConnectWalletSceneGui(initialVnode) {
     m.redraw();
     setTimeout(() => {
       changeScene(walletAddress);
-    }, 2000);
+    }, CHANGE_SCENE_TIMEOUT_MS);
   }
 
   return {
