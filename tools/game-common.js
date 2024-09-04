@@ -100,3 +100,22 @@ export async function setupGameContract(signer, moduleId, processId, config, muU
     body: processDataItem.getRaw(),
   }).then((res) => res.json());
 }
+
+/**
+ * Registers newly created game in the ao testnet bridge process
+ * in order to forward game token tranfer to ao testnet tokens.
+ * This will succeed only if the owner of the bridge is the same as the message.
+ */
+export async function registerGameInBridge(gameProcessId, bridgeProcessId) {
+  console.log(`Registering ${gameProcessId}`);
+  return message({
+    process: bridgeProcessId,
+    tags: [
+      { name: 'Recipient', value: gameProcessId }, // game contract
+      { name: 'Action', value: 'Deployed' },
+      { name: 'Process', value: `${gameProcessId}` },
+    ],
+    signer: createDataItemSigner(jwk),
+    data: 'any data',
+  });
+}

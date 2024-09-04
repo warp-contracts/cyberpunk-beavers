@@ -53,7 +53,6 @@ const Command = {
   useTeleport: 'useTeleport',
   teleported: 'teleported',
   msg: 'msg',
-  setNextProcess: 'setNextProcess',
   nextProcessSet: 'nextProcessSet',
   end: 'end',
   hubRegisterGame: 'hubRegisterGame',
@@ -92,7 +91,7 @@ const GameObject = {
 export const GameTreasure = {
   hole: { type: 'hole', label: 'hole', tile: 0, value: 0 },
   cbcoin: { type: 'cbcoin', label: 'CyberBeaversToken', tile: 1, value: 500 },
-  tio: { type: 'tio', label: 'ar.io (tIO)', tile: 2, value: 100, baseVal: 33.1 },
+  tio: { type: 'tio', label: 'ar.io (tIO)', tile: 2, value: 100, baseVal: 33 },
   war: { type: 'war', label: 'Wrapped AR', tile: 3, value: 300, baseVal: 0.022 },
   trunk: { type: 'trunk', label: 'TRUNK', tile: 4, value: 100, baseVal: 0.066 },
 };

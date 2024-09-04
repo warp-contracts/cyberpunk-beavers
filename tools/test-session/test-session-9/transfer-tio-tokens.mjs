@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs';
-import { TOKEN_CONTRACT } from '../../deploy-spawn-session-config.js';
+import { TOKEN_CONTRACT_MOCK } from '../../deploy-spawn-session-config.js';
 import { GameTreasure } from '../../../src/game/common/const.mjs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
 
 const wallet = JSON.parse(readFileSync('./.secrets/jwk.json').toString());
-const tioToken = `${TOKEN_CONTRACT[GameTreasure.tio.type].id}`;
+const tioToken = `${TOKEN_CONTRACT_MOCK[GameTreasure.tio.type].id}`;
 
 export async function transferTio(recipient, qty) {
   const tag = 'CyberBeaverTestingSession9';

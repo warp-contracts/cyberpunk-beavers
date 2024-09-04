@@ -18,17 +18,17 @@ export const TOKEN_CONTRACT_MOCK = {
     amount: 50,
   },
   [GameTreasure.trunk.type]: {
-    id: 'gqJPxrG2CPuaYDsnZNXCimJdAJw9QEEBtC8OEaUWR7E',
+    id: '2_O3UNKze6Yuy1oaNzRAGQjqbXJyd8AprlR90QFDp98',
     transfer: 'Transfer',
     amount: 0,
   },
   [GameTreasure.tio.type]: {
-    id: '7QJydVitORyOuKW3vm50CDITiJql5wUAwhnM4XvNpYU',
+    id: 'h3FqYG9AVze-JFH-MQS3Rvv5golBhjnDuPDpJFEpdwE',
     transfer: 'Transfer',
-    amount: 20,
+    amount: 120,
   },
   [GameTreasure.war.type]: {
-    id: 'xU9zFkq3X2ZQ6olwNVvr1vUWIjc3kXTWr7xKQD6dh10',
+    id: 'cUR3S0p7l5R3OYMa_oiyyLxk7QwaDwKIWGazt9mfQIM',
     transfer: 'Transfer',
     amount: 0,
   },
@@ -57,18 +57,19 @@ export const TOKEN_CONTRACT = {
   },
 };
 
-export function hourSessionGamesConfig(hubProcessId, dateOfFirstGame, playersLimit) {
+export function hourSessionGamesConfig(hubProcessId, bridgeProcessId, dateOfFirstGame, playersLimit) {
   return hourSessionDelayMS.map((delay) => {
-    return gameCustomConfig(hubProcessId, dateOfFirstGame.getTime() + delay, playersLimit);
+    return gameCustomConfig(hubProcessId, bridgeProcessId, dateOfFirstGame.getTime() + delay, playersLimit);
   });
 }
 
-export function gameCustomConfig(hubProcessId, date, playersLimit) {
+export function gameCustomConfig(hubProcessId, bridgeProcessId, date, playersLimit) {
   if (date) {
     return {
       cmd: 'setup',
       type: 'custom',
       hubProcessId,
+      bridgeProcessId,
       start: date,
       end: date + gameDurationMS,
       playersLimit,
@@ -78,12 +79,13 @@ export function gameCustomConfig(hubProcessId, date, playersLimit) {
       cmd: 'setup',
       type: 'custom',
       hubProcessId,
+      bridgeProcessId,
       playersLimit,
     };
   }
 }
 
-export function activeGamesConfig(hubProcessId, playersLimit) {
+export function activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit) {
   return [
     {
       cmd: 'setup',

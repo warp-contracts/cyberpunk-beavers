@@ -2,16 +2,21 @@ import { Tag, WarpFactory } from 'warp-contracts';
 import { ArweaveSigner, DeployPlugin } from 'warp-contracts-plugin-deploy';
 import { createData } from 'warp-arbundles';
 import { readFileSync } from 'fs';
-import { spawnGame, transferToken, setupGameContract } from './game-common.js';
+import { spawnGame, transferToken, setupGameContract, registerGameInBridge } from './game-common.js';
 import { replaceId } from './replace-id.js';
 import { dateFromArg } from './common.mjs';
-import { activeGamesConfig, hourSessionGamesConfig, TOKEN_CONTRACT } from './deploy-spawn-session-config.js';
+import {
+  activeGamesConfig,
+  hourSessionGamesConfig,
+  TOKEN_CONTRACT,
+  TOKEN_CONTRACT_MOCK,
+} from './deploy-spawn-session-config.js';
 import Const from '../src/game/common/const.mjs';
+import ids from '../src/game/config/warp-ao-ids.js';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
 const warp = WarpFactory.forMainnet().use(new DeployPlugin());
-const gameTokens = TOKEN_CONTRACT;
 
 const envIdx = process.argv.indexOf('--env');
 if (envIdx < 0) {
@@ -21,6 +26,7 @@ if (envIdx < 0) {
 // LOCAL OR PROD
 const env = process.argv[envIdx + 1];
 const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
+const gameTokens = env === 'local' ? TOKEN_CONTRACT_MOCK : TOKEN_CONTRACT;
 
 // TIME DATE SETTINGS
 const timeArg = process.argv[process.argv.indexOf('--time') + 1];
@@ -89,9 +95,10 @@ async function doIt() {
   replaceId(`hub_processId_${env}`, hubProcessId);
   console.log(`----- deployed hub`, hubSrcId, hubProcessId);
 
+  const bridgeProcessId = ids[`bridge_processId_${env}`];
   let setups = execDate
-    ? hourSessionGamesConfig(hubProcessId, execDate, playersLimit)
-    : activeGamesConfig(hubProcessId, playersLimit);
+    ? hourSessionGamesConfig(hubProcessId, bridgeProcessId, execDate, playersLimit)
+    : activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit);
 
   const gameProcesses = [];
   for (let s of setups) {
@@ -103,12 +110,22 @@ async function doIt() {
       additionalTags: [{ name: 'Hub-Process-Tx', value: hubProcessId }],
       gameTokens,
     });
+
+    await sleep(1000);
+    await registerGameInBridge(gameProcessId, bridgeProcessId);
+
     gameProcesses.push(gameProcessId);
 
     // Transfer tokens
-    if (env === 'prod') {
-      console.log(`Transferring ${Const.GameTreasure.cbcoin.type} to game ${gameProcessId}`);
-      await transferToken(gameTokens[Const.GameTreasure.cbcoin.type].id, gameProcessId);
+    console.log(`Transferring ${Const.GameTreasure.cbcoin.type} to game ${gameProcessId}`);
+    await transferToken(gameTokens[Const.GameTreasure.cbcoin.type].id, gameProcessId);
+
+    for (let [key, token] of Object.entries(gameTokens)
+      .filter(([key]) => key !== Const.GameTreasure.cbcoin.type)
+      .filter(([, token]) => token.amount > 0)) {
+      const qty = token.amount * Const.GameTreasure[key].baseVal;
+      console.log(`Transferring additional ${qty} ${key} to game ${bridgeProcessId}`);
+      await transferToken(token.id, bridgeProcessId, qty);
     }
 
     // Setup game

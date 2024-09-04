@@ -7,7 +7,6 @@ import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { gameFinished, gameInfo, gameNotStarted, gameStats, activate, standInQueue } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
-import { setNextProcess } from './cmd/setNextProcess.mjs';
 import { end, sendTokens } from './cmd/end.mjs';
 import { useLandmine } from './cmd/landmine.mjs';
 import { teleportPlayer } from './cmd/teleport.mjs';
@@ -15,7 +14,7 @@ import { teleportPlayer } from './cmd/teleport.mjs';
 function restrictedAccess(state, action, ts) {
   return (
     (gameNotStarted(state, ts) && ![Const.Command.setup, Const.Command.enqueue].includes(action.cmd)) ||
-    (gameFinished(state, ts) && ![Const.Command.setup, Const.Command.setNextProcess].includes(action.cmd))
+    (gameFinished(state, ts) && ![Const.Command.setup].includes(action.cmd))
   );
 }
 
@@ -43,10 +42,14 @@ export function handle(state, message) {
     : message.Owner;
 
   if (restrictedAccess(state, action, message.Timestamp)) {
-    console.log(`The game has not started yet`);
+    console.log(`The game access is restricted`, action, message.Timestamp, state.playWindow);
+    if (!state.tokensTransferred && gameFinished(state, message.Timestamp)) {
+      sendTokens(state);
+    }
     ao.result({
       cmd: Const.Command.stats,
       ...gameInfo(state, message.Owner, message.Timestamp),
+      ...gameStats(state),
     });
     return;
   }
@@ -55,12 +58,6 @@ export function handle(state, message) {
   gamePlayerTick(state, action);
 
   switch (action.cmd) {
-    case Const.Command.setNextProcess:
-      ao.result({
-        cmd: Const.Command.nextProcessSet,
-        ...setNextProcess(state, action),
-      });
-      break;
     case Const.Command.info:
       ao.result({
         cmd: Const.Command.stats,

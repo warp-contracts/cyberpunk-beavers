@@ -1,14 +1,6 @@
 import Const from '../../common/const.mjs';
 
-const MilisecondsOf = {
-  nextFullHour: 60 * 60 * 1000,
-  nextHalfHour: 30 * 60 * 1000,
-};
-
 const SetupTimes = {
-  nextFullHour: 'nextFullHour',
-  nextHalfHour: 'nextHalfHour',
-  nextSlot: 'nextSlot',
   custom: 'custom',
 };
 
@@ -21,52 +13,17 @@ export function setup(state, action, message) {
     };
   }
 
+  state.hubProcessId = action.hubProcessId || state.hubProcessId;
+  state.bridgeProcessId = action.bridgeProcessId || state.bridgeProcessId;
+  state.playersLimit = action.playersLimit || state.playersLimit || Const.Queue.defaultLimit;
+
   switch (action.type) {
-    case SetupTimes.nextSlot: {
-      const nextMS = action.slotMinutes * 60 * 1000;
-      const nextFull = (Math.floor(message.Timestamp / nextMS) + 1) * nextMS;
-      const duration = action.playMinutes * 60 * 1000 || 5 * 60 * 1000;
-      state.playWindow = {
-        begin: nextFull,
-        enter: nextFull + Const.GAME_ENTER_DELAY,
-        end: nextFull + duration,
-      };
-      state.playWindow.roundsTotal = calculateTotalRounds(state);
-      console.log(`Setup ${action.type}`, state.playWindow);
-      state.hubProcessId = action.hubProcessId;
-      state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
-      console.log(`Setup ${action.type}`, action);
-      sendHubNotification(state);
-      break;
-    }
-
-    case SetupTimes.nextFullHour:
-    case SetupTimes.nextHalfHour:
-      const ms = MilisecondsOf[action.type];
-      const nextFullHour = (Math.floor(message.Timestamp / ms) + 1) * ms;
-      const duration = action.duration || 5 * 60 * 1000;
-      state.playWindow = {
-        begin: nextFullHour,
-        enter: nextFullHour + Const.GAME_ENTER_DELAY,
-        end: nextFullHour + duration,
-      };
-      state.playWindow.roundsTotal = calculateTotalRounds(state);
-      console.log(`Setup ${action.type}`, state.playWindow);
-      state.hubProcessId = action.hubProcessId;
-      state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
-      console.log(`Setup ${action.type}`, action);
-      sendHubNotification(state);
-      break;
-
     case SetupTimes.custom:
       state.playWindow.begin = action.start;
       state.playWindow.enter = action.start + Const.GAME_ENTER_DELAY;
       state.playWindow.end = action.end;
       state.playWindow.roundsTotal = calculateTotalRounds(state);
-      console.log(`Setup custom`, state.playWindow);
-      state.hubProcessId = action.hubProcessId;
-      state.playersLimit = action.playersLimit || Const.Queue.defaultLimit;
-      console.log(`Setup custom`, action);
+      console.log(`Setup custom`, action, state.playWindow);
       sendHubNotification(state);
       break;
 
