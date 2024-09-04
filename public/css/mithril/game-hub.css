@@ -6,26 +6,37 @@
   font-size: 20px;
   font-weight: var(--regular);
   padding: 20px 20px;
-}
 
-#game-hub .games-list .list .element {
-  margin-top: 10px;
-  padding: 10px 10px;
-  white-space: pre-wrap;
-  text-align: left;
-  color: var(--yellow);
-  border: var(--yellow) 1px solid;
-  cursor: pointer;
-  width: 450px;
-}
+  .games-list .list .element {
+    position: relative;
+    margin-top: 10px;
+    padding: 10px 10px;
+    white-space: pre-wrap;
+    text-align: left;
+    color: var(--yellow);
+    border: var(--yellow) 1px solid;
+    cursor: pointer;
+    width: 450px;
 
-#game-hub .games-list .list .element.active {
-  color: var(--green);
-  border: var(--green) 1px solid;
-  font-weight: bold;
-}
+    &.active {
+      color: var(--green);
+      border: var(--green) 1px solid;
+      font-weight: bold;
+    }
 
-#game-hub .games-list .list .element.finished {
-  color: lightgray;
-  border: lightgray 1px solid;
+    &.finished {
+      color: lightgray;
+      border: lightgray 1px solid;
+    }
+
+    .spectate {
+      position: absolute;
+      left: 250px;
+      top: 7px;
+      padding: 3px;
+      border: var(--yellow) 1px solid;
+      color: var(--yellow);
+      z-index: 10000;
+    }
+  }
 }

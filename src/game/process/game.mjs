@@ -147,6 +147,21 @@ export function handle(state, message) {
         ...gameStats(state),
       });
       break;
+    case Const.Command.registerSpectator:
+      if (!state.spectators.includes(action.walletAddress)) {
+        state.spectators.push(action.walletAddress);
+      }
+      ao.result({
+        cmd: Const.Command.registeredSpectator,
+        players: state.players,
+        map: {
+          gameObjectsTilemap: state.gameObjectsTilemap,
+          gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
+        },
+        round: state.round,
+        ...gameStats(state),
+      });
+      break;
     case Const.Command.join:
       if (action.balance) {
         state.players[action.walletAddress].stats.coins.balance = action.balance;

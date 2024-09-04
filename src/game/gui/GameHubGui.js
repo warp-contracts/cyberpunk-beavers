@@ -4,11 +4,11 @@ import { playClick } from '../utils/mithril.js';
 export function GameHubGui() {
   return {
     view: function (vnode) {
-      const { games, gameError, joinGame } = vnode.attrs;
+      const { games, gameError, joinGame, spectateGame } = vnode.attrs;
       return [
         m('.mithril-component', { id: 'game-hub' }, [
           m(Header, { gameError }),
-          vnode.attrs.games ? m(GamesList, { games, joinGame }) : null,
+          vnode.attrs.games ? m(GamesList, { games, joinGame, spectateGame }) : null,
         ]),
       ];
     },
@@ -60,10 +60,26 @@ function GamesList() {
               {
                 onclick: async () => {
                   playClick();
+                  window.warpAO.spectatorMode = false;
                   await vnode.attrs.joinGame(processId, game);
                 },
               },
-              label
+              [
+                label,
+                isActive
+                  ? m(
+                      '.spectate',
+                      {
+                        onclick: async (event) => {
+                          event.stopImmediatePropagation();
+                          console.log('=== spectate mode clicked');
+                          await vnode.attrs.spectateGame(processId, game);
+                        },
+                      },
+                      'Spectate'
+                    )
+                  : '',
+              ]
             );
           })
         ),

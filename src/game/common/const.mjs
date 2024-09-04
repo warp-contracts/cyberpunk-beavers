@@ -60,6 +60,8 @@ const Command = {
   hubGamePlayers: 'hubGamePlayers',
   hubInfo: 'hubInfo',
   hubStats: 'hubStats',
+  registerSpectator: 'registerSpectator',
+  registeredSpectator: 'registeredSpectator',
 };
 
 const Direction = {

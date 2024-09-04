@@ -28,9 +28,12 @@ export default class CharacterPickScene extends Phaser.Scene {
           beaverChoice: self.beaverChoice,
           setCharacter: async (beaverChoice) => {
             self.beaverChoice = beaverChoice;
-            setTimeout(() => {
-              self.goToMainScene();
-            }, 4000);
+            setTimeout(
+              () => {
+                self.goToMainScene();
+              },
+              window.warpAO.config.env === 'dev' ? 0 : 4000
+            );
           },
         });
       },

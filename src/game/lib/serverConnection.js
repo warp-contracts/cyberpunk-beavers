@@ -15,6 +15,7 @@ export const serverConnection = await (async () => {
     conn.game = await initServerConnection(module, process, true, true, false);
     window.warpAO.processId = () => process;
     window.warpAO.mapTxId = () => mapTxId;
+    window.warpAO.spectatorMode = false;
   };
   return conn;
 })();
