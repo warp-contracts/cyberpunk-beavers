@@ -139,6 +139,7 @@ export default class MainScene extends Phaser.Scene {
     this.mainPlayer.mainScene = this;
 
     this.allPlayers[this.mainPlayer.walletAddress] = this.mainPlayer;
+    this.updateRanking();
 
     m.redraw();
 
@@ -158,6 +159,7 @@ export default class MainScene extends Phaser.Scene {
       beaverChoice: playerInfo.beaverId,
     });
     this.allPlayers[playerInfo.walletAddress] = player;
+    this.updateRanking();
     return player;
   }
 
@@ -489,6 +491,9 @@ export default class MainScene extends Phaser.Scene {
       newCoinsGained = responsePlayer.stats.coins.gained;
       this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
     }
+    if (currentCoinsGained != newCoinsGained) {
+      self.updateRanking();
+    }
   }
 
   displayPlayerScore(scores, walletAddress, options) {
@@ -578,5 +583,10 @@ export default class MainScene extends Phaser.Scene {
       repeat: 0,
       yoyo: true,
     });
+  }
+
+  updateRanking() {
+    this.ranking = Object.entries(this.allPlayers).sort((a, b) => b[1].stats.coins.gained - a[1].stats.coins.gained);
+    Object.values(this.allPlayers).forEach((p) => p.updatePlayerPosition());
   }
 }
