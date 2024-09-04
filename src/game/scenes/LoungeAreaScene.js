@@ -47,7 +47,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
             gameStart: self.gameStart,
             gameEnd: self.gameEnd,
             walletsQueue: self.walletsQueue,
-            walletsBench: self.walletsBench,
             playersLimit: self.playersLimit,
             diff: self.diff,
             onJoin: () =>
@@ -99,7 +98,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
           this.gameEnter = response.enter;
           this.gameEnd = response.end;
           this.walletsQueue = response.walletsQueue;
-          this.walletsBench = response.walletsBench;
           this.playersLimit = response.playersLimit;
           this.gameTxId = response.txId;
 

@@ -60,4 +60,12 @@
   cursor: pointer;
   padding: 20px 20px;
   width: 250px;
+
+  &.disabled {
+    cursor: none;
+    color: var(--lightgrey);
+    color: var(--lightgrey);
+    border: var(--lightgrey) 1px solid;
+    pointer-events: none;
+  }
 }

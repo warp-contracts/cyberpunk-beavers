@@ -60,7 +60,6 @@ function initState(message, state) {
       interval: 10_000, //ms
     },
     walletsQueue: [],
-    walletsBench: [],
     generatedWalletsMapping: {},
     players: {},
     playersOnTiles: Array(Map.size)

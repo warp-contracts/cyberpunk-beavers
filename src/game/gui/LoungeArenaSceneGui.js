@@ -1,36 +1,29 @@
 import { playClick } from '../utils/mithril.js';
 
 export function LoungeArenaSceneGui(initialVnode) {
-  function showJoinButton(gameStart, walletsQueue, walletsBench, walletAddress) {
-    const result =
-      Date.now() < gameStart && !walletsQueue.includes(walletAddress) && !walletsBench.includes(walletAddress);
+  function showJoinButton(gameStart, walletsQueue, walletAddress) {
+    const result = Date.now() < gameStart && !walletsQueue.includes(walletAddress);
 
     return result;
   }
 
   return {
     view: function (vnode) {
-      const { gameTxId, walletAddress, gameError, gameStart, gameEnd, walletsQueue, walletsBench, diff, onJoin } =
+      const { gameTxId, walletAddress, gameError, gameStart, gameEnd, walletsQueue, diff, onJoin, playersLimit } =
         vnode.attrs;
-
+      const disabled = walletsQueue && Object.keys(walletsQueue).length >= playersLimit;
       return [
         m('.mithril-component', { id: 'lounge-arena' }, [
           gameError
             ? m(HeaderError, { gameError })
             : [
                 m(GameInfo, { gameTxId, gameStart, gameEnd, diff, walletsQueue }),
-                showJoinButton(gameStart, walletsQueue, walletsBench, walletAddress) ? m(JoinButton, { onJoin }) : null,
+                showJoinButton(gameStart, walletsQueue, walletAddress) ? m(JoinButton, { onJoin, disabled }) : null,
                 m('.players-lists', [
                   m(
                     '.column',
                     walletsQueue?.length
                       ? m(PlayersList, { header: 'Waiting list', list: walletsQueue, walletAddress })
-                      : null
-                  ),
-                  m(
-                    '.column',
-                    walletsBench?.length
-                      ? m(PlayersList, { header: 'Waiting for next games', list: walletsBench, walletAddress })
                       : null
                   ),
                 ]),
@@ -95,16 +88,19 @@ function PlayersList() {
 function JoinButton() {
   return {
     view: function (vnode) {
+      const { onJoin, disabled } = vnode.attrs;
       return [
         m(
-          '.button',
+          `.button ${disabled && 'disabled'}`,
           {
             onclick: () => {
-              playClick();
-              vnode.attrs.onJoin();
+              if (!disabled) {
+                playClick();
+                onJoin();
+              }
             },
           },
-          'Click here to join'
+          disabled ? 'Limit reached' : 'Click here to join'
         ),
       ];
     },
