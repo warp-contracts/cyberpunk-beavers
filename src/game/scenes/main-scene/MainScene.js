@@ -425,6 +425,10 @@ export default class MainScene extends Phaser.Scene {
               //FIXME: create some dedicated fun for this
               this.gameTreasuresLayer.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
             }
+          } else {
+            if (this.mainPlayer?.walletAddress === response.player.walletAddress) {
+              this.noCollectSound.play();
+            }
           }
           this.updateStats(response.player, response.gameStats);
           response.picked && this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);

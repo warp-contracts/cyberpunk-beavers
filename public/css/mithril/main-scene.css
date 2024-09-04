@@ -45,9 +45,10 @@
 
 #player-equipment-gui .equipment-slot-container .equipment-counter {
   bottom: 25px;
-  right: -42px;
+  right: -29px;
   position: relative;
   color: white;
+  font-size: var(--fs-small-title);
 }
 
 #keyboard-mapping {

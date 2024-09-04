@@ -7,6 +7,7 @@ export function doAddSounds(mainScene) {
   mainScene.backgroundMusic = mainScene.sound.add('background_music', { loop: true, volume: 0.25 });
   mainScene.backgroundMusicMetal = mainScene.sound.add('background_music_metal', { loop: true, volume: 0.25 });
   mainScene.pickUpSound = mainScene.sound.add('pick_up_sound', { loop: false, volume: 3 });
+  mainScene.noCollectSound = mainScene.sound.add('no_collect_sound', { loop: false, volume: 3 });
   mainScene.digSound = mainScene.sound.add('dig_sound', { loop: false, volume: 0.5 });
   mainScene.treasureSound = mainScene.sound.add('treasure_sound', { loop: false, volume: 0.5 });
   mainScene.attackHeavyBeaverSound = mainScene.sound.add('attack_heavy_beaver_sound', { loop: false, volume: 0.5 });

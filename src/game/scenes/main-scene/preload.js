@@ -48,6 +48,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('background_music', ['assets/audio/background_music.mp3']);
   mainScene.load.audio('background_music_metal', ['assets/audio/background_music_metal.mp3']);
   mainScene.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
+  mainScene.load.audio('no_collect_sound', ['assets/audio/no_collect.mp3']);
   mainScene.load.audio('dig_sound', ['assets/audio/dig.mp3']);
   mainScene.load.audio('treasure_sound', ['assets/audio/treasure_arcade.mp3']);
   mainScene.load.audio('beaver_eliminated_sound', ['assets/audio/beaver_eliminated.m4a']);
