@@ -314,6 +314,9 @@ export default class MainScene extends Phaser.Scene {
           walletAddress: msgWalletAddress,
           'this.walletAddress': this.walletAddress,
         });
+        self.gameStart = response.start;
+        self.gameEnd = response.end;
+        self.gameEnter = response.enter;
         self.round = response.round;
         if (this.gameEnd) {
           self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);

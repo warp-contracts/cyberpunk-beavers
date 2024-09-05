@@ -16,7 +16,7 @@ export function registerPlayer(state, action) {
   }
 
   if (walletsWhitelist.length && !walletsWhitelist.includes(walletAddress)) {
-    const error = `Failed to register ${action.walletAddress}. Not on the whitelist`;
+    const error = `Developers' Internal testing session - ${action.walletAddress} wallet is not on the whitelist.`;
     console.log(error);
     return { player: { walletAddress, error } };
   }

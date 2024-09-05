@@ -158,6 +158,7 @@ export function handle(state, message) {
         },
         round: state.round,
         ...gameStats(state),
+        ...gameInfo(state, message.Owner, message.Timestamp),
       });
       break;
     case Const.Command.join:
