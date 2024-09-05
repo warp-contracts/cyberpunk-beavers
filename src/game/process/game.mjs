@@ -77,6 +77,7 @@ export function handle(state, message) {
       activate(state, action);
       ao.result({
         cmd: Const.Command.activated,
+        ...gameInfo(state, message.Owner, message.Timestamp),
       });
       break;
     case Const.Command.setup:
