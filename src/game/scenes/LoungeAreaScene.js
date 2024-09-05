@@ -24,6 +24,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
     console.log('Lounge Area - 1. Init', data);
     this.walletAddress = data.walletAddress;
     this.gameError = data.error;
+    this.processId = data.processId;
   }
 
   preload() {
@@ -41,7 +42,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       m.mount(showGui(), {
         view: function () {
           return m(LoungeArenaSceneGui, {
-            gameTxId: self.gameTxId,
+            gameTxId: self.processId,
             walletAddress: self.walletAddress,
             gameError: self.gameError,
             gameStart: self.gameStart,
@@ -99,7 +100,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
           this.gameEnd = response.end;
           this.walletsQueue = response.walletsQueue;
           this.playersLimit = response.playersLimit;
-          this.gameTxId = response.txId;
 
           if (response.error) {
             console.error('Failed to fetch game info', response.error);

@@ -43,6 +43,7 @@ export default class GameHubScene extends Phaser.Scene {
               hideGui();
               self.scene.start(loungeAreaSceneKey, {
                 walletAddress: self.walletAddress,
+                processId,
               });
             },
           });
