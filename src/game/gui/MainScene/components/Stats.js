@@ -90,7 +90,7 @@ export function Stats() {
             }),
             m(Label, {
               name: 'gained',
-              content: `${Math.round(info.gained * GameTreasure[name]?.baseVal * 100) / 100 || '-'}`,
+              content: `${formatCoin(info.gained, name) || '-'}`,
               style: `mt-5 pl-15`,
               inlineStyle: `pr-10`,
             }),
@@ -100,6 +100,12 @@ export function Stats() {
       ]);
     },
   };
+}
+
+function formatCoin(count, tokenType) {
+  const token = GameTreasure[tokenType];
+  const divisor = Math.max(1, Math.pow(10, token?.denomination || 0));
+  return (count * token?.baseVal) / divisor;
 }
 
 function Label() {
