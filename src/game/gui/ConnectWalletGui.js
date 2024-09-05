@@ -21,13 +21,19 @@ export function ConnectWalletSceneGui(initialVnode) {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-      await window.arweaveWallet.connect([
-        'ACCESS_ADDRESS',
-        'DISPATCH',
-        'SIGN_TRANSACTION',
-        'ACCESS_PUBLIC_KEY',
-        'SIGNATURE',
-      ]);
+      try {
+        await window.arweaveWallet.connect([
+          'ACCESS_ADDRESS',
+          'DISPATCH',
+          'SIGN_TRANSACTION',
+          'ACCESS_PUBLIC_KEY',
+          'SIGNATURE',
+        ]);
+      } catch (e) {
+        window.alert(
+          `Problem with loading ArConnect.\nPlease refresh page and try again. Our best tech beavers are working on solving this problem.`
+        );
+      }
       const walletAddress = await window.arweaveWallet.getActiveAddress();
       walletConnectionText = `Wallet ${walletAddress} connected.`;
       localStorage.setItem('wallet_address', walletAddress);
@@ -44,7 +50,7 @@ export function ConnectWalletSceneGui(initialVnode) {
     }
 
     if (window.arweaveWallet) {
-      await doConnectWallet();
+      setTimeout(async () => await doConnectWallet(), 100);
     } else {
       window.addEventListener('arweaveWalletLoaded', doConnectWallet);
     }
