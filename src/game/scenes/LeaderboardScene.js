@@ -9,7 +9,7 @@ import {
   scenes,
   gameHubSceneKey,
 } from '../../main.js';
-import { trimString } from '../utils/utils.js';
+import { formatCoin, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { hideGui, showGui } from '../utils/mithril.js';
 import { LeaderboardGui } from '../gui/LeaderboardGui.js';
@@ -97,7 +97,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         },
         player.stats?.coins?.gained,
         player.stats?.coins?.balance + player.stats?.coins?.gained,
-        Math.round(player.stats?.additionalTokens['tio']?.gained * GameTreasure['tio']?.baseVal * 100) / 100,
+        `${formatCoin(player.stats?.additionalTokens['tio']?.gained, 'tio') || '-'}`,
         player.stats?.kills?.frags,
         player.stats?.kills?.deaths,
       ]);

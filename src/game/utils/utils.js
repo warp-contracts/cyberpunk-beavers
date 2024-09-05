@@ -1,5 +1,5 @@
 import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
-import { maps } from '../common/const.mjs';
+import { GameTreasure, maps } from '../common/const.mjs';
 
 export function getEnv() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -131,4 +131,10 @@ export function getUsernameFromStorage(walletAddress) {
 
 export function generatedWalletAddress() {
   return warpAO.signingMode == 'arconnect' ? localStorage.getItem('generated_wallet_address') : null;
+}
+
+export function formatCoin(count, tokenType) {
+  const token = GameTreasure[tokenType];
+  const divisor = Math.max(1, Math.pow(10, token?.denomination || 0));
+  return (count * token?.baseVal) / divisor;
 }

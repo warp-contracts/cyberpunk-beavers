@@ -1,4 +1,4 @@
-import { trimString } from '../../../utils/utils';
+import { formatCoin, trimString } from '../../../utils/utils';
 import Const from '../../../common/const.mjs';
 const { GameTreasure } = Const;
 
@@ -100,12 +100,6 @@ export function Stats() {
       ]);
     },
   };
-}
-
-function formatCoin(count, tokenType) {
-  const token = GameTreasure[tokenType];
-  const divisor = Math.max(1, Math.pow(10, token?.denomination || 0));
-  return (count * token?.baseVal) / divisor;
 }
 
 function Label() {
