@@ -53,19 +53,28 @@
 
 #lounge-arena .button {
   margin-top: 10px;
-  color: var(--red);
-  border: var(--red) 1px solid;
+
   font-weight: bold;
   text-align: center;
   cursor: pointer;
   padding: 20px 20px;
   width: 250px;
 
-  &.disabled {
-    cursor: none;
-    color: var(--lightgrey);
-    color: var(--lightgrey);
-    border: var(--lightgrey) 1px solid;
-    pointer-events: none;
+  &.back {
+    color: var(--green);
+    border: var(--green) 1px solid;
+  }
+
+  &.join {
+    color: var(--red);
+    border: var(--red) 1px solid;
+
+    &.disabled {
+      cursor: none;
+      color: var(--lightgrey);
+      color: var(--lightgrey);
+      border: var(--lightgrey) 1px solid;
+      pointer-events: none;
+    }
   }
 }

@@ -151,8 +151,8 @@ async function spawnGame() {
     {
       cmd: 'setup',
       type: 'custom',
-      /*start: Date.now() + 1000 * 10,
-      end: Date.now() + 1000 * 20,*/
+      /*start: Date.now() + 1000 * 1000,
+      end: Date.now() + 1000 * 2000,*/
       playersLimit: 2,
       hubProcessId: ids.hub_processId_dev,
     },

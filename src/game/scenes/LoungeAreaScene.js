@@ -6,6 +6,7 @@ import {
   loungeAreaSceneKey,
   mainSceneKey,
   characterPickSceneKey,
+  gameHubSceneKey,
 } from '../../main.js';
 import { loadMapTxId } from '../utils/utils.js';
 import Phaser from 'phaser';
@@ -54,6 +55,10 @@ export default class LoungeAreaScene extends Phaser.Scene {
               setTimeout(async () => {
                 await self.server.send({ cmd: Const.Command.enqueue }, true);
               }),
+            onBack: () => {
+              hideGui();
+              self.scene.start(gameHubSceneKey);
+            },
           });
         },
       });

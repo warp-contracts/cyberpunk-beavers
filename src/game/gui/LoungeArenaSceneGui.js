@@ -9,8 +9,18 @@ export function LoungeArenaSceneGui(initialVnode) {
 
   return {
     view: function (vnode) {
-      const { gameTxId, walletAddress, gameError, gameStart, gameEnd, walletsQueue, diff, onJoin, playersLimit } =
-        vnode.attrs;
+      const {
+        gameTxId,
+        walletAddress,
+        gameError,
+        gameStart,
+        gameEnd,
+        walletsQueue,
+        diff,
+        onJoin,
+        playersLimit,
+        onBack,
+      } = vnode.attrs;
       const disabled = walletsQueue && Object.keys(walletsQueue).length >= playersLimit;
       return [
         m('.mithril-component', { id: 'lounge-arena' }, [
@@ -19,6 +29,16 @@ export function LoungeArenaSceneGui(initialVnode) {
             : [
                 m(GameInfo, { gameTxId, gameStart, gameEnd, diff, walletsQueue }),
                 showJoinButton(gameStart, walletsQueue, walletAddress) ? m(JoinButton, { onJoin, disabled }) : null,
+                m(
+                  '.button back',
+                  {
+                    onclick: () => {
+                      playClick();
+                      onBack();
+                    },
+                  },
+                  '< Back'
+                ),
                 m('.players-lists', [
                   m(
                     '.column',
@@ -91,7 +111,7 @@ function JoinButton() {
       const { onJoin, disabled } = vnode.attrs;
       return [
         m(
-          `.button ${disabled && 'disabled'}`,
+          `.button join ${disabled && 'disabled'}`,
           {
             onclick: () => {
               if (!disabled) {
