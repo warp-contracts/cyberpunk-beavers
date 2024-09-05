@@ -267,7 +267,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.activated: {
         if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
           self.gameActive = true;
-          self.gameActiveSound.play();
+          // self.gameActiveSound.play();
         }
         break;
       }
