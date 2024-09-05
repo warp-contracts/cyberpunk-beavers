@@ -60,6 +60,7 @@ function initState(message, state) {
       interval: 10_000, //ms
     },
     walletsQueue: [],
+    walletsWhitelist: [], // if not empty restricts players registration
     generatedWalletsMapping: {},
     players: {},
     spectators: [],

@@ -5,7 +5,7 @@ const { BEAVER_TYPES, Map, EMPTY_TILE, GameTreasure } = Const;
 
 export function registerPlayer(state, action) {
   const { beaverId, walletAddress, userName, balance, generatedWalletAddress } = action;
-  const { players, playersOnTiles, walletsQueue } = state;
+  const { players, playersOnTiles, walletsQueue, walletsWhitelist } = state;
 
   // Player already registered, move along
   if (players[walletAddress]) {
@@ -13,6 +13,12 @@ export function registerPlayer(state, action) {
       players[walletAddress].stats.coins.balance = balance;
     }
     return { player: players[walletAddress] };
+  }
+
+  if (walletsWhitelist.length && !walletsWhitelist.includes(walletAddress)) {
+    const error = `Failed to register ${action.walletAddress}. Not on the whitelist`;
+    console.log(error);
+    return { player: { walletAddress, error } };
   }
 
   if (!walletsQueue.includes(walletAddress)) {

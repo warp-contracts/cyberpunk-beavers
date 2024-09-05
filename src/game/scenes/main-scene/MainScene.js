@@ -278,6 +278,7 @@ export default class MainScene extends Phaser.Scene {
           ) {
             console.error('Failed to join the game', response.player);
             this.scene.remove('main-scene-loading');
+            hideGui();
             self.scene.start(loungeAreaSceneKey, { error: response.player.error });
           } else {
             self.round = response.round;

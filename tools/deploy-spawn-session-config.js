@@ -10,6 +10,7 @@ const hourSessionDelayMS = [
   30 * 60 * 1_000,
 ];
 const gameDurationMS = 5 * 60 * 1_000; // 5 minutes
+const walletsWhitelist = [];
 
 export const TOKEN_CONTRACT_MOCK = {
   [GameTreasure.cbcoin.type]: {
@@ -66,20 +67,22 @@ export function hourSessionGamesConfig(hubProcessId, bridgeProcessId, dateOfFirs
 export function gameCustomConfig(hubProcessId, bridgeProcessId, date, playersLimit) {
   if (date) {
     return {
-      cmd: 'setup',
+      cmd: Const.Command.setup,
       type: 'custom',
       hubProcessId,
       bridgeProcessId,
       start: date,
       end: date + gameDurationMS,
+      walletsWhitelist,
       playersLimit,
     };
   } else {
     return {
-      cmd: 'setup',
+      cmd: Const.Command.setup,
       type: 'custom',
       hubProcessId,
       bridgeProcessId,
+      walletsWhitelist,
       playersLimit,
     };
   }
@@ -88,13 +91,13 @@ export function gameCustomConfig(hubProcessId, bridgeProcessId, date, playersLim
 export function activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit) {
   return [
     {
-      cmd: 'setup',
+      cmd: Const.Command.setup,
       type: 'custom',
       hubProcessId,
       playersLimit,
     },
     {
-      cmd: 'setup',
+      cmd: Const.Command.setup,
       type: 'custom',
       hubProcessId,
       playersLimit,

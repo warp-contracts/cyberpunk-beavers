@@ -130,7 +130,7 @@ function JoinButton() {
 function HeaderError() {
   return {
     view: function (vnode) {
-      return [m('.header error', `Cannot join the game.\n${vnode.gameError}\n\n`)];
+      return [m('.header error', `Cannot join the game.\n${vnode.attrs.gameError}\n\n`)];
     },
   };
 }

@@ -16,6 +16,7 @@ export function setup(state, action, message) {
   state.hubProcessId = action.hubProcessId || state.hubProcessId;
   state.bridgeProcessId = action.bridgeProcessId || state.bridgeProcessId;
   state.playersLimit = action.playersLimit || state.playersLimit || Const.Queue.defaultLimit;
+  state.walletsWhitelist = action.walletsWhitelist || state.walletsWhitelist;
 
   switch (action.type) {
     case SetupTimes.custom:
