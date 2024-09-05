@@ -116,9 +116,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
             }
             if (response.active) {
               await this.gameActive();
-            } /*else if (Date.now() > response.end) {
-            this.goToLeaderboard(response);
-          }*/
+            }
           }
           m.redraw();
         }
