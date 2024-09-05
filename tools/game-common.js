@@ -60,15 +60,19 @@ export async function spawnGame({ muUrl, moduleId, additionalTags = [], gameToke
   return processResponse.id;
 }
 
-export async function transferToken(tokenProcessId, gameProcessId, qty = 1000000) {
+export async function transferToken(tokenProcessId, gameProcessId, fromProcess, qty = 1000000) {
+  const tags = [
+    { name: 'Recipient', value: gameProcessId }, // game contract
+    { name: 'Action', value: 'Transfer' },
+    { name: 'Quantity', value: `${qty}` },
+  ];
+  if (fromProcess) {
+    tags.push({ name: 'From-Process', value: fromProcess });
+  }
+
   return message({
     process: tokenProcessId,
-    tags: [
-      { name: 'From-Process', value: tokenProcessId }, // ;)
-      { name: 'Recipient', value: gameProcessId }, // game contract
-      { name: 'Action', value: 'Transfer' },
-      { name: 'Quantity', value: `${qty}` },
-    ],
+    tags,
     signer: createDataItemSigner(jwk),
     data: 'any data',
   });

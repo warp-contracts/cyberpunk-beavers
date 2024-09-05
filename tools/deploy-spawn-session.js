@@ -117,15 +117,16 @@ async function doIt() {
     gameProcesses.push(gameProcessId);
 
     // Transfer tokens
+    const cbcoinProcessId = gameTokens[Const.GameTreasure.cbcoin.type].id;
     console.log(`Transferring ${Const.GameTreasure.cbcoin.type} to game ${gameProcessId}`);
-    await transferToken(gameTokens[Const.GameTreasure.cbcoin.type].id, gameProcessId);
+    await transferToken(cbcoinProcessId, gameProcessId, cbcoinProcessId);
 
     for (let [key, token] of Object.entries(gameTokens)
       .filter(([key]) => key !== Const.GameTreasure.cbcoin.type)
       .filter(([, token]) => token.amount > 0)) {
       const qty = token.amount * Const.GameTreasure[key].baseVal;
       console.log(`Transferring additional ${qty} ${key} to game ${bridgeProcessId}`);
-      await transferToken(token.id, bridgeProcessId, qty);
+      await transferToken(token.id, bridgeProcessId, null, qty);
     }
 
     // Setup game

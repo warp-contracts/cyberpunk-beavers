@@ -95,7 +95,7 @@ async function doIt() {
 
   if (env == 'prod') {
     console.log(`Transferring token to game ${gameProcessId}`);
-    await transferToken(ids[`token_processId_${env}`], gameProcessId);
+    await transferToken(ids[`token_processId_${env}`], gameProcessId, ids[`token_processId_${env}`]);
   }
 
   const customConfig = gameCustomConfig(hubProcessId, execDate.getTime(), playersLimit);
