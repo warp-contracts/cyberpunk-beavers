@@ -261,8 +261,10 @@ export default class MainScene extends Phaser.Scene {
 
   handleMessage(response, lag, msgWalletAddress) {
     const self = this;
-    console.log('walletAddress', msgWalletAddress);
-    if (this.allPlayers[response.player?.walletAddress]?.locked) return;
+    if (self.allPlayers && response?.player?.walletAddress) {
+      if (self.allPlayers[response.player.walletAddress]?.locked) return;
+    }
+
     switch (response.cmd) {
       case Const.Command.activated: {
         if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
