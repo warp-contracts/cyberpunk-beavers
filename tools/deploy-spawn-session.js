@@ -53,8 +53,21 @@ async function deploy(processName) {
     new Tag('Compute-Limit', '9000000000000'),
     new Tag('Salt', '' + Date.now()),
   ];
-  const srcTx = await warp.createSource({ src: module, tags: moduleTags }, signer);
-  return await warp.saveSource(srcTx);
+  const moduleDataItem = createData(module, signer, { tags: moduleTags });
+  await moduleDataItem.sign(signer);
+  const moduleResponse = await fetch('https://up.arweave.net/tx', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/octet-stream',
+      Accept: 'application/json',
+    },
+    body: moduleDataItem.getRaw(),
+  }).then((res) => res.json());
+
+  //console.log("Module response", moduleResponse);
+  return moduleResponse.id;
+  //const srcTx = await warp.createSource({ src: module, tags: moduleTags }, signer);
+  //return await warp.saveSource(srcTx);
 }
 
 async function spawn({ processName, moduleId }) {
