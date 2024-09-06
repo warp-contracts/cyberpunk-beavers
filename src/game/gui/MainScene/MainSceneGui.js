@@ -1,6 +1,6 @@
 import { Equipment } from './components/Equipment';
 import { InfoPanel } from './components/InfoPanel';
-import { Stats } from './components/Stats';
+import { SpectatorStats, Stats } from './components/Stats';
 import { WeaponInfo } from './components/WeaponInfo';
 import { KeyboardMapping } from './components/KeyboardMapping';
 
@@ -20,6 +20,7 @@ export function MainSceneGui() {
         diff,
         gameActive,
         spectatorMode,
+        allPlayers,
       } = vnode.attrs;
 
       if (gameActive && !vnode.state.hasEnterAnimated) {
@@ -27,11 +28,15 @@ export function MainSceneGui() {
       }
 
       return spectatorMode
-        ? [m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff, spectatorMode })]
+        ? [
+            m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff, spectatorMode }),
+            m(KeyboardMapping, { spectatorMode }),
+            m(SpectatorStats, { playersTotal, gameTokens: gameStats.gameTokens || {} }),
+          ]
         : [
             mainPlayer?.stats ? m(WeaponInfo, { stats: mainPlayer.stats }) : null,
             equipment ? m(Equipment, { equipment }) : null,
-            m(KeyboardMapping),
+            m(KeyboardMapping, { spectatorMode }),
             m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
             mainPlayer ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} }) : null,
             m(`.main-scene-enter.alert`, 'FIGHT!'),

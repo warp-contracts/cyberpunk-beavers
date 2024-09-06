@@ -117,7 +117,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       },
       () => {
         self.anims.stop();
-        if (isMainPlayer) this.scene.explosionSound.play();
+        if (isMainPlayer || this.scene.spectatorMode) this.scene.explosionSound.play();
         this.explosionAnim().once('animationcomplete', () => {
           self.moveTo(response);
         });
@@ -164,7 +164,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     bloodSplatSprite.setPosition(self.x, self.y);
     bloodSplatSprite.setVisible(true);
     bloodSplatSprite.anims.play(bloodSplat, true);
-    if (isMainPlayer) bloodSplatSound.play();
+    if (isMainPlayer || self.scene.spectatorMode) bloodSplatSound.play();
     bloodSplatSprite.on('animationcomplete', () => {
       bloodSplatSprite.setVisible(false);
     });

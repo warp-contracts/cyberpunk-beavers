@@ -31,6 +31,7 @@ export default class MainScene extends Phaser.Scene {
   gameOver = false;
   lockingTx = null;
   gameStats = {};
+  followedPlayer = null;
 
   constructor() {
     super(mainSceneKey);
@@ -286,6 +287,7 @@ export default class MainScene extends Phaser.Scene {
             self.scene.start(loungeAreaSceneKey, { error: response.player.error });
           } else {
             self.round = response.round;
+            self.gameStats = response.gameStats;
             if (this.gameEnd) {
               self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
             }
@@ -303,6 +305,7 @@ export default class MainScene extends Phaser.Scene {
                 self.addOtherPlayer(player);
               }
             }
+            this.followWinner();
 
             this.scene.remove(mainSceneLoadingKey);
             if (!this.gameEnter || (this.gameEnter && this.gameEnter <= Date.now())) {
@@ -312,31 +315,29 @@ export default class MainScene extends Phaser.Scene {
         }
         break;
       case Const.Command.registeredSpectator:
-        console.log('registeredSpectator', {
-          walletAddress: msgWalletAddress,
-          'this.walletAddress': this.walletAddress,
-        });
         self.gameStart = response.start;
         self.gameEnd = response.end;
         self.gameEnter = response.enter;
         self.round = response.round;
+        self.gameStats = response.gameStats;
         if (this.gameEnd) {
           self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
         }
+        for (const [wallet, player] of Object.entries(response.players)) {
+          self.addOtherPlayer(player);
+        }
         if (msgWalletAddress === this.walletAddress) {
           doInitCamera(self, true);
+          self.followWinner();
           initMapObjects({
             treasuresLayer: response.map.gameTreasuresTilemapForClient,
             objectsLayer: response.map.gameObjectsTilemap,
             mainScene: self,
           });
         }
-        for (const [wallet, player] of Object.entries(response.players)) {
-          self.addOtherPlayer(player);
-        }
 
-        this.scene.remove(mainSceneLoadingKey);
-        if (!this.gameEnter || (this.gameEnter && this.gameEnter <= Date.now())) {
+        self.scene.remove(mainSceneLoadingKey);
+        if (!self.gameEnter || (self.gameEnter && self.gameEnter <= Date.now())) {
           setTimeout(() => self.activateGame(), 100);
         }
         break;
@@ -344,7 +345,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.attacked:
         const isKillerMainPlayer = response.player?.walletAddress === self.mainPlayer?.walletAddress;
         const isOpponentMainPlayer = response.opponent?.walletAddress === self.mainPlayer?.walletAddress;
-        if (isOpponentMainPlayer) {
+        if (isOpponentMainPlayer || this.spectatorMode) {
           doPlayAttackSound(response.player.beaverId, this);
         }
         this.updateStats(response.player, response.gameStats);
@@ -365,7 +366,7 @@ export default class MainScene extends Phaser.Scene {
             }
           }
           opponent
-            ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer)
+            ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer || this.spectatorMode)
             .once('animationcomplete', () => {
               opponent.baseMoveTo(
                 response.opponent.pos,
@@ -497,7 +498,8 @@ export default class MainScene extends Phaser.Scene {
           this.allPlayers[response.player.walletAddress]?.digAnim();
         }
         if (response.digged?.tile > 0) {
-          if (this.mainPlayer?.walletAddress === response.player.walletAddress) this.treasureSound.play();
+          if (this.mainPlayer?.walletAddress === response.player.walletAddress || this.spectatorMode)
+            this.treasureSound.play();
           this.gameTreasuresLayer.putTileAt(response.digged.tile, response.player.pos.x, response.player.pos.y);
         } else {
           if (this.mainPlayer?.walletAddress === response.player.walletAddress) this.digSound.play();
@@ -507,6 +509,13 @@ export default class MainScene extends Phaser.Scene {
         this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         break;
       }
+    }
+  }
+
+  followWinner() {
+    if (this.spectatorMode && !this.followedPlayer && this.ranking?.length) {
+      this.followedPlayer = this.ranking[0][1];
+      this.cameras.main.startFollow(this.followedPlayer);
     }
   }
 
