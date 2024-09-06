@@ -92,7 +92,7 @@ export const GameTreasure = {
   hole: { type: 'hole', label: 'hole', tile: 0, value: 0 },
   cbcoin: { type: 'cbcoin', label: 'CyberBeaversToken', tile: 1, value: 500, denomination: 0 },
   tio: { type: 'tio', label: 'ar.io (tIO)', tile: 2, value: 100, baseVal: 150_000_000, denomination: 6 },
-  war: { type: 'war', label: 'Wrapped AR', tile: 3, value: 300, baseVal: 36_000_000_000, denomination: 12 },
+  war: { type: 'war', label: 'Wrapped AR', tile: 3, value: 300, baseVal: 6_000_000_000, denomination: 12 },
   trunk: { type: 'trunk', label: 'TRUNK', tile: 4, value: 100, baseVal: 66, denomination: 3 },
 };
 

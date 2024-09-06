@@ -3,7 +3,7 @@ import { playClick } from '../utils/mithril.js';
 export function LeaderboardGui(initialVnode) {
   return {
     view: function (vnode) {
-      const { data, back } = vnode.attrs;
+      const { tokenType, data, back } = vnode.attrs;
       console.log(data);
       return [
         m('.mithril-component', { id: 'leaderboard' }, [
@@ -24,7 +24,7 @@ export function LeaderboardGui(initialVnode) {
               m('.col', 'player'),
               m('.col', 'points'),
               m('.col', 'cbcoins'),
-              m('.col', 'tIO'),
+              m('.col', `${tokenType}`),
               m('.col', 'frags'),
               m('.col', 'deaths'),
             ]),

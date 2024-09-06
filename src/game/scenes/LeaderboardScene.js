@@ -39,9 +39,11 @@ export default class LeaderboardScene extends Phaser.Scene {
       this.server.subscribe(this);
 
       var self = this;
+      const tokenType = GameTreasure.war.type;
       m.mount(showGui(), {
         view: function () {
           return m(LeaderboardGui, {
+            tokenType,
             data: /* [
               [1, { img: 'heavy_beaver', name: 'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY' }, 0, 69544, 5, 2],
               [2, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 10000, 20, 0],
@@ -63,7 +65,7 @@ export default class LeaderboardScene extends Phaser.Scene {
               [20, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
               [21, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
               [22, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
-            ],*/ self.prepareCellsData(),
+            ],*/ self.prepareCellsData(tokenType),
             back: () => {
               self.server.unsubscribe();
               self.restartScenes();
@@ -79,7 +81,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     }
   }
 
-  prepareCellsData() {
+  prepareCellsData(tokenType) {
     const cells = [];
     if (!this.allPlayers || Object.keys(this.allPlayers).length == 0) {
       return cells;
@@ -97,7 +99,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         },
         player.stats?.coins?.gained,
         player.stats?.coins?.balance + player.stats?.coins?.gained,
-        `${formatCoin(player.stats?.additionalTokens['tio']?.gained, 'tio') || '-'}`,
+        `${formatCoin(player.stats?.additionalTokens[tokenType]?.gained, tokenType) || '-'}`,
         player.stats?.kills?.frags,
         player.stats?.kills?.deaths,
       ]);

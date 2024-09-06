@@ -6,7 +6,7 @@ export default {
   hub_moduleId_dev: 'aaabbb',
   hub_processId_dev: 'aaabbb',
   bridge_processId_prod: '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c',
-  bridge_processId_local: 'vkRkiLKPOC4D3XnzRcS5yq7Kqb1Uv5iKsyYA_1aeLj8',
+  bridge_processId_local: 't6rem72B6xwNnVfzNBETLkCYu5CqpmtgfCSgJt7TTx4',
   token_processId_prod: 'rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8',
   processId_prod: 'Olq489PnNOCaGYl7W59cuqHXVLtLnZ7GZzHh2A8OvBk',
   moduleId_prod: '7m6fKm42USDFRi8sLg_fPszkZ73Bqn9pUr5oWHCZiC8',
