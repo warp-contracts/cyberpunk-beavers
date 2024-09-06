@@ -4,12 +4,13 @@ import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
 import { pick } from './cmd/pick.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
-import { gameFinished, gameInfo, gameNotStarted, gameStats, activate, standInQueue } from './cmd/info.mjs';
+import { gameFinished, gameInfo, gameNotStarted, gameStats } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
 import { end, sendTokens } from './cmd/end.mjs';
 import { useLandmine } from './cmd/landmine.mjs';
 import { teleportPlayer } from './cmd/teleport.mjs';
+import { activate, standInQueue } from './cmd/queue.mjs';
 
 function restrictedAccess(state, action, ts) {
   return (
