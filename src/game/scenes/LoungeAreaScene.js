@@ -16,6 +16,7 @@ import { hideGui, showGui } from '../utils/mithril.js';
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId;
   running;
+  viewMounted = false;
 
   constructor() {
     super(loungeAreaSceneKey);
@@ -40,28 +41,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.server.subscribe(this);
       this.server.send({ cmd: Const.Command.info });
       var self = this;
-      m.mount(showGui(), {
-        view: function () {
-          return m(LoungeArenaSceneGui, {
-            gameTxId: self.processId,
-            walletAddress: self.walletAddress,
-            gameError: self.gameError,
-            gameStart: self.gameStart,
-            gameEnd: self.gameEnd,
-            walletsQueue: self.walletsQueue,
-            playersLimit: self.playersLimit,
-            diff: self.diff,
-            onJoin: () =>
-              setTimeout(async () => {
-                await self.server.send({ cmd: Const.Command.enqueue }, true);
-              }),
-            onBack: () => {
-              hideGui();
-              self.scene.start(gameHubSceneKey);
-            },
-          });
-        },
-      });
     } else {
       this.scene.start(connectWalletSceneKey);
     }
@@ -87,7 +66,9 @@ export default class LoungeAreaScene extends Phaser.Scene {
           await this.gameActive();
         }
       }
-      m.redraw();
+      if (this.viewMounted) {
+        m.redraw();
+      }
     }
   }
 
@@ -108,7 +89,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
           if (response.error) {
             console.error('Failed to fetch game info', response.error);
-            hideGui();
+            this.doHideGui();
             this.scene.start(connectWalletSceneKey);
           } else if (!this.gameError) {
             if (response.players && response.players[this.walletAddress]) {
@@ -116,9 +97,38 @@ export default class LoungeAreaScene extends Phaser.Scene {
             }
             if (response.active) {
               await this.gameActive();
+            } else {
+              if (!this.viewMounted) {
+                const self = this;
+                m.mount(showGui(), {
+                  view: function () {
+                    return m(LoungeArenaSceneGui, {
+                      gameTxId: self.processId,
+                      walletAddress: self.walletAddress,
+                      gameError: self.gameError,
+                      gameStart: self.gameStart,
+                      gameEnd: self.gameEnd,
+                      walletsQueue: self.walletsQueue,
+                      playersLimit: self.playersLimit,
+                      diff: self.diff,
+                      onJoin: () =>
+                        setTimeout(async () => {
+                          await self.server.send({ cmd: Const.Command.enqueue }, true);
+                        }),
+                      onBack: () => {
+                        self.doHideGui();
+                        self.scene.start(gameHubSceneKey);
+                      },
+                    });
+                  },
+                });
+                this.viewMounted = true;
+              }
             }
           }
-          m.redraw();
+          if (this.viewMounted) {
+            m.redraw();
+          }
         }
         break;
     }
@@ -148,7 +158,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
 
   async gameActive() {
     if (this.beaverId) {
-      hideGui();
+      this.doHideGui();
       await this.goToMainScene();
     } else if (this.canParticipate()) {
       await this.goToPlayerPick();
@@ -158,7 +168,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   goToLeaderboard(response) {
-    hideGui();
+    this.doHideGui();
     this.scene.start(leaderboardSceneKey, {
       players: response.players,
       mainPlayer: {
@@ -168,7 +178,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   async goToMainScene() {
-    hideGui();
+    this.doHideGui();
     const mapTxId = await loadMapTxId();
     this.scene.start(mainSceneKey, {
       mapTxId,
@@ -182,7 +192,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   async goToPlayerPick() {
     if (!this.running) {
       this.running = true;
-      hideGui();
+      this.doHideGui();
       const mapTxId = await loadMapTxId();
       this.scene.start(characterPickSceneKey, {
         mapTxId,
@@ -192,5 +202,10 @@ export default class LoungeAreaScene extends Phaser.Scene {
         gameEnd: this.gameEnd,
       });
     }
+  }
+
+  doHideGui() {
+    this.viewMounted = false;
+    hideGui();
   }
 }

@@ -605,7 +605,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createScoreText(player, score, options) {
-    if (!score || !parseInt(score.value)) {
+    if (!score || !parseInt(score.value) || !player) {
       return '';
     }
     return new Text(
