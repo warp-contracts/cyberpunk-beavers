@@ -152,6 +152,8 @@ export default class LoungeAreaScene extends Phaser.Scene {
       await this.goToMainScene();
     } else if (this.canParticipate()) {
       await this.goToPlayerPick();
+    } else {
+      this.diff = Math.round((this.gameEnd - Date.now()) / 1000);
     }
   }
 

@@ -8,6 +8,11 @@
   padding: 20px 20px;
 }
 
+#lounge-arena .info {
+  font-size: var(--fs-small-title);
+  padding-top: 10px;
+}
+
 #lounge-arena .element .title,
 .element .value {
   display: inline-block;

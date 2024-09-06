@@ -39,6 +39,11 @@ export function LoungeArenaSceneGui(initialVnode) {
                   },
                   '< Back'
                 ),
+                m(
+                  '.info',
+                  `If the list is full, please wait 30s after the game starts. 
+                  Spots will be freed if players from the list won't show up in the game.`
+                ),
                 m('.players-lists', [
                   m(
                     '.column',
