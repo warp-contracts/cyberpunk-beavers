@@ -13,9 +13,12 @@ export function doCreateTileMap(mainScene) {
   for (const layer of layers) {
     console.log('creating layer', layer);
     if (layer === COLLISIONS_LAYER) {
-      continue;
+      const obstaclesLayer = mainScene.tileMap.createLayer(layer, tileset);
+      obstaclesLayer.setDepth(-100);
+      mainScene.tileMap.obstaclesLayer = obstaclesLayer;
+    } else {
+      mainScene.tileMap.createLayer(layer, tileset);
     }
-    mainScene.tileMap.createLayer(layer, tileset);
   }
 }
 

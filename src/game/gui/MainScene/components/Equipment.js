@@ -1,16 +1,18 @@
+import { WeaponInfo } from './WeaponInfo.js';
+
 export function Equipment() {
   return {
     view: function (vnode) {
+      const { equipment, stats } = vnode.attrs;
+
       return m('.mithril-component', { id: 'player-equipment-gui' }, [
+        m('.equipment-slot-container', [m('.equipment-slot', [m(WeaponInfo, { stats })])]),
+
         m('.equipment-slot-container', [
           m('.equipment-slot', [
             m('img', { src: `/assets/images/equipment/teleport_device.png` }),
             m('span', { class: 'equipment-number' }, `1.`),
-            m(
-              'span',
-              { class: 'equipment-counter' },
-              `${vnode.attrs.equipment.teleports.current}/${vnode.attrs.equipment.teleports.max}`
-            ),
+            m('span', { class: 'equipment-counter' }, `${equipment.teleports.current}/${equipment.teleports.max}`),
           ]),
         ]),
 
@@ -18,11 +20,7 @@ export function Equipment() {
           m('.equipment-slot', [
             m('img', { src: `/assets/images/equipment/landmine.png` }),
             m('span', { class: 'equipment-number' }, `2.`),
-            m(
-              'span',
-              { class: 'equipment-counter' },
-              `${vnode.attrs.equipment.landmines.current}/${vnode.attrs.equipment.landmines.max}`
-            ),
+            m('span', { class: 'equipment-counter' }, `${equipment.landmines.current}/${equipment.landmines.max}`),
           ]),
         ]),
       ]);

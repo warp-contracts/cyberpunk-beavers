@@ -15,6 +15,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.tilemapTiledJSON(`map_${mainScene.mapTxId}`, `https://arweave.net/${mainScene.mapTxId}`);
   // ===== MAP V2
   mainScene.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
+  mainScene.load.image('cyberpunk_game_fov', 'assets/images/fov.png');
 
   //mainScene.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
