@@ -2,10 +2,16 @@ import Const, { BEAVER_TYPES } from '../common/const.mjs';
 import { convertToCamelCase, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 
+const RANKING_TO_TEXTURE = {
+  1: 'medal_gold',
+  2: 'medal_silver',
+  3: 'medal_brown',
+};
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { walletAddress, userName, stats, equipment, scene, x, y, texture, animated, beaverChoice } = data;
+    let { walletAddress, userName, stats, equipment, scene, x, y, texture, animated, beaverChoice, tilePos } = data;
     super(scene, x, y, texture);
+    this.additionalElements = [];
     this.walletAddress = walletAddress;
     this.beaverChoice = beaverChoice;
     this.userName = userName;
@@ -16,15 +22,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     this.initInputKeys();
     this.onGameObject = null;
-    this.setDepth(5);
+    this.setDepth(10);
 
     this.position = this.addInfoText(x, y - 55, ``);
     this.healthBar = scene.add.rectangle(x, y - 32, this.calculateBarWidth(this.stats.hp), 6, 0xdc143c);
     this.apBar = scene.add.rectangle(x, y - 40, this.calculateBarWidth(this.stats.ap), 6, 0x25a31f);
-    this.healthBar.setDepth(10);
-    this.apBar.setDepth(10);
-    this.position.setDepth(10);
-
+    this.healthBar.setDepth(this.depth + 20);
+    this.apBar.setDepth(this.depth + 20);
+    this.position.setDepth(this.depth + 20);
     const name = this.displayName();
     this.name = scene.add.text(x - 2 * name.length - 8, y + 22, `${name}`, {
       font: '10px',
@@ -32,7 +37,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       backgroundColor: '#000000',
       align: 'center',
     });
-    this.name.setDepth(8);
+    this.name.setDepth(this.depth + 20);
+    this.additionalElements.push(this.position, this.healthBar, this.apBar, this.name);
     this.addLayeredSprites();
   }
 
@@ -74,26 +80,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       const text = `${this.playerRanking}/${this.scene.ranking.length}`;
       this.position.setText(text);
       this.position.x = this.x - 3 * text.length;
-      if (this.medal) this.medal.destroy();
-      switch (this.playerRanking) {
-        case 1:
-          this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_gold');
-          this.medal.setDepth(8);
-          break;
-        case 2:
-          this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_silver');
-          this.medal.setDepth(8);
-          break;
-        case 3:
-          this.medal = this.scene.add.image(this.x - 25, this.y - 19, 'medal_brown');
-          this.medal.setDepth(8);
-          break;
+      if (this.medal) {
+        const medalIndex = this.additionalElements.indexOf(this.medal);
+        if (medalIndex !== -1) {
+          this.additionalElements.splice(medalIndex, 1);
+        }
+        this.medal.destroy();
+      }
+
+      if (newPlayerRanking <= 3) {
+        this.medal = this.scene.add.image(this.x - 25, this.y - 19, RANKING_TO_TEXTURE[newPlayerRanking]);
+        this.medal.setDepth(this.depth + 20);
+        this.additionalElements.push(this.medal);
       }
     }
   }
 
   moveTo(response) {
     const self = this;
+    console.log(response.pos);
     this.baseMoveTo(
       response.pos,
       () => {
@@ -187,7 +192,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.scaleX = Math.sign(moveHorizontal) || this.scaleX;
     this.scene.tweens.add({ ...movementTemplate, x: `+=${moveHorizontal}`, y: `+=${moveVertical}` });
-
     return { movementTemplate, moveHorizontal, moveVertical };
   }
 
@@ -196,12 +200,18 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       targets: [this],
       ease: 'Sine.easeInOut',
       duration: 300,
-
       delay: 0,
       yoyo: true,
       alpha: { from: 1, to: 0 },
       repeat: 2,
     });
+  }
+
+  setVisible(value) {
+    super.setVisible(value);
+    for (const e of this.additionalElements) {
+      e.setVisible(value);
+    }
   }
 
   update() {

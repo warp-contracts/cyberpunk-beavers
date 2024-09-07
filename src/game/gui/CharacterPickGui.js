@@ -50,6 +50,7 @@ function CharacterOption() {
                 m('.d-flex flex-column', [
                   m(CharacterAbility, { name: 'ACTION POINTS', value: stats.ap.max, color: 'ap' }),
                   m(CharacterAbility, { name: 'HEALTH POINTS', value: stats.hp.max, color: 'hp' }),
+                  m(CharacterAbility, { name: 'FIELD OF VIEW', value: stats.fov }),
                   m(CharacterAbility, {
                     name: 'CBTOKEN BONUS',
                     value: stats.bonus[GameTreasure.cbcoin.type],

@@ -20,6 +20,7 @@ import { doAddSounds, doPlayAttackSound, doPlayOpponentFinishedSound } from './s
 import { doInitCamera } from './camera.js';
 import { doInitAnimations } from './animations.js';
 import { doCreateTileMap, initMapObjects } from './maps.js';
+import { FOVLayer } from '../../objects/FOVLayer.js';
 
 const { GameTreasure } = Const;
 
@@ -34,6 +35,7 @@ export default class MainScene extends Phaser.Scene {
   lockingTx = null;
   gameStats = {};
   followedPlayer = null;
+  fov = null;
 
   constructor() {
     super(mainSceneKey);
@@ -183,7 +185,7 @@ export default class MainScene extends Phaser.Scene {
     return player;
   }
 
-  update() {
+  update(time, delta) {
     if (this.gameOver) {
       m.redraw();
       return;
@@ -217,6 +219,23 @@ export default class MainScene extends Phaser.Scene {
     Object.keys(this.allPlayers).forEach((p) => {
       this.allPlayers[p].update();
     });
+
+    if (this.mainPlayer) {
+      const camera = this.cameras.main;
+
+      const player = new Phaser.Math.Vector2({
+        x: this.tileMap.worldToTileX(this.mainPlayer.x),
+        y: this.tileMap.worldToTileY(this.mainPlayer.y),
+      });
+
+      const bounds = new Phaser.Geom.Rectangle(
+        this.tileMap.worldToTileX(camera.worldView.x) - 1,
+        this.tileMap.worldToTileY(camera.worldView.y) - 1,
+        this.tileMap.worldToTileX(camera.worldView.width) + 2,
+        this.tileMap.worldToTileX(camera.worldView.height) + 2
+      );
+      this.fov.update(player, bounds);
+    }
     m.redraw();
   }
 
@@ -310,6 +329,7 @@ export default class MainScene extends Phaser.Scene {
                   objectsLayer: response.map.gameObjectsTilemap,
                   mainScene: self,
                 });
+                this.fov = new FOVLayer(this, this.mainPlayer.stats.fov);
               } else {
                 self.addOtherPlayer(player);
               }

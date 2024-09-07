@@ -31,7 +31,7 @@ export function doAddSounds(mainScene) {
   forDeathSounds((k, i) => addDeathSound(k, i));
 
   const backgroundMusic = mainScene[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];
-  if (window.warpAO.config.env !== 'local') {
+  if (window.warpAO.config.env === 'prod') {
     backgroundMusic?.play();
   }
   const musicKey = mainScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);

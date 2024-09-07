@@ -1,4 +1,4 @@
-import Const from '../common/const.mjs';
+import Const, { FOV_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
 import Player from './Player.js';
 import { doPlayAttackSound } from '../scenes/main-scene/sounds.js';
 
@@ -24,6 +24,19 @@ export default class MainPlayer extends Player {
     this.rangeBarXRight = scene.add.grid(x + 48 * diff, y, range * 48, 48, 48, 48, RANGE_COLOR, 0.4);
     this.rangeBarYUp = scene.add.grid(x, y - 48 * diff, 48, range * 48, 48, 48, RANGE_COLOR, 0.4);
     this.rangeBarYDown = scene.add.grid(x, y + 48 * diff, 48, range * 48, 48, 48, RANGE_COLOR, 0.4);
+
+    this.setDepth(FOV_DEPTH + 10);
+    this.rangeBarXLeft.setDepth(FOV_DEPTH + 10);
+    this.rangeBarXRight.setDepth(FOV_DEPTH + 10);
+    this.rangeBarYUp.setDepth(FOV_DEPTH + 10);
+    this.rangeBarYDown.setDepth(FOV_DEPTH + 10);
+    this.healthBar.setDepth(FOV_DEPTH + 20);
+    this.apBar.setDepth(FOV_DEPTH + 20);
+    this.position.setDepth(FOV_DEPTH + 20);
+    this.name.setDepth(FOV_DEPTH + 20);
+    if (this.medal) {
+      this.medal.setDepth(FOV_DEPTH + 20);
+    }
   }
 
   async update() {
@@ -75,6 +88,12 @@ export default class MainPlayer extends Player {
     }
   }
 
+  getCanvasPoint() {
+    var x = this.x - this.mainScene.cameras.main.scrollX * this.scrollFactorX;
+    var y = this.y - this.mainScene.cameras.main.scrollY * this.scrollFactorY;
+    return { x, y };
+  }
+
   baseMoveTo(pos, onStart, onComplete) {
     const { movementTemplate, moveHorizontal, moveVertical } = super.baseMoveTo(pos, onStart, onComplete);
     this.scene.tweens.add({
@@ -82,7 +101,21 @@ export default class MainPlayer extends Player {
       targets: [this.rangeBarXLeft, this.rangeBarXRight, this.rangeBarYUp, this.rangeBarYDown],
       x: `+=${moveHorizontal}`,
       y: `+=${moveVertical}`,
-      onComplete: (_) => {},
+      onComplete: (_) => {
+        const canvasPos = this.getCanvasPoint();
+        console.log(canvasPos);
+
+        if (this.mainScene.minimap.setVisible(true)) {
+          if (
+            canvasPos.x >= window.innerWidth - MINIMAP_SIZE_PX - Const.Tile.size &&
+            canvasPos.y <= MINIMAP_SIZE_PX + Const.Tile.size
+          ) {
+            this.mainScene.minimap.setVisible(false);
+          } else {
+            this.mainScene.minimap.setVisible(true);
+          }
+        }
+      },
     });
   }
 

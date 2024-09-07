@@ -3,6 +3,48 @@ import Const from '../../../common/const.mjs';
 
 const { GameTreasure } = Const;
 
+export function PlayerInfo() {
+  return {
+    view: function (vnode) {
+      const { userName, walletAddress, beaverChoice } = vnode.attrs.mainPlayer;
+
+      const processId = window.warpAO.processId();
+
+      return m('.stats-main .player-info', [
+        m('img', {
+          src: `assets/images/beavers/${beaverChoice}/${beaverChoice}_portrait.png`,
+          width: 72,
+          height: 72,
+        }),
+        m('.stats-labels', [
+          m(Label, {
+            name: 'player',
+            content: displayName({ userName, walletAddress }),
+            style: `mt-18 pl-0`,
+            inlineStyle: `pr-10`,
+          }),
+          m(Label, {
+            name: 'process',
+            content: m(
+              'a',
+              { target: '__blank', href: `https://www.ao.link/#/entity/${processId}` },
+              `${trimString(processId)}`
+            ),
+            style: 'mt-10 pl-0',
+            inlineStyle: `pr-10`,
+          }),
+          m(Label, {
+            name: 'lag',
+            content: formatLag(window.warpAO.lag),
+            style: 'mt-10 pl-0',
+            inlineStyle: `pr-10 w-170 text-right`,
+          }),
+        ]),
+      ]);
+    },
+  };
+}
+
 export function SpectatorStats() {
   return {
     view: function (vnode) {
@@ -53,44 +95,12 @@ export function SpectatorStats() {
 export function Stats() {
   return {
     view: function (vnode) {
-      const { stats, userName, walletAddress, beaverChoice } = vnode.attrs.mainPlayer;
+      const { stats } = vnode.attrs.mainPlayer;
       const { playersTotal, gameTokens } = vnode.attrs;
       const processId = window.warpAO.processId();
       const tokenProcessId = gameTokens[GameTreasure.cbcoin.type]?.id;
       return m('.stats', [
         m('.stats-container', [
-          m('.stats-main', [
-            m('img', {
-              src: `assets/images/beavers/${beaverChoice}/${beaverChoice}_portrait.png`,
-              width: 72,
-              height: 72,
-            }),
-            m('.stats-empty'),
-            m('.stats-labels', [
-              m(Label, {
-                name: 'player',
-                content: displayName({ userName, walletAddress }),
-                style: `mt-18 pl-0`,
-                inlineStyle: `pr-10`,
-              }),
-              m(Label, {
-                name: 'process',
-                content: m(
-                  'a',
-                  { target: '__blank', href: `https://www.ao.link/#/entity/${processId}` },
-                  `${trimString(processId)}`
-                ),
-                style: 'mt-10 pl-0',
-                inlineStyle: `pr-10`,
-              }),
-              m(Label, {
-                name: 'lag',
-                content: formatLag(window.warpAO.lag),
-                style: 'mt-10 pl-0',
-                inlineStyle: `pr-10 w-170 text-right`,
-              }),
-            ]),
-          ]),
           m(Label, {
             name: 'frags/deaths',
             content: `${stats?.kills.frags}/${stats?.kills.deaths}`,

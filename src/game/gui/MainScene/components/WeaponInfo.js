@@ -14,7 +14,7 @@ export function WeaponInfo() {
     view: function (vnode) {
       return m('.mithril-component', { id: 'weapon-info' }, [
         m('.recovery-bar', { style: `width: ${calculateRecoveryPercent(vnode.attrs.stats)}%;` }),
-        m('img', { src: `/assets/images/weapons/${vnode.attrs.stats.weapon.type}.png` }),
+        m('img', { src: `/assets/images/weapons/${vnode.attrs.stats.weapon.type}.png`, width: '75px', height: '65px' }),
       ]);
     },
   };

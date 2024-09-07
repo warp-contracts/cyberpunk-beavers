@@ -10,6 +10,12 @@ export const maps = [
 
 const EMPTY_TILE = 0;
 
+export const FOV_DEPTH = 100;
+
+export const FOG_ALPHA = 0.85;
+
+export const MINIMAP_SIZE_PX = 250;
+
 export const COLLISIONS_LAYER = 'collisions';
 
 const NO_AP_COST = 0;
@@ -176,9 +182,10 @@ export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
     stats: {
+      fov: 6,
       ap: {
-        current: 22,
-        max: 22,
+        current: 50,
+        max: 50,
       },
       hp: {
         current: 130,
@@ -205,6 +212,7 @@ export const BEAVER_TYPES = {
   heavy_beaver: {
     name: 'heavy_beaver',
     stats: {
+      fov: 5,
       ap: {
         current: 20,
         max: 20,
@@ -234,6 +242,7 @@ export const BEAVER_TYPES = {
   speedy_beaver: {
     name: 'speedy_beaver',
     stats: {
+      fov: 4,
       ap: {
         current: 25,
         max: 25,
