@@ -1,10 +1,21 @@
 import { Equipment } from './components/Equipment';
 import { InfoPanel } from './components/InfoPanel';
-import { SpectatorStats, Stats } from './components/Stats';
+import { PlayerInfo, SpectatorStats, Stats } from './components/Stats';
 import { WeaponInfo } from './components/WeaponInfo';
 import { KeyboardMapping } from './components/KeyboardMapping';
 
 export function MainSceneGui() {
+  let visible = false;
+
+  window.onkeydown = function (event) {
+    if (event.code === 'Tab') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      visible = !visible;
+      m.redraw();
+    }
+  };
+
   return {
     oninit: function (vnode) {
       vnode.state.hasEnterAnimated = false;
@@ -20,7 +31,6 @@ export function MainSceneGui() {
         diff,
         gameActive,
         spectatorMode,
-        allPlayers,
       } = vnode.attrs;
 
       if (gameActive && !vnode.state.hasEnterAnimated) {
@@ -34,11 +44,13 @@ export function MainSceneGui() {
             m(SpectatorStats, { playersTotal, gameTokens: gameStats.gameTokens || {} }),
           ]
         : [
-            mainPlayer?.stats ? m(WeaponInfo, { stats: mainPlayer.stats }) : null,
-            equipment ? m(Equipment, { equipment }) : null,
-            m(KeyboardMapping, { spectatorMode }),
+            mainPlayer ? m(PlayerInfo, { mainPlayer }) : null,
+            equipment ? m(Equipment, { equipment, stats: mainPlayer?.stats }) : null,
+            visible ? m(KeyboardMapping, { spectatorMode }) : null,
             m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
-            mainPlayer ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} }) : null,
+            mainPlayer && visible
+              ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} })
+              : null,
             m(`.main-scene-enter.alert`, 'FIGHT!'),
           ];
     },

@@ -18,9 +18,9 @@
 }
 
 #player-equipment-gui {
-  width: 158px;
+  width: calc(3 * (75px + 4px));
   height: 79px;
-  top: calc(100% - 200px);
+  top: calc(100% - 80px);
   left: calc(50% - 100px);
   background: linear-gradient(#091833, #133e7c);
 }
@@ -28,6 +28,7 @@
 #player-equipment-gui .equipment-slot-container {
   border: 2px solid yellow;
   display: inline-block;
+  vertical-align: middle;
   width: 75px;
   height: 75px;
 }
@@ -98,9 +99,8 @@
 }
 
 #weapon-info {
-  width: 100px;
-  height: 110px;
-  top: calc(100% - 110px);
+  width: 75px;
+  height: 60px;
 }
 
 #weapon-info .recovery-bar {
@@ -110,25 +110,25 @@
 
 .info-panel {
   position: absolute;
-  top: 1rem;
+  bottom: 0px;
   margin: 0 auto;
-  left: 50%;
+  left: 480px;
   -ms-transform: translateY(-50%);
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 
   .element {
     position: absolute;
     font-family: 'Press Start 2P';
-    font-size: 18px;
+    font-size: 10px;
     text-transform: uppercase;
     color: var(--white);
     display: flex;
     align-items: center;
-    height: 30px;
+    height: 15px;
 
     &.game-over,
     &.countdown {
@@ -151,15 +151,15 @@
     }
 
     &.rounds {
-      top: -1px;
+      top: 4px;
     }
 
     &.ap {
-      top: 35px;
+      top: 33px;
     }
 
     &.hp {
-      top: 71px;
+      top: 62px;
     }
 
     &.warn {
@@ -177,7 +177,7 @@
 
   .timebar-container {
     width: 300px;
-    height: 20px;
+    height: 15px;
     padding: 3px;
     background-color: var(--darkgrey);
   }
@@ -211,6 +211,65 @@
   }
 }
 
+.player-info {
+  position: absolute;
+  text-transform: uppercase;
+  bottom: 0px;
+  left: 0px;
+  width: 200px;
+  height: 79px;
+  flex-direction: row !important;
+  padding: 0 !important;
+  align-items: center;
+  width: 300px;
+  justify-content: space-evenly !important;
+
+  .stats-labels {
+    width: 150px;
+  }
+}
+
+.stats-container,
+.player-info {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: var(--yellow);
+  font-family: 'Press Start 2P';
+  font-size: 0.5rem;
+  padding: 30px 20px 30px 30px;
+  clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);
+
+  .stats-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .stats-empty {
+      display: flex;
+      flex-grow: 1;
+    }
+
+    .stats-labels {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+    }
+  }
+
+  .stats-other-beavers {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+  }
+}
+
 .stats {
   width: 350px;
   border: 0px;
@@ -228,46 +287,6 @@
   transform-origin: 50% 50%;
   position: absolute;
   top: 0;
-
-  .stats-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background-color: var(--yellow);
-    font-family: 'Press Start 2P';
-    font-size: 0.5rem;
-    padding: 30px 20px 30px 30px;
-    clip-path: polygon(92% 0, 100% 25%, 100% 100%, 8% 100%, 0% 75%, 0 0);
-
-    .stats-main {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .stats-empty {
-        display: flex;
-        flex-grow: 1;
-      }
-
-      .stats-labels {
-        display: flex;
-        flex-grow: 1;
-        flex-direction: column;
-      }
-    }
-
-    .stats-other-beavers {
-      display: flex;
-      justify-content: center;
-      margin-top: 25px;
-      margin-left: auto;
-      margin-right: auto;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 12px;
-    }
-  }
 }
 
 .label {

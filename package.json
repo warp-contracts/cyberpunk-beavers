@@ -17,6 +17,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "mrpas": "^2.0.0",
     "phaser": "^3.80.1",
     "warp-contracts": "^1.4.45",
     "warp-contracts-plugin-quickjs": "^1.1.10",
