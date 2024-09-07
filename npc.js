@@ -6,12 +6,12 @@ const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
 const moduleId = 'iZWVADl_rjTu2FQA7jN6zyQYWa3dUbvxztNnCL2gWKM';
 const processIds = [
-  'fmqCpvS9sPDnYVqRvucz4JDNOyM0amAhZt4F581v6f8',
+  '-H8l8nmg1bwKCG5Cnz_vGLgGhRqahecqYfPPa7M7qQ0',
   /*'oKolyRBKWf5Y8rdlXh9rd8F4R7Nk0HMnmxS5-WMZ_KM'*/
 ];
 
 async function runNpc() {
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 5; i++) {
     const warp = WarpFactory.forMainnet();
     const { address, jwk } = await warp.generateWallet();
     const signer = new ArweaveSigner(jwk);
@@ -31,11 +31,11 @@ async function runNpc() {
       setInterval(async () => {
         const randomDirection = Math.floor(Math.random() * direction.length);
         try {
-          await sendDataItem({ cmd: 'move', dir: direction[randomDirection] }, signer, moduleId, processId);
+          await sendDataItem({ cmd: 'dig', dir: direction[randomDirection] }, signer, moduleId, processId);
         } catch (err) {
           console.error(err);
         }
-      }, 500);
+      }, 100);
     }
   }
 }

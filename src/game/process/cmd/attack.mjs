@@ -8,13 +8,6 @@ export function attack(state, action, timestamp) {
   if (player.stats.ap.current < 1) {
     return { player, tokenTransfer: 0 };
   }
-  console.log({
-    'player.stats.previousAttackTs': player.stats.previousAttackTs,
-    timestamp: timestamp,
-    diff: timestamp - player.stats.previousAttackTs,
-    recovery: player.stats.weapon.attack_recovery_ms,
-  });
-
   if (
     player.stats.previousAttackTs !== null &&
     timestamp - player.stats.previousAttackTs < player.stats.weapon.attack_recovery_ms
