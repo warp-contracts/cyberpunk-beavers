@@ -23,6 +23,8 @@ import { doCreateTileMap, initMapObjects } from './maps.js';
 
 const { GameTreasure } = Const;
 
+const REGISTER_COMMANDS = [Const.Command.registeredSpectator, Const.Command.registered];
+
 export default class MainScene extends Phaser.Scene {
   round;
   gameObjectsLayer;
@@ -53,6 +55,7 @@ export default class MainScene extends Phaser.Scene {
     this.mapTxId = data.mapTxId;
     this.userName = getUsernameFromStorage(this.walletAddress);
     this.spectatorMode = window.warpAO.spectatorMode;
+    this.registered = false;
   }
 
   preload() {
@@ -262,11 +265,17 @@ export default class MainScene extends Phaser.Scene {
 
   handleMessage(response, lag, msgWalletAddress) {
     const self = this;
+    const cmd = response.cmd;
+    if (!self.registered && !REGISTER_COMMANDS.includes(cmd)) {
+      console.log('Not fully registered, skipping cmd', cmd);
+      return;
+    }
+
     if (self.allPlayers && response?.player?.walletAddress) {
       if (self.allPlayers[response.player.walletAddress]?.locked) return;
     }
 
-    switch (response.cmd) {
+    switch (cmd) {
       case Const.Command.activated: {
         if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
           self.gameActive = true;
@@ -305,12 +314,13 @@ export default class MainScene extends Phaser.Scene {
                 self.addOtherPlayer(player);
               }
             }
-            this.followWinner();
+            self.followWinner();
 
             this.scene.remove(mainSceneLoadingKey);
             if (!this.gameEnter || (this.gameEnter && this.gameEnter <= Date.now())) {
               setTimeout(() => self.activateGame(), 100);
             }
+            self.registered = true;
           }
         }
         break;
@@ -340,6 +350,7 @@ export default class MainScene extends Phaser.Scene {
         if (!self.gameEnter || (self.gameEnter && self.gameEnter <= Date.now())) {
           setTimeout(() => self.activateGame(), 100);
         }
+        self.registered = true;
         break;
 
       case Const.Command.attacked:
@@ -447,7 +458,7 @@ export default class MainScene extends Phaser.Scene {
             if (!this.notEnoughApSound.isPlaying) {
               this.notEnoughApSound.play();
             }
-          } else if (response.cmd === Const.Command.teleported) {
+          } else if (cmd === Const.Command.teleported) {
             if (!this.teleportSound.isPlaying) {
               this.teleportSound.play();
             }
