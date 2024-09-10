@@ -1,9 +1,8 @@
-.main-scene-enter {
+.main-scene-info {
   position: absolute;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  opacity: 0;
   font-family: 'Press Start 2P';
   background: black;
   font-size: var(--big-title);
@@ -11,6 +10,18 @@
   color: var(--yellow);
   text-align: center;
   padding: 0.5rem;
+
+  &.small {
+    font-size: var(--regular);
+  }
+
+  &.small {
+    top: 10%;
+  }
+}
+
+.main-scene-enter {
+  opacity: 0;
 
   &.animated {
     animation: fadeInOut 2s linear forwards;
