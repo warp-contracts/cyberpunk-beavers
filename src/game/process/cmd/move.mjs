@@ -14,7 +14,7 @@ export function movePlayer(state, action) {
 
   const newPos = step(player.pos, dir);
 
-  if (newPos.x < 0 || newPos.x >= Map.size || newPos.y < 0 || newPos.y >= Map.size) {
+  if (newPos.x < 0 || newPos.x >= state.map.width || newPos.y < 0 || newPos.y >= state.map.width) {
     console.log(`Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`);
     return { player };
   } else if (state.playersOnTiles[newPos.y][newPos.x]) {

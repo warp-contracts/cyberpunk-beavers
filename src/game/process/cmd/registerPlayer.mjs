@@ -87,14 +87,10 @@ export function calculatePlayerRandomPos(state) {
   let pos;
 
   while (!isAllowedPosition) {
-    pos = calculateRandomPos(state, Map.size);
+    pos = calculateRandomPos(state, state.map.width);
 
     isAllowedPosition = !(state.playersOnTiles[pos.y][pos.x] || state.obstaclesTilemap[pos.y][pos.x] > EMPTY_TILE);
   }
-  /*console.log(
-    `random pos ${pos.x} ${pos.y} ${state.playersOnTiles[pos.y][pos.x]} ${state.obstaclesTilemap[pos.y][pos.x]} ${isAllowedPosition}`
-  );*/
-
   return pos;
 }
 

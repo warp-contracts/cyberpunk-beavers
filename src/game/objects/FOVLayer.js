@@ -16,9 +16,11 @@ export class FOVLayer {
     console.log('adding FOV layer');
     this.radius = radius;
 
-    const data = Array(Const.Map.size)
+    const data = Array(mainScene.tileMap.width)
       .fill([])
-      .map(() => Array(Const.Map.size).fill(0));
+      .map(() => Array(mainScene.tileMap.width).fill(0));
+
+    console.log(data);
 
     const fovMap = mainScene.make.tilemap({
       data,
