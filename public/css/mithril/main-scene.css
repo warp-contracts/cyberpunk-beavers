@@ -28,11 +28,40 @@
   }
 }
 
+.main-scene-panel {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  .main-scene-panel-info {
+    font-family: 'Press Start 2P';
+    background: black;
+    font-size: var(--fs-small-title);
+    text-transform: uppercase;
+    color: var(--white);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    &.animated {
+      animation: pulse 1s linear infinite;
+    }
+  }
+
+  .main-scene-panel-elements {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    align-items: center;
+  }
+}
+
 #player-equipment-gui {
   width: calc(3 * (75px + 4px));
   height: 79px;
-  top: calc(100% - 80px);
-  left: calc(50% - 100px);
   background: linear-gradient(#091833, #133e7c);
 }
 
@@ -120,12 +149,6 @@
 }
 
 .info-panel {
-  position: absolute;
-  bottom: 0px;
-  margin: 0 auto;
-  left: 480px;
-  -ms-transform: translateY(-50%);
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -161,26 +184,6 @@
       padding: 1rem;
     }
 
-    &.rounds {
-      top: 4px;
-    }
-
-    &.ap {
-      top: 33px;
-    }
-
-    &.hp {
-      top: 62px;
-    }
-
-    &.warn {
-      color: var(--red);
-    }
-
-    &.info {
-      color: white;
-    }
-
     img {
       padding: 0 5px;
     }
@@ -201,6 +204,26 @@
     align-items: center;
     justify-content: flex-start;
     overflow: hidden;
+    position: relative;
+
+    .timebar-element {
+      position: absolute;
+      font-family: 'Press Start 2P';
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--white);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      &.warn {
+        color: var(--red);
+      }
+
+      &.info {
+        color: white;
+      }
+    }
   }
 
   .timebar-progress {
@@ -223,14 +246,11 @@
 }
 
 .player-info {
-  position: absolute;
   text-transform: uppercase;
-  bottom: 0px;
-  left: 0px;
   width: 200px;
   height: 79px;
   flex-direction: row !important;
-  padding: 0 !important;
+  padding: 2px 0 !important;
   align-items: center;
   width: 300px;
   justify-content: space-evenly !important;
@@ -361,6 +381,21 @@
   25%,
   50%,
   75% {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
     opacity: 1;
   }
 }

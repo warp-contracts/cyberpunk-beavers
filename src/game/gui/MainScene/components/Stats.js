@@ -6,7 +6,8 @@ const { GameTreasure } = Const;
 export function PlayerInfo() {
   return {
     view: function (vnode) {
-      const { userName, walletAddress, beaverChoice } = vnode.attrs.mainPlayer;
+      const { playersTotal, mainPlayer } = vnode.attrs;
+      const { userName, walletAddress, beaverChoice } = mainPlayer;
 
       const processId = window.warpAO.processId();
 
@@ -20,7 +21,7 @@ export function PlayerInfo() {
           m(Label, {
             name: 'player',
             content: displayName({ userName, walletAddress }),
-            style: `mt-18 pl-0`,
+            style: `mt-10 pl-0`,
             inlineStyle: `pr-10`,
           }),
           m(Label, {
@@ -39,6 +40,12 @@ export function PlayerInfo() {
             style: 'mt-10 pl-0',
             inlineStyle: `pr-10 w-170 text-right`,
           }),
+          m(Label, {
+            name: 'beavers',
+            content: `${playersTotal || 0}`,
+            style: 'mt-10 pl-0',
+            inlineStyle: `pr-10 w-170 text-right`,
+          }),
         ]),
       ]);
     },
@@ -48,7 +55,7 @@ export function PlayerInfo() {
 export function SpectatorStats() {
   return {
     view: function (vnode) {
-      const { playersTotal, gameTokens } = vnode.attrs;
+      const { gameTokens } = vnode.attrs;
       const processId = window.warpAO.processId();
 
       return m('.stats', [
@@ -83,7 +90,6 @@ export function SpectatorStats() {
                   inlineStyle: `pr-10`,
                 }),
               ]),
-              m('div', [m('.stats-other-beavers', `BEAVERS`, m('span', `(${playersTotal || 0})`))]),
             ]),
           ]),
         ]),
@@ -96,7 +102,7 @@ export function Stats() {
   return {
     view: function (vnode) {
       const { stats } = vnode.attrs.mainPlayer;
-      const { playersTotal, gameTokens } = vnode.attrs;
+      const { gameTokens } = vnode.attrs;
       const processId = window.warpAO.processId();
       const tokenProcessId = gameTokens[GameTreasure.cbcoin.type]?.id;
       return m('.stats', [
@@ -153,7 +159,6 @@ export function Stats() {
               inlineStyle: `pr-10`,
             }),
           ]),
-          m('div', [m('.stats-other-beavers', `OTHER BEAVERS`, m('span', `(${playersTotal - 1 || 0})`))]),
         ]),
       ]);
     },
