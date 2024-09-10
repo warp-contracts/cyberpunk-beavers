@@ -3,18 +3,31 @@ import { MINIMAP_SIZE_PX } from '../../common/const.mjs';
 
 let lastPointerDownTime = 0;
 
-export const TOP_MARGIN = 20;
+export const CAMERA_MARGIN = 20;
+const MAIN_CAMERA_WIDTH = 1300;
+const MAIN_CAMERA_HEIGHT = 920;
 
 export function doInitCamera(mainScene, spectatorMode) {
   const camera = mainScene.cameras.main;
-  camera.setBounds(0, -TOP_MARGIN, mainScene.tileMap.widthInPixels, mainScene.tileMap.heightInPixels + 110);
-  //camera.setBackgroundColor(0x808080);
+  camera.setBounds(
+    -CAMERA_MARGIN,
+    -CAMERA_MARGIN,
+    mainScene.tileMap.widthInPixels + CAMERA_MARGIN,
+    mainScene.tileMap.heightInPixels + CAMERA_MARGIN + 10 /*the fuck do I know*/
+  );
 
+  //camera.setBackgroundColor(0x808080);
+  camera.setZoom(1);
   camera.setSize(mainScene.game.scale.width, mainScene.game.scale.height);
+  camera.setViewport(
+    (mainScene.game.scale.width - MAIN_CAMERA_WIDTH) / 2,
+    10,
+    MAIN_CAMERA_WIDTH,
+    Math.min(MAIN_CAMERA_HEIGHT, mainScene.game.scale.height - 110)
+  );
   if (!spectatorMode) {
     camera.startFollow(mainScene.mainPlayer, true);
   }
-  camera.setZoom(1);
 
   let cameraDragStartX;
   let cameraDragStartY;
@@ -63,8 +76,11 @@ function createMinimap(mainScene, spectatorMode) {
   const mapHeight = mainScene.tileMap.heightInPixels;
   const miniMapWidth = MINIMAP_SIZE_PX; //mapWidth / MINIMAP_FACTOR;
   const miniMapHeight = MINIMAP_SIZE_PX; //mapHeight / MINIMAP_FACTOR;
+  console.log('minimap', {
+    gameWidth: mainScene.game.scale.width,
+  });
   mainScene.minimap = mainScene.cameras
-    .add(mainScene.game.scale.width - miniMapWidth, TOP_MARGIN, miniMapWidth, miniMapHeight)
+    .add(mainScene.game.scale.width - miniMapWidth, CAMERA_MARGIN, miniMapWidth, miniMapHeight)
     .setZoom(MINIMAP_SIZE_PX / mapWidth)
     .setName('mini');
   mainScene.minimap.setBackgroundColor(0x808080);
