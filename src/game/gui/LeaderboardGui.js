@@ -28,13 +28,13 @@ export function LeaderboardGui(initialVnode) {
               m('.col', 'frags'),
               m('.col', 'deaths'),
             ]),
-            data.map(([index, player, points, cbcoins, tIO, frags, deaths]) => {
+            data.map(([index, player, points, cbcoins, token, frags, deaths]) => {
               return m('.row', [
                 m('.col', index),
                 m(`.col portrait ${player.img}`, player.name),
                 m('.col', points),
                 m('.col', cbcoins),
-                m('.col', tIO),
+                m('.col', token),
                 m('.col', frags),
                 m('.col', deaths),
               ]);
