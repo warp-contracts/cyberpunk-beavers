@@ -76,9 +76,6 @@ const Direction = {
   down: 'down',
 };
 
-const Map = {
-  size: 30,
-};
 const Tile = {
   size: 48,
 };
@@ -288,7 +285,6 @@ export default {
   Errors,
   GameObject,
   GameTreasure,
-  Map,
   Queue,
   Scores,
   Tile,

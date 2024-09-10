@@ -20,6 +20,8 @@ function tryLoadLayer(type, rawMap) {
 
 function initState(message, state) {
   const obstaclesLayer = tryLoadLayer(COLLISIONS_LAYER, state.rawMap);
+  const mapWidth = obstaclesLayer.width;
+  const mapHeight = obstaclesLayer.height;
 
   const result = {
     nextProcessId: null,
@@ -30,8 +32,8 @@ function initState(message, state) {
     pos: 1,
     playWindow: {},
     map: {
-      width: obstaclesLayer.width,
-      height: obstaclesLayer.height,
+      width: mapWidth,
+      height: mapHeight,
     },
     lastTxs: [],
     gameObjectsTiles: [
@@ -41,15 +43,15 @@ function initState(message, state) {
       GameObject.equipment_mine,
       GameObject.none,
     ],
-    gameHiddenObjects: Array(Map.size)
+    gameHiddenObjects: Array(mapHeight)
       .fill([])
-      .map(() => Array(Map.size)),
-    gameTreasuresTilemap: Array(Map.size)
+      .map(() => Array(mapHeight)),
+    gameTreasuresTilemap: Array(mapHeight)
       .fill([])
-      .map(() => Array(Map.size)),
-    gameTreasuresTilemapForClient: Array(Map.size)
+      .map(() => Array(mapHeight)),
+    gameTreasuresTilemapForClient: Array(mapHeight)
       .fill([])
-      .map(() => Array(Map.size)),
+      .map(() => Array(mapHeight)),
     gameTokens: state.gameTokens || Const.DEFAULT_GAME_TOKENS,
     gameTreasuresCounter: Object.fromEntries(
       Object.entries(state.gameTokens || Const.DEFAULT_GAME_TOKENS).map(([k, v]) => [k, v.amount])
@@ -64,9 +66,9 @@ function initState(message, state) {
     generatedWalletsMapping: {},
     players: {},
     spectators: [],
-    playersOnTiles: Array(Map.size)
+    playersOnTiles: Array(mapHeight)
       .fill([])
-      .map(() => Array(Map.size)),
+      .map(() => Array(mapHeight)),
     obstaclesTilemap: generateTilemap(obstaclesLayer.data, obstaclesLayer.width),
   };
 
@@ -143,7 +145,7 @@ function setObjectsOnRandomPositions(state, gameObject, rarity, tilemap, tiles) 
   });
 
   while (gameObjectCount < rarity) {
-    const pos = calculateRandomPos(state, Map.size);
+    const pos = calculateRandomPos(state, state.map.width);
     const isAllowedPosition =
       state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE && !tiles.includes(tilemap[pos.y][pos.x]);
     if (isAllowedPosition) {
