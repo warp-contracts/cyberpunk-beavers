@@ -98,7 +98,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   moveTo(response) {
     const self = this;
-    console.log(response.pos);
     this.baseMoveTo(
       response.pos,
       () => {

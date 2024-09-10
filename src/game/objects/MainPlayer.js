@@ -104,11 +104,9 @@ export default class MainPlayer extends Player {
       y: `+=${moveVertical}`,
       onComplete: (_) => {
         const canvasPos = this.getCanvasPoint();
-        console.log(canvasPos);
-
         if (this.mainScene.minimap.setVisible(true)) {
           if (
-            canvasPos.x >= window.innerWidth - MINIMAP_SIZE_PX - Const.Tile.size &&
+            canvasPos.x >= window.innerWidth - MINIMAP_SIZE_PX - 2 * Const.Tile.size &&
             canvasPos.y <= MINIMAP_SIZE_PX + CAMERA_MARGIN + Const.Tile.size
           ) {
             this.mainScene.minimap.setVisible(false);
