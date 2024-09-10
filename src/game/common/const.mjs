@@ -12,7 +12,7 @@ const EMPTY_TILE = 0;
 
 export const FOV_DEPTH = 100;
 
-export const FOG_ALPHA = 0.85;
+export const FOG_ALPHA = 0.8;
 
 export const MINIMAP_SIZE_PX = 250;
 

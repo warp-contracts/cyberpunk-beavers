@@ -20,8 +20,6 @@ export class FOVLayer {
       .fill([])
       .map(() => Array(mainScene.tileMap.width).fill(0));
 
-    console.log(data);
-
     const fovMap = mainScene.make.tilemap({
       data,
       tileWidth: Const.Tile.size,
@@ -62,7 +60,6 @@ export class FOVLayer {
     if (!this.lastPos.equals(pos) /*|| !this.initialCalc*/) {
       this.updateMRPAS(pos);
       this.lastPos = pos.clone();
-      // this.initialCalc = true;
     }
     // TODO: fix - only if position changes
     for (let y = bounds.y; y < bounds.y + bounds.height; y++) {

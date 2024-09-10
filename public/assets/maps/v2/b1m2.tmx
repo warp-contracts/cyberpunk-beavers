@@ -3,7 +3,12 @@
  <editorsettings>
   <export target="b1m2.json" format="json"/>
  </editorsettings>
- <tileset firstgid="1" name="Sprite_Map_Sheet" tilewidth="32" tileheight="32" tilecount="0" columns="0"/>
+ <tileset firstgid="1" name="Sprite_Map_Sheet" tilewidth="528" tileheight="1104" tilecount="1" columns="0">
+  <grid orientation="orthogonal" width="32" height="32"/>
+  <tile id="220">
+   <image source="Sprite_Map_Sheet.png" width="528" height="1104"/>
+  </tile>
+ </tileset>
  <layer id="2" name="sand" width="30" height="30">
   <data encoding="csv">
 185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,185,
