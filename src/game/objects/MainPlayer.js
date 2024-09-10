@@ -1,6 +1,7 @@
 import Const, { FOV_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
 import Player from './Player.js';
 import { doPlayAttackSound } from '../scenes/main-scene/sounds.js';
+import { TOP_MARGIN } from '../scenes/main-scene/camera.js';
 
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig, useLandmine, useTeleport } = Const.Command;
@@ -108,7 +109,7 @@ export default class MainPlayer extends Player {
         if (this.mainScene.minimap.setVisible(true)) {
           if (
             canvasPos.x >= window.innerWidth - MINIMAP_SIZE_PX - Const.Tile.size &&
-            canvasPos.y <= MINIMAP_SIZE_PX + Const.Tile.size
+            canvasPos.y <= MINIMAP_SIZE_PX + TOP_MARGIN + Const.Tile.size
           ) {
             this.mainScene.minimap.setVisible(false);
           } else {

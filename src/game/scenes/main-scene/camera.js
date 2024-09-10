@@ -3,9 +3,11 @@ import { MINIMAP_SIZE_PX } from '../../common/const.mjs';
 
 let lastPointerDownTime = 0;
 
+export const TOP_MARGIN = 20;
+
 export function doInitCamera(mainScene, spectatorMode) {
   const camera = mainScene.cameras.main;
-  camera.setBounds(0, 0, mainScene.tileMap.widthInPixels, mainScene.tileMap.heightInPixels + 80);
+  camera.setBounds(0, -TOP_MARGIN, mainScene.tileMap.widthInPixels, mainScene.tileMap.heightInPixels + 110);
   //camera.setBackgroundColor(0x808080);
 
   camera.setSize(mainScene.game.scale.width, mainScene.game.scale.height);
@@ -62,7 +64,7 @@ function createMinimap(mainScene, spectatorMode) {
   const miniMapWidth = MINIMAP_SIZE_PX; //mapWidth / MINIMAP_FACTOR;
   const miniMapHeight = MINIMAP_SIZE_PX; //mapHeight / MINIMAP_FACTOR;
   mainScene.minimap = mainScene.cameras
-    .add(mainScene.game.scale.width - miniMapWidth, 0, miniMapWidth, miniMapHeight)
+    .add(mainScene.game.scale.width - miniMapWidth, TOP_MARGIN, miniMapWidth, miniMapHeight)
     .setZoom(MINIMAP_SIZE_PX / mapWidth)
     .setName('mini');
   mainScene.minimap.setBackgroundColor(0x808080);
