@@ -12,7 +12,7 @@ export function end(state, message) {
 
 export function sendTokens(state) {
   if (!state.tokensTransferred) {
-    const transferable = {
+    const transfers = {
       [GameTreasure.war.type]: {},
       [GameTreasure.tio.type]: {},
       [GameTreasure.trunk.type]: {},
@@ -37,27 +37,19 @@ export function sendTokens(state) {
         if (token.gained > 0) {
           const target = state.bridgeProcessId;
           const qty = token.gained * GameTreasure[type].baseVal;
-          transferable[type][playerWallet] = `${qty}`;
+          transfers[type][playerWallet] = `${qty}`;
           console.log(`Setting transfer ${qty} ${type}:${target} to ${playerWallet}`);
         }
       }
     }
 
-    console.log(`Lets start with the further transfers`, transferable);
-    for (const [tokenType, playersQty] of Object.entries(transferable)) {
-      if (Object.keys(playersQty).length) {
-        console.log(`Transferring ${tokenType} to ${state.bridgeProcessId}`, playersQty);
-        ao.send({
-          Target: state.bridgeProcessId,
-          Data: JSON.stringify({
-            recipients: playersQty,
-          }),
-          Action: 'Transfer',
-          Token: tokenType,
-          Recipient: `All`,
-        });
-      }
-    }
+    ao.send({
+      Target: state.bridgeProcessId,
+      HubProcessId: state.hubProcessId,
+      Data: JSON.stringify(transfers),
+      Action: 'ScheduleTransfer',
+      Recipient: `All`,
+    });
   }
   state.tokensTransferred = true;
 }
