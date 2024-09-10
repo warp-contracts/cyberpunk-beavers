@@ -317,7 +317,7 @@
   mix-blend-mode: normal;
   transform-origin: 50% 50%;
   position: absolute;
-  top: 0;
+  bottom: 1rem;
 }
 
 .label {
