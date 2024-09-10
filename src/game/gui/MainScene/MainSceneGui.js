@@ -1,8 +1,8 @@
 import { Equipment } from './components/Equipment';
 import { InfoPanel } from './components/InfoPanel';
 import { PlayerInfo, SpectatorStats, Stats } from './components/Stats';
-import { WeaponInfo } from './components/WeaponInfo';
 import { KeyboardMapping } from './components/KeyboardMapping';
+import { formatCountdownTo } from '../LoungeArenaSceneGui.js';
 
 export function MainSceneGui() {
   let visible = false;
@@ -51,7 +51,9 @@ export function MainSceneGui() {
             mainPlayer && visible
               ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} })
               : null,
-            m(`.main-scene-enter.alert`, 'FIGHT!'),
+            m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
+            gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
+            diff ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`) : null,
           ];
     },
   };
