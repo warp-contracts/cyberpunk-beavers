@@ -5,7 +5,7 @@ export function Equipment() {
     view: function (vnode) {
       const { equipment, stats } = vnode.attrs;
 
-      return m('.mithril-component', { id: 'player-equipment-gui' }, [
+      return m('div', { id: 'player-equipment-gui' }, [
         m('.equipment-slot-container', [m('.equipment-slot', [m(WeaponInfo, { stats })])]),
 
         m('.equipment-slot-container', [

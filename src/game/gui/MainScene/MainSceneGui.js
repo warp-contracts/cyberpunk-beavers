@@ -19,6 +19,7 @@ export function MainSceneGui() {
   return {
     oninit: function (vnode) {
       vnode.state.hasEnterAnimated = false;
+      vnode.state.hasPanelInfoAnimated = false;
     },
     view: function (vnode) {
       const {
@@ -37,17 +38,26 @@ export function MainSceneGui() {
         animateEnter(vnode);
       }
 
+      if (!vnode.state.hasPanelInfoAnimated) {
+        animatePanelInfo(vnode);
+      }
+
       return spectatorMode
         ? [
             m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff, spectatorMode }),
             m(KeyboardMapping, { spectatorMode }),
-            m(SpectatorStats, { playersTotal, gameTokens: gameStats.gameTokens || {} }),
+            m(SpectatorStats, { gameTokens: gameStats.gameTokens || {} }),
           ]
         : [
-            mainPlayer ? m(PlayerInfo, { mainPlayer }) : null,
-            equipment ? m(Equipment, { equipment, stats: mainPlayer?.stats }) : null,
+            m('.main-scene-panel', [
+              m('.main-scene-panel-info', `Press TAB for more info`),
+              m('.main-scene-panel-elements', [
+                mainPlayer ? m(PlayerInfo, { mainPlayer, playersTotal }) : null,
+                m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
+                equipment ? m(Equipment, { equipment, stats: mainPlayer?.stats }) : null,
+              ]),
+            ]),
             visible ? m(KeyboardMapping, { spectatorMode }) : null,
-            m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
             mainPlayer && visible
               ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} })
               : null,
@@ -71,5 +81,16 @@ function animateEnter(vnode) {
       },
       { once: true }
     );
+  }
+}
+
+function animatePanelInfo(vnode) {
+  const element = document.querySelector('.main-scene-panel-info');
+  if (element) {
+    element.classList.add('animated');
+    setTimeout(() => {
+      element.classList.remove('animated');
+      vnode.state.hasPanelInfoAnimated = true;
+    }, 5000);
   }
 }
