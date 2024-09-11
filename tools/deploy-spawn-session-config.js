@@ -3,19 +3,19 @@ const { GameTreasure } = Const;
 
 const hourSessionDelayMS = [
   0, // first game will be active at the specified hour, without any delay
-  6 * 60 * 1_000, // second game will start 6 minutes later
-  12 * 60 * 1_000, //...
-  18 * 60 * 1_000,
-  24 * 60 * 1_000,
-  30 * 60 * 1_000,
+  9 * 60 * 1_000, // second game will start 6 minutes later
+  18 * 60 * 1_000, //...
+  27 * 60 * 1_000,
+  /*24 * 60 * 1_000,
+  30 * 60 * 1_000,*/
 ];
-const gameDurationMS = 5 * 60 * 1_000; // 5 minutes
+const gameDurationMS = 8 * 60 * 1_000; // 5 minutes
 const walletsWhitelist = [
-  'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY',
-  'Dj2ud7ui_rKtYwc_2cpGtNdlx6ifnX8w8VIksqIw42g',
-  '1bDUsm3L4EJOm3JZTItaXkvJAxxi8zrsRZ4KJN8HI_8',
-  'qCtnbl5rsbF-1qRhawIQArCbO4_2TUOtnFv5oEun9gM',
-  'wF_7BbSj8Yzlt7T44nMGXwJHmqn8t2Sv45LfxILNu_o',
+  // 'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY',
+  // 'Dj2ud7ui_rKtYwc_2cpGtNdlx6ifnX8w8VIksqIw42g',
+  // '1bDUsm3L4EJOm3JZTItaXkvJAxxi8zrsRZ4KJN8HI_8',
+  // 'qCtnbl5rsbF-1qRhawIQArCbO4_2TUOtnFv5oEun9gM',
+  // 'wF_7BbSj8Yzlt7T44nMGXwJHmqn8t2Sv45LfxILNu_o',
 ];
 
 export const TOKEN_CONTRACT_MOCK = {
