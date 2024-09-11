@@ -85,10 +85,10 @@ const Tile = {
 };
 
 const GameObject = {
-  ap: { type: 'ap', tile: 0, value: 5, rarity: 30 },
-  hp: { type: 'hp', tile: 1, value: 25, rarity: 30 },
-  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 10 },
-  teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 20 },
+  ap: { type: 'ap', tile: 0, value: 5, rarity: 35 },
+  hp: { type: 'hp', tile: 1, value: 25, rarity: 35 },
+  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 15 },
+  teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 25 },
   none: { type: 'none', tile: 4, value: 0 },
 
   // invisible
