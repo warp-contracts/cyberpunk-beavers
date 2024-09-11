@@ -23,6 +23,14 @@ export function Equipment() {
             m('span', { class: 'equipment-counter' }, `${equipment.landmines.current}/${equipment.landmines.max}`),
           ]),
         ]),
+
+        m('.equipment-slot-container', [
+          m('.equipment-slot', [
+            m('img', { src: `/assets/images/equipment/scanner_device.png` }),
+            m('span', { class: 'equipment-number' }, `3.`),
+            m('span', { class: 'equipment-counter' }, `${equipment.scanners.current}/${equipment.scanners.max}`),
+          ]),
+        ]),
       ]);
     },
   };

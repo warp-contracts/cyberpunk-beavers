@@ -64,6 +64,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('god_like', ['assets/audio/god_like.m4a']);
   mainScene.load.audio('revenge', ['assets/audio/revenge.m4a']);
   mainScene.load.audio('teleport', ['assets/audio/teleport.mp3']);
+  mainScene.load.audio('scan', ['assets/audio/scan.mp3']);
   mainScene.load.audio('explosion', ['assets/audio/explosion_powerful_dynamite.mp3']);
   mainScene.load.audio('blood_splat_1', ['assets/audio/blood_splat/blood_splat_1.mp3']);
   mainScene.load.audio('blood_splat_2', ['assets/audio/blood_splat/blood_splat_2.mp3']);

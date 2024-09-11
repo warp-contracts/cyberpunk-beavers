@@ -8,3 +8,5 @@ export const colors = {
 };
 
 export const MINE_ACTIVATED_COLOR = 0xff0000;
+
+export const SCANNED_COLOR = 0x0e86d4;

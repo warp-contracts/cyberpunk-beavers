@@ -41,6 +41,7 @@ function initState(message, state) {
       GameObject.hp,
       GameObject.teleport_device,
       GameObject.equipment_mine,
+      GameObject.scanner_device,
       GameObject.none,
     ],
     gameHiddenObjects: Array(mapHeight)
