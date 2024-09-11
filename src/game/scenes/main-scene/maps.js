@@ -6,6 +6,7 @@ export function doCreateTileMap(mainScene) {
   gameObjectsTexture.add('hp', 0, 48, 0, 48, 48);
   gameObjectsTexture.add('mine', 0, 96, 0, 48, 48);
   gameObjectsTexture.add('teleport', 0, 144, 0, 48, 48);
+  gameObjectsTexture.add('scanner', 0, 0, 48, 48, 48);
 
   mainScene.tileMap = mainScene.make.tilemap({ key: `map_${mainScene.mapTxId}` });
   const tileset = mainScene.tileMap.addTilesetImage('Sprite_Map_Sheet', 'map_sheet');
@@ -40,7 +41,7 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
     const layer = map.createLayer(0, tiles, 0, 0);
     if (asSprites) {
       const sprites = [];
-      ['ap', 'hp', 'mine', 'teleport'].forEach((objectType, index) => {
+      ['ap', 'hp', 'mine', 'teleport', 'scanner'].forEach((objectType, index) => {
         sprites.push(
           ...map.createFromTiles(index, -1 /* removes the original tile */, {
             key: 'cyberpunk_game_objects',

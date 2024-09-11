@@ -25,6 +25,7 @@ export function doAddSounds(mainScene) {
   mainScene.godLikeSound = mainScene.sound.add('god_like', { loop: false, volume: 4.0 });
   mainScene.revengeSound = mainScene.sound.add('revenge', { loop: false, volume: 4.0 });
   mainScene.teleportSound = mainScene.sound.add('teleport', { loop: false, volume: 5.0 });
+  mainScene.scanSound = mainScene.sound.add('scan', { loop: false, volume: 3.0 });
   mainScene.explosionSound = mainScene.sound.add('explosion', { loop: false, volume: 0.5 });
   mainScene.bloodSplat1Sound = mainScene.sound.add('blood_splat_1', { loop: false, volume: 1.0 });
   mainScene.bloodSplat2Sound = mainScene.sound.add('blood_splat_2', { loop: false, volume: 1.5 });

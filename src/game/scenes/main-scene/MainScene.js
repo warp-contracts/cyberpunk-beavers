@@ -13,7 +13,7 @@ import {
 import Phaser from 'phaser';
 import { MainSceneGui } from '../../gui/MainScene/MainSceneGui.js';
 import { hideGui, showGui } from '../../utils/mithril.js';
-import { MINE_ACTIVATED_COLOR } from '../../utils/style.js';
+import { MINE_ACTIVATED_COLOR, SCANNED_COLOR } from '../../utils/style.js';
 import { checkBalance, generatedWalletAddress, getUsernameFromStorage } from '../../utils/utils.js';
 import { doPreloadAssets } from './preload.js';
 import { doAddSounds, doPlayAttackSound, doPlayOpponentFinishedSound } from './sounds.js';
@@ -21,6 +21,7 @@ import { doInitCamera } from './camera.js';
 import { doInitAnimations } from './animations.js';
 import { doCreateTileMap, initMapObjects } from './maps.js';
 import { FOVLayer } from '../../objects/FOVLayer.js';
+import { executeScan } from './commands/scanned.js';
 
 const { GameTreasure } = Const;
 
@@ -530,6 +531,7 @@ export default class MainScene extends Phaser.Scene {
         if (response.digged?.tile > 0) {
           if (self.mainPlayer?.walletAddress === response.player.walletAddress || self.spectatorMode)
             self.treasureSound.play();
+          self.mainPlayer.diggedTreasures[`${response.player.pos.x}, ${response.player.pos.y}`] = response.digged.tile;
           self.gameTreasuresLayer?.putTileAt(response.digged.tile, response.player.pos.x, response.player.pos.y);
         } else {
           if (self.mainPlayer?.walletAddress === response.player.walletAddress) self.digSound.play();
@@ -538,6 +540,10 @@ export default class MainScene extends Phaser.Scene {
         self.updateStats(response.player, response.gameStats);
         self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         break;
+      }
+
+      case Const.Command.scanned: {
+        executeScan(response, self);
       }
     }
   }
