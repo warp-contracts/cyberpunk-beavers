@@ -84,11 +84,11 @@ In order to create a new map:
 1. [Download](https://thorbjorn.itch.io/tiled/download/eyJpZCI6Mjg3NjgsImV4cGlyZXMiOjE3MTg4NzAwODV9.hntXxFoxhdEGIhCFOT9LoTeul4M%3d) and install the editor.
 2. Clone this repository (`git clone git@github.com:warp-contracts/cyberpunk-beavers.git`) or simply download it as a zip file from https://github.com/warp-contracts/cyberpunk-beavers
    ![img.png](assets/readme/donwload.png)
-3. Go to `<your_path>/cyberpunk-beavers/assets/maps/tools/templates` directory.
+3. Go to `<your_path>/cyberpunk-beavers/public/assets/maps/tools/templates` directory.
    ![img.png](assets/readme/templates_dir.png)
 4. Open the `sand_template.tmx` file.
 5. The `Tiled` editor should open, and you should see something similar to:
-   ![img.png](assets/readme/tiled_editor.png)
+   ![img.png](public/assets/readme/tiled_editor.png)
 
 ### Map editor details
 
@@ -109,7 +109,7 @@ The main areas of the editor marked above are:
 2. Select the whole map in the editor (`cmd+a` on Mac)
 3. Remove all the selected tiles (`backspace` on Mac)
    You should end-up with something similar to:
-   ![img.png](assets/readme/ground_removed.png)
+   ![img.png](public/assets/readme/ground_removed.png)
 4. Repeat the above steps for the `decoration_layer` and `obstacles_layer`
 
 **NOTE**: you can also start with simply editing the template - which is probably a better idea at start.
@@ -126,23 +126,23 @@ The main areas of the editor marked above are:
       AP being used (e.g. the small stones use 3 APs).
    3. `obstacles` tileset on a `obstacles_layer` - the tiles on this layer block the movement entirely.
 3. Select on of the tiles from the `ground` tiles - e.g. the "dark sand" tile.
-4. Place it on the layer using the `Stamp Brush` tool ![img.png](assets/readme/stamp_tool.png)  
+4. Place it on the layer using the `Stamp Brush` tool ![img.png](public/assets/readme/stamp_tool.png)  
    **NOTE** Get familiar with other tools available, especially - `Bucket Fill Tool`, `Shape Fill Tool`, `Eraser`...
    More details can be found [here](https://doc.mapeditor.org/en/stable/manual/editing-tile-layers/).
 5. When you've finished the `ground_layer`, switch to the `decoration_layer` (and change the tileset to `decorations`!)
 6. After the `decoration_layer` is finished - add some obstacles on the `obstacles_layer` (and switch tileset to `obstacles`).
    After playing for a while you should have your map prepared - for example:
-   ![img.png](assets/readme/ao-map_2.png)
+   ![img.png](public/assets/readme/ao-map_2.png)
 
 ### Exporting the map
 
 Assuming that you're happy with the results - it's time to export your map.  
 Save it first as a new file - `File->Save As...`.  
 Then go to `File->Export As...`, set a proper name (e.g. `ao_map.json`), file location and choose the `JSON map files` format.
-![img.png](assets/readme/export.png)
+![img.png](public/assets/readme/export.png)
 
 The exported file should like similar to:  
-![img_1.png](assets/readme/exported.png)
+![img_1.png](public/assets/readme/exported.png)
 
 ### Posting the map to Arweave
 
@@ -151,11 +151,11 @@ Turbo bundler is [here](https://github.com/warp-contracts/cyberpunk-beavers/blob
 If you want to use the above script:
 
 1. set the `file` and the `mapName` variables.  
-   ![img.png](assets/readme/send.png)
+   ![img.png](public/assets/readme/send.png)
 2. put your wallet in the `.secrets` directory
 3. run the script using node.js `node js/tools/create-map-tx.js`.
    You should see sth similar to a result:  
-   ![img.png](assets/readme/sendResult.png)
+   ![img.png](public/assets/readme/sendResult.png)
 4. After posting the map to Arweave, please share your results on our Discord (i.e. the transaction id from the response in previous point and a screenshot of the map itself) - if it has interesting design and is formally correct -
    we might use it the game!
 
