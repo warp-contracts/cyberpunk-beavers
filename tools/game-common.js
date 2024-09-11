@@ -24,8 +24,8 @@ export async function readMapFromArweave(mapTxId) {
   throw new Error('could not load map tx from Arweave');
 }
 
-export async function spawnGame({ muUrl, moduleId, additionalTags = [], gameTokens = null }) {
-  const { mapTxId, mapJson } = await readMapFromArweave();
+export async function spawnGame({ muUrl, moduleId, additionalTags = [], gameTokens = null, requestedMapTxId = null }) {
+  const { mapTxId, mapJson } = await readMapFromArweave(requestedMapTxId);
   console.log(`got me some map`, mapTxId, mapJson.type, mapJson.height);
 
   console.log(`Spawning Game`);
