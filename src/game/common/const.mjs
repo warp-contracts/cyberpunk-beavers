@@ -3,13 +3,13 @@ const EVENTS_NAME = {
 };
 
 export const maps = [
+  'z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA', // ch1j1
   '2YubMDiBuwcs2ikoBhjL5SxIZA1Jfo9EM52xdwcflr8', // b1m5
-  'XuxDKD4nXTxCB7UeKKgIjhOGkbvcEUl93Qz4lsowGoM', //b1m6
+  'Cbdwm_6JDDmtllVzmtrsDqK2fULK9A8YRqivCAjzDV0', // ch1j2
+  'XuxDKD4nXTxCB7UeKKgIjhOGkbvcEUl93Qz4lsowGoM', // b1m6
+  'v9vRtTZJfdX2cyZ_KG96cUKpvQjXz7KHJlPrJgS0Adc', // b1m3
   'GdAsRCknjjudRxmIvGvNCtM3JLxUDW2B6cCF_Tvd7g8', // b1m1
   'YNFa9YBS_M4GtRF4BF2-aiy-JuX0CqO5nuclaE1yIDQ', // b1m2
-  'v9vRtTZJfdX2cyZ_KG96cUKpvQjXz7KHJlPrJgS0Adc', // b1m3
-  'z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA', // ch1j1
-  'Cbdwm_6JDDmtllVzmtrsDqK2fULK9A8YRqivCAjzDV0', // ch1j2
 ];
 
 const EMPTY_TILE = 0;

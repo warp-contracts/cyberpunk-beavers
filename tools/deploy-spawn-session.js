@@ -11,7 +11,7 @@ import {
   TOKEN_CONTRACT,
   TOKEN_CONTRACT_MOCK,
 } from './deploy-spawn-session-config.js';
-import Const from '../src/game/common/const.mjs';
+import Const, { maps } from '../src/game/common/const.mjs';
 import ids from '../src/game/config/warp-ao-ids.js';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
@@ -114,17 +114,21 @@ async function doIt() {
     : activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit);
 
   const gameProcesses = [];
+  let counter = 0;
   for (let s of setups) {
+    const mapIndex = counter % (maps.length - 1);
     // Spawn game
-    await sleep(1000);
+    const requestedMapTxId = maps[mapIndex];
+    await sleep(100);
     const gameProcessId = await spawnGame({
       muUrl,
       moduleId: gameSrcId,
       additionalTags: [{ name: 'Hub-Process-Tx', value: hubProcessId }],
       gameTokens,
+      requestedMapTxId,
     });
 
-    await sleep(1000);
+    await sleep(100);
     await registerGameInBridge(gameProcessId, bridgeProcessId);
 
     gameProcesses.push(gameProcessId);
@@ -143,9 +147,10 @@ async function doIt() {
     }
 
     // Setup game
-    await sleep(1000);
+    await sleep(100);
     console.log(`Setting up game ${gameProcessId} at ${new Date(s?.start)}`, s);
     await setupGameContract(signer, gameSrcId, gameProcessId, s, muUrl);
+    counter++;
   }
 
   return {
