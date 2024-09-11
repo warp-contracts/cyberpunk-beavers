@@ -330,6 +330,7 @@ export default class MainScene extends Phaser.Scene {
                 });
                 self.fov = new FOVLayer(this, self.mainPlayer.stats.fov);
                 self.scene.remove(mainSceneLoadingKey);
+                self.registered = true;
               } else {
                 self.addOtherPlayer(player);
               }
@@ -339,7 +340,6 @@ export default class MainScene extends Phaser.Scene {
             if (!self.gameEnter || (self.gameEnter && self.gameEnter <= Date.now())) {
               setTimeout(() => self.activateGame(), 100);
             }
-            self.registered = true;
           }
         }
         break;
