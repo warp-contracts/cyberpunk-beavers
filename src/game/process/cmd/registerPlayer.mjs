@@ -1,11 +1,12 @@
-import Const from '../../common/const.mjs';
+import Const, { GAME_MODES } from '../../common/const.mjs';
 import { calculateRandomPos } from './__init';
 import { checkWhitelist } from './queue.mjs';
 
 const { BEAVER_TYPES, Map, EMPTY_TILE, GameTreasure } = Const;
 
 export function registerPlayer(state, action) {
-  const { beaverId, walletAddress, userName, balance, generatedWalletAddress } = action;
+  const { beaverId, mainWalletAddress, userName, balance, generatedWalletAddress } = action;
+  const walletAddress = mainWalletAddress;
   const { players, playersOnTiles, walletsQueue, walletsWhitelist } = state;
 
   // Player already registered, move along
@@ -40,7 +41,7 @@ export function registerPlayer(state, action) {
 
   const additionalTokens = Object.fromEntries(
     Object.entries(state.gameTokens)
-      .filter(([key]) => key !== GameTreasure.cbcoin.type)
+      .filter(([key]) => key !== GAME_MODES[state.mode].token)
       .filter(([, token]) => token.amount > 0)
       .map(([key, token]) => [key, { gained: 0 }])
   );

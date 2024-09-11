@@ -1,5 +1,5 @@
 import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
-import { GameTreasure, maps } from '../common/const.mjs';
+import { GAME_MODES, GameTreasure, maps } from '../common/const.mjs';
 
 export function getEnv() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -11,6 +11,48 @@ export function trimString(toTrim, charsLeft = 3, dotsCount = 3, charsRight = 3)
     return '';
   }
   return toTrim.substring(0, charsLeft) + '.'.repeat(dotsCount) + toTrim.substring(toTrim.length - charsRight);
+}
+
+export async function checkProfileRsg(wallet) {
+  let username = JSON.parse(localStorage.getItem('discord_handle') || '{}');
+  let { handler, id, expiration } = username[wallet] || {};
+
+  if (expiration && expiration < Date.now()) {
+    handler = null;
+    id = null;
+    console.log(`ProfileId ${id} expired`);
+  }
+
+  if (!id) {
+    const result = await fetch(`https://dre-warpy.warp.cc/warpy/user-id?address=${wallet}`).then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        return null;
+      }
+    });
+
+    if (result?.length && result[0].key) {
+      id = result[0].key;
+    }
+  }
+
+  if (id && !handler) {
+    const result = await fetch(`https://api-warpy.warp.cc/v1/usernames?ids=${id}`).then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        return null;
+      }
+    });
+
+    if (result?.length && result[0].handler) {
+      handler = result[0].handler;
+    }
+  }
+
+  username[wallet] = { id, handler, expiration: Date.now() + 1_000 * 60 * 15 }; // expires in 15 minutes
+  localStorage.setItem('discord_handle', JSON.stringify(username));
 }
 
 export async function checkProfile(wallet) {
@@ -125,16 +167,53 @@ export async function checkBalance(walletAddress) {
   }
 }
 
+export async function checkBalanceRsg(id) {
+  const result = await fetch(`https://dre-warpy.warp.cc/warpy/user-balance?userId=${id}`).then((res) => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return null;
+    }
+  });
+
+  if (result?.length && result[0].balance) {
+    return result[0].balance;
+  } else {
+    return 0;
+  }
+}
+
 export function getUsernameFromStorage(walletAddress) {
-  return JSON.parse(localStorage.getItem('profiles'))?.[walletAddress]?.profile?.Profile?.UserName;
+  let username;
+  let id;
+  switch (warpAO.config.mode) {
+    case GAME_MODES.ao.type:
+      username = JSON.parse(localStorage.getItem('profiles'))?.[walletAddress]?.profile?.Profile?.UserName;
+      break;
+    case GAME_MODES.rsg.type:
+      const user = JSON.parse(localStorage.getItem('discord_handle'))?.[walletAddress];
+      username = user?.handler;
+      id = user?.id;
+      break;
+  }
+
+  return { username, id };
 }
 
 export function generatedWalletAddress() {
-  return warpAO.signingMode == 'arconnect' ? localStorage.getItem('generated_wallet_address') : null;
+  return warpAO.signingMode == 'arconnect' || warpAO.signingMode == 'metamask'
+    ? localStorage.getItem('generated_wallet_address')
+    : null;
 }
 
 export function formatCoin(count, tokenType) {
   const token = GameTreasure[tokenType];
   const divisor = Math.max(1, Math.pow(10, token?.denomination || 0));
   return (count * token?.baseVal) / divisor;
+}
+
+export function getUrlParam(param) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(param);
 }

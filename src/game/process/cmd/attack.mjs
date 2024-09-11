@@ -1,4 +1,4 @@
-import Const from '../../common/const.mjs';
+import Const, { GAME_MODES } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 const { GameTreasure } = Const;
@@ -112,7 +112,7 @@ export function finishHim(player, opponent, damageFigures, state) {
     if (revenge) {
       player.stats.kills.killedBy = '';
     }
-    addCoins(player, GameTreasure.cbcoin.type, loot);
+    addCoins(player, GAME_MODES[state.mode].token, loot, state);
     return {
       finished: true,
       revenge,

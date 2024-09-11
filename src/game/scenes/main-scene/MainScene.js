@@ -13,8 +13,8 @@ import {
 import Phaser from 'phaser';
 import { MainSceneGui } from '../../gui/MainScene/MainSceneGui.js';
 import { hideGui, showGui } from '../../utils/mithril.js';
-import { MINE_ACTIVATED_COLOR, SCANNED_COLOR } from '../../utils/style.js';
-import { checkBalance, generatedWalletAddress, getUsernameFromStorage } from '../../utils/utils.js';
+import { MINE_ACTIVATED_COLOR } from '../../utils/style.js';
+import { checkBalance, checkBalanceRsg, generatedWalletAddress, getUsernameFromStorage } from '../../utils/utils.js';
 import { doPreloadAssets } from './preload.js';
 import { doAddSounds, doPlayAttackSound, doPlayOpponentFinishedSound } from './sounds.js';
 import { doInitCamera } from './camera.js';
@@ -58,7 +58,9 @@ export default class MainScene extends Phaser.Scene {
     this.gameActive = false;
     this.gameEnd = data.gameEnd;
     this.mapTxId = data.mapTxId;
-    this.userName = getUsernameFromStorage(this.walletAddress);
+    const user = getUsernameFromStorage(this.walletAddress);
+    this.userName = user.username;
+    this.userId = user.id;
     this.spectatorMode = window.warpAO.spectatorMode;
     this.registered = false;
   }
@@ -121,29 +123,25 @@ export default class MainScene extends Phaser.Scene {
   }
 
   async registerPlayer() {
-    const balance = await checkBalance(this.walletAddress);
+    const balance = warpAO.config.aoMode ? await checkBalance(this.walletAddress) : await checkBalanceRsg(this.userId);
     if (this.beaverId) {
       console.log(`Beaver has already been registered previously, joining game...`, this.beaverId);
-      await this.server.send(
-        {
-          cmd: Const.Command.join,
-          balance: balance && parseInt(balance),
-          generatedWalletAddress: generatedWalletAddress(),
-        },
-        true
-      );
+      await this.server.send({
+        cmd: Const.Command.join,
+        balance: balance && parseInt(balance),
+        generatedWalletAddress: generatedWalletAddress(),
+        mainWalletAddress: this.walletAddress,
+      });
     } else {
       console.log('Register player...');
-      await this.server.send(
-        {
-          cmd: Const.Command.register,
-          beaverId: this.beaverChoice,
-          userName: this.userName,
-          balance: balance && parseInt(balance),
-          generatedWalletAddress: generatedWalletAddress(),
-        },
-        true
-      );
+      await this.server.send({
+        cmd: Const.Command.register,
+        beaverId: this.beaverChoice,
+        userName: this.userName,
+        balance: balance && parseInt(balance),
+        generatedWalletAddress: generatedWalletAddress(),
+        mainWalletAddress: this.walletAddress,
+      });
     }
   }
 
@@ -257,7 +255,7 @@ export default class MainScene extends Phaser.Scene {
 
   activateGame() {
     this.gameEnterTimeUp = true;
-    this.server.send({ cmd: Const.Command.activate }, true);
+    this.server.send({ cmd: Const.Command.activate });
   }
 
   roundTick() {

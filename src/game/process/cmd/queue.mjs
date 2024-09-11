@@ -11,7 +11,7 @@ export function checkWhitelist(state, walletAddress) {
 }
 
 export function standInQueue(state, action) {
-  const { walletAddress } = action;
+  const walletAddress = action.mainWalletAddress || action.walletAddress;
   const { walletsQueue } = state;
 
   if (checkWhitelist(state, walletAddress)?.player?.error) {

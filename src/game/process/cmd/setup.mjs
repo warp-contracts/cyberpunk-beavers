@@ -17,6 +17,7 @@ export function setup(state, action, message) {
   state.bridgeProcessId = action.bridgeProcessId || state.bridgeProcessId;
   state.playersLimit = action.playersLimit || state.playersLimit || Const.Queue.defaultLimit;
   state.walletsWhitelist = action.walletsWhitelist || state.walletsWhitelist;
+  state.mode = action.mode || state.mode || Const.GAME_MODES.default.type;
 
   switch (action.type) {
     case SetupTimes.custom:

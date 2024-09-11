@@ -1,9 +1,11 @@
 import { Tag } from 'warp-contracts';
 import { createData } from 'warp-arbundles';
 import ids from './warp-ao-ids.js';
+import { getUrlParam } from '../utils/utils.js';
+import Const from '../common/const.mjs';
 
-const urlParams = new URLSearchParams(window.location.search);
-const env = urlParams.get('env') || 'prod';
+const env = getUrlParam('env') || 'prod';
+const mode = getUrlParam('mode') || 'ao';
 
 console.log(`running in ${env} mode`);
 
@@ -11,6 +13,8 @@ window.warpAO = {
   config: {
     ...ids,
     env,
+    mode,
+    aoMode: mode == Const.GAME_MODES.ao.type,
     muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
     cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc',
     reload: true,
@@ -63,7 +67,12 @@ window.warpAO = {
     if (!processId) {
       throw new Error('processId not set');
     }
-    if (window.warpAO.signingMode == 'generated' || (window.warpAO.signingMode == 'arconnect' && !useConnectedWallet)) {
+
+    if (
+      window.warpAO.signingMode == 'generated' ||
+      window.warpAO.signingMode == 'metamask' ||
+      (window.warpAO.signingMode == 'arconnect' && !useConnectedWallet)
+    ) {
       return sendUsingGeneratedWallet(moduleId, processId, message, window.warpAO.generatedSigner);
     } else {
       return sendUsingConnectedWallet(moduleId, processId, message);

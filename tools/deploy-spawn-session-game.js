@@ -7,6 +7,7 @@ import ids from '../src/game/config/warp-ao-ids.js';
 import { setupGameContract, transferToken, spawnGame } from './game-common.js';
 import { dateFromArg } from './common.mjs';
 import { gameCustomConfig } from './deploy-spawn-session-config.js';
+import Const, { GAME_MODES } from '../src/game/common/const.mjs';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
@@ -23,6 +24,10 @@ const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
 // TIME DATE SETTINGS
 const timeIdx = process.argv.indexOf('--time');
 const execDate = timeIdx > 0 ? dateFromArg(process.argv[timeIdx + 1]) : null;
+
+// GAME MODE
+const modeIdx = process.argv.indexOf('--gameMode');
+const mode = modeIdx == -1 ? GAME_MODES.default.type : process.argv[modeIdx + 1];
 
 // TREASURES AMOUNT
 const treasuresIdx = process.argv.indexOf('--treasures');
@@ -93,7 +98,7 @@ async function doIt() {
     treasures,
   });
 
-  if (env == 'prod') {
+  if (env == 'prod' && mode != Const.GAME_MODES.rsg.type) {
     console.log(`Transferring token to game ${gameProcessId}`);
     await transferToken(ids[`token_processId_${env}`], gameProcessId, ids[`token_processId_${env}`]);
   }

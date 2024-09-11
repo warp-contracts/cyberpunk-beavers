@@ -7,7 +7,7 @@ import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { gameFinished, gameInfo, gameNotStarted, gameStats } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
-import { end, sendTokens } from './cmd/end.mjs';
+import { sendTokens } from './cmd/sendTokens.mjs';
 import { useLandmine } from './cmd/landmine.mjs';
 import { teleportPlayer } from './cmd/teleport.mjs';
 import { activate, standInQueue, checkWhitelist } from './cmd/queue.mjs';
@@ -46,25 +46,37 @@ export function handle(state, message) {
   if (restrictedAccess(state, action, message.Timestamp)) {
     console.log(`The game access is restricted`, action, message.Timestamp, state.playWindow);
     if (!state.tokensTransferred && gameFinished(state, message.Timestamp)) {
-      sendTokens(state);
+      ao.result({
+        cmd: Const.Command.tokensSent,
+        ...sendTokens(state),
+      });
+      return;
     }
     ao.result({
       cmd: Const.Command.stats,
-      ...gameInfo(state, message.Owner, message.Timestamp),
+      ...gameInfo(state, action.walletAddress, message.Timestamp),
       ...gameStats(state),
     });
     return;
   }
 
-  gameRoundTick(state, message);
+  const gameRoundTickResult = gameRoundTick(state, message);
+  if (gameRoundTickResult?.tokensSent) {
+    const { tokensSent, ...output } = gameRoundTickResult;
+    ao.result({
+      cmd: Const.Command.tokensSent,
+      ...output,
+    });
+    return;
+  }
   gamePlayerTick(state, action);
 
   switch (action.cmd) {
     case Const.Command.info:
       ao.result({
         cmd: Const.Command.stats,
-        ...gameInfo(state, message.Owner, message.Timestamp),
-        ...checkWhitelist(state, message.Owner),
+        ...gameInfo(state, action.walletAddress, message.Timestamp),
+        ...checkWhitelist(state, action.walletAddress),
         ...gameStats(state),
       });
       break;
@@ -72,8 +84,8 @@ export function handle(state, message) {
       standInQueue(state, action);
       ao.result({
         cmd: Const.Command.stats,
-        ...gameInfo(state, message.Owner, message.Timestamp),
-        ...checkWhitelist(state, message.Owner),
+        ...gameInfo(state, action.walletAddress, message.Timestamp),
+        ...checkWhitelist(state, action.walletAddress),
         ...gameStats(state),
       });
       break;
@@ -81,7 +93,7 @@ export function handle(state, message) {
       activate(state, action);
       ao.result({
         cmd: Const.Command.activated,
-        ...gameInfo(state, message.Owner, message.Timestamp),
+        ...gameInfo(state, action.walletAddress, message.Timestamp),
       });
       break;
     case Const.Command.setup:
@@ -169,7 +181,7 @@ export function handle(state, message) {
         },
         round: state.round,
         ...gameStats(state),
-        ...gameInfo(state, message.Owner, message.Timestamp),
+        ...gameInfo(state, action.walletAddress, message.Timestamp),
       });
       break;
     case Const.Command.join:
@@ -177,7 +189,7 @@ export function handle(state, message) {
         state.players[action.walletAddress].stats.coins.balance = action.balance;
       }
       if (action.generatedWalletAddress) {
-        state.generatedWalletsMapping[action.generatedWalletAddress] = action.walletAddress;
+        state.generatedWalletsMapping[action.generatedWalletAddress] = action.mainWalletAddress;
       }
       ao.result({
         cmd: Const.Command.registered,
@@ -189,9 +201,6 @@ export function handle(state, message) {
         round: state.round,
         ...gameStats(state),
       });
-      break;
-    case Const.Command.end:
-      end(state, action);
       break;
     default:
       throw new ProcessError(`Unknown action: ${action.cmd}`);
@@ -207,7 +216,12 @@ function gameRoundTick(state, message) {
   if (state.playWindow?.roundsTotal) {
     const roundsToGo = state.playWindow?.roundsTotal - state.round.current;
     console.log('Rounds to go', roundsToGo);
-    if (roundsToGo == 0) sendTokens(state);
+    if (roundsToGo == 0) {
+      return {
+        tokensSent: true,
+        ...sendTokens(state),
+      };
+    }
   }
   console.log(`new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`);
 }

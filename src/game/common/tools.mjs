@@ -1,5 +1,5 @@
 import Const from './const.mjs';
-const { GameTreasure } = Const;
+const { GameTreasure, GAME_MODES } = Const;
 
 function step(pos, dir) {
   switch (dir) {
@@ -25,9 +25,9 @@ function scoreToDisplay(scoreValues) {
   });
 }
 
-function addCoins(player, type, amount) {
+function addCoins(player, type, amount, state) {
   console.log(`Adding ${amount} ${type} to wallet ${player.walletAddress}`);
-  if (type === GameTreasure.cbcoin.type) {
+  if (type === GAME_MODES[state.mode].token) {
     player.stats.coins.gained += Number(amount);
   } else {
     player.stats.additionalTokens[type].gained += Number(amount);

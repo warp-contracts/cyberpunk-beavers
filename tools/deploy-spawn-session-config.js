@@ -23,7 +23,7 @@ export const TOKEN_CONTRACT_MOCK = {
   [GameTreasure.cbcoin.type]: {
     id: '_ThTRfZDNAV1Y-yX2h_9PNe5oGHh4q0eRhv6Y1tRVR0',
     transfer: 'Transfer',
-    amount: 50,
+    amount: 0,
   },
   [GameTreasure.trunk.type]: {
     id: '2_O3UNKze6Yuy1oaNzRAGQjqbXJyd8AprlR90QFDp98',
@@ -37,6 +37,11 @@ export const TOKEN_CONTRACT_MOCK = {
   },
   [GameTreasure.war.type]: {
     id: 'Q7-XYIgAKiatIGuez3dM7eu4miqH5_USvKt6uY4bw9Y',
+    transfer: 'Transfer',
+    amount: 0,
+  },
+  [GameTreasure.rsg.type]: {
+    id: 'p5OI99-BaY4QbZts266T7EDwofZqs-wVuYJmMCS0SUU',
     transfer: 'Transfer',
     amount: 120,
   },
@@ -63,15 +68,20 @@ export const TOKEN_CONTRACT = {
     transfer: 'Transfer',
     amount: 20,
   },
+  [GameTreasure.rsg.type]: {
+    id: 'p5OI99-BaY4QbZts266T7EDwofZqs-wVuYJmMCS0SUU',
+    transfer: 'Transfer',
+    amount: 0,
+  },
 };
 
-export function hourSessionGamesConfig(hubProcessId, bridgeProcessId, dateOfFirstGame, playersLimit) {
+export function hourSessionGamesConfig(hubProcessId, bridgeProcessId, dateOfFirstGame, playersLimit, mode) {
   return hourSessionDelayMS.map((delay) => {
-    return gameCustomConfig(hubProcessId, bridgeProcessId, dateOfFirstGame.getTime() + delay, playersLimit);
+    return gameCustomConfig(hubProcessId, bridgeProcessId, dateOfFirstGame.getTime() + delay, playersLimit, mode);
   });
 }
 
-export function gameCustomConfig(hubProcessId, bridgeProcessId, date, playersLimit) {
+export function gameCustomConfig(hubProcessId, bridgeProcessId, date, playersLimit, mode) {
   if (date) {
     return {
       cmd: Const.Command.setup,
@@ -82,6 +92,7 @@ export function gameCustomConfig(hubProcessId, bridgeProcessId, date, playersLim
       end: date + gameDurationMS,
       walletsWhitelist,
       playersLimit,
+      mode,
     };
   } else {
     return {
@@ -91,17 +102,19 @@ export function gameCustomConfig(hubProcessId, bridgeProcessId, date, playersLim
       bridgeProcessId,
       walletsWhitelist,
       playersLimit,
+      mode,
     };
   }
 }
 
-export function activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit) {
+export function activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit, mode) {
   return [
     {
       cmd: Const.Command.setup,
       type: 'custom',
       hubProcessId,
       playersLimit,
+      mode,
     },
     {
       cmd: Const.Command.setup,

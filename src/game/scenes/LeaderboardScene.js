@@ -39,7 +39,7 @@ export default class LeaderboardScene extends Phaser.Scene {
       this.server.subscribe(this);
 
       var self = this;
-      const tokenType = GameTreasure.war.type;
+      const tokenType = '';
       m.mount(showGui(), {
         view: function () {
           return m(LeaderboardGui, {
@@ -99,7 +99,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         },
         player.stats?.coins?.gained,
         player.stats?.coins?.balance + player.stats?.coins?.gained,
-        `${formatCoin(player.stats?.additionalTokens[tokenType]?.gained, tokenType) || '-'}`,
+        tokenType ? `${formatCoin(player.stats?.additionalTokens[tokenType]?.gained, tokenType) || '-'}` : null,
         player.stats?.kills?.frags,
         player.stats?.kills?.deaths,
       ]);

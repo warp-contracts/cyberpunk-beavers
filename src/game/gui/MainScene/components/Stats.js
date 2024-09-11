@@ -1,5 +1,5 @@
 import { formatCoin, trimString } from '../../../utils/utils';
-import Const from '../../../common/const.mjs';
+import Const, { GAME_MODES } from '../../../common/const.mjs';
 
 const { GameTreasure } = Const;
 
@@ -104,7 +104,7 @@ export function Stats() {
       const { stats } = vnode.attrs.mainPlayer;
       const { gameTokens } = vnode.attrs;
       const processId = window.warpAO.processId();
-      const tokenProcessId = gameTokens[GameTreasure.cbcoin.type]?.id;
+      const tokenProcessId = gameTokens[GAME_MODES[warpAO.config.mode].token]?.id;
       return m('.stats', [
         m('.stats-container', [
           m(Label, {
@@ -114,7 +114,7 @@ export function Stats() {
             inlineStyle: `pr-10`,
           }),
           m(Label, {
-            name: 'cbcoins',
+            name: GAME_MODES[warpAO.config.mode].token,
             content: m(
               'a',
               { target: '__blank', href: `https://www.ao.link/#/token/${tokenProcessId}` },
