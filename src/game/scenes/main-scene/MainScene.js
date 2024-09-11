@@ -306,21 +306,21 @@ export default class MainScene extends Phaser.Scene {
           console.log('Registered player', response);
           if (
             response.error ||
-            (response.player && response.player.walletAddress === this.walletAddress && response.player.error)
+            (response.player && response.player.walletAddress === self.walletAddress && response.player.error)
           ) {
             console.error('Failed to join the game', response.player);
-            this.scene.remove('main-scene-loading');
+            self.scene.remove('main-scene-loading');
             hideGui();
             self.scene.start(loungeAreaSceneKey, { error: response.player.error });
           } else {
             self.round = response.round;
             self.gameStats = response.gameStats;
-            if (this.gameEnd) {
+            if (self.gameEnd) {
               self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
             }
             for (const [wallet, player] of Object.entries(response.players)) {
-              if (wallet === this.walletAddress && !this.mainPlayer) {
-                this.beaverId = player.beaverId;
+              if (wallet === self.walletAddress && !self.mainPlayer) {
+                self.beaverId = player.beaverId;
                 self.createMainPlayer(player);
                 doInitCamera(self, false);
                 initMapObjects({
@@ -328,15 +328,15 @@ export default class MainScene extends Phaser.Scene {
                   objectsLayer: response.map.gameObjectsTilemap,
                   mainScene: self,
                 });
-                this.fov = new FOVLayer(this, this.mainPlayer.stats.fov);
-                this.scene.remove(mainSceneLoadingKey);
+                self.fov = new FOVLayer(this, self.mainPlayer.stats.fov);
+                self.scene.remove(mainSceneLoadingKey);
               } else {
                 self.addOtherPlayer(player);
               }
             }
             self.followWinner();
 
-            if (!this.gameEnter || (this.gameEnter && this.gameEnter <= Date.now())) {
+            if (!self.gameEnter || (self.gameEnter && self.gameEnter <= Date.now())) {
               setTimeout(() => self.activateGame(), 100);
             }
             self.registered = true;
@@ -349,13 +349,13 @@ export default class MainScene extends Phaser.Scene {
         self.gameEnter = response.enter;
         self.round = response.round;
         self.gameStats = response.gameStats;
-        if (this.gameEnd) {
+        if (self.gameEnd) {
           self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
         }
         for (const [wallet, player] of Object.entries(response.players)) {
           self.addOtherPlayer(player);
         }
-        if (msgWalletAddress === this.walletAddress) {
+        if (msgWalletAddress === self.walletAddress) {
           doInitCamera(self, true);
           self.followWinner();
           initMapObjects({
@@ -375,13 +375,13 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.attacked:
         const isKillerMainPlayer = response.player?.walletAddress === self.mainPlayer?.walletAddress;
         const isOpponentMainPlayer = response.opponent?.walletAddress === self.mainPlayer?.walletAddress;
-        if (isOpponentMainPlayer || this.spectatorMode) {
+        if (isOpponentMainPlayer || self.spectatorMode) {
           doPlayAttackSound(response.player.beaverId, this);
         }
-        this.updateStats(response.player, response.gameStats);
-        this.updateStats(response.opponent, response.gameStats);
+        self.updateStats(response.player, response.gameStats);
+        self.updateStats(response.opponent, response.gameStats);
         if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
-          this.allPlayers[response.player.walletAddress]?.attackAnim();
+          self.allPlayers[response.player.walletAddress]?.attackAnim();
         }
         const opponent = self.allPlayers[response.opponent?.walletAddress];
         if (response.opponentFinished) {
@@ -391,8 +391,8 @@ export default class MainScene extends Phaser.Scene {
               doPlayOpponentFinishedSound(response.player, response.revenge, self);
             }, 900);
           } else {
-            if (!this.beaverEliminatedSound.isPlaying) {
-              this.beaverEliminatedSound.play();
+            if (!self.beaverEliminatedSound.isPlaying) {
+              self.beaverEliminatedSound.play();
             }
           }
           opponent
@@ -408,7 +408,7 @@ export default class MainScene extends Phaser.Scene {
         } else {
           opponent?.bloodSplatAnim(isOpponentMainPlayer || isKillerMainPlayer);
         }
-        this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
+        self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
           forOpponent: {
             score: response.opponentScoreToDisplay,
             walletAddress: response.opponent?.walletAddress,
@@ -419,9 +419,9 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.landmineActivated:
         {
           if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
-            this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-            this.gameObjectsLayer.putTileAt(2, response.player.pos.x, response.player.pos.y);
-            this[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`] = this.add.grid(
+            self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+            self.gameObjectsLayer?.putTileAt(2, response.player.pos.x, response.player.pos.y);
+            this[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`] = self.add.grid(
               self.mainPlayer?.x,
               self.mainPlayer?.y,
               48,
@@ -443,8 +443,8 @@ export default class MainScene extends Phaser.Scene {
             if (response.encounter?.type === Const.GameObject.active_mine.type) {
               const mineLeftByMainPlayer = response.encounter?.leftBy === self.mainPlayer?.walletAddress;
               if (mineLeftByMainPlayer) {
-                this.gameObjectsLayer.removeTileAt(response.player.movedPos.x, response.player.movedPos.y);
-                this[`mineGrid_${response.player.movedPos.x}_${response.player.movedPos.y}`].destroy();
+                self.gameObjectsLayer?.removeTileAt(response.player.movedPos.x, response.player.movedPos.y);
+                self[`mineGrid_${response.player.movedPos.x}_${response.player.movedPos.y}`].destroy();
               }
 
               if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
@@ -461,25 +461,25 @@ export default class MainScene extends Phaser.Scene {
             response.player.onGameObject != null &&
             response.player.walletAddress === self.mainPlayer?.walletAddress
           ) {
-            this.mainPlayer.onGameObject = response.player.onGameObject;
+            self.mainPlayer.onGameObject = response.player.onGameObject;
           }
 
           if (
             response.player.onGameTreasure != null &&
             response.player.walletAddress === self.mainPlayer?.walletAddress
           ) {
-            this.mainPlayer.onGameTreasure = response.player.onGameTreasure;
+            self.mainPlayer.onGameTreasure = response.player.onGameTreasure;
           }
 
-          this.updateStats(response.player, response.gameStats);
-          this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+          self.updateStats(response.player, response.gameStats);
+          self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
           if (response.moved === false) {
-            if (!this.notEnoughApSound.isPlaying) {
-              this.notEnoughApSound.play();
+            if (!self.notEnoughApSound.isPlaying) {
+              self.notEnoughApSound.play();
             }
           } else if (cmd === Const.Command.teleported) {
-            if (!this.teleportSound.isPlaying) {
-              this.teleportSound.play();
+            if (!self.teleportSound.isPlaying) {
+              self.teleportSound.play();
             }
           }
         }
@@ -487,14 +487,14 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.picked:
         {
           if (response.picked) {
-            if (this.mainPlayer?.walletAddress === response.player.walletAddress) {
-              this.pickUpSound.play();
-              this.mainPlayer.equipment = response.player.equipment;
+            if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
+              self.pickUpSound.play();
+              self.mainPlayer.equipment = response.player.equipment;
             } else {
-              this.allPlayers[response.player.walletAddress]?.pickAnim();
+              self.allPlayers[response.player.walletAddress]?.pickAnim();
             }
-            this.gameObjectsLayer.removeTileAt(response.player.pos.x, response.player.pos.y);
-            const spriteToRemove = this.gameObjectSprites.find((s) => {
+            self.gameObjectsLayer?.removeTileAt(response.player.pos.x, response.player.pos.y);
+            const spriteToRemove = self.gameObjectSprites?.find((s) => {
               return response.player.pos.x === s.tilePosition.x && response.player.pos.y === s.tilePosition.y;
             });
             if (spriteToRemove) {
@@ -508,15 +508,15 @@ export default class MainScene extends Phaser.Scene {
 
             if (response.player.onGameTreasure?.tile > 0) {
               //FIXME: create some dedicated fun for this
-              this.gameTreasuresLayer.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
+              self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
             }
           } else {
-            if (this.mainPlayer?.walletAddress === response.player.walletAddress) {
-              this.noCollectSound.play();
+            if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
+              self.noCollectSound.play();
             }
           }
-          this.updateStats(response.player, response.gameStats);
-          response.picked && this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+          self.updateStats(response.player, response.gameStats);
+          response.picked && self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         }
         break;
 
@@ -525,18 +525,18 @@ export default class MainScene extends Phaser.Scene {
           return;
         }
         if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
-          this.allPlayers[response.player.walletAddress]?.digAnim();
+          self.allPlayers[response.player.walletAddress]?.digAnim();
         }
         if (response.digged?.tile > 0) {
-          if (this.mainPlayer?.walletAddress === response.player.walletAddress || this.spectatorMode)
-            this.treasureSound.play();
-          this.gameTreasuresLayer.putTileAt(response.digged.tile, response.player.pos.x, response.player.pos.y);
+          if (self.mainPlayer?.walletAddress === response.player.walletAddress || self.spectatorMode)
+            self.treasureSound.play();
+          self.gameTreasuresLayer?.putTileAt(response.digged.tile, response.player.pos.x, response.player.pos.y);
         } else {
-          if (this.mainPlayer?.walletAddress === response.player.walletAddress) this.digSound.play();
-          this.gameTreasuresLayer.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
+          if (self.mainPlayer?.walletAddress === response.player.walletAddress) self.digSound.play();
+          self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
         }
-        this.updateStats(response.player, response.gameStats);
-        this.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+        self.updateStats(response.player, response.gameStats);
+        self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         break;
       }
     }

@@ -15,6 +15,7 @@ const walletsWhitelist = [
   'Dj2ud7ui_rKtYwc_2cpGtNdlx6ifnX8w8VIksqIw42g',
   '1bDUsm3L4EJOm3JZTItaXkvJAxxi8zrsRZ4KJN8HI_8',
   'qCtnbl5rsbF-1qRhawIQArCbO4_2TUOtnFv5oEun9gM',
+  'wF_7BbSj8Yzlt7T44nMGXwJHmqn8t2Sv45LfxILNu_o',
 ];
 
 export const TOKEN_CONTRACT_MOCK = {
