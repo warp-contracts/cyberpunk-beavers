@@ -28,6 +28,8 @@ const REGISTER_COMMANDS = [Const.Command.registeredSpectator, Const.Command.regi
 
 export default class MainScene extends Phaser.Scene {
   round;
+  allPlayers = {};
+  ranking = [];
   gameObjectsLayer;
   gameTreasuresLayer;
   roundsCountdownTotal;
@@ -70,9 +72,6 @@ export default class MainScene extends Phaser.Scene {
 
     // create the Tilemap
     doCreateTileMap(this);
-
-    this.allPlayers = {};
-    this.ranking = [];
     doAddSounds(this);
     doInitAnimations(this);
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
