@@ -44,7 +44,7 @@
     color: var(--white);
     position: absolute;
     bottom: 0;
-    right: 0;
+    left: 0;
 
     &.animated {
       animation: pulse 1s linear infinite;
@@ -60,7 +60,7 @@
 }
 
 #player-equipment-gui {
-  width: calc(3 * (75px + 4px));
+  width: calc(4 * (75px + 4px));
   height: 79px;
   background: linear-gradient(#091833, #133e7c);
 }

@@ -1,8 +1,6 @@
-import Const from '../../common/const.mjs';
+import Const, { AP_COSTS } from '../../common/const.mjs';
 import { finishHim } from './attack.mjs';
 import { scoreToDisplay } from '../../common/tools.mjs';
-
-const LANDMINE_AP_COST = 4;
 
 export function useLandmine(state, action) {
   const { walletAddress } = action;
@@ -11,9 +9,9 @@ export function useLandmine(state, action) {
     console.log(`Wallet ${walletAddress} is not an active player`);
     return {};
   }
-  if (player.stats.ap.current < LANDMINE_AP_COST) {
+  if (player.stats.ap.current < AP_COSTS.landmine) {
     console.log(
-      `Cannot use landmine ${walletAddress}. Not enough ap: ${player.stats.ap.current}. Required: ${LANDMINE_AP_COST}`
+      `Cannot use landmine ${walletAddress}. Not enough ap: ${player.stats.ap.current}. Required: ${AP_COSTS.landmine}`
     );
     return { player };
   }
@@ -22,7 +20,7 @@ export function useLandmine(state, action) {
     return { player };
   }
 
-  player.stats.ap.current -= LANDMINE_AP_COST;
+  player.stats.ap.current -= AP_COSTS.landmine;
   player.equipment.landmines.current -= 1;
   state.gameHiddenObjects[player.pos.y][player.pos.x] = {
     type: Const.GameObject.active_mine.type,
@@ -31,7 +29,7 @@ export function useLandmine(state, action) {
 
   return {
     player,
-    scoreToDisplay: scoreToDisplay([{ value: -LANDMINE_AP_COST, type: Const.Scores.ap }]),
+    scoreToDisplay: scoreToDisplay([{ value: -AP_COSTS.landmine, type: Const.Scores.ap }]),
   };
 }
 

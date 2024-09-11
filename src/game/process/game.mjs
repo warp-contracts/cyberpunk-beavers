@@ -11,6 +11,7 @@ import { end, sendTokens } from './cmd/end.mjs';
 import { useLandmine } from './cmd/landmine.mjs';
 import { teleportPlayer } from './cmd/teleport.mjs';
 import { activate, standInQueue } from './cmd/queue.mjs';
+import { scan } from './cmd/scan.mjs';
 
 function restrictedAccess(state, action, ts) {
   return (
@@ -130,6 +131,13 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.teleported,
         ...teleportPlayer(state, action),
+        ...gameStats(state),
+      });
+      break;
+    case Const.Command.usescanner:
+      ao.result({
+        cmd: Const.Command.scanned,
+        ...scan(state, action),
         ...gameStats(state),
       });
       break;

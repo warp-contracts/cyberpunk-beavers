@@ -40,6 +40,12 @@ const Kills = {
   tankshot: 'tankshot',
 };
 
+export const AP_COSTS = {
+  scanner: 4,
+  teleport: 4,
+  landmine: 4,
+};
+
 const Command = {
   attack: 'attack',
   attacked: 'attacked',
@@ -62,6 +68,8 @@ const Command = {
   landmineActivated: 'landmineActivated',
   useTeleport: 'useTeleport',
   teleported: 'teleported',
+  usescanner: 'usescanner',
+  scanned: 'scanned',
   msg: 'msg',
   nextProcessSet: 'nextProcessSet',
   end: 'end',
@@ -89,7 +97,8 @@ const GameObject = {
   hp: { type: 'hp', tile: 1, value: 25, rarity: 35 },
   equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 15 },
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 25 },
-  none: { type: 'none', tile: 4, value: 0 },
+  scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 15 },
+  none: { type: 'none', tile: 5, value: 0 },
 
   // invisible
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 100 },
@@ -183,6 +192,7 @@ export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
     stats: {
+      scannerRadius: 3,
       fov: 6,
       ap: {
         current: 22,
@@ -208,11 +218,16 @@ export const BEAVER_TYPES = {
         current: 0,
         max: 5,
       },
+      scanners: {
+        current: 0,
+        max: 2,
+      },
     },
   },
   heavy_beaver: {
     name: 'heavy_beaver',
     stats: {
+      scannerRadius: 2,
       fov: 5,
       ap: {
         current: 20,
@@ -238,11 +253,16 @@ export const BEAVER_TYPES = {
         current: 0,
         max: 5,
       },
+      scanners: {
+        current: 0,
+        max: 2,
+      },
     },
   },
   speedy_beaver: {
     name: 'speedy_beaver',
     stats: {
+      scannerRadius: 1,
       fov: 4,
       ap: {
         current: 25,
@@ -267,6 +287,10 @@ export const BEAVER_TYPES = {
       landmines: {
         current: 0,
         max: 5,
+      },
+      scanners: {
+        current: 0,
+        max: 2,
       },
     },
   },
@@ -301,4 +325,5 @@ export default {
   DEATH_SOUND_OPTIONS,
   DEFAULT_GAME_TOKENS,
   GAME_ENTER_DELAY,
+  AP_COSTS,
 };

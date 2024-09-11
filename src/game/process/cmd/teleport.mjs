@@ -1,9 +1,8 @@
-import Const from '../../common/const.mjs';
+import Const, { AP_COSTS } from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
 const { GameObject } = Const;
-const TELEPORT_AP_COST = 4;
 
 export function teleportPlayer(state, action) {
   const { walletAddress } = action;
@@ -12,9 +11,9 @@ export function teleportPlayer(state, action) {
     console.log(`Wallet ${walletAddress} is not an active player`);
     return {};
   }
-  if (player.stats.ap.current < TELEPORT_AP_COST) {
+  if (player.stats.ap.current < AP_COSTS.teleport) {
     console.log(
-      `Cannot use teleport ${walletAddress}. Not enough ap: ${player.stats.ap.current}. Required: ${TELEPORT_AP_COST}`
+      `Cannot use teleport ${walletAddress}. Not enough ap: ${player.stats.ap.current}. Required: ${AP_COSTS.teleport}`
     );
     return { player, moved: false };
   }
@@ -26,11 +25,11 @@ export function teleportPlayer(state, action) {
   state.playersOnTiles[player.pos.y][player.pos.x] = null;
   player.pos = calculatePlayerRandomPos(state);
   state.playersOnTiles[player.pos.y][player.pos.x] = player.walletAddress;
-  player.stats.ap.current -= TELEPORT_AP_COST;
+  player.stats.ap.current -= AP_COSTS.teleport;
   player.equipment.teleports.current -= 1;
 
   return {
     player,
-    scoreToDisplay: scoreToDisplay([{ value: -TELEPORT_AP_COST, type: GameObject.ap.type }]),
+    scoreToDisplay: scoreToDisplay([{ value: -AP_COSTS.teleport, type: GameObject.ap.type }]),
   };
 }

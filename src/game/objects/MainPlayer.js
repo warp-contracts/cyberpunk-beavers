@@ -1,10 +1,10 @@
-import Const, { FOV_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
+import Const, { AP_COSTS, FOV_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
 import Player from './Player.js';
 import { doPlayAttackSound } from '../scenes/main-scene/sounds.js';
 import { CAMERA_MARGIN } from '../scenes/main-scene/camera.js';
 
 const { up, left, right, down } = Const.Direction;
-const { attack, move, pick, dig, useLandmine, useTeleport } = Const.Command;
+const { attack, move, pick, dig, useLandmine, useTeleport, usescanner } = Const.Command;
 
 const RANGE_COLOR = 0x00ff00;
 const AIM_COLOR = 0xff0000;
@@ -38,6 +38,7 @@ export default class MainPlayer extends Player {
     if (this.medal) {
       this.medal.setDepth(FOV_DEPTH + 20);
     }
+    this.diggedTreasures = {};
   }
 
   async update() {
@@ -77,11 +78,14 @@ export default class MainPlayer extends Player {
       } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.d) && this.stats.ap.current >= 2) {
         await this.send({ cmd: dig });
         this.digAnim();
-      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.one) && this.stats.ap.current >= 4) {
+      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.one) && this.stats.ap.current >= AP_COSTS.teleport) {
         await this.send({ cmd: useTeleport });
         this.digAnim();
-      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.two) && this.stats.ap.current >= 4) {
+      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.two) && this.stats.ap.current >= AP_COSTS.landmine) {
         await this.send({ cmd: useLandmine });
+        this.digAnim();
+      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.three) && this.stats.ap.current >= AP_COSTS.scanner) {
+        await this.send({ cmd: usescanner });
         this.digAnim();
       } else {
         if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
