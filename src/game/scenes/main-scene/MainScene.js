@@ -329,13 +329,13 @@ export default class MainScene extends Phaser.Scene {
                   mainScene: self,
                 });
                 this.fov = new FOVLayer(this, this.mainPlayer.stats.fov);
+                this.scene.remove(mainSceneLoadingKey);
               } else {
                 self.addOtherPlayer(player);
               }
             }
             self.followWinner();
 
-            this.scene.remove(mainSceneLoadingKey);
             if (!this.gameEnter || (this.gameEnter && this.gameEnter <= Date.now())) {
               setTimeout(() => self.activateGame(), 100);
             }
