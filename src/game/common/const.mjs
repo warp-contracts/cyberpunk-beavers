@@ -185,8 +185,8 @@ export const BEAVER_TYPES = {
     stats: {
       fov: 6,
       ap: {
-        current: 50,
-        max: 50,
+        current: 22,
+        max: 22,
       },
       hp: {
         current: 130,
