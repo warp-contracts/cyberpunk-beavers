@@ -71,6 +71,7 @@ function initState(message, state) {
       .fill([])
       .map(() => Array(mapHeight)),
     obstaclesTilemap: generateTilemap(obstaclesLayer.data, obstaclesLayer.width),
+    mode: state.mode || Const.GAME_MODES.default.type,
   };
 
   return result;
@@ -118,6 +119,13 @@ function setInvisibleGameTreasures(state) {
     state,
     GameTreasure.trunk,
     state.gameTokens[GameTreasure.trunk.type].amount,
+    state.gameTreasuresTilemap,
+    Object.values(GameTreasure)
+  );
+  setObjectsOnRandomPositions(
+    state,
+    GameTreasure.rsg,
+    state.gameTokens[GameTreasure.rsg.type].amount,
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );

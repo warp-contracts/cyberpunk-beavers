@@ -4,13 +4,17 @@ import ids from '../config/warp-ao-ids.js';
 import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
 import { readMapFromArweave } from '../../../tools/game-common.js';
-import { maps } from '../common/const.mjs';
+import { GAME_MODES, maps } from '../common/const.mjs';
 
 const WS_PORT = 8097;
 
 // Create a WebSocket server
 const wss = new WebSocketServer({ port: WS_PORT });
 const quickJSPlugin = new QuickJsPlugin({});
+
+// GAME MODE
+const modeIdx = process.argv.indexOf('--gameMode');
+const mode = modeIdx == -1 ? GAME_MODES.default.type : process.argv[modeIdx + 1];
 
 const processEnv = {
   Process: {

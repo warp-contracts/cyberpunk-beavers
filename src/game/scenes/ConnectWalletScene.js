@@ -3,7 +3,8 @@ import Phaser from 'phaser';
 import { ConnectWalletSceneGui } from '../gui/ConnectWalletGui.js';
 import { showGui, hideGui } from '../utils/mithril.js';
 import { WebFontFile } from '../objects/WebFontFile.js';
-import { checkProfile } from '../utils/utils.js';
+import { checkProfile, checkProfileRsg } from '../utils/utils.js';
+import { GAME_MODES } from '../common/const.mjs';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {
@@ -27,7 +28,11 @@ export default class ConnectWalletScene extends Phaser.Scene {
         return m(ConnectWalletSceneGui, {
           changeScene: (address) => {
             self.changeScene(address);
-            checkProfile(address).then();
+            if (warpAO.config.aoMode) {
+              checkProfile(address).then();
+            } else if (warpAO.config.mode == GAME_MODES[warpAO.config.mode].type) {
+              checkProfileRsg(address).then();
+            }
           },
         });
       },

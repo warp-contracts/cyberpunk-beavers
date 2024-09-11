@@ -1,4 +1,4 @@
-import { BEAVER_TYPES, BonusType, GameTreasure } from '../common/const.mjs';
+import { BEAVER_TYPES, BonusType, GameTreasure, GAME_MODES } from '../common/const.mjs';
 import { playClick } from '../utils/mithril';
 
 export function CharacterPickGui() {
@@ -52,8 +52,8 @@ function CharacterOption() {
                   m(CharacterAbility, { name: 'HEALTH POINTS', value: stats.hp.max, color: 'hp' }),
                   m(CharacterAbility, { name: 'FIELD OF VIEW', value: stats.fov }),
                   m(CharacterAbility, {
-                    name: 'CBTOKEN BONUS',
-                    value: stats.bonus[GameTreasure.cbcoin.type],
+                    name: 'TOKEN BONUS',
+                    value: stats.bonus[GAME_MODES[warpAO.config.mode].token],
                   }),
                   m(CharacterAbility, {
                     name: 'KILL BONUS',

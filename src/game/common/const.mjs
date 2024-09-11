@@ -72,7 +72,7 @@ const Command = {
   scanned: 'scanned',
   msg: 'msg',
   nextProcessSet: 'nextProcessSet',
-  end: 'end',
+  tokensSent: 'tokensSent',
   hubRegisterGame: 'hubRegisterGame',
   hubGamePlayers: 'hubGamePlayers',
   hubInfo: 'hubInfo',
@@ -110,6 +110,7 @@ export const GameTreasure = {
   tio: { type: 'tio', label: 'ar.io (tIO)', tile: 2, value: 100, baseVal: 15_000_000, denomination: 6 },
   war: { type: 'war', label: 'Wrapped AR', tile: 3, value: 300, baseVal: 3_000_000_000, denomination: 12 },
   trunk: { type: 'trunk', label: 'TRUNK', tile: 4, value: 100, baseVal: 18, denomination: 3 },
+  rsg: { type: 'rsg', label: 'RSG', tile: 5, value: 100, baseVal: 1, denomination: 0 },
 };
 
 const DEFAULT_GAME_TOKENS = {
@@ -127,6 +128,10 @@ const DEFAULT_GAME_TOKENS = {
   },
   [GameTreasure.trunk.type]: {
     id: `${GameTreasure.trunk.type}`,
+    amount: 50,
+  },
+  [GameTreasure.rsg.type]: {
+    id: `${GameTreasure.rsg.type}`,
     amount: 50,
   },
 };
@@ -205,6 +210,7 @@ export const BEAVER_TYPES = {
       weapon: WEAPONS.sniper_rifle_basic,
       bonus: {
         [GameTreasure.cbcoin.type]: 100,
+        [GameTreasure.rsg.type]: 100,
         [BonusType.KillBonus]: 200,
       },
       kill: Kills.headshot,
@@ -240,6 +246,7 @@ export const BEAVER_TYPES = {
       weapon: WEAPONS.shotgun_basic,
       bonus: {
         [GameTreasure.cbcoin.type]: 0,
+        [GameTreasure.rsg.type]: 0,
         [BonusType.KillBonus]: 220,
       },
       kill: Kills.tankshot,
@@ -275,6 +282,7 @@ export const BEAVER_TYPES = {
       weapon: WEAPONS.katana_basic,
       bonus: {
         [GameTreasure.cbcoin.type]: 20,
+        [GameTreasure.rsg.type]: 20,
         [BonusType.KillBonus]: 180,
       },
       kill: Kills.slice,
@@ -299,6 +307,16 @@ export const BEAVER_TYPES = {
 // ------- Queue Config
 const Queue = {
   defaultLimit: 15,
+};
+
+export const GAME_MODES = {
+  default: { type: 'ao', token: 'cbcoin', tokenLink: (id) => `https://www.ao.link/#/token/${id}` },
+  ao: { type: 'ao', token: 'cbcoin', tokenLink: (id) => `https://www.ao.link/#/token/${id}` },
+  rsg: {
+    type: 'rsg',
+    token: 'rsg',
+    tokenLink: (id) => `https://sonar.warp.cc/#/app/contract/${id}?network=mainnet&dre=dreWarpy`,
+  },
 };
 
 const GAME_ENTER_DELAY = 30000;
@@ -326,4 +344,5 @@ export default {
   DEFAULT_GAME_TOKENS,
   GAME_ENTER_DELAY,
   AP_COSTS,
+  GAME_MODES,
 };

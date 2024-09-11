@@ -1,6 +1,7 @@
 import { WarpFactory } from 'warp-contracts';
 import { ArweaveSigner } from 'warp-arbundles';
 import { playClick } from '../utils/mithril.js';
+import MetaMaskSDK from '@metamask/sdk';
 
 const CHANGE_SCENE_TIMEOUT_MS = window.warpAO.config.env === 'dev' ? 0 : 2000;
 
@@ -11,6 +12,29 @@ export function ConnectWalletSceneGui(initialVnode) {
     localStorage.getItem('signing_mode') === 'generated' &&
     localStorage.getItem('generated_jwk') !== null &&
     localStorage.getItem('wallet_address') !== null;
+
+  const MMSDK = new MetaMaskSDK({
+    dappMetadata: {
+      name: 'CyberBeavers',
+      url: window.location.href,
+    },
+    logging: {
+      sdk: false,
+    },
+  });
+
+  async function handleMetamask(changeScene) {
+    try {
+      await MMSDK.connect();
+      const provider = MMSDK.getProvider();
+      const walletAddress = (await provider.request({ method: 'eth_requestAccounts', params: [] }))[0];
+      await setGeneratedWallet(walletAddress, 'metamask');
+      changeSceneWithTimeout(changeScene, walletAddress);
+    } catch (e) {
+      walletConnectionText = `Could not connect to Metamask`;
+      console.error(e);
+    }
+  }
 
   async function handleArconnect(changeScene) {
     const timeoutId = setTimeout(() => {
@@ -36,18 +60,8 @@ export function ConnectWalletSceneGui(initialVnode) {
         );
       }
       const walletAddress = await window.arweaveWallet.getActiveAddress();
-      walletConnectionText = `Wallet ${walletAddress} connected.`;
-      localStorage.setItem('wallet_address', walletAddress);
-      const { signer, address } = await generateSigner();
-      window.warpAO.generatedSigner = signer;
-      window.warpAO.signingMode = 'arconnect';
-      localStorage.setItem('generated_wallet_address', address);
-      localStorage.setItem('signing_mode', window.warpAO.signingMode);
-      console.log('Wallet connected');
-      m.redraw();
-      setTimeout(() => {
-        changeScene(walletAddress);
-      }, CHANGE_SCENE_TIMEOUT_MS);
+      await setGeneratedWallet(walletAddress, 'arconnect');
+      changeSceneWithTimeout(changeScene, walletAddress);
     }
 
     if (window.arweaveWallet) {
@@ -81,6 +95,21 @@ export function ConnectWalletSceneGui(initialVnode) {
     window.warpAO.generatedSigner = signer;
     console.log('Using generated wallet address', walletAddress);
     walletConnectionText = `Using generated ${walletAddress} wallet.`;
+    changeSceneWithTimeout(changeScene, walletAddress);
+  }
+
+  async function setGeneratedWallet(walletAddress, signingMode) {
+    walletConnectionText = `Wallet ${walletAddress} connected.`;
+    localStorage.setItem('wallet_address', walletAddress);
+    const { signer, address } = await generateSigner();
+    window.warpAO.generatedSigner = signer;
+    window.warpAO.signingMode = signingMode;
+    localStorage.setItem('generated_wallet_address', address);
+    localStorage.setItem('signing_mode', window.warpAO.signingMode);
+    console.log('Wallet connected', walletAddress);
+  }
+
+  function changeSceneWithTimeout(changeScene, walletAddress) {
     m.redraw();
     setTimeout(() => {
       changeScene(walletAddress);
@@ -92,42 +121,58 @@ export function ConnectWalletSceneGui(initialVnode) {
       return m('.connect-wallet', [
         m('.container', [
           m('.title', 'Hey stranger...'),
-          m('', [
-            m(
-              '.button green',
-              {
-                onclick: async () => {
-                  playClick();
-                  await handleArconnect(initialVnode.attrs.changeScene);
-                },
-              },
-              'Connect wallet'
-            ),
-            m(
-              '.button red',
-              {
-                onclick: async () => {
-                  playClick();
-                  await handleGenerateWallet(initialVnode.attrs.changeScene);
-                },
-              },
-              'Generate wallet'
-            ),
-            hasGeneratedWallet
-              ? m(
-                  '.button yellow',
-                  {
-                    onclick: async () => {
-                      playClick();
-                      await useGeneratedWallet(initialVnode.attrs.changeScene);
+          m(
+            '',
+            warpAO.config.aoMode
+              ? [
+                  m(
+                    '.button green',
+                    {
+                      onclick: async () => {
+                        playClick();
+                        await handleArconnect(initialVnode.attrs.changeScene);
+                      },
                     },
-                  },
-                  'Use generated wallet'
-                )
-              : null,
+                    'Connect wallet'
+                  ),
+                  m(
+                    '.button red',
+                    {
+                      onclick: async () => {
+                        playClick();
+                        await handleGenerateWallet(initialVnode.attrs.changeScene);
+                      },
+                    },
+                    'Generate wallet'
+                  ),
+                  hasGeneratedWallet
+                    ? m(
+                        '.button yellow',
+                        {
+                          onclick: async () => {
+                            playClick();
+                            await useGeneratedWallet(initialVnode.attrs.changeScene);
+                          },
+                        },
+                        'Use generated wallet'
+                      )
+                    : null,
+                ]
+              : [
+                  m(
+                    '.button green',
+                    {
+                      onclick: async () => {
+                        playClick();
+                        await handleMetamask(initialVnode.attrs.changeScene);
+                      },
+                    },
+                    'Connect wallet'
+                  ),
+                ],
             m('.connection-text', walletConnectionText),
-            walletErrorText ? m('.connection-text.error', walletErrorText) : null,
-          ]),
+            walletErrorText ? m('.connection-text.error', walletErrorText) : null
+          ),
         ]),
       ]);
     },

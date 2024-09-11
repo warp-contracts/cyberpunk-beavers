@@ -11,7 +11,7 @@ import {
   TOKEN_CONTRACT,
   TOKEN_CONTRACT_MOCK,
 } from './deploy-spawn-session-config.js';
-import Const, { maps } from '../src/game/common/const.mjs';
+import Const, { maps, GAME_MODES } from '../src/game/common/const.mjs';
 import ids from '../src/game/config/warp-ao-ids.js';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
@@ -31,6 +31,10 @@ const gameTokens = env === 'local' ? TOKEN_CONTRACT_MOCK : TOKEN_CONTRACT;
 // TIME DATE SETTINGS
 const timeArg = process.argv[process.argv.indexOf('--time') + 1];
 const execDate = dateFromArg(timeArg);
+
+// GAME MODE
+const modeIdx = process.argv.indexOf('--gameMode');
+const mode = modeIdx == -1 ? GAME_MODES.default.type : process.argv[modeIdx + 1];
 
 // PLAYERS LIMIT
 const playersLimitIdx = process.argv.indexOf('--limit');
@@ -110,8 +114,8 @@ async function doIt() {
 
   const bridgeProcessId = ids[`bridge_processId_${env}`];
   let setups = execDate
-    ? hourSessionGamesConfig(hubProcessId, bridgeProcessId, execDate, playersLimit)
-    : activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit);
+    ? hourSessionGamesConfig(hubProcessId, bridgeProcessId, execDate, playersLimit, mode)
+    : activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit, mode);
 
   const gameProcesses = [];
   let counter = 0;
@@ -134,12 +138,15 @@ async function doIt() {
     gameProcesses.push(gameProcessId);
 
     // Transfer tokens
-    const cbcoinProcessId = gameTokens[Const.GameTreasure.cbcoin.type].id;
-    console.log(`Transferring ${Const.GameTreasure.cbcoin.type} to game ${gameProcessId}`);
-    await transferToken(cbcoinProcessId, gameProcessId, cbcoinProcessId);
+    if (env == 'prod' && mode != Const.GAME_MODES.rsg.type) {
+      const cbcoinProcessId = gameTokens[Const.GameTreasure.cbcoin.type].id;
+      console.log(`Transferring ${Const.GameTreasure.cbcoin.type} to game ${gameProcessId}`);
+      await transferToken(cbcoinProcessId, gameProcessId, cbcoinProcessId);
+    }
 
     // for (let [key, token] of Object.entries(gameTokens)
     //   .filter(([key]) => key !== Const.GameTreasure.cbcoin.type)
+    //   .filter(([key]) => key !== Const.GameTreasure.rsg.type)
     //   .filter(([, token]) => token.amount > 0)) {
     //   const qty = token.amount * Const.GameTreasure[key].baseVal;
     //   console.log(`Transferring additional ${qty} ${key} to bridge ${bridgeProcessId}`);

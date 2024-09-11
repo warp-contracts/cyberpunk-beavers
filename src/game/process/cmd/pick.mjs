@@ -1,7 +1,7 @@
 import { addCoins, scoreToDisplay } from '../../common/tools.mjs';
 import Const from '../../common/const.mjs';
 
-const { GameObject, GameTreasure, Scores } = Const;
+const { GameObject, GameTreasure, Scores, GAME_MODES } = Const;
 
 export function pick(state, action) {
   const walletAddress = action.walletAddress;
@@ -50,7 +50,7 @@ function pickHP(state, player, value) {
   console.log(`Player ${player.walletAddress} stands on HP, increasing by ${value}.`);
   player.stats.ap.current -= 1;
   player.stats.hp.current += value;
-  addCoins(player, GameTreasure.cbcoin.type, value);
+  addCoins(player, GAME_MODES[state.mode].token, value, state);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
   return {
     player,
@@ -66,7 +66,7 @@ function pickAP(state, player, value) {
   console.log(`Player stands on a AP object, increasing by ${value}. `);
   player.stats.ap.current -= 1;
   player.stats.ap.current += value;
-  addCoins(player, GameTreasure.cbcoin.type, value);
+  addCoins(player, GAME_MODES[state.mode].token, value, state);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
   return {
     player,
@@ -88,7 +88,7 @@ function pickDevice(state, player, device) {
   } else {
     player.stats.ap.current -= 1;
     player.equipment[equipmentType].current += 1;
-    addCoins(player, GameTreasure.cbcoin.type, value);
+    addCoins(player, GAME_MODES[state.mode].token, value, state);
     state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
     return {
       player,
@@ -111,8 +111,8 @@ function pickTreasure(state, player) {
   state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
   state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
   const valueWithBonus = value + (player.stats.bonus[type] || 0);
-  addCoins(player, GameTreasure.cbcoin.type, valueWithBonus);
-  addCoins(player, type, 1);
+  addCoins(player, GAME_MODES[state.mode].token, valueWithBonus, state);
+  addCoins(player, type, 1, state);
   return {
     player,
     picked: { type, tile: treasureTile },
