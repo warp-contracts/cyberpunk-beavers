@@ -18,7 +18,7 @@ if (envIdx < 0) {
   throw new Error("Specify 'env' flash with either 'local' or 'prod' value");
 }
 const env = process.argv[envIdx + 1];
-const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
+const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu-asia.warp.cc';
 
 // TIME DATE SETTINGS
 const timeIdx = process.argv.indexOf('--time');
@@ -71,6 +71,8 @@ async function spawn({ processName, moduleId }) {
 
   const processDataItem = createData('{}', signer, { tags: processTags });
   await processDataItem.sign(signer);
+
+  console.log('MU', muUrl);
 
   const processResponse = await fetch(muUrl, {
     method: 'POST',

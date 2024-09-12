@@ -25,7 +25,7 @@ if (envIdx < 0) {
 
 // LOCAL OR PROD
 const env = process.argv[envIdx + 1];
-const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
+const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu-asia.warp.cc';
 const gameTokens = env === 'local' ? TOKEN_CONTRACT_MOCK : TOKEN_CONTRACT;
 
 // TIME DATE SETTINGS
@@ -85,6 +85,8 @@ async function spawn({ processName, moduleId }) {
 
   const processDataItem = createData('{}', signer, { tags: processTags });
   await processDataItem.sign(signer);
+
+  console.log('MU', muUrl);
 
   const processResponse = await fetch(muUrl, {
     method: 'POST',

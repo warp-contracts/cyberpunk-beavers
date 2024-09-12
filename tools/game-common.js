@@ -29,6 +29,7 @@ export async function spawnGame({ muUrl, moduleId, additionalTags = [], gameToke
   console.log(`got me some map`, mapTxId, mapJson.type, mapJson.height);
 
   console.log(`Spawning Game`);
+  console.log('MU', muUrl);
   const processTags = [
     new Tag('Data-Protocol', 'ao'),
     new Tag('Variant', 'ao.TN.1'),

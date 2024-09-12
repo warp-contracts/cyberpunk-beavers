@@ -11,8 +11,8 @@ window.warpAO = {
   config: {
     ...ids,
     env,
-    muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
-    cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc',
+    muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu-asia.warp.cc',
+    cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu-asia.warp.cc',
     reload: true,
   },
   spectatorMode: false,
