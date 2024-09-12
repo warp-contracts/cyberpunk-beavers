@@ -66,7 +66,7 @@ export function MainSceneGui() {
               : null,
             m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
             gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
-            diff ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`) : null,
+            !gameActive && diff ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`) : null,
             mainPlayer ? m(`.main-scene-lag ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage) : null,
           ];
     },

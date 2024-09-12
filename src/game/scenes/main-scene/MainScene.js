@@ -49,7 +49,6 @@ export default class MainScene extends Phaser.Scene {
     this.beaverId = data.beaverId;
     this.beaverChoice = data.beaverChoice;
     this.walletAddress = data.walletAddress;
-    this.scene.launch(mainSceneLoadingKey);
     this.mainSceneLoading = this.scene.get(mainSceneLoadingKey);
     this.gameStart = data.gameStart;
     this.gameEnter = data.gameEnter;

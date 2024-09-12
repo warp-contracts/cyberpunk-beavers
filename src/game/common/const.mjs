@@ -220,7 +220,7 @@ export const BEAVER_TYPES = {
       },
       scanners: {
         current: 0,
-        max: 2,
+        max: 4,
       },
     },
   },
@@ -255,7 +255,7 @@ export const BEAVER_TYPES = {
       },
       scanners: {
         current: 0,
-        max: 2,
+        max: 4,
       },
     },
   },
@@ -290,7 +290,7 @@ export const BEAVER_TYPES = {
       },
       scanners: {
         current: 0,
-        max: 2,
+        max: 4,
       },
     },
   },
