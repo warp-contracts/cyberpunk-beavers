@@ -39,7 +39,7 @@ export default class LeaderboardScene extends Phaser.Scene {
       this.server.subscribe(this);
 
       var self = this;
-      const tokenType = GameTreasure.trunk.type;
+      const tokenType = GameTreasure.tio.type;
       m.mount(showGui(), {
         view: function () {
           return m(LeaderboardGui, {
