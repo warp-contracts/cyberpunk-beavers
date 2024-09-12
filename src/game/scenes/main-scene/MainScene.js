@@ -320,17 +320,19 @@ export default class MainScene extends Phaser.Scene {
               self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
             }
             for (const [wallet, player] of Object.entries(response.players)) {
-              if (wallet === self.walletAddress && !self.mainPlayer) {
-                self.beaverId = player.beaverId;
-                self.createMainPlayer(player);
-                doInitCamera(self, false);
-                initMapObjects({
-                  treasuresLayer: response.map.gameTreasuresTilemapForClient,
-                  objectsLayer: response.map.gameObjectsTilemap,
-                  mainScene: self,
-                });
-                self.fov = new FOVLayer(this, self.mainPlayer.stats.fov);
-                self.scene.remove(mainSceneLoadingKey);
+              if (wallet === self.walletAddress) {
+                if (!self.mainPlayer) {
+                  self.beaverId = player.beaverId;
+                  self.createMainPlayer(player);
+                  doInitCamera(self, false);
+                  initMapObjects({
+                    treasuresLayer: response.map.gameTreasuresTilemapForClient,
+                    objectsLayer: response.map.gameObjectsTilemap,
+                    mainScene: self,
+                  });
+                  self.fov = new FOVLayer(this, self.mainPlayer.stats.fov);
+                  self.scene.remove(mainSceneLoadingKey);
+                }
                 self.registered = true;
               } else {
                 self.addOtherPlayer(player);
