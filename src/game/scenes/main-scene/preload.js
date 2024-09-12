@@ -12,7 +12,9 @@ export function doPreloadAssets(mainScene) {
   });
 
   // load the JSON file
-  mainScene.load.tilemapTiledJSON(`map_${mainScene.mapTxId}`, `https://arweave.net/${mainScene.mapTxId}`);
+  if (mainScene.mapTxId) {
+    mainScene.load.tilemapTiledJSON(`map_${mainScene.mapTxId}`, `https://arweave.net/${mainScene.mapTxId}`);
+  }
   // ===== MAP V2
   mainScene.load.image('cyberpunk_game_objects', 'assets/images/game_objects.png');
   mainScene.load.image('cyberpunk_game_fov', 'assets/images/fov.png');
