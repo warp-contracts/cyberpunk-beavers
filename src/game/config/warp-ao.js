@@ -39,6 +39,13 @@ window.warpAO = {
     new Tag('Data-Protocol', 'ao'),
     new Tag('Type', 'Message'),
     new Tag('Variant', 'ao.TN.1'),
+    new Tag(
+      'Lag',
+      `${JSON.stringify({
+        total: window.warpAO?.lag?.total,
+        cuCalc: window.warpAO?.lag?.cuCalc,
+      })}`
+    ),
     { name: 'SDK', value: 'ao' },
     new Tag('From-Module', moduleId),
     new Tag('From-Process', processId),
