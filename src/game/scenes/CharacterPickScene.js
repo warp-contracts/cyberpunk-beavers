@@ -1,5 +1,5 @@
 import { WebFontFile } from '../objects/WebFontFile.js';
-import { mainSceneKey, characterPickSceneKey } from '../../main.js';
+import { mainSceneKey, characterPickSceneKey, mainSceneLoadingKey } from '../../main.js';
 import Phaser from 'phaser';
 import { CharacterPickGui } from '../gui/CharacterPickGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
@@ -47,5 +47,6 @@ export default class CharacterPickScene extends Phaser.Scene {
       ...this.initData,
       beaverChoice: self.beaverChoice,
     });
+    this.scene.launch(mainSceneLoadingKey);
   }
 }
