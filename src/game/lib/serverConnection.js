@@ -7,7 +7,7 @@ export const serverConnection = await (async () => {
     window.warpAO.gameHubModuleId(),
     window.warpAO.gameHubProcessId(),
     false,
-    false,
+    true,
     true
   );
 

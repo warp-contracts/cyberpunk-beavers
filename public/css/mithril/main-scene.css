@@ -16,7 +16,7 @@
   }
 
   &.small {
-    top: 10%;
+    top: 1rem;
   }
 }
 
@@ -245,12 +245,36 @@
   }
 }
 
+.main-scene-lag {
+  font-family: 'Press Start 2P';
+  font-size: var(--regular);
+  text-transform: uppercase;
+  position: absolute;
+  background: black;
+  top: 0.5rem;
+  left: 1rem;
+  padding: 0.5rem;
+  height: var(--regular);
+
+  &.success {
+    color: var(--green);
+  }
+
+  &.warn {
+    color: var(--orange);
+  }
+
+  &.error {
+    color: var(--red);
+  }
+}
+
 .player-info {
   text-transform: uppercase;
   width: 200px;
   height: 79px;
   flex-direction: row !important;
-  padding: 2px 0 !important;
+  padding: 0 !important;
   align-items: center;
   width: 300px;
   justify-content: space-evenly !important;

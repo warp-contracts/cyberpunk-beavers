@@ -3,13 +3,13 @@ const { GameTreasure } = Const;
 
 const hourSessionDelayMS = [
   0, // first game will be active at the specified hour, without any delay
-  9 * 60 * 1_000, // second game will start 6 minutes later
-  18 * 60 * 1_000, //...
-  27 * 60 * 1_000,
+  // 9 * 60 * 1_000, // second game will start 6 minutes later
+  // 18 * 60 * 1_000, //...
+  // 27 * 60 * 1_000,
   /*24 * 60 * 1_000,
   30 * 60 * 1_000,*/
 ];
-const gameDurationMS = 8 * 60 * 1_000; // 5 minutes
+const gameDurationMS = 2 * 60 * 1_000; // 5 minutes
 const walletsWhitelist = [
   'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY',
   'Dj2ud7ui_rKtYwc_2cpGtNdlx6ifnX8w8VIksqIw42g',
