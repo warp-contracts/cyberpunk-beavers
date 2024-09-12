@@ -1,5 +1,6 @@
 import { connectWalletSceneKey, loadingSceneKey } from '../../main.js';
 import Phaser from 'phaser';
+import { doPreloadAssets } from './main-scene/preload.js';
 
 export default class LoadingScene extends Phaser.Scene {
   constructor() {
@@ -16,6 +17,9 @@ export default class LoadingScene extends Phaser.Scene {
 
   create() {
     console.log('Loading Scene - 3. Create');
-    this.scene.start(connectWalletSceneKey);
+
+    doPreloadAssets(this);
+    this.load.start();
+    this.scene.launch(connectWalletSceneKey);
   }
 }
