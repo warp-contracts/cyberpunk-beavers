@@ -8,9 +8,9 @@ import LoungeAreaScene from './game/scenes/LoungeAreaScene.js';
 import GameHubScene from './game/scenes/GameHubScene.js';
 
 export const scenes = {
+  loadingScene: { key: 'loading-scene', scene: LoadingScene },
   connectWalletScene: { key: 'connect-wallet-scene', scene: ConnectWalletScene },
   gameHubScene: { key: 'game-hub-scene', scene: GameHubScene },
-  loadingScene: { key: 'loading-scene', scene: LoadingScene },
   loungeAreaScene: { key: 'lounge-area-scene', scene: LoungeAreaScene },
   characterPickScene: { key: 'character-pick-scene', scene: CharacterPickScene },
   mainScene: { key: 'main-scene', scene: MainScene },
