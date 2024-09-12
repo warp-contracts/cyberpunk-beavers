@@ -5,7 +5,6 @@ import { playClick } from '../utils/mithril.js';
 const CHANGE_SCENE_TIMEOUT_MS = window.warpAO.config.env === 'dev' ? 0 : 2000;
 
 export function ConnectWalletSceneGui(initialVnode) {
-  let titleAnimationDone = warpAO.config.env !== 'prod';
   let walletConnectionText;
   let walletErrorText = null;
   const hasGeneratedWallet =
@@ -89,80 +88,48 @@ export function ConnectWalletSceneGui(initialVnode) {
   }
 
   return {
-    onTypewriterFinished: function () {
-      titleAnimationDone = true;
-      m.redraw();
-    },
     view: function () {
       return m('.connect-wallet', [
         m('.container', [
-          m('.title', [m(Typewriter, { text: 'Hey stranger...', onFinished: this.onTypewriterFinished })]),
-          titleAnimationDone
-            ? m('', [
-                m(
-                  '.button green',
+          m('.title', 'Hey stranger...'),
+          m('', [
+            m(
+              '.button green',
+              {
+                onclick: async () => {
+                  playClick();
+                  await handleArconnect(initialVnode.attrs.changeScene);
+                },
+              },
+              'Connect wallet'
+            ),
+            m(
+              '.button red',
+              {
+                onclick: async () => {
+                  playClick();
+                  await handleGenerateWallet(initialVnode.attrs.changeScene);
+                },
+              },
+              'Generate wallet'
+            ),
+            hasGeneratedWallet
+              ? m(
+                  '.button yellow',
                   {
                     onclick: async () => {
                       playClick();
-                      await handleArconnect(initialVnode.attrs.changeScene);
+                      await useGeneratedWallet(initialVnode.attrs.changeScene);
                     },
                   },
-                  'Connect wallet'
-                ),
-                m(
-                  '.button red',
-                  {
-                    onclick: async () => {
-                      playClick();
-                      await handleGenerateWallet(initialVnode.attrs.changeScene);
-                    },
-                  },
-                  'Generate wallet'
-                ),
-                hasGeneratedWallet
-                  ? m(
-                      '.button yellow',
-                      {
-                        onclick: async () => {
-                          playClick();
-                          await useGeneratedWallet(initialVnode.attrs.changeScene);
-                        },
-                      },
-                      'Use generated wallet'
-                    )
-                  : null,
-                m('.connection-text', walletConnectionText),
-                walletErrorText ? m('.connection-text.error', walletErrorText) : null,
-              ])
-            : null,
+                  'Use generated wallet'
+                )
+              : null,
+            m('.connection-text', walletConnectionText),
+            walletErrorText ? m('.connection-text.error', walletErrorText) : null,
+          ]),
         ]),
       ]);
-    },
-  };
-}
-
-function Typewriter() {
-  let displayedText = '';
-  return {
-    oninit: function (vnode) {
-      let text = vnode.attrs.text;
-      let currentIndex = 0;
-
-      const typeNextChar = () => {
-        if (currentIndex < text.length) {
-          displayedText += text[currentIndex];
-          currentIndex++;
-          m.redraw();
-          setTimeout(typeNextChar, 100);
-        } else if (vnode.attrs.onFinished) {
-          vnode.attrs.onFinished();
-        }
-      };
-
-      typeNextChar();
-    },
-    view: function () {
-      return m('span', displayedText);
     },
   };
 }
