@@ -4,6 +4,7 @@
   --white: #ffffff;
   --green: #00ff00;
   --darkgreen: darkgreen;
+  --orange: #ff4d00;
   --red: #ff0000;
   --darkgrey: #333;
   --lightgrey: #555;
@@ -57,4 +58,20 @@ body {
 
 .align-items-center {
   align-items: center;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.blink {
+  animation: blink 1.5s infinite;
 }

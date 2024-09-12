@@ -21,7 +21,7 @@ export function PlayerInfo() {
           m(Label, {
             name: 'player',
             content: displayName({ userName, walletAddress }),
-            style: `mt-10 pl-0`,
+            style: `pl-0`,
             inlineStyle: `pr-10`,
           }),
           m(Label, {
@@ -35,10 +35,10 @@ export function PlayerInfo() {
             inlineStyle: `pr-10`,
           }),
           m(Label, {
-            name: 'lag',
-            content: formatLag(window.warpAO.lag),
-            style: 'mt-10 pl-0',
-            inlineStyle: `pr-10 w-170 text-right`,
+            name: 'gained',
+            content: mainPlayer?.stats?.coins.gained,
+            style: `mt-10 pl-10`,
+            inlineStyle: `pr-10`,
           }),
           m(Label, {
             name: 'beavers',
@@ -188,8 +188,4 @@ function displayName(player) {
     return trimString(player.walletAddress);
   }
   return '';
-}
-
-function formatLag(lag) {
-  return lag ? `${lag.total}(${lag.cuCalc})ms` : 'N/A';
 }

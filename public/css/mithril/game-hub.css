@@ -1,11 +1,31 @@
 #game-hub {
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
   background: black;
   color: var(--yellow);
   font-size: 20px;
   font-weight: var(--regular);
   padding: 20px 20px;
+  display: flex;
+  justify-content: space-between;
+
+  .game-hub-connection {
+    font-family: 'Press Start 2P';
+    font-size: var(--big);
+    text-transform: uppercase;
+
+    &.success {
+      color: var(--green);
+    }
+
+    &.warn {
+      color: var(--orange);
+    }
+
+    &.error {
+      color: var(--red);
+    }
+  }
 
   .games-list .list .element {
     position: relative;

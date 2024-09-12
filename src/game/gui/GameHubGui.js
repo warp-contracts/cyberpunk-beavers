@@ -5,10 +5,14 @@ export function GameHubGui() {
   return {
     view: function (vnode) {
       const { games, gameError, joinGame, spectateGame } = vnode.attrs;
+      const { lagMessage, lagClass } = formatLag(window.warpAO.lag, true);
       return [
         m('.mithril-component', { id: 'game-hub' }, [
-          m(Header, { gameError }),
-          vnode.attrs.games ? m(GamesList, { games, joinGame, spectateGame }) : null,
+          m('div', [
+            m(Header, { gameError }),
+            vnode.attrs.games ? m(GamesList, { games, joinGame, spectateGame }) : null,
+          ]),
+          m(`.game-hub-connection ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage),
         ]),
       ];
     },
@@ -86,4 +90,32 @@ function GamesList() {
       ]);
     },
   };
+}
+
+export function formatLag(lag, withConnectionInfo = false) {
+  if (lag && window.warpAO.env != 'dev') {
+    const lagTotal = lag.total;
+    const lagCuCalc = lag.cuCalc;
+    if (lagTotal <= 300) {
+      return {
+        lagMessage: `${withConnectionInfo ? 'connection stable' : 'lag'}: ${lagTotal}(${lagCuCalc})ms`,
+        lagClass: `success`,
+      };
+    } else if (lagTotal > 300 && lagTotal <= 1000) {
+      return {
+        lagMessage: `${withConnectionInfo ? 'weak connection' : 'lag'}: ${lagTotal}(${lagCuCalc})ms`,
+        lagClass: `warn`,
+      };
+    } else if (lagTotal > 1000) {
+      return {
+        lagMessage: `${withConnectionInfo ? 'very weak connection' : 'lag'}: ${lagTotal}(${lagCuCalc})ms`,
+        lagClass: `error`,
+      };
+    }
+  } else {
+    return {
+      lagMessage: ``,
+      lagClass: ``,
+    };
+  }
 }

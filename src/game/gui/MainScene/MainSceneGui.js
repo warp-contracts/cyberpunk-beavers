@@ -3,6 +3,7 @@ import { InfoPanel } from './components/InfoPanel';
 import { PlayerInfo, SpectatorStats, Stats } from './components/Stats';
 import { KeyboardMapping } from './components/KeyboardMapping';
 import { formatCountdownTo } from '../LoungeArenaSceneGui.js';
+import { formatLag } from '../GameHubGui.js';
 
 export function MainSceneGui() {
   let visible = false;
@@ -34,6 +35,8 @@ export function MainSceneGui() {
         spectatorMode,
       } = vnode.attrs;
 
+      const { lagMessage, lagClass } = formatLag(window.warpAO.lag);
+
       if (gameActive && !vnode.state.hasEnterAnimated) {
         animateEnter(vnode);
       }
@@ -64,6 +67,7 @@ export function MainSceneGui() {
             m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
             gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
             diff ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`) : null,
+            mainPlayer ? m(`.main-scene-lag ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage) : null,
           ];
     },
   };
