@@ -33,12 +33,12 @@ export const TOKEN_CONTRACT_MOCK = {
   [GameTreasure.tio.type]: {
     id: 'h3FqYG9AVze-JFH-MQS3Rvv5golBhjnDuPDpJFEpdwE',
     transfer: 'Transfer',
-    amount: 120,
+    amount: 0,
   },
   [GameTreasure.war.type]: {
     id: 'Q7-XYIgAKiatIGuez3dM7eu4miqH5_USvKt6uY4bw9Y',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 120,
   },
 };
 
@@ -56,12 +56,12 @@ export const TOKEN_CONTRACT = {
   [GameTreasure.tio.type]: {
     id: 'agYcCFJtrMG6cqMuZfskIkFTGvUPddICmtQSBIoPdiA',
     transfer: 'Transfer',
-    amount: 20,
+    amount: 0,
   },
   [GameTreasure.war.type]: {
     id: 'xU9zFkq3X2ZQ6olwNVvr1vUWIjc3kXTWr7xKQD6dh10',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 20,
   },
 };
 
