@@ -46,7 +46,9 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
     try {
       const now = performance.now();
       const message = JSON.parse(event.data);
+      const messageSize = new Blob([event.data]).size / 1000;
       console.log(`\n ==== new message ${processId}:${message.nonce} ==== `, message);
+      console.log(`\n ==== message size: ${messageSize} kB  ====`);
       let lag = null;
       if (target.handleTx && message.output?.gameStats?.lastTxs) {
         target.handleTx(message.output?.gameStats.lastTxs);
