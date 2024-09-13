@@ -4,7 +4,7 @@ import Const, { FOG_ALPHA, FOV_DEPTH } from '../common/const.mjs';
 
 const lightDropoff = [/*0.35, 0.3, 0.25, */ 0.15, 0.1, 0.05];
 
-export class FOVLayer {
+export class FOV {
   fovLayer;
   mrpas;
   lastPos;
@@ -12,13 +12,14 @@ export class FOVLayer {
   mainScene;
   radius;
 
-  constructor(mainScene, radius) {
+  constructor(mainScene, beaverChoice) {
     console.log('adding FOV layer');
-    this.radius = radius;
+    this.radius = Const.BEAVER_TYPES[beaverChoice].stats.fov;
 
     const data = Array(mainScene.tileMap.width)
       .fill([])
-      .map(() => Array(mainScene.tileMap.width).fill(0));
+      .map(() => Array(mainScene.tileMap.width).fill(1));
+    console.log(data);
 
     const fovMap = mainScene.make.tilemap({
       data,
@@ -37,7 +38,6 @@ export class FOVLayer {
     this.obstaclesLayer = mainScene.tileMap.obstaclesLayer;
 
     this.lastPos = new Phaser.Math.Vector2({ x: -1, y: -1 });
-    this.initialCalc = false;
     this.mainScene = mainScene;
   }
 
@@ -57,18 +57,17 @@ export class FOVLayer {
   }
 
   update(pos, bounds) {
-    if (!this.lastPos.equals(pos) /*|| !this.initialCalc*/) {
+    if (!this.lastPos.equals(pos)) {
       this.updateMRPAS(pos);
       this.lastPos = pos.clone();
-    }
-    // TODO: fix - only if position changes
-    for (let y = bounds.y; y < bounds.y + bounds.height; y++) {
-      for (let x = bounds.x; x < bounds.x + bounds.width; x++) {
-        if (y < 0 || y >= this.fovTileMap.height || x < 0 || x >= this.fovTileMap.width) {
-          continue;
+      for (let y = bounds.y; y < bounds.y + bounds.height; y++) {
+        for (let x = bounds.x; x < bounds.x + bounds.width; x++) {
+          if (y < 0 || y >= this.fovTileMap.height || x < 0 || x >= this.fovTileMap.width) {
+            continue;
+          }
+          const tile = this.fovLayer.getTileAt(x, y, true);
+          tile?.setAlpha(tile.desiredAlpha);
         }
-        const tile = this.fovLayer.getTileAt(x, y, true);
-        tile.setAlpha(tile.desiredAlpha);
       }
     }
 
@@ -97,7 +96,6 @@ export class FOVLayer {
       (x, y) => true,
       (x, y) => {
         const distance = Math.floor(new Phaser.Math.Vector2(x, y).distance(new Phaser.Math.Vector2(pos.x, pos.y)));
-
         const rolloffIdx = distance <= this.radius ? this.radius - distance : 0;
         const alpha = rolloffIdx < lightDropoff.length ? lightDropoff[rolloffIdx] : 0;
         const tile = this.fovLayer.getTileAt(x, y, true);

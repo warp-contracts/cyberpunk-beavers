@@ -20,7 +20,7 @@ import { doAddSounds, doPlayAttackSound, doPlayOpponentFinishedSound } from './s
 import { doInitCamera } from './camera.js';
 import { doInitAnimations } from './animations.js';
 import { doCreateTileMap, initMapObjects } from './maps.js';
-import { FOVLayer } from '../../objects/FOVLayer.js';
+import { FOV } from '../../objects/FOV.js';
 import { executeScan } from './commands/scanned.js';
 
 const { GameTreasure } = Const;
@@ -46,6 +46,7 @@ export default class MainScene extends Phaser.Scene {
 
   init(data) {
     console.log('Main Scene - 1. Init', data);
+    console.log(data);
     this.beaverId = data.beaverId;
     this.beaverChoice = data.beaverChoice;
     this.walletAddress = data.walletAddress;
@@ -74,6 +75,8 @@ export default class MainScene extends Phaser.Scene {
     doCreateTileMap(this);
     doAddSounds(this);
     doInitAnimations(this);
+    this.fov = new FOV(this, this.beaverChoice || this.beaverId);
+
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       console.log('this.spectatorMode', this.spectatorMode);
       if (this.spectatorMode) {
@@ -221,6 +224,11 @@ export default class MainScene extends Phaser.Scene {
 
     if (this.mainPlayer) {
       const camera = this.cameras.main;
+      if (camera.worldView.x === 0 && camera.worldView.y === 0) {
+        //sometimes initial camera coords are fucked, therefore FOV calculation is fucked up
+        //and everything is fucking black, until player moves.
+        return;
+      }
 
       const player = new Phaser.Math.Vector2({
         x: this.tileMap.worldToTileX(this.mainPlayer.x),
@@ -329,7 +337,6 @@ export default class MainScene extends Phaser.Scene {
                     objectsLayer: response.map.gameObjectsTilemap,
                     mainScene: self,
                   });
-                  self.fov = new FOVLayer(this, self.mainPlayer.stats.fov);
                   self.scene.remove(mainSceneLoadingKey);
                 }
                 self.registered = true;
