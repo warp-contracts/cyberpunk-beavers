@@ -12,7 +12,7 @@ export function LoungeArenaSceneGui(initialVnode) {
       const {
         gameTxId,
         walletAddress,
-        gameError,
+        playerError,
         gameStart,
         gameEnd,
         walletsQueue,
@@ -24,8 +24,8 @@ export function LoungeArenaSceneGui(initialVnode) {
       const disabled = walletsQueue && Object.keys(walletsQueue).length >= playersLimit;
       return [
         m('.mithril-component', { id: 'lounge-arena' }, [
-          gameError
-            ? m(HeaderError, { gameError })
+          playerError
+            ? m(HeaderError, { playerError })
             : [
                 m(GameInfo, { gameTxId, gameStart, gameEnd, diff, walletsQueue }),
                 showJoinButton(gameStart, walletsQueue, walletAddress) ? m(JoinButton, { onJoin, disabled }) : null,
@@ -135,7 +135,7 @@ function JoinButton() {
 function HeaderError() {
   return {
     view: function (vnode) {
-      return [m('.header error', `Cannot join the game.\n${vnode.attrs.gameError}\n\n`)];
+      return [m('.header error', `Cannot join the game.\n${vnode.attrs.playerError}\n\n`)];
     },
   };
 }

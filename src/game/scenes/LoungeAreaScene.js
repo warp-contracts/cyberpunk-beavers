@@ -25,7 +25,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   init(data) {
     console.log('Lounge Area - 1. Init', data);
     this.walletAddress = data.walletAddress;
-    this.gameError = data.error;
+    this.playerError = data.error;
     this.processId = data.processId;
   }
 
@@ -40,7 +40,6 @@ export default class LoungeAreaScene extends Phaser.Scene {
       this.server = serverConnection.game;
       this.server.subscribe(this);
       this.server.send({ cmd: Const.Command.info });
-      var self = this;
     } else {
       this.scene.start(connectWalletSceneKey);
     }
@@ -51,7 +50,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   }
 
   async countdown() {
-    if (!this.gameError) {
+    if (!this.playerError) {
       const now = new Date();
       if (this.gameEnd) {
         this.diff = Math.round((this.gameEnd - now) / 1000);
@@ -81,6 +80,9 @@ export default class LoungeAreaScene extends Phaser.Scene {
             this.goToLeaderboard(response);
             return;
           }
+          if (response?.player?.walletAddress === this.walletAddress && response?.player?.error) {
+            this.playerError = response.player.error;
+          }
           this.gameStart = response.start;
           this.gameEnter = response.enter;
           this.gameEnd = response.end;
@@ -91,11 +93,11 @@ export default class LoungeAreaScene extends Phaser.Scene {
             console.error('Failed to fetch game info', response.error);
             this.doHideGui();
             this.scene.start(connectWalletSceneKey);
-          } else if (!this.gameError) {
+          } else {
             if (response.players && response.players[this.walletAddress]) {
               this.beaverId = response.players[this.walletAddress].beaverId;
             }
-            if (response.active) {
+            if (response.active && !this.playerError) {
               await this.gameActive();
             } else {
               if (!this.viewMounted) {
@@ -105,7 +107,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
                     return m(LoungeArenaSceneGui, {
                       gameTxId: self.processId,
                       walletAddress: self.walletAddress,
-                      gameError: self.gameError,
+                      playerError: self.playerError,
                       gameStart: self.gameStart,
                       gameEnd: self.gameEnd,
                       walletsQueue: self.walletsQueue,
@@ -137,15 +139,15 @@ export default class LoungeAreaScene extends Phaser.Scene {
   canParticipate() {
     const logPref = `Lounge Area - canParticipate`;
     if (!this.playersLimit) {
-      console.log(`${logPref} no player limit`);
+      console.log(`${logPref}, no player limit`);
       return true;
     }
     if (!this.walletsQueue) {
-      console.log(`${logPref} no wallets queue`);
+      console.log(`${logPref}, no wallets queue`);
       return true;
     }
     if (this.playersLimit > this.walletsQueue.length) {
-      console.log(`${logPref} no limit not yet reached`);
+      console.log(`${logPref}, limit not yet reached`);
       return true;
     }
     if (this.walletsQueue.indexOf(this.walletAddress) > -1) {

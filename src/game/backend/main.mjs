@@ -29,7 +29,10 @@ let txId = null;
 let ongoingProcesses = await spawnGameHub();
 const hub = ongoingProcesses[ids.hub_processId_dev];
 Object.assign(ongoingProcesses, await spawnGame('N8b2aPBXFhtZXbygq3wveXukUCTKKSFEu5qxB4CL-zU'));
-Object.assign(ongoingProcesses, await spawnGame('Ysm9Icl6MPtvS8Si2YaEiINyimUiBog3AxY4Tv2aUVA'));
+Object.assign(
+  ongoingProcesses,
+  await spawnGame('Ysm9Icl6MPtvS8Si2YaEiINyimUiBog3AxY4Tv2aUVA', Date.now() + 1000 * 1000)
+);
 
 // Event listener for WebSocket connections
 wss.on('connection', (ws, request) => {
@@ -140,21 +143,22 @@ async function spawnGameHub() {
   };
 }
 
-async function spawnGame(processId) {
+async function spawnGame(processId, start, end) {
   const quickJS = await quickJSPlugin.process({
     contractSource: fs.readFileSync('./dist/output-game.js', 'utf-8'),
     binaryType: 'release_sync',
   });
+
   const processRandomId = processId;
-  const now = Date.now();
   const setupMessage = mockDataItem(
     {
       cmd: 'setup',
       type: 'custom',
-      /*start: Date.now() + 1000 * 1000,
-      end: Date.now() + 1000 * 2000,*/
+      start,
+      end,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
+      walletsWhitelist: [],
     },
     processEnv.Process.Owner
   );

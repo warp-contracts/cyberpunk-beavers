@@ -10,7 +10,7 @@ import { __init } from './cmd/__init.js';
 import { end, sendTokens } from './cmd/end.mjs';
 import { useLandmine } from './cmd/landmine.mjs';
 import { teleportPlayer } from './cmd/teleport.mjs';
-import { activate, standInQueue } from './cmd/queue.mjs';
+import { activate, standInQueue, checkWhitelist } from './cmd/queue.mjs';
 import { scan } from './cmd/scan.mjs';
 
 function restrictedAccess(state, action, ts) {
@@ -64,6 +64,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.stats,
         ...gameInfo(state, message.Owner, message.Timestamp),
+        ...checkWhitelist(state, message.Owner),
         ...gameStats(state),
       });
       break;
@@ -72,6 +73,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.stats,
         ...gameInfo(state, message.Owner, message.Timestamp),
+        ...checkWhitelist(state, message.Owner),
         ...gameStats(state),
       });
       break;

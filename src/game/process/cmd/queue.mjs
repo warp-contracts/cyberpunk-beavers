@@ -1,27 +1,27 @@
 import Const from '../../common/const.mjs';
 
-/*
- * walletsQueue will join the game
- * */
-export function standInQueue(state, action) {
-  const { walletAddress } = action;
-  const { walletsQueue, walletsWhitelist } = state;
-
+export function checkWhitelist(state, walletAddress) {
+  const { walletsWhitelist } = state;
   if (walletsWhitelist.length && !walletsWhitelist.includes(walletAddress)) {
-    const error = `Developers' Internal testing session - ${action.walletAddress} wallet is not on the whitelist.`;
+    const error = `Developers' Internal testing session - ${walletAddress} wallet is not on the whitelist.`;
     console.log(error);
     return { player: { walletAddress, error } };
   }
+  return {};
+}
 
-  if (walletsQueue.includes(walletAddress)) {
-    return { walletsQueue };
+export function standInQueue(state, action) {
+  const { walletAddress } = action;
+  const { walletsQueue } = state;
+
+  if (checkWhitelist(state, walletAddress)?.player?.error) {
+    return;
   }
 
-  if (walletsQueue.length < state.playersLimit) {
+  if (walletsQueue.length < state.playersLimit && !walletsQueue.includes(walletAddress)) {
     walletsQueue.push(walletAddress);
     sendHubNotification(state);
   }
-  return { walletsQueue };
 }
 
 export function activate(state) {

@@ -1,5 +1,6 @@
 import Const from '../../common/const.mjs';
 import { calculateRandomPos } from './__init';
+import { checkWhitelist } from './queue.mjs';
 
 const { BEAVER_TYPES, Map, EMPTY_TILE, GameTreasure } = Const;
 
@@ -15,10 +16,9 @@ export function registerPlayer(state, action) {
     return { player: players[walletAddress] };
   }
 
-  if (walletsWhitelist.length && !walletsWhitelist.includes(walletAddress)) {
-    const error = `Developers' Internal testing session - ${action.walletAddress} wallet is not on the whitelist.`;
-    console.log(error);
-    return { player: { walletAddress, error } };
+  const whitelistError = checkWhitelist(state, walletAddress)?.player?.error || false;
+  if (whitelistError) {
+    return { player: { walletAddress, error: whitelistError } };
   }
 
   if (!walletsQueue.includes(walletAddress)) {
