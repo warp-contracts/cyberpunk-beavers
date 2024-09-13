@@ -1,22 +1,43 @@
-import { createDataItemSigner, message } from '@permaweb/aoconnect';
+import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
 import fs from 'node:fs';
 
+/*
+ * Step 3.
+ *
+ * Release transfers from bridge to users
+ * */
+
 const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8'));
-// const WALLET = JSON.parse(fs.readFileSync('.secrets/jnio.json', 'utf-8'));
+const bridgeProcessId = '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c';
+// const hubId = 'W-fLecBXCcqsdVH18H7CoUnVb9mr-v_XfovPwwFZcfw';
+const hubId = 'NzvoTUI65pbgZm9iv3ZQSwhSskN4Ihjgb97jMN2rx2o';
 
 async function checkPending() {
-  const processId = '92LR-AJmDPuy6DhpgppvkXZ2C_4bWF9uGqajxeW9yRU';
   const signer = createDataItemSigner(WALLET);
 
   return await message({
-    process: processId,
+    process: bridgeProcessId,
     tags: [
       { name: 'Action', value: 'ReleasePending' },
-      { name: 'HubProcessId', value: 'eQ8RVUlTN43c5rs3qXRLCkPjRRvGdPVt5BPb3L8UQE4' },
+      { name: 'HubProcessId', value: `${hubId}` },
       // { name: 'GameProcessId', value: 'UNA3jM3zUsOcneorFnE_j4huNsKU2ewkTXiF5X4N880' },
     ],
     signer,
   });
 }
 
-checkPending().then((r) => console.log(`Finished`, `https://www.ao.link/#/message/${r}`));
+checkPending()
+  .then((messageId) => {
+    console.log(`Released message`, `https://www.ao.link/#/message/${messageId}`);
+    return messageId;
+  })
+  .then(async (messageId) => {
+    const rr = await result({
+      // the arweave TXID of the message
+      message: messageId,
+      // the arweave TXID of the process
+      process: bridgeProcessId,
+    });
+    console.log(rr);
+  })
+  .then(() => console.log(`THE END`));
