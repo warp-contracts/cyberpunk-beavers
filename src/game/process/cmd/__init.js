@@ -72,6 +72,8 @@ function initState(message, state) {
       .map(() => Array(mapHeight)),
     obstaclesTilemap: generateTilemap(obstaclesLayer.data, obstaclesLayer.width),
     mode: state.mode || Const.GAME_MODES.default.type,
+    gameObjectsToRespawn: {},
+    gameObjectsToRespawnInRound: [],
   };
 
   return result;
