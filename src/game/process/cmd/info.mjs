@@ -1,7 +1,7 @@
 export function gameStats(state) {
-  const { gameTokens, gameTreasuresCounter, lastTxs } = state;
+  const { gameTokens, gameTreasuresCounter, lastTxs, gameObjectsToRespawnInRound } = state;
   return {
-    gameStats: { gameTokens, gameTreasuresCounter, lastTxs },
+    gameStats: { gameTokens, gameTreasuresCounter, lastTxs, gameObjectsToRespawnInRound },
   };
 }
 

@@ -205,6 +205,8 @@ export function handle(state, message) {
     default:
       throw new ProcessError(`Unknown action: ${action.cmd}`);
   }
+
+  state.gameObjectsToRespawnInRound = [];
 }
 
 function gameRoundTick(state, message) {
@@ -212,6 +214,7 @@ function gameRoundTick(state, message) {
   const tsChange = tsNow - state.round.start;
   const round = ~~(tsChange / state.round.interval);
   console.log('Last round ', state.round);
+  if (state.round.current !== round) respawn(round, state);
   state.round.current = round;
   if (state.playWindow?.roundsTotal) {
     const roundsToGo = state.playWindow?.roundsTotal - state.round.current;
@@ -233,4 +236,19 @@ function gamePlayerTick(state, action) {
     player.stats.ap.current = player.stats.ap.max;
     player.stats.round.last = state.round.current;
   }
+}
+
+function respawn(round, state) {
+  for (let roundToRespawn in state?.gameObjectsToRespawn) {
+    if (roundToRespawn <= round) {
+      for (let gameObjectToRespawn of state?.gameObjectsToRespawn[roundToRespawn]) {
+        const { tile, pos } = gameObjectToRespawn;
+        state.gameObjectsTilemap[pos.y][pos.x] = tile;
+        state.gameObjectsToRespawnInRound.push(gameObjectToRespawn);
+      }
+      delete state.gameObjectsToRespawn[roundToRespawn];
+    }
+  }
+
+  console.log(`No game objects to respawn in round: ${round}`);
 }
