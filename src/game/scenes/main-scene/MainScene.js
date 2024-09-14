@@ -19,7 +19,7 @@ import { doPreloadAssets } from './preload.js';
 import { doAddSounds, doPlayAttackSound, doPlayOpponentFinishedSound } from './sounds.js';
 import { doInitCamera } from './camera.js';
 import { doInitAnimations } from './animations.js';
-import { doCreateTileMap, initMapObjects } from './maps.js';
+import { createSpriteOnTilemap, doCreateTileMap, initMapObjects } from './maps.js';
 import { FOV } from '../../objects/FOV.js';
 import { executeScan } from './commands/scanned.js';
 import { handleAttacked } from './commands/attacked.js';
