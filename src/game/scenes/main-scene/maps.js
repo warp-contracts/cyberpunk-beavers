@@ -1,12 +1,22 @@
-import Const, { COLLISIONS_LAYER } from '../../common/const.mjs';
+import Const, { COLLISIONS_LAYER, GameObject } from '../../common/const.mjs';
+
+const baseTileUnit = 48;
+const gameObjectsTextureKey = `cyberpunk_game_objects`;
+const gameObjectsToAdd = {
+  [GameObject.ap.type]: { x: 0, y: 0 },
+  [GameObject.hp.type]: { x: 48, y: 0 },
+  [GameObject.equipment_mine.type]: { x: 96, y: 0 },
+  [GameObject.teleport_device.type]: { x: 144, y: 0 },
+  [GameObject.scanner_device.type]: { x: 0, y: 48 },
+};
+// set when adding initial map sprites so the new sprite added after respawning stays in sync
+let spriteSyncedTime = null;
 
 export function doCreateTileMap(mainScene) {
-  const gameObjectsTexture = mainScene.textures.get('cyberpunk_game_objects');
-  gameObjectsTexture.add('ap', 0, 0, 0, 48, 48);
-  gameObjectsTexture.add('hp', 0, 48, 0, 48, 48);
-  gameObjectsTexture.add('mine', 0, 96, 0, 48, 48);
-  gameObjectsTexture.add('teleport', 0, 144, 0, 48, 48);
-  gameObjectsTexture.add('scanner', 0, 0, 48, 48, 48);
+  const gameObjectsTexture = mainScene.textures.get(gameObjectsTextureKey);
+  for (let [type, { x, y }] of Object.entries(gameObjectsToAdd)) {
+    gameObjectsTexture.add(type, 0, x, y, 48, 48);
+  }
 
   mainScene.tileMap = mainScene.make.tilemap({ key: `map_${mainScene.mapTxId}` });
   const tileset = mainScene.tileMap.addTilesetImage('Sprite_Map_Sheet', 'map_sheet');
@@ -41,7 +51,7 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
     const layer = map.createLayer(0, tiles, 0, 0);
     if (asSprites) {
       const sprites = [];
-      ['ap', 'hp', 'mine', 'teleport', 'scanner'].forEach((objectType, index) => {
+      Object.keys(gameObjectsToAdd).forEach((objectType, index) => {
         sprites.push(
           ...map.createFromTiles(index, -1 /* removes the original tile */, {
             key: 'cyberpunk_game_objects',
@@ -52,16 +62,11 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
       });
 
       for (const sprite of sprites) {
-        // those motherfuckers have some non-integral x,y positions, mostly for 'y'.
-        // we need to find nearest multiplies of 48 to be able to remove them
-        // when the object is picked.
-        sprite.tilePosition = {
-          x: Math.ceil(sprite.x / 48.0),
-          y: Math.ceil(sprite.y / 48.0),
-        };
+        const { x, y } = mainScene.tileMap.worldToTileXY(sprite.x, sprite.y);
+        if (!mainScene.gameObjectsSprites[y]) mainScene.gameObjectsSprites[y] = {};
+        mainScene.gameObjectsSprites[y][x] = sprite;
       }
 
-      mainScene.gameObjectSprites = sprites;
       mainScene.tweens.add({
         targets: sprites,
         y: '-=5',
@@ -69,6 +74,9 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
         ease: 'Sine.easeInOut',
         yoyo: true,
         repeat: -1,
+        onUpdate: (tween) => {
+          spriteSyncedTime = tween.progress;
+        },
       });
     }
 
@@ -78,4 +86,30 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
 
     return layer;
   }
+}
+
+export function createSpriteOnTilemap(mainScene, type, { x, y }) {
+  const { x: worldX, y: worldY } = mainScene.tileMap.tileToWorldXY(x, y);
+
+  const sprite = mainScene.add.sprite(
+    worldX + baseTileUnit / 2,
+    worldY + baseTileUnit / 2,
+    gameObjectsTextureKey,
+    type
+  );
+  mainScene.gameObjectsSprites[y][x] = sprite;
+
+  mainScene.tweens.add({
+    targets: sprite,
+    y: '-=5',
+    duration: 250,
+    ease: 'Sine.easeInOut',
+    yoyo: true,
+    repeat: -1,
+    onStart: (tween) => {
+      if (spriteSyncedTime !== null) {
+        tween.progress = spriteSyncedTime;
+      }
+    },
+  });
 }

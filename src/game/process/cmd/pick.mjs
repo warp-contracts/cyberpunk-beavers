@@ -52,6 +52,7 @@ function pickHP(state, player, value) {
   player.stats.hp.current += value;
   addCoins(player, GameTreasure.cbcoin.type, value);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
+  addGameObjectToRespawn(state, GameObject.hp.type, player);
   return {
     player,
     picked: { type: GameObject.hp.type },
@@ -68,6 +69,7 @@ function pickAP(state, player, value) {
   player.stats.ap.current += value;
   addCoins(player, GameTreasure.cbcoin.type, value);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
+  addGameObjectToRespawn(state, GameObject.ap.type, player);
   return {
     player,
     picked: { type: GameObject.ap.type },
@@ -90,6 +92,7 @@ function pickDevice(state, player, device) {
     player.equipment[equipmentType].current += 1;
     addCoins(player, GameTreasure.cbcoin.type, value);
     state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
+    addGameObjectToRespawn(state, type, player);
     return {
       player,
       picked: { type },
@@ -121,4 +124,18 @@ function pickTreasure(state, player) {
       { value: -1, type: Scores.ap },
     ]),
   };
+}
+
+function addGameObjectToRespawn(state, gameObjectType, player) {
+  const round = state.round.current + GameObject[gameObjectType].roundsToRespawn;
+  let respawnInRound = state.gameObjectsToRespawn[round];
+  const gameObjectToRespawn = { type: gameObjectType, tile: GameObject[gameObjectType].tile, pos: player.pos };
+
+  if (!respawnInRound) {
+    state.gameObjectsToRespawn[round] = [gameObjectToRespawn];
+  } else {
+    state.gameObjectsToRespawn[round].push(gameObjectToRespawn);
+  }
+
+  console.log('respawn in round added', state.gameObjectsToRespawn);
 }

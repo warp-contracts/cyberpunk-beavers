@@ -13,13 +13,13 @@ import {
 import Phaser from 'phaser';
 import { MainSceneGui } from '../../gui/MainScene/MainSceneGui.js';
 import { hideGui, showGui } from '../../utils/mithril.js';
-import { MINE_ACTIVATED_COLOR, SCANNED_COLOR } from '../../utils/style.js';
+import { MINE_ACTIVATED_COLOR } from '../../utils/style.js';
 import { checkBalance, generatedWalletAddress, getUsernameFromStorage } from '../../utils/utils.js';
 import { doPreloadAssets } from './preload.js';
 import { doAddSounds, doPlayAttackSound, doPlayOpponentFinishedSound } from './sounds.js';
 import { doInitCamera } from './camera.js';
 import { doInitAnimations } from './animations.js';
-import { doCreateTileMap, initMapObjects } from './maps.js';
+import { createSpriteOnTilemap, doCreateTileMap, initMapObjects } from './maps.js';
 import { FOV } from '../../objects/FOV.js';
 import { executeScan } from './commands/scanned.js';
 
@@ -39,6 +39,7 @@ export default class MainScene extends Phaser.Scene {
   gameStats = {};
   followedPlayer = null;
   fov = null;
+  gameObjectsSprites = {};
 
   constructor() {
     super(mainSceneKey);
@@ -301,6 +302,13 @@ export default class MainScene extends Phaser.Scene {
       if (self.allPlayers[response.player.walletAddress]?.locked) return;
     }
 
+    const toRespawn = response.gameStats?.gameObjectsToRespawnInRound;
+    if (toRespawn?.length) {
+      for (let { type, pos } of toRespawn) {
+        createSpriteOnTilemap(self, type, pos);
+      }
+    }
+
     switch (cmd) {
       case Const.Command.activated: {
         if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
@@ -496,28 +504,30 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.picked:
         {
           if (response.picked) {
+            const { x, y } = response.player?.pos;
             if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
               self.pickUpSound.play();
               self.mainPlayer.equipment = response.player.equipment;
             } else {
               self.allPlayers[response.player.walletAddress]?.pickAnim();
             }
-            self.gameObjectsLayer?.removeTileAt(response.player.pos.x, response.player.pos.y);
-            const spriteToRemove = self.gameObjectSprites?.find((s) => {
-              return response.player.pos.x === s.tilePosition.x && response.player.pos.y === s.tilePosition.y;
-            });
+            self.gameObjectsLayer?.removeTileAt(x, y);
+
+            const spriteToRemove = self.gameObjectsSprites[y]?.[x];
+
             if (spriteToRemove) {
               spriteToRemove.destroy();
+              self.gameObjectsSprites[y][x] = {};
             } else {
               console.error('Could not find sprite to remove at tile position', {
-                x: response.player.pos.x,
-                y: response.player.pos.y,
+                x,
+                y,
               });
             }
 
             if (response.player.onGameTreasure?.tile > 0) {
               //FIXME: create some dedicated fun for this
-              self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
+              self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
             }
           } else {
             if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
