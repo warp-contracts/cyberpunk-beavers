@@ -19,7 +19,7 @@ import { doPreloadAssets } from './preload.js';
 import { doAddSounds, doPlayAttackSound, doPlayOpponentFinishedSound } from './sounds.js';
 import { doInitCamera } from './camera.js';
 import { doInitAnimations } from './animations.js';
-import { createSpriteOnTilemap, doCreateTileMap, initMapObjects } from './maps.js';
+import { doCreateTileMap, initMapObjects } from './maps.js';
 import { FOV } from '../../objects/FOV.js';
 import { executeScan } from './commands/scanned.js';
 
@@ -302,8 +302,8 @@ export default class MainScene extends Phaser.Scene {
 
     const toRespawn = response.gameStats?.gameObjectsToRespawnInRound;
     if (toRespawn?.length) {
-      for (let { type, pos } of toRespawn) {
-        createSpriteOnTilemap(self, type, pos);
+      for (let { pos } of toRespawn) {
+        self.gameObjectsSprites[pos.y]?.[pos.x]?.setVisible(true);
       }
     }
 
@@ -511,11 +511,9 @@ export default class MainScene extends Phaser.Scene {
             }
             self.gameObjectsLayer?.removeTileAt(x, y);
 
-            const spriteToRemove = self.gameObjectsSprites[y]?.[x];
-
-            if (spriteToRemove) {
-              spriteToRemove.destroy();
-              self.gameObjectsSprites[y][x] = {};
+            const spriteToHide = self.gameObjectsSprites[y]?.[x];
+            if (spriteToHide) {
+              spriteToHide.setVisible(false);
             } else {
               console.error('Could not find sprite to remove at tile position', {
                 x,
