@@ -5,7 +5,7 @@ import { getUrlParam } from '../utils/utils.js';
 import Const from '../common/const.mjs';
 
 const env = getUrlParam('env') || 'prod';
-const mode = getUrlParam('mode') || 'ao';
+const mode = getUrlParam('mode') || import.meta.env.VITE_GAME_MODE || 'ao';
 
 console.log(`running in ${env} mode`);
 

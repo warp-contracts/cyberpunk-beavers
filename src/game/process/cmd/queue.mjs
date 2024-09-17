@@ -2,7 +2,7 @@ import Const from '../../common/const.mjs';
 
 export function checkWhitelist(state, walletAddress) {
   const { walletsWhitelist } = state;
-  if (walletsWhitelist.length && !walletsWhitelist.includes(walletAddress)) {
+  if (walletsWhitelist.length && !walletsWhitelist.find((w) => w.toLowerCase() == walletAddress.toLowerCase())) {
     const error = `Developers' Internal testing session - ${walletAddress} wallet is not on the whitelist.`;
     console.log(error);
     return { player: { walletAddress, error } };
