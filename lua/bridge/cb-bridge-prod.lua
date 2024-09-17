@@ -35,7 +35,8 @@ Owner = Owner or ao.env.Process.Owner
 Tokens = {
   tio = 'agYcCFJtrMG6cqMuZfskIkFTGvUPddICmtQSBIoPdiA',
   trunk = 'OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww',
-  war = 'xU9zFkq3X2ZQ6olwNVvr1vUWIjc3kXTWr7xKQD6dh10'
+  war = 'xU9zFkq3X2ZQ6olwNVvr1vUWIjc3kXTWr7xKQD6dh10',
+  gun = 'O-566VlALuKNrSQBdLOgHyYIcqT0oqeattaBk2gNS70'
 }
 
 

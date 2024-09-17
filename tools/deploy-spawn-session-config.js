@@ -46,6 +46,11 @@ export const TOKEN_CONTRACT_MOCK = {
     transfer: 'Transfer',
     amount: 120,
   },
+  [GameTreasure.gun.type]: {
+    id: 'BzwAEjvM2XgUPBhV5l97QR6wJkfcuIXhkCewG7GNbzc',
+    transfer: 'Transfer',
+    amount: 120,
+  },
 };
 
 export const TOKEN_CONTRACT = {
@@ -73,6 +78,11 @@ export const TOKEN_CONTRACT = {
     id: 'p5OI99-BaY4QbZts266T7EDwofZqs-wVuYJmMCS0SUU',
     transfer: 'Transfer',
     amount: 50,
+  },
+  [GameTreasure.gun.type]: {
+    id: 'O-566VlALuKNrSQBdLOgHyYIcqT0oqeattaBk2gNS70',
+    transfer: 'Transfer',
+    amount: 1,
   },
 };
 
