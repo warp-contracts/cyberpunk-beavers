@@ -85,7 +85,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.stats,
         ...gameInfo(state, action.walletAddress, message.Timestamp),
-        ...checkWhitelist(state, action.walletAddress),
+        ...checkWhitelist(state, action.mainWalletAddress || action.walletAddress),
         ...gameStats(state),
       });
       break;
@@ -185,11 +185,11 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.join:
-      if (action.balance) {
-        state.players[action.walletAddress].stats.coins.balance = action.balance;
-      }
       if (action.generatedWalletAddress) {
         state.generatedWalletsMapping[action.generatedWalletAddress] = action.mainWalletAddress;
+      }
+      if (action.balance) {
+        state.players[action.mainWalletAddress].stats.coins.balance = action.balance;
       }
       ao.result({
         cmd: Const.Command.registered,
