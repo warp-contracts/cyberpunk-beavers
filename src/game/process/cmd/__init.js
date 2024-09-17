@@ -131,6 +131,13 @@ function setInvisibleGameTreasures(state) {
     state.gameTreasuresTilemap,
     Object.values(GameTreasure)
   );
+  setObjectsOnRandomPositions(
+    state,
+    GameTreasure.gun,
+    state.gameTokens[GameTreasure.gun.type].amount,
+    state.gameTreasuresTilemap,
+    Object.values(GameTreasure)
+  );
 }
 
 function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {

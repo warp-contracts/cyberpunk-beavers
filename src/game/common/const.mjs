@@ -111,6 +111,7 @@ export const GameTreasure = {
   tio: { type: 'tio', label: 'ar.io (tIO)', tile: 2, value: 100, baseVal: 15_000_000, denomination: 6 },
   war: { type: 'war', label: 'Wrapped AR', tile: 3, value: 300, baseVal: 3_000_000_000, denomination: 12 },
   trunk: { type: 'trunk', label: 'TRUNK', tile: 4, value: 100, baseVal: 18, denomination: 3 },
+  gun: { type: 'gun', label: 'GUN', tile: 4, value: 300, baseVal: 1, denomination: 0 },
   rsg: { type: 'rsg', label: 'RSG', tile: 5, value: 100, baseVal: 1, denomination: 0 },
 };
 
@@ -134,6 +135,10 @@ const DEFAULT_GAME_TOKENS = {
   [GameTreasure.rsg.type]: {
     id: `${GameTreasure.rsg.type}`,
     amount: 50,
+  },
+  [GameTreasure.gun.type]: {
+    id: `${GameTreasure.gun.type}`,
+    amount: 1,
   },
 };
 

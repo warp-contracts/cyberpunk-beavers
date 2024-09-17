@@ -14,6 +14,7 @@ export function doAddSounds(mainScene) {
   mainScene.attackHackerBeaverSound = mainScene.sound.add('attack_hacker_beaver_sound', { loop: false, volume: 0.5 });
   mainScene.attackSpeedyBeaverSound = mainScene.sound.add('attack_speedy_beaver_sound', { loop: false, volume: 0.5 });
   mainScene.beaverEliminatedSound = mainScene.sound.add('beaver_eliminated_sound', { loop: false, volume: 2.0 });
+  mainScene.theGunCollectedSound = mainScene.sound.add('the_gun_collected_sound', { loop: false, volume: 2.0 });
   mainScene.notEnoughApSound = mainScene.sound.add('not_enough_ap', { loop: false, volume: 1.0 });
   mainScene.newChallengerSound = mainScene.sound.add('new_challenger', { loop: false, volume: 2.0 });
   mainScene.gameOverSound = mainScene.sound.add('game_over', { loop: false, volume: 2.0 });
