@@ -525,6 +525,10 @@ export default class MainScene extends Phaser.Scene {
               //FIXME: create some dedicated fun for this
               self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
             }
+
+            if (response.picked.type == GameTreasure.gun.type && !self.theGunCollectedSound.isPlaying) {
+              self.theGunCollectedSound.play();
+            }
           } else {
             if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
               self.noCollectSound.play();
