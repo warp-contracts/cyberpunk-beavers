@@ -11,12 +11,12 @@ const hourSessionDelayMS = [
 ];
 const gameDurationMS = 5 * 60 * 1_000; // 5 minutes
 const walletsWhitelist = [
-  // 'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY',
-  // 'Dj2ud7ui_rKtYwc_2cpGtNdlx6ifnX8w8VIksqIw42g',
-  // '1bDUsm3L4EJOm3JZTItaXkvJAxxi8zrsRZ4KJN8HI_8',
-  // 'qCtnbl5rsbF-1qRhawIQArCbO4_2TUOtnFv5oEun9gM',
-  // 'wF_7BbSj8Yzlt7T44nMGXwJHmqn8t2Sv45LfxILNu_o',
-  // '8ByvIowIXWOvEaOhpTeFUQQ_ArTiXAYzxwUSHr_R7P8', // ppe's generated wallet for the fucking Opera, fuck
+  'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY',
+  'Dj2ud7ui_rKtYwc_2cpGtNdlx6ifnX8w8VIksqIw42g',
+  '1bDUsm3L4EJOm3JZTItaXkvJAxxi8zrsRZ4KJN8HI_8',
+  'qCtnbl5rsbF-1qRhawIQArCbO4_2TUOtnFv5oEun9gM',
+  'wF_7BbSj8Yzlt7T44nMGXwJHmqn8t2Sv45LfxILNu_o',
+  '8ByvIowIXWOvEaOhpTeFUQQ_ArTiXAYzxwUSHr_R7P8', // ppe's generated wallet for the fucking Opera, fuck
 ];
 
 export const TOKEN_CONTRACT_MOCK = {
