@@ -192,7 +192,7 @@ export default class MainScene extends Phaser.Scene {
       return;
     }
 
-    if (this.gameEnter && this.gameEnter > Date.now() && !this.gameActive && !this.gameEnterTimeUp) {
+    if (this.gameEnter && !this.gameActive && !this.gameEnterTimeUp) {
       this.waitForGameEnter();
     }
 
@@ -307,263 +307,272 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
-    switch (cmd) {
-      case Const.Command.activated: {
-        if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
-          self.gameActive = true;
-          // self.gameActiveSound.play();
+    if (
+      !self.gameActive &&
+      response.gameStats?.activated &&
+      response.player?.walletAddress == self.mainPlayer?.walletAddress
+    ) {
+      self.gameActive = true;
+    }
+
+    if (response)
+      switch (cmd) {
+        case Const.Command.activated: {
+          if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
+            self.gameActive = true;
+          }
+          break;
         }
-        break;
-      }
-      case Const.Command.registered:
-        {
-          console.log('Registered player', response);
-          if (
-            response.error ||
-            (response.player && response.player.walletAddress === self.walletAddress && response.player.error)
-          ) {
-            console.error('Failed to join the game', response.player);
-            self.scene.remove('main-scene-loading');
-            hideGui();
-            self.scene.start(loungeAreaSceneKey, { error: response.player.error });
-          } else {
-            self.round = response.round;
-            self.gameStats = response.gameStats;
-            if (self.gameEnd) {
-              self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
-            }
-            for (const [wallet, player] of Object.entries(response.players)) {
-              if (wallet === self.walletAddress) {
-                if (!self.mainPlayer) {
-                  self.beaverId = player.beaverId;
-                  self.createMainPlayer(player);
-                  doInitCamera(self, false);
-                  initMapObjects({
-                    treasuresLayer: response.map.gameTreasuresTilemapForClient,
-                    objectsLayer: response.map.gameObjectsTilemap,
-                    mainScene: self,
-                  });
-                  self.scene.remove(mainSceneLoadingKey);
+        case Const.Command.registered:
+          {
+            console.log('Registered player', response);
+            if (
+              response.error ||
+              (response.player && response.player.walletAddress === self.walletAddress && response.player.error)
+            ) {
+              console.error('Failed to join the game', response.player);
+              self.scene.remove('main-scene-loading');
+              hideGui();
+              self.scene.start(loungeAreaSceneKey, { error: response.player.error });
+            } else {
+              self.round = response.round;
+              self.gameStats = response.gameStats;
+              if (self.gameEnd) {
+                self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
+              }
+              for (const [wallet, player] of Object.entries(response.players)) {
+                if (wallet === self.walletAddress) {
+                  if (!self.mainPlayer) {
+                    self.beaverId = player.beaverId;
+                    self.createMainPlayer(player);
+                    doInitCamera(self, false);
+                    initMapObjects({
+                      treasuresLayer: response.map.gameTreasuresTilemapForClient,
+                      objectsLayer: response.map.gameObjectsTilemap,
+                      mainScene: self,
+                    });
+                    self.scene.remove(mainSceneLoadingKey);
+                  }
+                  self.registered = true;
+                } else {
+                  self.addOtherPlayer(player);
                 }
-                self.registered = true;
-              } else {
-                self.addOtherPlayer(player);
+              }
+              self.followWinner();
+
+              if (!self.gameEnter || (self.gameEnter && self.gameEnter <= Date.now())) {
+                setTimeout(() => self.activateGame(), 100);
               }
             }
+          }
+          break;
+        case Const.Command.registeredSpectator:
+          self.gameStart = response.start;
+          self.gameEnd = response.end;
+          self.gameEnter = response.enter;
+          self.round = response.round;
+          self.gameStats = response.gameStats;
+          if (self.gameEnd) {
+            self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
+          }
+          for (const [wallet, player] of Object.entries(response.players)) {
+            self.addOtherPlayer(player);
+          }
+          if (msgWalletAddress === self.walletAddress) {
+            doInitCamera(self, true);
             self.followWinner();
-
-            if (!self.gameEnter || (self.gameEnter && self.gameEnter <= Date.now())) {
-              setTimeout(() => self.activateGame(), 100);
-            }
-          }
-        }
-        break;
-      case Const.Command.registeredSpectator:
-        self.gameStart = response.start;
-        self.gameEnd = response.end;
-        self.gameEnter = response.enter;
-        self.round = response.round;
-        self.gameStats = response.gameStats;
-        if (self.gameEnd) {
-          self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
-        }
-        for (const [wallet, player] of Object.entries(response.players)) {
-          self.addOtherPlayer(player);
-        }
-        if (msgWalletAddress === self.walletAddress) {
-          doInitCamera(self, true);
-          self.followWinner();
-          initMapObjects({
-            treasuresLayer: response.map.gameTreasuresTilemapForClient,
-            objectsLayer: response.map.gameObjectsTilemap,
-            mainScene: self,
-          });
-        }
-
-        self.scene.remove(mainSceneLoadingKey);
-        if (!self.gameEnter || (self.gameEnter && self.gameEnter <= Date.now())) {
-          setTimeout(() => self.activateGame(), 100);
-        }
-        self.registered = true;
-        break;
-
-      case Const.Command.attacked:
-        const isKillerMainPlayer = response.player?.walletAddress === self.mainPlayer?.walletAddress;
-        const isOpponentMainPlayer = response.opponent?.walletAddress === self.mainPlayer?.walletAddress;
-        if (isOpponentMainPlayer || self.spectatorMode) {
-          doPlayAttackSound(response.player.beaverId, this);
-        }
-        self.updateStats(response.player, response.gameStats);
-        self.updateStats(response.opponent, response.gameStats);
-        if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
-          self.allPlayers[response.player.walletAddress]?.attackAnim();
-        }
-        const opponent = self.allPlayers[response.opponent?.walletAddress];
-        if (response.opponentFinished) {
-          opponent?.lock();
-          if (isKillerMainPlayer) {
-            setTimeout(() => {
-              doPlayOpponentFinishedSound(response.player, response.revenge, self);
-            }, 900);
-          } else {
-            if (!self.beaverEliminatedSound.isPlaying) {
-              self.beaverEliminatedSound.play();
-            }
-          }
-          opponent
-            ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer || this.spectatorMode)
-            .once('animationcomplete', () => {
-              opponent.baseMoveTo(
-                response.opponent.pos,
-                () => {},
-                () => opponent.blink()
-              );
-              opponent.unlock();
+            initMapObjects({
+              treasuresLayer: response.map.gameTreasuresTilemapForClient,
+              objectsLayer: response.map.gameObjectsTilemap,
+              mainScene: self,
             });
-        } else {
-          opponent?.bloodSplatAnim(isOpponentMainPlayer || isKillerMainPlayer);
-        }
-        self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
-          forOpponent: {
-            score: response.opponentScoreToDisplay,
-            walletAddress: response.opponent?.walletAddress,
-          },
-        });
-        break;
-
-      case Const.Command.landmineActivated:
-        {
-          if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
-            self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-            self.gameObjectsLayer?.putTileAt(2, response.player.pos.x, response.player.pos.y);
-            this[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`] = self.add.grid(
-              self.mainPlayer?.x,
-              self.mainPlayer?.y,
-              48,
-              48,
-              48,
-              48,
-              MINE_ACTIVATED_COLOR,
-              0.4
-            );
           }
-        }
-        break;
-      case Const.Command.teleported:
-      case Const.Command.moved:
-        {
-          if (!self.allPlayers[response.player.walletAddress]) {
-            self.addOtherPlayer(response.player);
+
+          self.scene.remove(mainSceneLoadingKey);
+          if (!self.gameEnter || (self.gameEnter && self.gameEnter <= Date.now())) {
+            setTimeout(() => self.activateGame(), 100);
+          }
+          self.registered = true;
+          break;
+
+        case Const.Command.attacked:
+          const isKillerMainPlayer = response.player?.walletAddress === self.mainPlayer?.walletAddress;
+          const isOpponentMainPlayer = response.opponent?.walletAddress === self.mainPlayer?.walletAddress;
+          if (isOpponentMainPlayer || self.spectatorMode) {
+            doPlayAttackSound(response.player.beaverId, this);
+          }
+          self.updateStats(response.player, response.gameStats);
+          self.updateStats(response.opponent, response.gameStats);
+          if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
+            self.allPlayers[response.player.walletAddress]?.attackAnim();
+          }
+          const opponent = self.allPlayers[response.opponent?.walletAddress];
+          if (response.opponentFinished) {
+            opponent?.lock();
+            if (isKillerMainPlayer) {
+              setTimeout(() => {
+                doPlayOpponentFinishedSound(response.player, response.revenge, self);
+              }, 900);
+            } else {
+              if (!self.beaverEliminatedSound.isPlaying) {
+                self.beaverEliminatedSound.play();
+              }
+            }
+            opponent
+              ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer || this.spectatorMode)
+              .once('animationcomplete', () => {
+                opponent.baseMoveTo(
+                  response.opponent.pos,
+                  () => {},
+                  () => opponent.blink()
+                );
+                opponent.unlock();
+              });
           } else {
-            if (response.encounter?.type === Const.GameObject.active_mine.type) {
-              const mineLeftByMainPlayer = response.encounter?.leftBy === self.mainPlayer?.walletAddress;
-              if (mineLeftByMainPlayer) {
-                self.gameObjectsLayer?.removeTileAt(response.player.movedPos.x, response.player.movedPos.y);
-                self[`mineGrid_${response.player.movedPos.x}_${response.player.movedPos.y}`].destroy();
+            opponent?.bloodSplatAnim(isOpponentMainPlayer || isKillerMainPlayer);
+          }
+          self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
+            forOpponent: {
+              score: response.opponentScoreToDisplay,
+              walletAddress: response.opponent?.walletAddress,
+            },
+          });
+          break;
+
+        case Const.Command.landmineActivated:
+          {
+            if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
+              self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+              self.gameObjectsLayer?.putTileAt(2, response.player.pos.x, response.player.pos.y);
+              this[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`] = self.add.grid(
+                self.mainPlayer?.x,
+                self.mainPlayer?.y,
+                48,
+                48,
+                48,
+                48,
+                MINE_ACTIVATED_COLOR,
+                0.4
+              );
+            }
+          }
+          break;
+        case Const.Command.teleported:
+        case Const.Command.moved:
+          {
+            if (!self.allPlayers[response.player.walletAddress]) {
+              self.addOtherPlayer(response.player);
+            } else {
+              if (response.encounter?.type === Const.GameObject.active_mine.type) {
+                const mineLeftByMainPlayer = response.encounter?.leftBy === self.mainPlayer?.walletAddress;
+                if (mineLeftByMainPlayer) {
+                  self.gameObjectsLayer?.removeTileAt(response.player.movedPos.x, response.player.movedPos.y);
+                  self[`mineGrid_${response.player.movedPos.x}_${response.player.movedPos.y}`].destroy();
+                }
+
+                if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
+                  self.mainPlayer.moveAndExplode(response.player, true);
+                } else {
+                  self.allPlayers[response.player.walletAddress].moveAndExplode(response.player, mineLeftByMainPlayer);
+                }
+              } else {
+                self.allPlayers[response.player.walletAddress].moveTo(response.player);
+              }
+            }
+
+            if (
+              response.player.onGameObject != null &&
+              response.player.walletAddress === self.mainPlayer?.walletAddress
+            ) {
+              self.mainPlayer.onGameObject = response.player.onGameObject;
+            }
+
+            if (
+              response.player.onGameTreasure != null &&
+              response.player.walletAddress === self.mainPlayer?.walletAddress
+            ) {
+              self.mainPlayer.onGameTreasure = response.player.onGameTreasure;
+            }
+
+            self.updateStats(response.player, response.gameStats);
+            self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+            if (response.moved === false) {
+              if (!self.notEnoughApSound.isPlaying) {
+                self.notEnoughApSound.play();
+              }
+            } else if (cmd === Const.Command.teleported) {
+              if (!self.teleportSound.isPlaying) {
+                self.teleportSound.play();
+              }
+            }
+          }
+          break;
+        case Const.Command.picked:
+          {
+            if (response.picked) {
+              const { x, y } = response.player?.pos;
+              if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
+                self.pickUpSound.play();
+                self.mainPlayer.equipment = response.player.equipment;
+              } else {
+                self.allPlayers[response.player.walletAddress]?.pickAnim();
+              }
+              self.gameObjectsLayer?.removeTileAt(x, y);
+
+              const spriteToHide = self.gameObjectsSprites[y]?.[x];
+              if (spriteToHide) {
+                spriteToHide.setVisible(false);
+              } else {
+                console.error('Could not find sprite to remove at tile position', {
+                  x,
+                  y,
+                });
               }
 
-              if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
-                self.mainPlayer.moveAndExplode(response.player, true);
-              } else {
-                self.allPlayers[response.player.walletAddress].moveAndExplode(response.player, mineLeftByMainPlayer);
+              if (response.player.onGameTreasure?.tile > 0) {
+                //FIXME: create some dedicated fun for this
+                self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
+              }
+
+              if (response.picked.type == GameTreasure.gun.type && !self.theGunCollectedSound.isPlaying) {
+                self.theGunCollectedSound.play();
               }
             } else {
-              self.allPlayers[response.player.walletAddress].moveTo(response.player);
+              if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
+                self.noCollectSound.play();
+              }
             }
+            self.updateStats(response.player, response.gameStats);
+            response.picked && self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
           }
+          break;
 
-          if (
-            response.player.onGameObject != null &&
-            response.player.walletAddress === self.mainPlayer?.walletAddress
-          ) {
-            self.mainPlayer.onGameObject = response.player.onGameObject;
+        case Const.Command.digged: {
+          if (!response.digged) {
+            return;
           }
-
-          if (
-            response.player.onGameTreasure != null &&
-            response.player.walletAddress === self.mainPlayer?.walletAddress
-          ) {
-            self.mainPlayer.onGameTreasure = response.player.onGameTreasure;
+          if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
+            self.allPlayers[response.player.walletAddress]?.digAnim();
           }
-
+          if (response.digged?.tile > 0) {
+            if (self.mainPlayer?.walletAddress === response.player.walletAddress || self.spectatorMode)
+              self.treasureSound.play();
+            self.mainPlayer.diggedTreasures[`${response.player.pos.x}, ${response.player.pos.y}`] =
+              response.digged.tile;
+            self.gameTreasuresLayer?.putTileAt(response.digged.tile, response.player.pos.x, response.player.pos.y);
+          } else {
+            if (self.mainPlayer?.walletAddress === response.player.walletAddress) self.digSound.play();
+            self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
+          }
           self.updateStats(response.player, response.gameStats);
           self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-          if (response.moved === false) {
-            if (!self.notEnoughApSound.isPlaying) {
-              self.notEnoughApSound.play();
-            }
-          } else if (cmd === Const.Command.teleported) {
-            if (!self.teleportSound.isPlaying) {
-              self.teleportSound.play();
-            }
-          }
+          break;
         }
-        break;
-      case Const.Command.picked:
-        {
-          if (response.picked) {
-            const { x, y } = response.player?.pos;
-            if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
-              self.pickUpSound.play();
-              self.mainPlayer.equipment = response.player.equipment;
-            } else {
-              self.allPlayers[response.player.walletAddress]?.pickAnim();
-            }
-            self.gameObjectsLayer?.removeTileAt(x, y);
 
-            const spriteToHide = self.gameObjectsSprites[y]?.[x];
-            if (spriteToHide) {
-              spriteToHide.setVisible(false);
-            } else {
-              console.error('Could not find sprite to remove at tile position', {
-                x,
-                y,
-              });
-            }
-
-            if (response.player.onGameTreasure?.tile > 0) {
-              //FIXME: create some dedicated fun for this
-              self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
-            }
-
-            if (response.picked.type == GameTreasure.gun.type && !self.theGunCollectedSound.isPlaying) {
-              self.theGunCollectedSound.play();
-            }
-          } else {
-            if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
-              self.noCollectSound.play();
-            }
-          }
-          self.updateStats(response.player, response.gameStats);
-          response.picked && self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+        case Const.Command.scanned: {
+          executeScan(response, self);
         }
-        break;
-
-      case Const.Command.digged: {
-        if (!response.digged) {
-          return;
-        }
-        if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
-          self.allPlayers[response.player.walletAddress]?.digAnim();
-        }
-        if (response.digged?.tile > 0) {
-          if (self.mainPlayer?.walletAddress === response.player.walletAddress || self.spectatorMode)
-            self.treasureSound.play();
-          self.mainPlayer.diggedTreasures[`${response.player.pos.x}, ${response.player.pos.y}`] = response.digged.tile;
-          self.gameTreasuresLayer?.putTileAt(response.digged.tile, response.player.pos.x, response.player.pos.y);
-        } else {
-          if (self.mainPlayer?.walletAddress === response.player.walletAddress) self.digSound.play();
-          self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
-        }
-        self.updateStats(response.player, response.gameStats);
-        self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-        break;
       }
-
-      case Const.Command.scanned: {
-        executeScan(response, self);
-      }
-    }
   }
 
   followWinner() {
