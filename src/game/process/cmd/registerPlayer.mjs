@@ -84,15 +84,8 @@ export function registerPlayer(state, action) {
 }
 
 export function calculatePlayerRandomPos(state) {
-  let isAllowedPosition = false;
-  let pos;
-
-  while (!isAllowedPosition) {
-    pos = calculateRandomPos(state, state.map.width);
-
-    isAllowedPosition = !(state.playersOnTiles[pos.y][pos.x] || state.obstaclesTilemap[pos.y][pos.x] > EMPTY_TILE);
-  }
-  return pos;
+  const allowedPosition = ({ x, y }) => !state.playersOnTiles[y][x];
+  return calculateRandomPos(state, state.map.width, allowedPosition);
 }
 
 function sendHubNotification(state) {

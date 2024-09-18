@@ -53,7 +53,7 @@ export function MainSceneGui() {
           ]
         : [
             m('.main-scene-panel', [
-              m('.main-scene-panel-info', `Press TAB for more info`),
+              !visible && m('.main-scene-panel-info', `Press TAB for more info`),
               m('.main-scene-panel-elements', [
                 mainPlayer ? m(PlayerInfo, { mainPlayer, playersTotal }) : null,
                 m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),

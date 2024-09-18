@@ -90,8 +90,21 @@ function generateTilemap(input, width) {
 
 function setVisibleGameObjects(state) {
   state.gameObjectsTilemap = setGameObjectsTilesOnMap(state, [GameObject.none], 0);
+
+  // this area will have higher probability to situate game objects
+  const center = { x: Math.round(state.map.width / 2), y: Math.round(state.map.height / 2) };
+  const radius = 3;
+
   for (let gameObject of state.gameObjectsTiles) {
-    setObjectsOnRandomPositions(state, gameObject, gameObject.rarity, state.gameObjectsTilemap, state.gameObjectsTiles);
+    setObjectsOnRandomPositions(
+      state,
+      gameObject,
+      gameObject.rarity,
+      state.gameObjectsTilemap,
+      state.gameObjectsTiles,
+      center,
+      radius
+    );
   }
 }
 
@@ -148,27 +161,49 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
   });
 }
 
-export function calculateRandomPos(state, max) {
+export function calculateRandomPos(state, max, condition) {
   state.randomCounter++;
   const x = Math.floor(Math.random(state.randomCounter) * max);
   state.randomCounter++;
   const y = Math.floor(Math.random(state.randomCounter) * max);
-  return { x, y };
+  const isAllowedPosition = state.obstaclesTilemap[y][x] === EMPTY_TILE && condition({ x, y });
+  if (isAllowedPosition) {
+    return { x, y };
+  } else {
+    return calculateRandomPos(state, max, condition);
+  }
 }
 
-function setObjectsOnRandomPositions(state, gameObject, rarity, tilemap, tiles) {
+function calculateWeightedRandomPos({ state, center, radius, tiles, tilemap, condition }) {
+  const { x, y } = calculateRandomPos(state, state.map.width, condition);
+  const dx = x - center.x;
+  const dy = y - center.y;
+  const distanceSquared = dx * dx + dy * dy;
+  const radiusSquared = radius * radius;
+
+  const weight = distanceSquared <= radiusSquared ? 0.95 : 0.05;
+
+  state.randomCounter++;
+  if (Math.random(state.randomCounter) < weight) {
+    return { x, y };
+  } else {
+    return calculateWeightedRandomPos({ state, center, radius, tiles, tilemap, condition });
+  }
+}
+
+function setObjectsOnRandomPositions(state, gameObject, rarity, tilemap, tiles, center, radius) {
   let gameObjectCount = 0;
   tiles = Object.values(tiles).map((t) => {
     if (t.type != GameObject.none.type) return t.tile;
   });
 
+  const allowedPosition = ({ x, y }) => !tiles.includes(tilemap[y][x]);
+
   while (gameObjectCount < rarity) {
-    const pos = calculateRandomPos(state, state.map.width);
-    const isAllowedPosition =
-      state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE && !tiles.includes(tilemap[pos.y][pos.x]);
-    if (isAllowedPosition) {
-      tilemap[pos.y][pos.x] = gameObject.tile;
-      gameObjectCount++;
-    }
+    const pos = center
+      ? calculateWeightedRandomPos({ state, center, radius, tiles, tilemap, condition: allowedPosition })
+      : calculateRandomPos(state, state.map.width, allowedPosition);
+    tilemap[pos.y][pos.x] = gameObject.tile;
+    gameObjectCount++;
   }
 }
