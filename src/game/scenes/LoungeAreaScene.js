@@ -183,13 +183,17 @@ export default class LoungeAreaScene extends Phaser.Scene {
   async goToMainScene() {
     this.doHideGui();
     const mapTxId = await loadMapTxId();
-    this.scene.start(mainSceneKey, {
-      mapTxId,
-      walletAddress: this.walletAddress,
-      beaverId: this.beaverId,
-      gameStart: this.gameStart,
-      gameEnd: this.gameEnd,
-    });
+    if (this.scene?.isActive()) {
+      this.scene.start(mainSceneKey, {
+        mapTxId,
+        walletAddress: this.walletAddress,
+        beaverId: this.beaverId,
+        gameStart: this.gameStart,
+        gameEnd: this.gameEnd,
+      });
+    } else {
+      console.log(`Lounge Area already inactive`);
+    }
   }
 
   async goToPlayerPick() {
