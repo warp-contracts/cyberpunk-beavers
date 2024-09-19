@@ -205,7 +205,11 @@ export default class MainScene extends Phaser.Scene {
       this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
       setTimeout(() => {
         hideGui();
-        this.scene.start(leaderboardSceneKey, { players: this.allPlayers, mainPlayer: this.mainPlayer });
+        this.scene.start(leaderboardSceneKey, {
+          players: this.allPlayers,
+          mainPlayer: this.mainPlayer,
+          gameTokens: this.gameStats.gameTokens,
+        });
       }, 3000);
     }
     if (this.roundInfo.roundsToGo == 3 && !this.threeRoundsPlayed) {
