@@ -1,6 +1,5 @@
 import Const, { COLLISIONS_LAYER, GameObject } from '../../common/const.mjs';
 
-const baseTileUnit = 48;
 const gameObjectsTextureKey = `cyberpunk_game_objects`;
 const gameObjectsToAdd = {
   [GameObject.ap.type]: { x: 0, y: 0 },
@@ -9,8 +8,6 @@ const gameObjectsToAdd = {
   [GameObject.teleport_device.type]: { x: 144, y: 0 },
   [GameObject.scanner_device.type]: { x: 0, y: 48 },
 };
-// set when adding initial map sprites so the new sprite added after respawning stays in sync
-let spriteSyncedTime = null;
 
 export function doCreateTileMap(mainScene) {
   const gameObjectsTexture = mainScene.textures.get(gameObjectsTextureKey);
@@ -65,6 +62,7 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
         const { x, y } = mainScene.tileMap.worldToTileXY(sprite.x, sprite.y);
         if (!mainScene.gameObjectsSprites[y]) mainScene.gameObjectsSprites[y] = {};
         mainScene.gameObjectsSprites[y][x] = sprite;
+        sprite.setDepth(4);
       }
 
       mainScene.tweens.add({
@@ -74,9 +72,6 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
         ease: 'Sine.easeInOut',
         yoyo: true,
         repeat: -1,
-        onUpdate: (tween) => {
-          spriteSyncedTime = tween.progress;
-        },
       });
     }
 
