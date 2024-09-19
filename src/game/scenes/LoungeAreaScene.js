@@ -176,6 +176,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
       mainPlayer: {
         walletAddress: this.walletAddress,
       },
+      gameTokens: response.gameStats?.gameTokens,
     });
   }
 
