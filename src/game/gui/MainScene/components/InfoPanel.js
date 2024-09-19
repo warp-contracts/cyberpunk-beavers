@@ -5,7 +5,7 @@ export function InfoPanel() {
     view: function (vnode) {
       const { roundInfo, gameOver, stats, diff, spectatorMode } = vnode.attrs;
       return m('.info-panel', [
-        gameOver || diff
+        gameOver
           ? null
           : [
               roundInfo
