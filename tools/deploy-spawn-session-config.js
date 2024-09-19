@@ -24,17 +24,17 @@ export const TOKEN_CONTRACT_MOCK = {
   [GameTreasure.cbcoin.type]: {
     id: '_ThTRfZDNAV1Y-yX2h_9PNe5oGHh4q0eRhv6Y1tRVR0',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 50,
   },
   [GameTreasure.trunk.type]: {
     id: '2_O3UNKze6Yuy1oaNzRAGQjqbXJyd8AprlR90QFDp98',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 20,
   },
   [GameTreasure.tio.type]: {
     id: 'h3FqYG9AVze-JFH-MQS3Rvv5golBhjnDuPDpJFEpdwE',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 20,
   },
   [GameTreasure.war.type]: {
     id: 'Q7-XYIgAKiatIGuez3dM7eu4miqH5_USvKt6uY4bw9Y',
@@ -44,12 +44,12 @@ export const TOKEN_CONTRACT_MOCK = {
   [GameTreasure.rsg.type]: {
     id: 'p5OI99-BaY4QbZts266T7EDwofZqs-wVuYJmMCS0SUU',
     transfer: 'Transfer',
-    amount: 120,
+    amount: 0,
   },
   [GameTreasure.gun.type]: {
     id: 'BzwAEjvM2XgUPBhV5l97QR6wJkfcuIXhkCewG7GNbzc',
     transfer: 'Transfer',
-    amount: 120,
+    amount: 0,
   },
 };
 
@@ -57,17 +57,17 @@ export const TOKEN_CONTRACT = {
   [GameTreasure.cbcoin.type]: {
     id: 'rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 50,
   },
   [GameTreasure.trunk.type]: {
     id: 'OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 20,
   },
   [GameTreasure.tio.type]: {
     id: 'agYcCFJtrMG6cqMuZfskIkFTGvUPddICmtQSBIoPdiA',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 20,
   },
   [GameTreasure.war.type]: {
     id: 'xU9zFkq3X2ZQ6olwNVvr1vUWIjc3kXTWr7xKQD6dh10',
@@ -77,12 +77,12 @@ export const TOKEN_CONTRACT = {
   [GameTreasure.rsg.type]: {
     id: 'p5OI99-BaY4QbZts266T7EDwofZqs-wVuYJmMCS0SUU',
     transfer: 'Transfer',
-    amount: 50,
+    amount: 0,
   },
   [GameTreasure.gun.type]: {
     id: 'O-566VlALuKNrSQBdLOgHyYIcqT0oqeattaBk2gNS70',
     transfer: 'Transfer',
-    amount: 1,
+    amount: 0,
   },
 };
 

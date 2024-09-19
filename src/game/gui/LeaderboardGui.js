@@ -4,7 +4,7 @@ import { playClick } from '../utils/mithril.js';
 export function LeaderboardGui(initialVnode) {
   return {
     view: function (vnode) {
-      const { tokenType, data, back } = vnode.attrs;
+      const { tokenTypes, data, back } = vnode.attrs;
       console.log(data);
       return [
         m('.mithril-component', { id: 'leaderboard' }, [
@@ -25,17 +25,17 @@ export function LeaderboardGui(initialVnode) {
               m('.col', 'player'),
               m('.col', 'points'),
               m('.col', GAME_MODES[warpAO.config.mode].token),
-              tokenType && m('.col', `${tokenType}`),
+              tokenTypes && tokenTypes.map((t) => m('.col', `${t}`)),
               m('.col', 'frags'),
               m('.col', 'deaths'),
             ]),
-            data.map(([index, player, points, coins, token, frags, deaths]) => {
+            data.map(([index, player, points, coins, tokens, frags, deaths]) => {
               return m('.row', [
                 m('.col', index),
                 m(`.col portrait ${player.img}`, player.name),
                 m('.col', points),
                 m('.col', coins),
-                token && m('.col', token),
+                tokens && tokens.map((t) => m('.col', t)),
                 m('.col', frags),
                 m('.col', deaths),
               ]);

@@ -37,7 +37,7 @@
 
   .row {
     display: flex;
-    width: 1300px;
+    width: calc(100vw - 100px);
     justify-content: space-evenly;
     color: var(--white);
     font-size: 16px;

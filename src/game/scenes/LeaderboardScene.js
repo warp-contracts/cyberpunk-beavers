@@ -1,5 +1,5 @@
 import { WebFontFile } from '../objects/WebFontFile.js';
-import Const, { GameTreasure } from '../common/const.mjs';
+import Const, { GAME_MODES } from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
 import {
   mainSceneKey,
@@ -25,6 +25,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     this.mainPlayer = data.mainPlayer;
     this.walletAddress = data.mainPlayer?.walletAddress || data.walletAddress;
     this.mainScene = this.scene.get(mainSceneKey);
+    this.gameTokens = data.gameTokens;
   }
 
   preload() {
@@ -39,11 +40,14 @@ export default class LeaderboardScene extends Phaser.Scene {
       this.server.subscribe(this);
 
       var self = this;
-      const tokenType = '';
+      const tokenTypes = Object.entries(self.gameTokens)
+        .filter(([, value]) => value.id != GAME_MODES[warpAO.config.mode].token && value.amount > 0)
+        .map(([type, value]) => type);
+
       m.mount(showGui(), {
         view: function () {
           return m(LeaderboardGui, {
-            tokenType,
+            tokenTypes,
             data: /* [
               [1, { img: 'heavy_beaver', name: 'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY' }, 0, 69544, 5, 2],
               [2, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 10000, 20, 0],
@@ -65,7 +69,7 @@ export default class LeaderboardScene extends Phaser.Scene {
               [20, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
               [21, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
               [22, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
-            ],*/ self.prepareCellsData(tokenType),
+            ],*/ self.prepareCellsData(tokenTypes),
             back: () => {
               self.server.unsubscribe();
               self.restartScenes();
@@ -81,7 +85,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     }
   }
 
-  prepareCellsData(tokenType) {
+  prepareCellsData(tokenTypes) {
     const cells = [];
     if (!this.allPlayers || Object.keys(this.allPlayers).length == 0) {
       return cells;
@@ -99,7 +103,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         },
         player.stats?.coins?.gained,
         player.stats?.coins?.balance + player.stats?.coins?.gained,
-        tokenType ? `${formatCoin(player.stats?.additionalTokens[tokenType]?.gained, tokenType) || '-'}` : null,
+        tokenTypes ? tokenTypes.map((t) => `${formatCoin(player.stats?.additionalTokens[t]?.gained, t) || '-'}`) : null,
         player.stats?.kills?.frags,
         player.stats?.kills?.deaths,
       ]);
