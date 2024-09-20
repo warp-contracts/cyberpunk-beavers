@@ -260,7 +260,7 @@ export const BEAVER_TYPES = {
     equipment: {
       teleports: {
         current: 0,
-        max: 5,
+        max: 3,
       },
       landmines: {
         current: 0,
@@ -268,7 +268,7 @@ export const BEAVER_TYPES = {
       },
       scanners: {
         current: 0,
-        max: 4,
+        max: 3,
       },
     },
   },
@@ -296,7 +296,7 @@ export const BEAVER_TYPES = {
     equipment: {
       teleports: {
         current: 0,
-        max: 5,
+        max: 3,
       },
       landmines: {
         current: 0,
@@ -304,7 +304,7 @@ export const BEAVER_TYPES = {
       },
       scanners: {
         current: 0,
-        max: 4,
+        max: 3,
       },
     },
   },
