@@ -94,11 +94,11 @@ const Tile = {
 };
 
 export const GameObject = {
-  ap: { type: 'ap', tile: 0, value: 5, rarity: 35, roundsToRespawn: 10 },
-  hp: { type: 'hp', tile: 1, value: 25, rarity: 35, roundsToRespawn: 10 },
-  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 15, roundsToRespawn: 10 },
-  teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 25, roundsToRespawn: 10 },
-  scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 15, roundsToRespawn: 10 },
+  ap: { type: 'ap', tile: 0, value: 5, rarity: 30, roundsToRespawn: 15 },
+  hp: { type: 'hp', tile: 1, value: 25, rarity: 30, roundsToRespawn: 20 },
+  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 15, roundsToRespawn: 20 },
+  teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 15, roundsToRespawn: 0 },
+  scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 15, roundsToRespawn: 0 },
   none: { type: 'none', tile: 5, value: 0 },
 
   // invisible
@@ -169,7 +169,7 @@ export const WEAPONS = {
     name: 'Sniper Rifle',
     img: null,
     attack_range: 5,
-    damage: [20, 19, 18, 17, 16],
+    damage: [30, 28, 27, 25, 24],
     hit_chance: [0.95, 0.92, 0.9, 0.88, 0.85],
     critical_hit_chance: [0.3, 0.25, 0.22, 0.2, 0.15],
     critical_hit_multiplier: [2.4, 2.3, 2.2, 2.1, 2.0],
@@ -180,7 +180,7 @@ export const WEAPONS = {
     name: 'Shotgun',
     img: null,
     attack_range: 3,
-    damage: [25, 19, 15],
+    damage: [37, 28, 22],
     hit_chance: [0.9, 0.8, 0.7],
     critical_hit_chance: [0.25, 0.1, 0.05],
     critical_hit_multiplier: [2.5, 1.8, 1.6],
@@ -191,9 +191,9 @@ export const WEAPONS = {
     name: 'Katana',
     img: null,
     attack_range: 1,
-    damage: [25],
+    damage: [50],
     hit_chance: [0.95],
-    critical_hit_chance: [0.1],
+    critical_hit_chance: [0.35],
     critical_hit_multiplier: [2.0],
     attack_recovery_ms: 400,
   },
@@ -224,7 +224,7 @@ export const BEAVER_TYPES = {
     equipment: {
       teleports: {
         current: 0,
-        max: 5,
+        max: 3,
       },
       landmines: {
         current: 0,
@@ -232,7 +232,7 @@ export const BEAVER_TYPES = {
       },
       scanners: {
         current: 0,
-        max: 4,
+        max: 3,
       },
     },
   },
