@@ -60,6 +60,9 @@ export function ConnectWalletSceneGui(initialVnode) {
         );
       }
       const walletAddress = await window.arweaveWallet.getActiveAddress();
+      gtag('event', 'wallet_connection_arconnect', {
+        walletAddress: walletAddress,
+      });
       await setGeneratedWallet(walletAddress, 'arconnect');
       changeSceneWithTimeout(changeScene, walletAddress);
     }
