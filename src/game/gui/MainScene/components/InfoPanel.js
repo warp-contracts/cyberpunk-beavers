@@ -3,12 +3,11 @@ import { formatCountdownTo } from '../../LoungeArenaSceneGui';
 export function InfoPanel() {
   return {
     view: function (vnode) {
-      const { roundInfo, lastAttack, gameOver, stats, diff, spectatorMode } = vnode.attrs;
+      const { roundInfo, gameOver, stats, diff, spectatorMode } = vnode.attrs;
       return m('.info-panel', [
         gameOver
           ? null
           : [
-              m(BattleReport, { trigger: lastAttack.criticalHit, message: 'CRITICAL HITT!', timeout: 5_000 }),
               roundInfo
                 ? [
                     m(Timebar, {
@@ -59,19 +58,6 @@ function Timebar() {
           }),
         ]),
       ]);
-    },
-  };
-}
-
-function BattleReport() {
-  return {
-    view: function (vnode) {
-      const { message, timeout, trigger } = vnode.attrs;
-      if (trigger) {
-        vnode.state.animating = true;
-        setTimeout(() => (vnode.state.animating = false), timeout);
-      }
-      return vnode.state.animating ? m('.battle-report', message) : null;
     },
   };
 }

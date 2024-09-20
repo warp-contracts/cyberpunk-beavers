@@ -48,7 +48,7 @@ export function MainSceneGui() {
 
       return spectatorMode
         ? [
-            m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, lastAttack, gameOver, diff, spectatorMode }),
+            m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff, spectatorMode }),
             m(KeyboardMapping, { spectatorMode }),
             m(SpectatorStats, { gameTokens: gameStats.gameTokens || {} }),
           ]
@@ -57,7 +57,7 @@ export function MainSceneGui() {
               m('.main-scene-panel-info', `Press TAB for more info`),
               m('.main-scene-panel-elements', [
                 mainPlayer ? m(PlayerInfo, { mainPlayer, playersTotal }) : null,
-                m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, lastAttack, gameOver, diff }),
+                m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
                 equipment ? m(Equipment, { equipment, stats: mainPlayer?.stats }) : null,
               ]),
             ]),
@@ -68,6 +68,14 @@ export function MainSceneGui() {
             m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
             gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
             !gameActive && diff > 0 ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`) : null,
+            m(
+              '.main-scene-info',
+              m(BattleReport, {
+                trigger: gameActive && lastAttack.criticalHit,
+                message: 'CRITICAL HIT!',
+                timeout: 5_000,
+              })
+            ),
             mainPlayer ? m(`.main-scene-lag ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage) : null,
           ];
     },
@@ -87,6 +95,19 @@ function animateEnter(vnode) {
       { once: true }
     );
   }
+}
+
+function BattleReport() {
+  return {
+    view: function (vnode) {
+      const { message, timeout, trigger } = vnode.attrs;
+      if (trigger) {
+        vnode.state.animating = true;
+        setTimeout(() => (vnode.state.animating = false), timeout);
+      }
+      return vnode.state.animating ? m('.battle-report', message) : null;
+    },
+  };
 }
 
 function animatePanelInfo(vnode) {

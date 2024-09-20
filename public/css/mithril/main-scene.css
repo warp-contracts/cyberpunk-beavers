@@ -148,6 +148,15 @@
   background: blueviolet;
 }
 
+.battle-report {
+  font-family: 'Press Start 2P';
+  background: black;
+  font-size: var(--big);
+  text-transform: uppercase;
+  color: var(--red);
+  animation: blink 1s steps(5, start) infinite;
+}
+
 .info-panel {
   display: flex;
   flex-direction: column;
@@ -187,15 +196,6 @@
     img {
       padding: 0 5px;
     }
-  }
-
-  .battle-report {
-    font-family: 'Press Start 2P';
-    background: black;
-    font-size: var(--fs-small-title);
-    text-transform: uppercase;
-    color: var(--red);
-    animation: blink 1s steps(5, start) infinite;
   }
 
   .timebar-container {

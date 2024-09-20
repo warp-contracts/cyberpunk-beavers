@@ -409,7 +409,10 @@ export default class MainScene extends Phaser.Scene {
             doPlayAttackSound(response.player.beaverId, this);
           }
           if (isKillerMainPlayer) {
-            self.lastAttack.criticalHit = response.damage.criticalHit;
+            self.lastAttack.criticalHit = response.damage?.criticalHit;
+            if (response.damage?.criticalHit && !self.criticalHitSound?.isPlaying) {
+              self.criticalHitSound?.play();
+            }
           }
           self.updateStats(response.player, response.gameStats);
           self.updateStats(response.opponent, response.gameStats);
