@@ -59,6 +59,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('beaver_eliminated_sound', ['assets/audio/beaver_eliminated.m4a']);
   mainScene.load.audio('the_gun_collected_sound', ['assets/audio/the_gun_collected.m4a']);
   mainScene.load.audio('not_enough_ap', ['assets/audio/not_enough_ap.m4a']);
+  mainScene.load.audio('critical_hit', ['assets/audio/critical_hit.m4a']);
   mainScene.load.audio('new_challenger', ['assets/audio/new_challenger.m4a']);
   mainScene.load.audio('game_over', ['assets/audio/game_over.m4a']);
   mainScene.load.audio('3_rounds_left', ['assets/audio/3_rounds_left.m4a']);
