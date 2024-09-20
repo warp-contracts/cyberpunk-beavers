@@ -15,6 +15,7 @@ export function setup(state, action, message) {
 
   state.hubProcessId = action.hubProcessId || state.hubProcessId;
   state.bridgeProcessId = action.bridgeProcessId || state.bridgeProcessId;
+  state.leaderboardProcessId = action.leaderboardProcessId || state.leaderboardProcessId;
   state.playersLimit = action.playersLimit || state.playersLimit || Const.Queue.defaultLimit;
   state.walletsWhitelist = action.walletsWhitelist || state.walletsWhitelist;
   state.mode = action.mode || state.mode || Const.GAME_MODES.default.type;

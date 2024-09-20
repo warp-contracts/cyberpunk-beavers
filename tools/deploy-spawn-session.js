@@ -114,8 +114,8 @@ async function doIt() {
 
   const bridgeProcessId = ids[`bridge_processId_${env}`];
   let setups = execDate
-    ? hourSessionGamesConfig(hubProcessId, bridgeProcessId, execDate, playersLimit, mode)
-    : activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit, mode);
+    ? hourSessionGamesConfig(env, hubProcessId, execDate, playersLimit, mode)
+    : activeGamesConfig(env, hubProcessId, playersLimit, mode);
 
   const gameProcesses = [];
   let counter = 0;

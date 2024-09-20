@@ -1,4 +1,5 @@
 import Const from '../src/game/common/const.mjs';
+import ids from '../src/game/config/warp-ao-ids.js';
 const { GameTreasure } = Const;
 
 const hourSessionDelayMS = [
@@ -86,52 +87,48 @@ export const TOKEN_CONTRACT = {
   },
 };
 
-export function hourSessionGamesConfig(hubProcessId, bridgeProcessId, dateOfFirstGame, playersLimit, mode) {
+export function hourSessionGamesConfig(env, hubProcessId, dateOfFirstGame, playersLimit, mode) {
   return hourSessionDelayMS.map((delay) => {
-    return gameCustomConfig(hubProcessId, bridgeProcessId, dateOfFirstGame.getTime() + delay, playersLimit, mode);
+    return gameCustomConfig(env, hubProcessId, dateOfFirstGame.getTime() + delay, playersLimit, mode);
   });
 }
 
-export function gameCustomConfig(hubProcessId, bridgeProcessId, date, playersLimit, mode) {
+export function gameCustomConfig(env, hubProcessId, date, playersLimit, mode) {
   if (date) {
     return {
-      cmd: Const.Command.setup,
-      type: 'custom',
-      hubProcessId,
-      bridgeProcessId,
+      ...customSetup(env, hubProcessId, playersLimit),
       start: date,
       end: date + gameDurationMS,
-      walletsWhitelist,
-      playersLimit,
       mode,
     };
   } else {
     return {
-      cmd: Const.Command.setup,
-      type: 'custom',
-      hubProcessId,
-      bridgeProcessId,
-      walletsWhitelist,
-      playersLimit,
+      ...customSetup(env, hubProcessId, playersLimit),
       mode,
     };
   }
 }
 
-export function activeGamesConfig(hubProcessId, bridgeProcessId, playersLimit, mode) {
+export function activeGamesConfig(env, hubProcessId, playersLimit, mode) {
   return [
     {
-      cmd: Const.Command.setup,
-      type: 'custom',
-      hubProcessId,
-      playersLimit,
+      ...customSetup(env, hubProcessId, playersLimit),
       mode,
     },
-    {
-      cmd: Const.Command.setup,
-      type: 'custom',
-      hubProcessId,
-      playersLimit,
-    },
+    customSetup(env),
   ];
+}
+
+function customSetup(env, hubProcessId, playersLimit) {
+  const bridgeProcessId = ids[`bridge_processId_${env}`];
+  const leaderboardProcessId = ids[`leaderboard_processId_${env}`];
+  return {
+    cmd: Const.Command.setup,
+    type: 'custom',
+    bridgeProcessId,
+    leaderboardProcessId,
+    walletsWhitelist,
+    hubProcessId,
+    playersLimit,
+  };
 }

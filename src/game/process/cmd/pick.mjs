@@ -115,7 +115,7 @@ function pickTreasure(state, player) {
   state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
   const valueWithBonus = value + (player.stats.bonus[type] || 0);
   addCoins(player, GAME_MODES[state.mode].token, valueWithBonus, state);
-  addCoins(player, type, 1, state);
+  addCoins(player, type, 1, state); //FIXME: this might be wrong in case of cbcoin
   return {
     player,
     picked: { type, tile: treasureTile },

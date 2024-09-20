@@ -18,7 +18,7 @@
     "deploy-session:prod": "yarn build && node tools/deploy-spawn-session.js --env prod --limit 20 --time $1",
     "deploy-session:prod:rsg": "yarn build && node tools/deploy-spawn-session.js --env prod --limit 20 --gameMode rsg --time $1",
     "deploy-session-game:prod": "yarn build && node tools/deploy-spawn-session-game.js --env prod --limit 20 --time $1",
-    "test": "node build.js && vitest",
+    "test": "node  build.js && vitest",
     "build": "node build.js",
     "format": "npx prettier --write .",
     "prepare": "husky install"
@@ -36,6 +36,7 @@
   "devDependencies": {
     "@ardrive/turbo-sdk": "latest",
     "@permaweb/aoconnect": "^0.0.55",
+    "@permaweb/ao-loader": "^0.0.36",
     "arweave": "^1.15.1",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
