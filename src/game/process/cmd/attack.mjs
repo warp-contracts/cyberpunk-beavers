@@ -72,7 +72,9 @@ function calculateDamage(player, damageFigures, state) {
   const criticalChance = player.stats.weapon.critical_hit_chance[range];
   const criticalHitRandom = Math.random(++state.randomCounter);
   let dmgMultiplier = 1;
+  let criticalHit = false;
   if (criticalHitRandom <= criticalChance) {
+    criticalHit = true;
     dmgMultiplier = player.stats.weapon.critical_hit_multiplier[range];
   }
   const hitChance = player.stats.weapon.hit_chance[range];
@@ -88,8 +90,7 @@ function calculateDamage(player, damageFigures, state) {
   return {
     range,
     baseDmg,
-    criticalChance,
-    random: criticalHitRandom,
+    criticalHit,
     dmgMultiplier,
     finalDmg,
   };
