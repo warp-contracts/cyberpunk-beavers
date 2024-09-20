@@ -127,7 +127,9 @@ function pickTreasure(state, player) {
 }
 
 function addGameObjectToRespawn(state, gameObjectType, player) {
-  const round = state.round.current + GameObject[gameObjectType].roundsToRespawn;
+  const roundsToRespawn = GameObject[gameObjectType].roundsToRespawn;
+  if (!roundsToRespawn) return;
+  const round = state.round.current + roundsToRespawn;
   let respawnInRound = state.gameObjectsToRespawn[round];
   const gameObjectToRespawn = { type: gameObjectType, tile: GameObject[gameObjectType].tile, pos: player.pos };
 
