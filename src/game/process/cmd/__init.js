@@ -28,6 +28,7 @@ function initState(message, state) {
     nextModuleId: null,
     activated: false,
     tokensTransferred: false,
+    scoresSent: false,
     counter: 0,
     pos: 1,
     playWindow: {},

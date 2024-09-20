@@ -1022,6 +1022,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@permaweb/ao-loader@^0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@permaweb/ao-loader/-/ao-loader-0.0.36.tgz#901632148d7c8ee6b5013068b0249d047e9d9d43"
+  integrity sha512-So4WzXjh+Ovx5aAivw3JIL2bBgqDsetu6+Dyn4S23HeOyZTS9Sm2MJvTrnt3LvjdpsYSxfp2p445L1uEOspMTA==
+
 "@permaweb/ao-scheduler-utils@~0.0.16":
   version "0.0.23"
   resolved "https://registry.npmjs.org/@permaweb/ao-scheduler-utils/-/ao-scheduler-utils-0.0.23.tgz"
