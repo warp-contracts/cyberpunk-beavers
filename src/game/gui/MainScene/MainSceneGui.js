@@ -26,6 +26,7 @@ export function MainSceneGui() {
       const {
         mainPlayer,
         mainPlayerEquipment: equipment,
+        lastAttack,
         gameStats,
         roundInfo,
         gameOver,
@@ -47,7 +48,7 @@ export function MainSceneGui() {
 
       return spectatorMode
         ? [
-            m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff, spectatorMode }),
+            m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, lastAttack, gameOver, diff, spectatorMode }),
             m(KeyboardMapping, { spectatorMode }),
             m(SpectatorStats, { gameTokens: gameStats.gameTokens || {} }),
           ]
@@ -56,7 +57,7 @@ export function MainSceneGui() {
               m('.main-scene-panel-info', `Press TAB for more info`),
               m('.main-scene-panel-elements', [
                 mainPlayer ? m(PlayerInfo, { mainPlayer, playersTotal }) : null,
-                m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
+                m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, lastAttack, gameOver, diff }),
                 equipment ? m(Equipment, { equipment, stats: mainPlayer?.stats }) : null,
               ]),
             ]),

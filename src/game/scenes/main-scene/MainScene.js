@@ -40,6 +40,7 @@ export default class MainScene extends Phaser.Scene {
   followedPlayer = null;
   fov = null;
   gameObjectsSprites = {};
+  lastAttack = { criticalHit: false };
 
   constructor() {
     super(mainSceneKey);
@@ -101,6 +102,7 @@ export default class MainScene extends Phaser.Scene {
             userName: self.mainPlayer?.userName,
             beaverChoice: self.beaverId || self.beaverChoice,
           },
+          lastAttack: self.lastAttack,
           mainPlayerEquipment: self.mainPlayer?.equipment,
           gameStats: self.gameStats,
           roundInfo: self.roundInfo,
@@ -247,6 +249,7 @@ export default class MainScene extends Phaser.Scene {
       this.fov.update(player, bounds);
     }
     m.redraw();
+    this.lastAttack.criticalHit = false;
   }
 
   waitForGameEnter() {
@@ -404,6 +407,9 @@ export default class MainScene extends Phaser.Scene {
           const isOpponentMainPlayer = response.opponent?.walletAddress === self.mainPlayer?.walletAddress;
           if (isOpponentMainPlayer || self.spectatorMode) {
             doPlayAttackSound(response.player.beaverId, this);
+          }
+          if (isKillerMainPlayer) {
+            self.lastAttack.criticalHit = response.damage.criticalHit;
           }
           self.updateStats(response.player, response.gameStats);
           self.updateStats(response.opponent, response.gameStats);
