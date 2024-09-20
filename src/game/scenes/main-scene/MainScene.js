@@ -464,6 +464,7 @@ export default class MainScene extends Phaser.Scene {
         case Const.Command.teleported:
         case Const.Command.moved:
           {
+            const isMainPlayer = response.player.walletAddress === self.mainPlayer?.walletAddress;
             if (!self.allPlayers[response.player.walletAddress]) {
               self.addOtherPlayer(response.player);
             } else {
@@ -474,7 +475,7 @@ export default class MainScene extends Phaser.Scene {
                   self[`mineGrid_${response.player.movedPos.x}_${response.player.movedPos.y}`].destroy();
                 }
 
-                if (response.player.walletAddress === self.mainPlayer?.walletAddress) {
+                if (isMainPlayer) {
                   self.mainPlayer.moveAndExplode(response.player, true);
                 } else {
                   self.allPlayers[response.player.walletAddress].moveAndExplode(response.player, mineLeftByMainPlayer);
@@ -484,23 +485,17 @@ export default class MainScene extends Phaser.Scene {
               }
             }
 
-            if (
-              response.player.onGameObject != null &&
-              response.player.walletAddress === self.mainPlayer?.walletAddress
-            ) {
+            if (response.player.onGameObject != null && isMainPlayer) {
               self.mainPlayer.onGameObject = response.player.onGameObject;
             }
 
-            if (
-              response.player.onGameTreasure != null &&
-              response.player.walletAddress === self.mainPlayer?.walletAddress
-            ) {
+            if (response.player.onGameTreasure != null && isMainPlayer) {
               self.mainPlayer.onGameTreasure = response.player.onGameTreasure;
             }
 
             self.updateStats(response.player, response.gameStats);
             self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-            if (response.moved === false) {
+            if (isMainPlayer && response.moved === false) {
               if (!self.notEnoughApSound.isPlaying) {
                 self.notEnoughApSound.play();
               }
