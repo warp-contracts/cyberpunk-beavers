@@ -62,17 +62,17 @@ export const TOKEN_CONTRACT = {
   [GameTreasure.trunk.type]: {
     id: 'wOrb8b_V8QixWyXZub48Ki5B6OIDyf_p1ngoonsaRpQ',
     transfer: 'Transfer',
-    amount: 20,
+    amount: 0,
   },
   [GameTreasure.tio.type]: {
     id: 'agYcCFJtrMG6cqMuZfskIkFTGvUPddICmtQSBIoPdiA',
     transfer: 'Transfer',
-    amount: 20,
+    amount: 0,
   },
   [GameTreasure.war.type]: {
     id: 'xU9zFkq3X2ZQ6olwNVvr1vUWIjc3kXTWr7xKQD6dh10',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 20,
   },
   [GameTreasure.rsg.type]: {
     id: 'p5OI99-BaY4QbZts266T7EDwofZqs-wVuYJmMCS0SUU',
