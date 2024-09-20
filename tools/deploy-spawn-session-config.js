@@ -60,7 +60,7 @@ export const TOKEN_CONTRACT = {
     amount: 50,
   },
   [GameTreasure.trunk.type]: {
-    id: 'OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww',
+    id: 'wOrb8b_V8QixWyXZub48Ki5B6OIDyf_p1ngoonsaRpQ',
     transfer: 'Transfer',
     amount: 20,
   },
