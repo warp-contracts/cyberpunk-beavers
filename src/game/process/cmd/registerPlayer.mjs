@@ -7,7 +7,7 @@ const { BEAVER_TYPES, Map, EMPTY_TILE, GameTreasure } = Const;
 export function registerPlayer(state, action) {
   const { beaverId, mainWalletAddress, userName, balance, generatedWalletAddress } = action;
   const walletAddress = mainWalletAddress;
-  const { players, playersOnTiles, walletsQueue, walletsWhitelist } = state;
+  const { players, playersOnTiles, walletsQueue } = state;
 
   // Player already registered, move along
   if (players[walletAddress]) {

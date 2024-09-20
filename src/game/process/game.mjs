@@ -8,6 +8,7 @@ import { gameFinished, gameInfo, gameNotStarted, gameStats } from './cmd/info.mj
 import { setup } from './cmd/setup.mjs';
 import { __init } from './cmd/__init.js';
 import { sendTokens } from './cmd/sendTokens.mjs';
+import { sendScores } from './cmd/sendScores.mjs';
 import { useLandmine } from './cmd/landmine.mjs';
 import { teleportPlayer } from './cmd/teleport.mjs';
 import { activate, standInQueue, checkWhitelist } from './cmd/queue.mjs';
@@ -45,12 +46,15 @@ export function handle(state, message) {
 
   if (restrictedAccess(state, action, message.Timestamp)) {
     console.log(`The game access is restricted`, action, message.Timestamp, state.playWindow);
-    if (!state.tokensTransferred && gameFinished(state, message.Timestamp)) {
-      ao.result({
-        cmd: Const.Command.tokensSent,
-        ...sendTokens(state),
-      });
-      return;
+    if (gameFinished(state, message.Timestamp)) {
+      sendScores(state);
+      if (!state.tokensTransferred) {
+        ao.result({
+          cmd: Const.Command.tokensSent,
+          ...sendTokens(state),
+        });
+        return;
+      }
     }
     ao.result({
       cmd: Const.Command.stats,
@@ -219,7 +223,8 @@ function gameRoundTick(state, message) {
   if (state.playWindow?.roundsTotal) {
     const roundsToGo = state.playWindow?.roundsTotal - state.round.current;
     console.log('Rounds to go', roundsToGo);
-    if (roundsToGo == 0) {
+    if (roundsToGo === 0) {
+      sendScores(state);
       return {
         tokensSent: true,
         ...sendTokens(state),
