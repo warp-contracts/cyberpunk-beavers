@@ -1,5 +1,5 @@
 import Const from './const.mjs';
-const { GameTreasure, GAME_MODES } = Const;
+const { GAME_MODES } = Const;
 
 function step(pos, dir) {
   switch (dir) {

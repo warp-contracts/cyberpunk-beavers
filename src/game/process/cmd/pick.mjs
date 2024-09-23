@@ -19,23 +19,23 @@ export function pick(state, action) {
 
   switch (type) {
     case GameObject.hp.type:
-      return pickHP(state, player, value);
+      return pickEquipment(state, player, { value, type: GameObject.hp.type, equipmentType: `hp` });
     case GameObject.ap.type:
-      return pickAP(state, player, value);
+      return pickEquipment(state, player, { value, type: GameObject.ap.type, equipmentType: `ap` });
     case GameObject.equipment_mine.type:
-      return pickDevice(state, player, {
+      return pickEquipment(state, player, {
         value,
         type: GameObject.equipment_mine.type,
         equipmentType: `landmines`,
       });
     case GameObject.teleport_device.type:
-      return pickDevice(state, player, {
+      return pickEquipment(state, player, {
         value,
         type: GameObject.teleport_device.type,
         equipmentType: `teleports`,
       });
     case GameObject.scanner_device.type:
-      return pickDevice(state, player, {
+      return pickEquipment(state, player, {
         value,
         type: GameObject.scanner_device.type,
         equipmentType: `scanners`,
@@ -46,41 +46,24 @@ export function pick(state, action) {
   return { player, picked: false };
 }
 
-function pickHP(state, player, value) {
-  console.log(`Player ${player.walletAddress} stands on HP, increasing by ${value}.`);
-  player.stats.ap.current -= 1;
-  player.stats.hp.current += value;
-  addCoins(player, GAME_MODES[state.mode].token, value, state);
-  state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-  addGameObjectToRespawn(state, GameObject.hp.type, player);
-  return {
-    player,
-    picked: { type: GameObject.hp.type },
-    scoreToDisplay: scoreToDisplay([
-      { value: value, type: Scores.hp },
-      { value: -1, type: Scores.ap },
-    ]),
-  };
-}
+// function pickAP(state, player, value) {
+//   console.log(`Player stands on a AP object, increasing by ${value}. `);
+//   player.stats.ap.current -= 1;
+//   player.stats.ap.current += value;
+//   addCoins(player, GAME_MODES[state.mode].token, value, state);
+//   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
+//   addGameObjectToRespawn(state, GameObject.ap.type, player);
+//   return {
+//     player,
+//     picked: { type: GameObject.ap.type },
+//     scoreToDisplay: scoreToDisplay([
+//       { value: value, type: Scores.ap },
+//       { value: -1, type: Scores.ap },
+//     ]),
+//   };
+// }
 
-function pickAP(state, player, value) {
-  console.log(`Player stands on a AP object, increasing by ${value}. `);
-  player.stats.ap.current -= 1;
-  player.stats.ap.current += value;
-  addCoins(player, GAME_MODES[state.mode].token, value, state);
-  state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-  addGameObjectToRespawn(state, GameObject.ap.type, player);
-  return {
-    player,
-    picked: { type: GameObject.ap.type },
-    scoreToDisplay: scoreToDisplay([
-      { value: value, type: Scores.ap },
-      { value: -1, type: Scores.ap },
-    ]),
-  };
-}
-
-function pickDevice(state, player, device) {
+function pickEquipment(state, player, device) {
   let { type, value, equipmentType } = device;
   console.log(`Player stands on an unclaimed equipment: ${type}`);
   const limit = player.equipment[equipmentType].max;

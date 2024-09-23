@@ -44,6 +44,8 @@ export const AP_COSTS = {
   scanner: 4,
   teleport: 4,
   landmine: 4,
+  hp: 1,
+  ap: 1,
 };
 
 const Command = {
@@ -68,8 +70,12 @@ const Command = {
   landmineActivated: 'landmineActivated',
   useTeleport: 'useTeleport',
   teleported: 'teleported',
-  usescanner: 'usescanner',
+  useScanner: 'useScanner',
   scanned: 'scanned',
+  useHp: 'useHp',
+  hpApplied: 'hpApplied',
+  useAp: 'useAp',
+  apApplied: 'apApplied',
   msg: 'msg',
   nextProcessSet: 'nextProcessSet',
   tokensSent: 'tokensSent',
@@ -239,6 +245,14 @@ export const BEAVER_TYPES = {
         current: 0,
         max: 3,
       },
+      hp: {
+        current: 0,
+        max: 5,
+      },
+      ap: {
+        current: 0,
+        max: 5,
+      },
     },
   },
   heavy_beaver: {
@@ -275,6 +289,14 @@ export const BEAVER_TYPES = {
         current: 0,
         max: 3,
       },
+      hp: {
+        current: 0,
+        max: 5,
+      },
+      ap: {
+        current: 0,
+        max: 5,
+      },
     },
   },
   speedy_beaver: {
@@ -310,6 +332,14 @@ export const BEAVER_TYPES = {
       scanners: {
         current: 0,
         max: 3,
+      },
+      hp: {
+        current: 0,
+        max: 5,
+      },
+      ap: {
+        current: 0,
+        max: 5,
       },
     },
   },

@@ -43,8 +43,8 @@
     text-transform: uppercase;
     color: var(--white);
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: 100px;
+    right: 0;
 
     &.animated {
       animation: pulse 1s linear infinite;
@@ -55,14 +55,19 @@
     display: flex;
     justify-content: center;
     gap: 2rem;
-    align-items: center;
+    align-items: end;
+
+    .main-scene-panel-element {
+      flex-grow: 1;
+      flex-basis: 0;
+    }
   }
 }
 
 #player-equipment-gui {
-  width: calc(4 * (75px + 4px));
   height: 79px;
-  background: linear-gradient(#091833, #133e7c);
+  display: flex;
+  justify-content: end;
 }
 
 #player-equipment-gui .equipment-slot-container {
@@ -71,6 +76,7 @@
   vertical-align: middle;
   width: 75px;
   height: 75px;
+  background: linear-gradient(#091833, #133e7c);
 }
 
 #player-equipment-gui .equipment-slot-container .equipment-slot {
@@ -281,10 +287,7 @@
 .player-info {
   text-transform: uppercase;
   width: 200px;
-  height: 79px;
-  flex-direction: row !important;
   padding: 0 !important;
-  align-items: center;
   width: 300px;
   justify-content: space-evenly !important;
 
@@ -308,6 +311,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    align-self: auto;
+    padding-right: 15px;
+
+    &.extended {
+      padding: 30px 20px 0px 30px;
+    }
 
     .stats-empty {
       display: flex;
