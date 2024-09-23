@@ -24,6 +24,22 @@
 
     gtag('config', 'G-J2S0QCY6PT');
   </script>
+  <script>
+    function hasTouchSupport() {
+      return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
+    function isMobile() {
+      const minWidth = 768; // Minimum width for desktop devices
+      return window.innerWidth < minWidth || screen.width < minWidth;
+    }
+
+    if (hasTouchSupport() && isMobile()) {
+      gtag('event', 'mobile_device');
+    } else {
+      gtag('event', 'desktop_device');
+    }
+  </script>
   <style>
     /* https://phaser.discourse.group/t/scroll-bar-with-scale/1586 */
     html,
