@@ -3,7 +3,7 @@ import fs from 'node:fs';
 
 const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8'));
 
-const leaderboardProcessId = '4X2o4Kw9_-lc8I8SaMQaUOIMEooNyTvlMdjZ5Bv6tO8';
+const leaderboardProcessId = 'lCviigwaPHbR8pUr8H6tbOHP_Syyu1cP4mY9ayrodF0';
 
 async function checkGlobalScores() {
   const signer = createDataItemSigner(WALLET);
