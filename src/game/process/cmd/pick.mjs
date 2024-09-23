@@ -46,23 +46,6 @@ export function pick(state, action) {
   return { player, picked: false };
 }
 
-// function pickAP(state, player, value) {
-//   console.log(`Player stands on a AP object, increasing by ${value}. `);
-//   player.stats.ap.current -= 1;
-//   player.stats.ap.current += value;
-//   addCoins(player, GAME_MODES[state.mode].token, value, state);
-//   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-//   addGameObjectToRespawn(state, GameObject.ap.type, player);
-//   return {
-//     player,
-//     picked: { type: GameObject.ap.type },
-//     scoreToDisplay: scoreToDisplay([
-//       { value: value, type: Scores.ap },
-//       { value: -1, type: Scores.ap },
-//     ]),
-//   };
-// }
-
 function pickEquipment(state, player, device) {
   let { type, value, equipmentType } = device;
   console.log(`Player stands on an unclaimed equipment: ${type}`);
