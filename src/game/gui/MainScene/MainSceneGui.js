@@ -1,6 +1,6 @@
 import { Equipment } from './components/Equipment';
 import { InfoPanel } from './components/InfoPanel';
-import { PlayerInfo, SpectatorStats, Stats } from './components/Stats';
+import { PlayerInfo, SpectatorStats } from './components/Stats';
 import { KeyboardMapping } from './components/KeyboardMapping';
 import { formatCountdownTo } from '../LoungeArenaSceneGui.js';
 import { formatLag } from '../GameHubGui.js';
@@ -56,15 +56,20 @@ export function MainSceneGui() {
             m('.main-scene-panel', [
               m('.main-scene-panel-info', `Press TAB for more info`),
               m('.main-scene-panel-elements', [
-                mainPlayer ? m(PlayerInfo, { mainPlayer, playersTotal }) : null,
-                m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
-                equipment ? m(Equipment, { equipment, stats: mainPlayer?.stats }) : null,
+                mainPlayer
+                  ? m('.main-scene-panel-element', [
+                      m(PlayerInfo, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {}, visible }),
+                    ])
+                  : null,
+                m('.main-scene-panel-element', [
+                  m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
+                ]),
+                equipment
+                  ? m('.main-scene-panel-element', [m(Equipment, { equipment, stats: mainPlayer?.stats })])
+                  : null,
               ]),
             ]),
             visible ? m(KeyboardMapping, { spectatorMode }) : null,
-            mainPlayer && visible
-              ? m(Stats, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {} })
-              : null,
             m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
             gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
             !gameActive && diff > 0 ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`) : null,

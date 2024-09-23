@@ -579,6 +579,17 @@ export default class MainScene extends Phaser.Scene {
 
         case Const.Command.scanned: {
           executeScan(response, self);
+          break;
+        }
+
+        case (Const.Command.hpApplied, Const.Command.apApplied): {
+          if (!response.applied) {
+            self.noCollectSound.play();
+            return;
+          }
+          self.updateStats(response.player, response.gameStats);
+          self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+          break;
         }
       }
   }
