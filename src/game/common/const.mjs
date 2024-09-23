@@ -105,6 +105,11 @@ export const GameObject = {
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 100 },
 };
 
+/*
+  Tokens data is sent to leaderboard process and bridge process.
+  Adding new entries requires updating tokens dictionary in the bridge
+  and adding columns in the leaderboard process.
+ */
 export const GameTreasure = {
   hole: { type: 'hole', label: 'hole', tile: 0, value: 0 },
   cbcoin: { type: 'cbcoin', label: 'CyberBeaversToken', tile: 1, value: 500, denomination: 0 },
@@ -112,7 +117,7 @@ export const GameTreasure = {
   war: { type: 'war', label: 'Wrapped AR', tile: 3, value: 300, baseVal: 3_000_000_000, denomination: 12 },
   trunk: { type: 'trunk', label: 'TRUNK', tile: 4, value: 100, baseVal: 9, denomination: 3 },
   gun: { type: 'gun', label: 'GUN', tile: 5, value: 300, baseVal: 1, denomination: 0 },
-  rsg: { type: 'rsg', label: 'RSG', tile: 6, value: 100, denomination: 0 },
+  rsg: { type: 'rsg', label: 'RSG', tile: 6, value: 100, baseVal: 1, denomination: 0 },
 };
 
 const DEFAULT_GAME_TOKENS = {

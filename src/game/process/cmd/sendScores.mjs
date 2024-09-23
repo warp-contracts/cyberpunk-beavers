@@ -24,7 +24,7 @@ export function sendScores(state) {
       for (let [type, token] of Object.entries(data.stats.additionalTokens)) {
         if (token.gained > 0) {
           const qty = token.gained * GameTreasure[type].baseVal;
-          gameScores[wallet].tokens[type] = `${qty}`;
+          gameScores[wallet].tokens[type] = qty;
         }
       }
     }
