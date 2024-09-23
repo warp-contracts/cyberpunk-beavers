@@ -83,6 +83,9 @@ export function ConnectWalletSceneGui(initialVnode) {
     window.warpAO.signingMode = 'generated';
     localStorage.setItem('signing_mode', window.warpAO.signingMode);
     localStorage.setItem('generated_jwk', JSON.stringify(jwk));
+    gtag('event', 'wallet_connection_generated', {
+      walletAddress: address,
+    });
     m.redraw();
     setTimeout(() => {
       changeScene(address);
