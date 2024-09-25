@@ -105,8 +105,10 @@
   color: white;
   height: 280px;
   width: 245px;
-  top: calc(100% - 355px);
-  left: calc(100% - 255px);
+  right: 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
 
   .keys-wrapper {
     background: black;
