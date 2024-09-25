@@ -5,6 +5,11 @@ export function doPreloadAssets(mainScene) {
   // ===== MAP V2
   // load the PNG file
   // mainScene.load.image('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png');
+  mainScene.load.image(`war`, 'assets/images/tokens/war.png');
+  mainScene.load.image(`trunk`, 'assets/images/tokens/trunk.png');
+  mainScene.load.image(`tio`, 'assets/images/tokens/tio.png');
+  mainScene.load.image(`rsg`, 'assets/images/tokens/rsg.png');
+  mainScene.load.image(`gun`, 'assets/images/tokens/gun.png');
   mainScene.load.spritesheet('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png', { frameWidth: 48, spacing: 0 });
   mainScene.load.spritesheet('cyberpunk_game_treasures', 'assets/images/game_treasures.png', {
     frameWidth: 48,
@@ -74,6 +79,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('explosion', ['assets/audio/explosion_powerful_dynamite.mp3']);
   mainScene.load.audio('blood_splat_1', ['assets/audio/blood_splat/blood_splat_1.mp3']);
   mainScene.load.audio('blood_splat_2', ['assets/audio/blood_splat/blood_splat_2.mp3']);
+  mainScene.load.audio('additional_loot', ['assets/audio/additional_loot.mp3']);
   forDeathSounds((k, i) => loadDeathSound(k, i));
 
   function loadDeathSound(k, i) {

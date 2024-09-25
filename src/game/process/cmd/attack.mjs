@@ -1,7 +1,6 @@
 import Const, { GAME_MODES } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
-const { GameTreasure } = Const;
 
 export function attack(state, action, timestamp) {
   const player = state.players[action.walletAddress];
@@ -37,7 +36,12 @@ export function attack(state, action, timestamp) {
   }
 
   if (opponent) {
-    const { finished, revenge, loot, tokenTransfer, damage } = finishHim(player, opponent, { range }, state);
+    const { finished, revenge, loot, tokenTransfer, damage, additionalLoot } = finishHim(
+      player,
+      opponent,
+      { range },
+      state
+    );
     if (finished) {
       opponent.pos = calculatePlayerRandomPos(state);
       state.playersOnTiles[attackPos.y][attackPos.x] = null;
@@ -61,6 +65,7 @@ export function attack(state, action, timestamp) {
       pos: attackPos,
       scoreToDisplay: scoreToDisplay(playerScores),
       opponentScoreToDisplay: scoreToDisplay(opponentScores),
+      additionalLoot,
     };
   }
   return { player, pos: attackPos, tokenTransfer: 0 };
@@ -101,7 +106,7 @@ export function finishHim(player, opponent, damageFigures, state) {
   console.log(`Player ${player.walletAddress} dealt ${damage?.baseDmg} to opponent ${opponent.walletAddress}`);
   opponent.stats.hp.current -= damage.finalDmg;
   if (opponent.stats.hp.current <= 0) {
-    const loot = lootPlayer(opponent) + player.stats.bonus[Const.BonusType.KillBonus];
+    const { loot, additionalLoot } = lootPlayer(opponent, state);
     const revenge = player.stats.kills.killedBy === opponent.walletAddress;
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
     opponent.stats.hp.current = opponent.stats.hp.max;
@@ -114,10 +119,12 @@ export function finishHim(player, opponent, damageFigures, state) {
       player.stats.kills.killedBy = '';
     }
     addCoins(player, GAME_MODES[state.mode].token, loot, state);
+    if (additionalLoot?.token) addCoins(player, additionalLoot.token, 1, state);
     return {
       finished: true,
       revenge,
-      loot,
+      loot: loot + player.stats.bonus[Const.BonusType.KillBonus],
+      additionalLoot,
       damage,
     };
   }
@@ -125,12 +132,25 @@ export function finishHim(player, opponent, damageFigures, state) {
     finished: false,
     loot: 0,
     tokenTransfer: 0,
+    additionalLoot: {},
     damage,
   };
 }
 
-function lootPlayer(player) {
-  const amount = Math.min(player.stats.coins.gained, Const.Combat.DefaultLoot);
-  player.stats.coins.gained -= amount;
-  return amount;
+function lootPlayer(player, state) {
+  const loot = Math.min(player.stats.coins.gained, Const.Combat.DefaultLoot);
+  player.stats.coins.gained -= loot;
+
+  const additionalTokens = Object.keys(player.stats.additionalTokens).filter(
+    (t) => player.stats.additionalTokens[t].gained > 0
+  );
+
+  let additionalLoot;
+  if (additionalTokens.length > 0) {
+    const random = Math.floor(Math.random(state.randomCounter) * additionalTokens.length);
+    additionalLoot = { token: additionalTokens[random], amount: 1 };
+    player.stats.additionalTokens[additionalLoot.token].gained -= 1;
+  }
+
+  return { loot, additionalLoot };
 }
