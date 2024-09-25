@@ -46,40 +46,46 @@ export function MainSceneGui() {
         animatePanelInfo(vnode);
       }
 
-      return spectatorMode
-        ? [
-            m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff, spectatorMode }),
-            m(KeyboardMapping, { spectatorMode }),
-            m(SpectatorStats, { gameTokens: gameStats.gameTokens || {} }),
-          ]
-        : [
-            m('.main-scene-panel', [
-              m('.main-scene-panel-info', `Press TAB for more info`),
-              m('.main-scene-panel-elements', [
-                mainPlayer
-                  ? m('.main-scene-panel-element', [
-                      m(PlayerInfo, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {}, visible }),
-                    ])
-                  : null,
-                m('.main-scene-panel-element', [
-                  m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
+      return m(
+        'div',
+        { id: 'main-scene' },
+        spectatorMode
+          ? [
+              m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff, spectatorMode }),
+              m(KeyboardMapping, { spectatorMode }),
+              m(SpectatorStats, { gameTokens: gameStats.gameTokens || {} }),
+            ]
+          : [
+              m('.main-scene-panel', [
+                m('.main-scene-panel-info', `Press TAB for more info`),
+                m('.main-scene-panel-elements', [
+                  mainPlayer
+                    ? m('.main-scene-panel-element', [
+                        m(PlayerInfo, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {}, visible }),
+                      ])
+                    : null,
+                  m('.main-scene-panel-element', [
+                    m(InfoPanel, { gameStats, stats: mainPlayer?.stats, roundInfo, gameOver, diff }),
+                  ]),
+                  equipment
+                    ? m('.main-scene-panel-element', [m(Equipment, { equipment, stats: mainPlayer?.stats })])
+                    : null,
                 ]),
-                equipment
-                  ? m('.main-scene-panel-element', [m(Equipment, { equipment, stats: mainPlayer?.stats })])
-                  : null,
               ]),
-            ]),
-            visible ? m(KeyboardMapping, { spectatorMode }) : null,
-            m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
-            gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
-            !gameActive && diff > 0 ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`) : null,
-            m(BattleReport, {
-              trigger: gameActive && lastAttack.criticalHit,
-              message: 'CRITICAL HIT!',
-              timeout: 5_000,
-            }),
-            mainPlayer ? m(`.main-scene-lag ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage) : null,
-          ];
+              visible ? m(KeyboardMapping, { spectatorMode }) : null,
+              m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
+              gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
+              !gameActive && diff > 0
+                ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`)
+                : null,
+              m(BattleReport, {
+                trigger: gameActive && lastAttack.criticalHit,
+                message: 'CRITICAL HIT!',
+                timeout: 5_000,
+              }),
+              mainPlayer ? m(`.main-scene-lag ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage) : null,
+            ]
+      );
     },
   };
 }
