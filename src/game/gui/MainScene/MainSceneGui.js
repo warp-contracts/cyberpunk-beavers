@@ -73,14 +73,11 @@ export function MainSceneGui() {
             m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
             gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
             !gameActive && diff > 0 ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`) : null,
-            m(
-              '.main-scene-info',
-              m(BattleReport, {
-                trigger: gameActive && lastAttack.criticalHit,
-                message: 'CRITICAL HIT!',
-                timeout: 5_000,
-              })
-            ),
+            m(BattleReport, {
+              trigger: gameActive && lastAttack.criticalHit,
+              message: 'CRITICAL HIT!',
+              timeout: 5_000,
+            }),
             mainPlayer ? m(`.main-scene-lag ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage) : null,
           ];
     },
@@ -110,7 +107,7 @@ function BattleReport() {
         vnode.state.animating = true;
         setTimeout(() => (vnode.state.animating = false), timeout);
       }
-      return vnode.state.animating ? m('.battle-report', message) : null;
+      return vnode.state.animating ? m('.main-scene-info.small.battle-report', message) : null;
     },
   };
 }
