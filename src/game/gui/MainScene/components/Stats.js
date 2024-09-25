@@ -171,7 +171,7 @@ function Label() {
 function displayName(player) {
   if (player.userName) {
     if (player.userName.length > 11) {
-      trimString(player.userName, 4, 3, 4);
+      return trimString(player.userName, 4, 3, 4);
     }
     return player.userName;
   }
