@@ -2,6 +2,7 @@ import { FOV_DEPTH } from '../../../common/const.mjs';
 import { SCANNED_COLOR } from '../../../utils/style';
 
 export function executeScan(response, mainScene) {
+  if (!response.area.length) return;
   if (response.player?.walletAddress == mainScene.mainPlayer?.walletAddress) {
     if (!mainScene.scanSound.isPlaying) {
       mainScene.scanSound.play();
