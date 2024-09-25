@@ -24,7 +24,8 @@ export function scan(state, action) {
   player.stats.ap.current -= AP_COSTS.scanner;
   player.equipment.scanners.current -= 1;
   const area = getAreaAroundPlayer(player.pos, player.stats?.scannerRadius).map((a) => {
-    return { tile: [a[0], a[1]], treasure: state.gameTreasuresTilemap[a[1]][a[0]] };
+    const treasure = state.gameTreasuresTilemap[a[1]]?.[a[0]];
+    return { tile: [a[0], a[1]], treasure };
   });
   return { area, player };
 }

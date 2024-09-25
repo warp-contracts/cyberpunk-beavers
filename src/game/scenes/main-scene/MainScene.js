@@ -22,6 +22,7 @@ import { doInitAnimations } from './animations.js';
 import { doCreateTileMap, initMapObjects } from './maps.js';
 import { FOV } from '../../objects/FOV.js';
 import { executeScan } from './commands/scanned.js';
+import { handleAttacked } from './commands/attacked.js';
 
 const { GameTreasure } = Const;
 
@@ -403,53 +404,7 @@ export default class MainScene extends Phaser.Scene {
           break;
 
         case Const.Command.attacked:
-          const isKillerMainPlayer = response.player?.walletAddress === self.mainPlayer?.walletAddress;
-          const isOpponentMainPlayer = response.opponent?.walletAddress === self.mainPlayer?.walletAddress;
-          if (isOpponentMainPlayer || self.spectatorMode) {
-            doPlayAttackSound(response.player.beaverId, this);
-          }
-          if (isKillerMainPlayer) {
-            self.lastAttack.criticalHit = response.damage?.criticalHit;
-            if (response.damage?.criticalHit && !self.criticalHitSound?.isPlaying) {
-              self.criticalHitSound?.play();
-            }
-          }
-          self.updateStats(response.player, response.gameStats);
-          self.updateStats(response.opponent, response.gameStats);
-          if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
-            self.allPlayers[response.player.walletAddress]?.attackAnim();
-          }
-          const opponent = self.allPlayers[response.opponent?.walletAddress];
-          if (response.opponentFinished) {
-            opponent?.lock();
-            if (isKillerMainPlayer) {
-              setTimeout(() => {
-                doPlayOpponentFinishedSound(response.player, response.revenge, self);
-              }, 900);
-            } else {
-              if (!self.beaverEliminatedSound.isPlaying) {
-                self.beaverEliminatedSound.play();
-              }
-            }
-            opponent
-              ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer || this.spectatorMode)
-              .once('animationcomplete', () => {
-                opponent.baseMoveTo(
-                  response.opponent.pos,
-                  () => {},
-                  () => opponent.blink()
-                );
-                opponent.unlock();
-              });
-          } else {
-            opponent?.bloodSplatAnim(isOpponentMainPlayer || isKillerMainPlayer);
-          }
-          self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress, {
-            forOpponent: {
-              score: response.opponentScoreToDisplay,
-              walletAddress: response.opponent?.walletAddress,
-            },
-          });
+          handleAttacked(response, self);
           break;
 
         case Const.Command.landmineActivated:
