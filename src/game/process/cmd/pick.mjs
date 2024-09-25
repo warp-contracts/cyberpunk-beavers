@@ -21,7 +21,7 @@ export function pick(state, action) {
     case GameObject.hp.type:
       return pickEquipment(state, player, { value, type: GameObject.hp.type, equipmentType: `hp` });
     case GameObject.ap.type:
-      return pickEquipment(state, player, { value, type: GameObject.ap.type, equipmentType: `ap` });
+      return pickAP(state, player, value);
     case GameObject.equipment_mine.type:
       return pickEquipment(state, player, {
         value,
@@ -44,6 +44,23 @@ export function pick(state, action) {
       return pickTreasure(state, player);
   }
   return { player, picked: false };
+}
+
+function pickAP(state, player, value) {
+  console.log(`Player stands on a AP object, increasing by ${value}. `);
+  player.stats.ap.current -= 1;
+  player.stats.ap.current += value;
+  addCoins(player, GAME_MODES[state.mode].token, value, state);
+  state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
+  addGameObjectToRespawn(state, GameObject.ap.type, player);
+  return {
+    player,
+    picked: { type: GameObject.ap.type },
+    scoreToDisplay: scoreToDisplay([
+      { value: value, type: Scores.ap },
+      { value: -1, type: Scores.ap },
+    ]),
+  };
 }
 
 function pickEquipment(state, player, device) {

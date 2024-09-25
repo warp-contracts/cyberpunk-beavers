@@ -39,14 +39,6 @@ export function Equipment() {
             m('span', { class: 'equipment-counter' }, `${equipment.hp.current}/${equipment.hp.max}`),
           ]),
         ]),
-
-        m('.equipment-slot-container', [
-          m('.equipment-slot', [
-            m('img', { src: `/assets/images/equipment/ap.png`, width: 75, height: 75 }),
-            m('span', { class: 'equipment-number' }, `5.`),
-            m('span', { class: 'equipment-counter' }, `${equipment.ap.current}/${equipment.ap.max}`),
-          ]),
-        ]),
       ]);
     },
   };
