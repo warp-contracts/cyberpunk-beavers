@@ -537,7 +537,7 @@ export default class MainScene extends Phaser.Scene {
           break;
         }
 
-        case (Const.Command.hpApplied, Const.Command.apApplied): {
+        case Const.Command.hpApplied: {
           if (!response.applied) {
             self.noCollectSound.play();
             return;

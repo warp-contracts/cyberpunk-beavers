@@ -4,7 +4,7 @@ import { doPlayAttackSound } from '../scenes/main-scene/sounds.js';
 import { CAMERA_MARGIN } from '../scenes/main-scene/camera.js';
 
 const { up, left, right, down } = Const.Direction;
-const { attack, move, pick, dig, useLandmine, useTeleport, useScanner, useHp, useAp } = Const.Command;
+const { attack, move, pick, dig, useLandmine, useTeleport, useScanner, useHp } = Const.Command;
 
 const RANGE_COLOR = 0x00ff00;
 const AIM_COLOR = 0xff0000;
@@ -89,8 +89,6 @@ export default class MainPlayer extends Player {
         this.digAnim();
       } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.four) && this.stats.ap.current >= AP_COSTS.hp) {
         await this.send({ cmd: useHp });
-      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.five) && this.stats.ap.current >= AP_COSTS.ap) {
-        await this.send({ cmd: useAp });
       } else {
         if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
       }
