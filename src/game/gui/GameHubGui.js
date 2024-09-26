@@ -4,13 +4,25 @@ import { playClick } from '../utils/mithril.js';
 export function GameHubGui() {
   return {
     view: function (vnode) {
-      const { games, gameError, joinGame, spectateGame } = vnode.attrs;
+      const { games, gameError, joinGame, spectateGame, enterGlobalLeaderboard } = vnode.attrs;
       const { lagMessage, lagClass } = formatLag(window.warpAO.lag, true);
       return [
         m('.mithril-component', { id: 'game-hub' }, [
           m('div', [
             m(Header, { gameError }),
             vnode.attrs.games ? m(GamesList, { games, joinGame, spectateGame }) : null,
+          ]),
+          m('.leaderboard', [
+            m(
+              '.button',
+              {
+                onclick: async () => {
+                  playClick();
+                  await enterGlobalLeaderboard();
+                },
+              },
+              'GLOBAL LEADERBOARD'
+            ),
           ]),
           m(`.game-hub-connection ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage),
         ]),

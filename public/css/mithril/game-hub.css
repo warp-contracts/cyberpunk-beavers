@@ -59,4 +59,14 @@
       z-index: 10000;
     }
   }
+
+  .leaderboard {
+    margin: 33px 10px 10px 10px;
+
+    .button {
+      color: var(--yellow);
+      border: var(--yellow) 1px solid;
+      padding: 20px;
+    }
+  }
 }

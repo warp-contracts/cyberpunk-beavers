@@ -1,20 +1,21 @@
-import { createDataItemSigner, dryrun, message, result } from '@permaweb/aoconnect';
-import fs from 'node:fs';
-
-const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8'));
+import { dryrun } from '@permaweb/aoconnect';
 
 const leaderboardProcessId = 'lCviigwaPHbR8pUr8H6tbOHP_Syyu1cP4mY9ayrodF0';
 
 async function checkGlobalScores() {
-  const signer = createDataItemSigner(WALLET);
-
   const scoresRes = await dryrun({
+    Owner: 'cqAN4gl-KoeUECP-coyxAA01SJKrZF5UfNT0KMjDNCY',
     process: leaderboardProcessId,
-    tags: [{ name: 'Action', value: 'GlobalScores' }],
-    signer,
+    tags: [
+      { name: 'Action', value: 'GlobalScores' },
+      { name: 'Limit', value: '4' },
+      { name: 'Offset', value: '0' },
+    ],
     data: '1984',
   });
-  console.log(JSON.parse(scoresRes.Output.data));
+  const res = JSON.parse(scoresRes.Output.data);
+  console.log(res);
+  console.log(res.length);
   return scoresRes;
 }
 

@@ -1,6 +1,12 @@
-import Const from '../common/const.mjs';
+import Const, { GAME_MODES } from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
-import { connectWalletSceneKey, gameHubSceneKey, loungeAreaSceneKey, mainSceneKey } from '../../main.js';
+import {
+  connectWalletSceneKey,
+  gameHubSceneKey,
+  globalLeaderboardSceneKey,
+  loungeAreaSceneKey,
+  mainSceneKey,
+} from '../../main.js';
 import Phaser from 'phaser';
 import { GameHubGui } from '../gui/GameHubGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
@@ -55,6 +61,12 @@ export default class GameHubScene extends Phaser.Scene {
               const mapTxId = await loadMapTxId();
               self.scene.start(mainSceneKey, {
                 mapTxId,
+                walletAddress: self.walletAddress,
+              });
+            },
+            enterGlobalLeaderboard: async () => {
+              hideGui();
+              self.scene.start(globalLeaderboardSceneKey, {
                 walletAddress: self.walletAddress,
               });
             },

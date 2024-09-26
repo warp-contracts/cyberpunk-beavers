@@ -38,6 +38,9 @@ window.warpAO = {
   tokenProcessId: () => {
     return window.warpAO.config[`token_processId_${env}`];
   },
+  leaderboardProcessId: () => {
+    return window.warpAO.config[`leaderboard_processId_${env}`];
+  },
   messageTags: (moduleId, processId, message) => [
     new Tag('Action', JSON.stringify(message)),
     new Tag('Data-Protocol', 'ao'),

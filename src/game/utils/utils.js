@@ -212,8 +212,27 @@ export function formatCoin(count, tokenType) {
   return (count * token?.baseVal) / divisor;
 }
 
+export function formatToken(tokenValue, tokenType) {
+  const token = GameTreasure[tokenType];
+  const divisor = Math.max(1, Math.pow(10, token?.denomination || 0));
+  return tokenValue / divisor;
+}
+
 export function getUrlParam(param) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get(param);
+}
+
+export function displayName(userName, walletAddress) {
+  if (userName) {
+    if (userName.length > 11) {
+      return trimString(userName, 4, 3, 4);
+    }
+    return userName;
+  }
+  if (walletAddress) {
+    return trimString(walletAddress);
+  }
+  return '';
 }
