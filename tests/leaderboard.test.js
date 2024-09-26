@@ -45,6 +45,15 @@ describe('LeaderboardTestJs', () => {
     expect(result.Messages).toEqual([]);
   });
 
+  test('Eval leaderboard contract update', async () => {
+    const code = fs.readFileSync('./lua/leaderboard/leaderboard-caller-and-name.lua', 'utf-8');
+    const result = await Send({ Action: 'Eval', Data: code });
+
+    console.dir(result, { showHidden: false, depth: null, colors: true });
+    expect(result.Output.data).eq('');
+    expect(result.Messages).toEqual([]);
+  });
+
   test('Add game scores', async () => {
     expect((await Send(addSingleScoreAction('wallet_44', 40, 20))).Output.data).not.toContain('Error');
     expect((await Send(addSingleScoreAction('wallet_12', 164, 0))).Output.data).not.toContain('Error');
@@ -71,10 +80,13 @@ describe('LeaderboardTestJs', () => {
 
   test('Read global scores', async () => {
     const actionResult = await Send({ Action: 'GlobalScores' });
+    console.log(actionResult.Output.data);
     const scores = JSON.parse(actionResult.Output.data);
     console.log(scores);
 
     expect(scores[0]).toEqual({
+      rowNum: 1,
+      rowTotal: 3,
       cbcoin: 164,
       tio: 0,
       trunk: 0,
@@ -86,6 +98,8 @@ describe('LeaderboardTestJs', () => {
       deaths: 0,
     });
     expect(scores[1]).toEqual({
+      rowNum: 2,
+      rowTotal: 3,
       cbcoin: 140,
       tio: 2,
       trunk: 0,
@@ -97,6 +111,8 @@ describe('LeaderboardTestJs', () => {
       deaths: 0,
     });
     expect(scores[2]).toEqual({
+      rowNum: 3,
+      rowTotal: 3,
       cbcoin: 40,
       tio: 20,
       trunk: 0,
@@ -140,17 +156,8 @@ describe('LeaderboardTestJs', () => {
     const scores = JSON.parse(actionResult.Output.data);
     console.log(scores);
     expect(scores[0]).toEqual({
-      cbcoin: 320,
-      tio: 0,
-      war: 0,
-      trunk: 0,
-      rsg: 0,
-      gun: 0,
-      wallet: 'wallet_11',
-      frags: 1,
-      deaths: 0,
-    });
-    expect(scores[1]).toEqual({
+      rowNum: 1,
+      rowTotal: 4,
       cbcoin: 164,
       tio: 0,
       war: 0,
@@ -161,7 +168,9 @@ describe('LeaderboardTestJs', () => {
       frags: 0,
       deaths: 0,
     });
-    expect(scores[2]).toEqual({
+    expect(scores[1]).toEqual({
+      rowNum: 2,
+      rowTotal: 4,
       cbcoin: 140,
       tio: 2,
       war: 15000000000,
@@ -169,10 +178,27 @@ describe('LeaderboardTestJs', () => {
       rsg: 0,
       gun: 0,
       wallet: 'wallet_22',
+      userName: 'beaver_22',
       frags: 0,
       deaths: 1,
     });
+    expect(scores[2]).toEqual({
+      rowNum: 3,
+      rowTotal: 4,
+      cbcoin: 120,
+      tio: 0,
+      war: 0,
+      trunk: 0,
+      rsg: 0,
+      gun: 0,
+      wallet: 'wallet_11',
+      userName: 'beaver_11',
+      frags: 1,
+      deaths: 0,
+    });
     expect(scores[3]).toEqual({
+      rowNum: 4,
+      rowTotal: 4,
       cbcoin: 40,
       tio: 20,
       war: 0,
@@ -244,28 +270,22 @@ describe('LeaderboardTestJs', () => {
     console.log(actionResult2);
 
     expect(scores[0]).toEqual({
-      cbcoin: 2180,
+      rowNum: 1,
+      rowTotal: 5,
+      cbcoin: 1600,
       tio: 0,
       war: 0,
       trunk: 135,
       rsg: 0,
       gun: 1,
       wallet: 'wallet_77',
+      userName: 'wallet_77',
       frags: 2,
       deaths: 1,
     });
     expect(scores[1]).toEqual({
-      cbcoin: 320,
-      tio: 0,
-      war: 0,
-      trunk: 0,
-      rsg: 0,
-      gun: 0,
-      wallet: 'wallet_11',
-      frags: 1,
-      deaths: 0,
-    });
-    expect(scores[2]).toEqual({
+      rowNum: 2,
+      rowTotal: 5,
       cbcoin: 260,
       tio: 2,
       war: 15000000000,
@@ -273,10 +293,13 @@ describe('LeaderboardTestJs', () => {
       rsg: 120,
       gun: 0,
       wallet: 'wallet_22',
+      userName: 'beaver_22',
       frags: 1,
       deaths: 3,
     });
-    expect(scores[3]).toEqual({
+    expect(scores[2]).toEqual({
+      rowNum: 3,
+      rowTotal: 5,
       cbcoin: 164,
       tio: 0,
       war: 0,
@@ -287,7 +310,23 @@ describe('LeaderboardTestJs', () => {
       frags: 0,
       deaths: 0,
     });
+    expect(scores[3]).toEqual({
+      rowNum: 4,
+      rowTotal: 5,
+      cbcoin: 120,
+      tio: 0,
+      war: 0,
+      trunk: 0,
+      rsg: 0,
+      gun: 0,
+      wallet: 'wallet_11',
+      userName: 'beaver_11',
+      frags: 1,
+      deaths: 0,
+    });
     expect(scores[4]).toEqual({
+      rowNum: 5,
+      rowTotal: 5,
       cbcoin: 40,
       tio: 20,
       war: 0,
@@ -304,6 +343,8 @@ describe('LeaderboardTestJs', () => {
     const globalSortedByRsg = JSON.parse((await Send({ Action: 'GlobalScores', OrderBy: 'rsg' })).Output.data);
     console.log(globalSortedByRsg);
     expect(globalSortedByRsg[0]).toEqual({
+      rowNum: 1,
+      rowTotal: 5,
       cbcoin: 260,
       tio: 2,
       war: 15000000000,
@@ -311,6 +352,7 @@ describe('LeaderboardTestJs', () => {
       rsg: 120,
       gun: 0,
       wallet: 'wallet_22',
+      userName: 'beaver_22',
       frags: 1,
       deaths: 3,
     });

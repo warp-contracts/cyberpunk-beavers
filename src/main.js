@@ -6,6 +6,7 @@ import MainSceneLoading from './game/scenes/MainSceneLoading.js';
 import LeaderboardScene from './game/scenes/LeaderboardScene.js';
 import LoungeAreaScene from './game/scenes/LoungeAreaScene.js';
 import GameHubScene from './game/scenes/GameHubScene.js';
+import GlobalLeaderboardScene from './game/scenes/GlobalLeaderboardScene.js';
 
 export const scenes = {
   loadingScene: { key: 'loading-scene', scene: LoadingScene },
@@ -16,6 +17,7 @@ export const scenes = {
   mainScene: { key: 'main-scene', scene: MainScene },
   mainSceneLoading: { key: 'main-scene-loading', scene: MainSceneLoading },
   leaderboardScene: { key: 'leaderboard-scene', scene: LeaderboardScene },
+  globalLeaderboardScene: { key: 'global-leaderboard-scene', scene: GlobalLeaderboardScene },
 };
 
 export const mainSceneKey = scenes.mainScene.key;
@@ -23,6 +25,7 @@ export const mainSceneLoadingKey = scenes.mainSceneLoading.key;
 export const gameHubSceneKey = scenes.gameHubScene.key;
 export const connectWalletSceneKey = scenes.connectWalletScene.key;
 export const leaderboardSceneKey = scenes.leaderboardScene.key;
+export const globalLeaderboardSceneKey = scenes.globalLeaderboardScene.key;
 export const loadingSceneKey = scenes.loadingScene.key;
 export const loungeAreaSceneKey = scenes.loungeAreaScene.key;
 export const characterPickSceneKey = scenes.characterPickScene.key;

@@ -12,6 +12,7 @@ export function sendScores(state) {
       }
       const { frags, deaths } = data.stats.kills;
       gameScores[wallet] = {
+        userName: data.userName,
         tokens: {
           [GAME_MODES[state.mode].token]: gained,
         },
