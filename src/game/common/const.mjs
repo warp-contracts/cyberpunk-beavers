@@ -105,7 +105,7 @@ export const GameObject = {
   none: { type: 'none', tile: 5, value: 0 },
 
   // invisible
-  active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 100 },
+  active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 75 },
 };
 
 /*

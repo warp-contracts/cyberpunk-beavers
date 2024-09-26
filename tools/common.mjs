@@ -29,8 +29,22 @@ export function dateFromArg(dateStr) {
   if (!dateStr) {
     return null;
   }
-  const timeArr = dateStr.split(':');
   const d = new Date();
+  const dateArr = dateStr.split('T');
+  if (dateArr.length > 1) {
+    dateStr = dateArr[1];
+    const dateArgs = dateArr[0].split('-');
+    if (dateArgs.length) {
+      d.setDate(removeStartCharacter(dateArgs.shift(), '0'));
+    }
+    if (dateArgs.length) {
+      d.setMonth(removeStartCharacter(dateArgs.shift(), '0') - 1);
+    }
+    if (dateArgs.length) {
+      d.setFullYear(removeStartCharacter(dateArgs.shift(), '0'));
+    }
+  }
+  const timeArr = dateStr.split(':');
   d.setHours(12);
   d.setMinutes(0);
   d.setSeconds(0);
@@ -45,4 +59,12 @@ export function dateFromArg(dateStr) {
     d.setSeconds(timeArr.shift());
   }
   return d;
+}
+
+function removeStartCharacter(word, char) {
+  while (word.charAt(0) == char) {
+    word = word.substring(1);
+  }
+
+  return word;
 }
