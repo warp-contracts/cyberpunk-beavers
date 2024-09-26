@@ -67,6 +67,7 @@
       color: var(--yellow);
       border: var(--yellow) 1px solid;
       padding: 20px;
+      cursor: pointer;
     }
   }
 }
