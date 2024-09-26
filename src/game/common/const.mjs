@@ -199,7 +199,7 @@ export const WEAPONS = {
     name: 'Katana',
     img: null,
     attack_range: 1,
-    damage: [50],
+    damage: [40],
     hit_chance: [0.95],
     critical_hit_chance: [0.35],
     critical_hit_multiplier: [2.0],
