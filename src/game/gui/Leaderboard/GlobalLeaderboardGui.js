@@ -26,7 +26,7 @@ export function GlobalLeaderboardGui() {
             '< Back'
           ),
         ]),
-        m('.title', 'global top beavers'),
+        m('.title', 'hall of fame'),
         m('.table-wrapper', [
           m('.row header', [
             m('.col', 'rank'),
@@ -74,17 +74,20 @@ export function GlobalLeaderboardGui() {
               )
             : m('.button.inactive', '< '),
           m('.current', `Page ${currentPage}/${lastPage}`),
-          m(
-            '.button',
-            {
-              onclick: () => {
-                playClick();
-                currentPage += 1;
-                return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage);
-              },
-            },
-            ' > '
-          ),
+          currentPage < lastPage
+            ? m(
+                '.button',
+                {
+                  onclick: () => {
+                    playClick();
+                    currentPage += 1;
+                    if (currentPage > lastPage) currentPage = lastPage;
+                    return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage);
+                  },
+                },
+                ' > '
+              )
+            : m('.button.inactive', '> '),
         ]),
       ]);
     },
