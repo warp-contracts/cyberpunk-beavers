@@ -18,7 +18,10 @@ const walletsWhitelist = [
   // 'qCtnbl5rsbF-1qRhawIQArCbO4_2TUOtnFv5oEun9gM',
   // 'wF_7BbSj8Yzlt7T44nMGXwJHmqn8t2Sv45LfxILNu_o',
   // '8ByvIowIXWOvEaOhpTeFUQQ_ArTiXAYzxwUSHr_R7P8', // ppe's generated wallet for the fucking Opera, fuck
-  // '0x50Ff383E6b308069fD525B0ABa1474d9fe086743',
+  '0x50Ff383E6b308069fD525B0ABa1474d9fe086743',
+  '0xC1AC0DFf4eb7c687Beaebe7151ea4F63E37fc8B5',
+  '0x27B5e6004511440e8b38405B8aF03aCe7B0Ae162',
+  '0x64937ab314bc1999396De341Aa66897C30008852',
 ];
 
 export const TOKEN_CONTRACT_MOCK = {
@@ -58,7 +61,7 @@ export const TOKEN_CONTRACT = {
   [GameTreasure.cbcoin.type]: {
     id: 'rH_-7vT_IgfFWiDsrcTghIhb9aRclz7lXcK7RCOV2h8',
     transfer: 'Transfer',
-    amount: 50,
+    amount: 0,
   },
   [GameTreasure.trunk.type]: {
     id: 'wOrb8b_V8QixWyXZub48Ki5B6OIDyf_p1ngoonsaRpQ',
@@ -73,12 +76,12 @@ export const TOKEN_CONTRACT = {
   [GameTreasure.war.type]: {
     id: 'xU9zFkq3X2ZQ6olwNVvr1vUWIjc3kXTWr7xKQD6dh10',
     transfer: 'Transfer',
-    amount: 20,
+    amount: 0,
   },
   [GameTreasure.rsg.type]: {
     id: 'p5OI99-BaY4QbZts266T7EDwofZqs-wVuYJmMCS0SUU',
     transfer: 'Transfer',
-    amount: 0,
+    amount: 50,
   },
   [GameTreasure.gun.type]: {
     id: 'O-566VlALuKNrSQBdLOgHyYIcqT0oqeattaBk2gNS70',
