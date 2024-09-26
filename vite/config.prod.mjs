@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import Const from '../src/game/common/const.mjs';
 
 // https://vitejs.dev/config/
