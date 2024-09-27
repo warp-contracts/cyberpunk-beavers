@@ -70,6 +70,10 @@
       padding: 3px 0px;
       margin-top: 40px;
       text-transform: uppercase;
+
+      .col {
+        display: flex;
+      }
     }
 
     .col {
@@ -81,6 +85,16 @@
       line-height: 24px;
       text-overflow: ellipsis;
       overflow: hidden;
+    }
+
+    .label {
+      display: block;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .arrow-down {
+      transform: rotate(90deg);
     }
   }
 

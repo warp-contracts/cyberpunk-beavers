@@ -1,18 +1,24 @@
 import { GlobalScore as PlayerGlobalScore } from './GlobalScore.js';
-import { GAME_MODES, GameTreasure } from '../../common/const.mjs';
+import { GameTreasure } from '../../common/const.mjs';
 import { playClick } from '../../utils/mithril.js';
-import { displayName, formatCoin, formatToken, trimString } from '../../utils/utils.js';
+import { displayName, formatToken } from '../../utils/utils.js';
 
 export function GlobalLeaderboardGui() {
   let currentPage = 1;
   let lastPage = 1;
+  let orderBy = GameTreasure.cbcoin.type;
+
   return {
     oninit: function (vnode) {
       const { leaderboardProcessId, walletAddress } = vnode.attrs;
-      return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage);
+      return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage, orderBy);
     },
     view: function (vnode) {
       const { walletAddress, leaderboardProcessId, back } = vnode.attrs;
+      const loadScores = (newOrder) => {
+        orderBy = newOrder;
+        return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage, newOrder);
+      };
       return m('.mithril-component', { id: 'global-leaderboard' }, [
         m('.top', [
           m(
@@ -31,12 +37,36 @@ export function GlobalLeaderboardGui() {
           m('.row header', [
             m('.col', 'rank'),
             m('.col', 'player'),
-            m('.col', 'cbcoin'),
-            m('.col', 'frags'),
-            m('.col', 'war'),
-            m('.col', 'trunk'),
-            m('.col', 'tio'),
-            m('.col', 'deaths'),
+            m(ColumnHeader, {
+              name: GameTreasure.cbcoin.type,
+              activeOrder: orderBy,
+              loadScores,
+            }),
+            m(ColumnHeader, {
+              name: 'frags',
+              activeOrder: orderBy,
+              loadScores,
+            }),
+            m(ColumnHeader, {
+              name: GameTreasure.war.type,
+              activeOrder: orderBy,
+              loadScores,
+            }),
+            m(ColumnHeader, {
+              name: GameTreasure.trunk.type,
+              activeOrder: orderBy,
+              loadScores,
+            }),
+            m(ColumnHeader, {
+              name: GameTreasure.tio.type,
+              activeOrder: orderBy,
+              loadScores,
+            }),
+            m(ColumnHeader, {
+              name: 'deaths',
+              activeOrder: orderBy,
+              loadScores,
+            }),
           ]),
           m(
             '.user-list',
@@ -67,7 +97,7 @@ export function GlobalLeaderboardGui() {
                     playClick();
                     currentPage -= 1;
                     if (currentPage < 1) currentPage = 1;
-                    return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage);
+                    return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage, orderBy);
                   },
                 },
                 ' < '
@@ -82,7 +112,7 @@ export function GlobalLeaderboardGui() {
                     playClick();
                     currentPage += 1;
                     if (currentPage > lastPage) currentPage = lastPage;
-                    return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage);
+                    return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage, orderBy);
                   },
                 },
                 ' > '
@@ -90,6 +120,24 @@ export function GlobalLeaderboardGui() {
             : m('.button.inactive', '> '),
         ]),
       ]);
+    },
+  };
+}
+
+function ColumnHeader() {
+  return {
+    view: function (vnode) {
+      const { name, activeOrder, loadScores } = vnode.attrs;
+
+      return m(
+        '.col',
+        {
+          onclick: () => {
+            loadScores(name);
+          },
+        },
+        [m('.label', name), name === activeOrder ? m('.arrow-down', '>') : null]
+      );
     },
   };
 }
