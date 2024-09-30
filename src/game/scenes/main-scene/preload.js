@@ -80,6 +80,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('blood_splat_1', ['assets/audio/blood_splat/blood_splat_1.mp3']);
   mainScene.load.audio('blood_splat_2', ['assets/audio/blood_splat/blood_splat_2.mp3']);
   mainScene.load.audio('additional_loot', ['assets/audio/additional_loot.mp3']);
+  mainScene.load.audio('shrink_alarm', ['assets/audio/shrink_alarm.mp3']);
   forDeathSounds((k, i) => loadDeathSound(k, i));
 
   function loadDeathSound(k, i) {

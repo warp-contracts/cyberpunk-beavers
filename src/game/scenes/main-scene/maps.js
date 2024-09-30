@@ -26,6 +26,7 @@ export function doCreateTileMap(mainScene) {
       mainScene.tileMap.obstaclesLayer = obstaclesLayer;
     } else {
       mainScene.tileMap.createLayer(layer, tileset);
+      //.setPipeline('Light2D');
     }
   }
 }

@@ -13,6 +13,7 @@
     "build:ui": "vite build --config vite/config.build.mjs",
     "build:ui:rsg": "VITE_GAME_MODE=rsg vite build --config vite/config.build.mjs",
     "deploy-session:local": "yarn build && node tools/deploy-spawn-session.js --env local --limit 20 --time $1",
+    "deploy-session:local:br": "yarn build && node tools/deploy-spawn-session.js --env local --limit 20 --gameplayMode battleRoyale --roundInterval 5000 --time $1",
     "deploy-session:local:rsg": "yarn build && node tools/deploy-spawn-session.js --env local --limit 20 --gameMode rsg --time $1",
     "deploy-session-game:local": "yarn build && node tools/deploy-spawn-session-game.js --env local --limit 20 --time $1",
     "deploy-session:prod": "yarn build && node tools/deploy-spawn-session.js --env prod --limit 20 --time $1",

@@ -32,6 +32,7 @@ export function doAddSounds(mainScene) {
   mainScene.bloodSplat1Sound = mainScene.sound.add('blood_splat_1', { loop: false, volume: 1.0 });
   mainScene.bloodSplat2Sound = mainScene.sound.add('blood_splat_2', { loop: false, volume: 1.5 });
   mainScene.additionalLoot = mainScene.sound.add('additional_loot', { loop: false, volume: 1.5 });
+  mainScene.shrinkWarn = mainScene.sound.add('shrink_alarm', { loop: false, volume: 2.0 });
   forDeathSounds((k, i) => addDeathSound(k, i));
 
   const backgroundMusic = mainScene[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];

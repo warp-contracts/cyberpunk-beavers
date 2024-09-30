@@ -39,6 +39,7 @@ export default class MainPlayer extends Player {
       this.medal.setDepth(FOV_DEPTH + 20);
     }
     this.diggedTreasures = {};
+    // this.maybeHideMinimap();
   }
 
   async update() {
@@ -51,6 +52,10 @@ export default class MainPlayer extends Player {
           this.lastNoApPlayTimestamp = now;
         }
       }
+      return;
+    }
+
+    if (this.stats.hp.current === 0 || this.locked) {
       return;
     }
 
@@ -96,8 +101,8 @@ export default class MainPlayer extends Player {
   }
 
   getCanvasPoint() {
-    var x = this.x - this.mainScene.cameras.main.scrollX * this.scrollFactorX;
-    var y = this.y - this.mainScene.cameras.main.scrollY * this.scrollFactorY;
+    const x = this.x - this.mainScene.cameras.main.scrollX * this.scrollFactorX;
+    const y = this.y - this.mainScene.cameras.main.scrollY * this.scrollFactorY;
     return { x, y };
   }
 
@@ -105,23 +110,32 @@ export default class MainPlayer extends Player {
     const { movementTemplate, moveHorizontal, moveVertical } = super.baseMoveTo(pos, onStart, onComplete);
     this.scene.tweens.add({
       ...movementTemplate,
-      targets: [this.rangeBarXLeft, this.rangeBarXRight, this.rangeBarYUp, this.rangeBarYDown],
+      targets: [
+        this.rangeBarXLeft,
+        this.rangeBarXRight,
+        this.rangeBarYUp,
+        this.rangeBarYDown /*, this.mainScene.light*/,
+      ],
       x: `+=${moveHorizontal}`,
       y: `+=${moveVertical}`,
       onComplete: (_) => {
-        const canvasPos = this.getCanvasPoint();
-        if (this.mainScene.minimap.setVisible(true)) {
-          if (
-            canvasPos.x >= window.innerWidth - MINIMAP_SIZE_PX - 2 * Const.Tile.size &&
-            canvasPos.y <= MINIMAP_SIZE_PX + CAMERA_MARGIN + Const.Tile.size
-          ) {
-            this.mainScene.minimap.setVisible(false);
-          } else {
-            this.mainScene.minimap.setVisible(true);
-          }
-        }
+        this.maybeHideMinimap();
       },
     });
+  }
+
+  maybeHideMinimap() {
+    const canvasPos = this.getCanvasPoint();
+    if (this.mainScene.minimap.setVisible(true)) {
+      if (
+        canvasPos.x >= window.innerWidth - MINIMAP_SIZE_PX - 2 * Const.Tile.size &&
+        canvasPos.y <= MINIMAP_SIZE_PX + CAMERA_MARGIN + Const.Tile.size
+      ) {
+        this.mainScene.minimap.setVisible(false);
+      } else {
+        this.mainScene.minimap.setVisible(true);
+      }
+    }
   }
 
   async action(dir) {
@@ -182,7 +196,7 @@ export default class MainPlayer extends Player {
         console.error(e);
         this.mainScene.lockingTx = null;
       }
-      console.log('Locked actions until tx is resolved', this.mainScene.lockingTx);
+      //console.log('Locked actions until tx is resolved', this.mainScene.lockingTx);
     }
   }
 }

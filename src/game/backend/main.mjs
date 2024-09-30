@@ -1,10 +1,10 @@
-import { WebSocketServer, WebSocket } from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 import { QuickJsPlugin } from 'warp-contracts-plugin-quickjs';
 import ids from '../config/warp-ao-ids.js';
 import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
 import { readMapFromArweave } from '../../../tools/game-common.js';
-import { GAME_MODES, maps } from '../common/const.mjs';
+import { maps, GAMEPLAY_MODES, GAME_MODES } from '../common/const.mjs';
 
 const WS_PORT = 8097;
 
@@ -73,7 +73,7 @@ wss.on('connection', (ws, request) => {
           } else {
             msg?.Tags?.push({ name: 'From-Process', value: processTagValue });
           }
-          console.log(`-- Sending message to ${msg.Target} `, msg);
+          // console.log(`-- Sending message to ${msg.Target} `, msg);
           const addresseeResult = await sendMessage(addresseeProcess.quickJS, addresseeProcess.state, msg);
           addresseeProcess.state = addresseeResult.State;
           if (addresseeResult.Output) {
@@ -158,10 +158,15 @@ async function spawnGame(processId, start, end) {
     {
       cmd: 'setup',
       type: 'custom',
-      start,
-      end,
+      start: start || Date.now() + 20 * 1000,
+      end: end || Date.now() + 20 * 1000 + 150 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
+      gameplayConfig: {
+        mode: GAMEPLAY_MODES.battleRoyale,
+      },
+      roundInterval: 5000,
+      startDelay: 5000,
       walletsWhitelist: [],
     },
     processEnv.Process.Owner

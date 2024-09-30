@@ -1,4 +1,4 @@
-import Const, { COLLISIONS_LAYER } from '../../common/const.mjs';
+import Const, { COLLISIONS_LAYER, DEFAULT_ROUND_INTERVAL_MS } from '../../common/const.mjs';
 
 const { GameObject, GameTreasure, Scores, Map, EMPTY_TILE } = Const;
 
@@ -6,7 +6,9 @@ export function __init(state, message) {
   state = Object.assign(state, initState(message, state));
   setVisibleGameObjects(state);
   setInvisibleGameTreasures(state);
+
   delete state.rawMap;
+  delete state.shrinkSchedule;
 }
 
 function tryLoadLayer(type, rawMap) {
@@ -23,8 +25,7 @@ function initState(message, state) {
   const mapWidth = obstaclesLayer.width;
   const mapHeight = obstaclesLayer.height;
 
-  const result = {
-    nextProcessId: null,
+  return {
     nextModuleId: null,
     activated: false,
     tokensTransferred: false,
@@ -61,7 +62,7 @@ function initState(message, state) {
     round: {
       current: 0,
       start: message.Timestamp, //ms
-      interval: 10_000, //ms
+      interval: DEFAULT_ROUND_INTERVAL_MS, //ms
     },
     walletsQueue: [],
     walletsWhitelist: [], // if not empty restricts players registration
@@ -76,8 +77,6 @@ function initState(message, state) {
     gameObjectsToRespawn: {},
     gameObjectsToRespawnInRound: [],
   };
-
-  return result;
 }
 
 function generateTilemap(input, width) {
