@@ -158,14 +158,14 @@ async function spawnGame(processId, start, end) {
     {
       cmd: 'setup',
       type: 'custom',
-      start: start || Date.now() + 20 * 1000,
-      end: end || Date.now() + 20 * 1000 + 150 * 1000,
+      start: start || Date.now() + 60 * 1000,
+      end: end || Date.now() + 60 * 1000 + 150 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
       gameplayConfig: {
-        mode: GAMEPLAY_MODES.battleRoyale,
+        mode: GAMEPLAY_MODES.deathmatch,
       },
-      roundInterval: 5000,
+      roundInterval: 10000,
       startDelay: 5000,
       walletsWhitelist: [],
     },
