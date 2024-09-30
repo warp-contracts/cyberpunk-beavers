@@ -11,8 +11,9 @@ import { TOKEN_CONTRACT } from '../deploy-spawn-session-config.js';
 const wallet = JSON.parse(readFileSync('../.secrets/general/jwk.json').toString());
 const bridgeProcessId = '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c';
 
-const euTotal = 261_000_000_000;
-const asiaTotal = 204_000_000_000;
+const token = 'war';
+const euTotal = 97200000000;
+const asiaTotal = 109800000000;
 const total = euTotal + asiaTotal;
 
 async function main(token) {
@@ -29,7 +30,7 @@ async function main(token) {
   });
 }
 
-main('war')
+main(token)
   .then((messageId) => {
     console.log(`Transfer message`, `https://www.ao.link/#/message/${messageId}`);
     return messageId;

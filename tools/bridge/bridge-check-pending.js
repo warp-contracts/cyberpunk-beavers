@@ -14,8 +14,8 @@ const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8
 
 const bridgeProcessId = '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c';
 
-const euPendingHubId = 'KmUEL2p52o3f-UAr9LBfZ1Oho8dldYD0Fdk7kPz4CBs';
-const asiaPendingHubId = 'vIxC06nes2V6ioWgED7vC9pqNUYLWYrEhvY2nre0Cq4';
+const euPendingHubId = 'gCf0dL8jFcCf3kINBQrmcYBMWJkAak_Xci9U-u-cqLM';
+const asiaPendingHubId = 'rCEP4c3ACbsmq0kMBbmavljwNZ2845rsGGk9CGbXDQQ';
 
 async function checkPending() {
   const signer = createDataItemSigner(WALLET);
@@ -100,6 +100,6 @@ checkPending()
   .then(async () => {
     await checkBalance(bridgeProcessId, 'tio');
     await checkBalance(bridgeProcessId, 'war');
-    // await checkBalance(bridgeProcessId, 'trunk');
+    await checkBalance(bridgeProcessId, 'trunk');
   })
   .then(() => console.log(`THE END`));
