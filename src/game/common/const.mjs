@@ -32,9 +32,14 @@ export const MIN_MSG_LENGTH = 2; // Hi
 
 export const MAX_LAST_TXS = 20;
 
+export const GAMEPLAY_MODES = {
+  deathmatch: 'deathmatch',
+  battleRoyale: 'battleRoyale',
+};
+
 const DEATH_SOUND_OPTIONS = 3;
 
-const Kills = {
+export const Kills = {
   headshot: 'headshot',
   slice: 'slice',
   tankshot: 'tankshot',
@@ -46,6 +51,8 @@ export const AP_COSTS = {
   landmine: 4,
   hp: 1,
 };
+
+export const DEFAULT_ROUND_INTERVAL_MS = 10_000;
 
 const Command = {
   attack: 'attack',

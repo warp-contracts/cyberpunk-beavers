@@ -1,4 +1,4 @@
-import Const from '../src/game/common/const.mjs';
+import Const, { DEFAULT_ROUND_INTERVAL_MS, GAMEPLAY_MODES } from '../src/game/common/const.mjs';
 import ids from '../src/game/config/warp-ao-ids.js';
 const { GameTreasure } = Const;
 
@@ -90,36 +90,44 @@ export const TOKEN_CONTRACT = {
   },
 };
 
-export function hourSessionGamesConfig(env, hubProcessId, dateOfFirstGame, playersLimit, mode) {
+export function hourSessionGamesConfig(
+  env,
+  hubProcessId,
+  dateOfFirstGame,
+  playersLimit,
+  mode,
+  gameplayConfig = { mode: GAMEPLAY_MODES.deathmatch, roundInterval: DEFAULT_ROUND_INTERVAL_MS }
+) {
   return hourSessionDelayMS.map((delay) => {
-    return gameCustomConfig(env, hubProcessId, dateOfFirstGame.getTime() + delay, playersLimit, mode);
+    return gameCustomConfig(env, hubProcessId, dateOfFirstGame.getTime() + delay, playersLimit, mode, gameplayConfig);
   });
 }
 
-export function gameCustomConfig(env, hubProcessId, date, playersLimit, mode) {
+export function gameCustomConfig(
+  env,
+  hubProcessId,
+  date,
+  playersLimit,
+  mode,
+  gameplayConfig = { mode: GAMEPLAY_MODES.deathmatch, roundInterval: DEFAULT_ROUND_INTERVAL_MS }
+) {
   if (date) {
     return {
       ...customSetup(env, hubProcessId, playersLimit),
       start: date,
       end: date + gameDurationMS,
       mode,
+      gameplayConfig,
+      roundInterval: gameplayConfig.roundInterval,
     };
   } else {
     return {
       ...customSetup(env, hubProcessId, playersLimit),
       mode,
+      gameplayConfig,
+      roundInterval: gameplayConfig.roundInterval,
     };
   }
-}
-
-export function activeGamesConfig(env, hubProcessId, playersLimit, mode) {
-  return [
-    {
-      ...customSetup(env, hubProcessId, playersLimit),
-      mode,
-    },
-    customSetup(env),
-  ];
 }
 
 function customSetup(env, hubProcessId, playersLimit) {

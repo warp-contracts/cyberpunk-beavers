@@ -5,13 +5,8 @@ import { readFileSync } from 'fs';
 import { spawnGame, transferToken, setupGameContract, registerGameInBridge } from './game-common.js';
 import { replaceId } from './replace-id.js';
 import { dateFromArg } from './common.mjs';
-import {
-  activeGamesConfig,
-  hourSessionGamesConfig,
-  TOKEN_CONTRACT,
-  TOKEN_CONTRACT_MOCK,
-} from './deploy-spawn-session-config.js';
-import Const, { maps, GAME_MODES } from '../src/game/common/const.mjs';
+import { hourSessionGamesConfig, TOKEN_CONTRACT, TOKEN_CONTRACT_MOCK } from './deploy-spawn-session-config.js';
+import Const, { maps, GAME_MODES, GAMEPLAY_MODES, DEFAULT_ROUND_INTERVAL_MS } from '../src/game/common/const.mjs';
 import ids from '../src/game/config/warp-ao-ids.js';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
@@ -29,12 +24,28 @@ const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
 const gameTokens = env === 'local' ? TOKEN_CONTRACT_MOCK : TOKEN_CONTRACT;
 
 // TIME DATE SETTINGS
+const timeArgIndex = process.argv.indexOf('--time');
+if (timeArgIndex === -1) {
+  throw new Error('--time param not specified');
+}
 const timeArg = process.argv[process.argv.indexOf('--time') + 1];
 const execDate = dateFromArg(timeArg);
 
 // GAME MODE
 const modeIdx = process.argv.indexOf('--gameMode');
 const mode = modeIdx == -1 ? GAME_MODES.default.type : process.argv[modeIdx + 1];
+
+// GAMEPLAY MODE
+const gameplayModeIdx = process.argv.indexOf('--gameplayMode');
+const gameplayMode = gameplayModeIdx == -1 ? GAMEPLAY_MODES.deathmatch : process.argv[gameplayModeIdx + 1];
+const knownGameplayModes = Object.keys(GAMEPLAY_MODES);
+if (!knownGameplayModes.includes(gameplayMode)) {
+  throw new Error(`Unknown gameplayMode '${gameplayMode}'. Possible modes: ${knownGameplayModes}`);
+}
+
+// ROUND INTERVAL
+const roundIntervalIdx = process.argv.indexOf('--roundInterval');
+const roundInterval = roundIntervalIdx == -1 ? DEFAULT_ROUND_INTERVAL_MS : process.argv[roundIntervalIdx + 1];
 
 // PLAYERS LIMIT
 const playersLimitIdx = process.argv.indexOf('--limit');
@@ -113,9 +124,10 @@ async function doIt() {
   console.log(`----- deployed hub`, hubSrcId, hubProcessId);
 
   const bridgeProcessId = ids[`bridge_processId_${env}`];
-  let setups = execDate
-    ? hourSessionGamesConfig(env, hubProcessId, execDate, playersLimit, mode)
-    : activeGamesConfig(env, hubProcessId, playersLimit, mode);
+  let setups = hourSessionGamesConfig(env, hubProcessId, execDate, playersLimit, mode, {
+    mode: gameplayMode,
+    roundInterval,
+  });
 
   const gameProcesses = [];
   let counter = 0;
