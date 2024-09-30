@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="48" tileheight="48" infinite="0" nextlayerid="8" nextobjectid="1">
  <editorsettings>
-  <export target="map_ppe.json" format="json"/>
+  <export target="b1m1.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" name="Sprite_Map_Sheet" tilewidth="48" tileheight="48" tilecount="253" columns="11">
   <image source="Sprite_Map_Sheet.png" width="528" height="1104"/>
