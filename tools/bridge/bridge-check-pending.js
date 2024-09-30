@@ -14,8 +14,8 @@ const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8
 
 const bridgeProcessId = '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c';
 
-const euPendingHubId = 'gCf0dL8jFcCf3kINBQrmcYBMWJkAak_Xci9U-u-cqLM';
-const asiaPendingHubId = 'rCEP4c3ACbsmq0kMBbmavljwNZ2845rsGGk9CGbXDQQ';
+const euPendingHubId = 'W6_qKGzHs9u4-EBURokBPeBt2vzvsPbGOJhfV5kuRC4'; // https://www.ao.link/#/message/qTisfeXsRnDrrByBnzo7chNCDqizvnoH1ftuWdkAmWY
+const asiaPendingHubId = 'B92hrXTVcqgpQSj6fdkdfbLO9cTxd1rPWJkyAjXy4O4'; // https://www.ao.link/#/message/VyNrd4-YZWd20X5Fdxx67KMwBc0_HlbFez1sXEo4jEQ
 
 async function checkPending() {
   const signer = createDataItemSigner(WALLET);
@@ -40,17 +40,17 @@ function sumPending(pending, tokenType) {
 
 function logPendingTotal(info, total) {
   if (total > 0) {
-    console.log(`${info} pending total`, total);
+    console.log(`${info}`, total);
   }
 }
 
 function sumAndLogPending(prefix, pending) {
   const trunkTotal = sumPending(pending, GameTreasure.trunk.type);
-  logPendingTotal(`${prefix} trunk`, trunkTotal);
+  logPendingTotal(`const ${prefix}_trunk = `, trunkTotal);
   const tioTotal = sumPending(pending, GameTreasure.tio.type);
-  logPendingTotal(`${prefix} tio`, tioTotal);
+  logPendingTotal(`const ${prefix}_tio = `, tioTotal);
   const warTotal = sumPending(pending, GameTreasure.war.type);
-  logPendingTotal(`${prefix} war`, warTotal);
+  logPendingTotal(`const ${prefix}_war = `, warTotal);
 }
 
 async function checkBalance(wallet, tokenType) {
@@ -91,8 +91,8 @@ checkPending()
       const asiaPending = pending[asiaPendingHubId];
       console.log(`Asia pending transfers`, asiaPending);
 
-      sumAndLogPending('EU', euPending);
-      sumAndLogPending('ASIA', asiaPending);
+      sumAndLogPending('eu', euPending);
+      sumAndLogPending('asia', asiaPending);
     } else {
       console.log(`Messages are empty`);
     }
