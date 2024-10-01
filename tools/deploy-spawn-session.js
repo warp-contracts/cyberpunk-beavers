@@ -20,7 +20,7 @@ if (envIdx < 0) {
 
 // LOCAL OR PROD
 const env = process.argv[envIdx + 1];
-const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
+const muUrl = env === 'local' ? 'http://34.118.3.184:8080' : 'https://mu.warp.cc';
 const gameTokens = env === 'local' ? TOKEN_CONTRACT_MOCK : TOKEN_CONTRACT;
 
 // TIME DATE SETTINGS
