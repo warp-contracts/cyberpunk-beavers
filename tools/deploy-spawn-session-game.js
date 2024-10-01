@@ -103,7 +103,7 @@ async function doIt() {
     await transferToken(ids[`token_processId_${env}`], gameProcessId, ids[`token_processId_${env}`]);
   }
 
-  const customConfig = gameCustomConfig(hubProcessId, execDate.getTime(), playersLimit);
+  const customConfig = gameCustomConfig(env, hubProcessId, execDate.getTime(), playersLimit, mode);
 
   console.log(`Setting up contract ${gameProcessId} with config`, customConfig);
   setTimeout(async () => {
