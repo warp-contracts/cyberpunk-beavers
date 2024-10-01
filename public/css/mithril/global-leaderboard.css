@@ -24,13 +24,16 @@
     width: 180px;
   }
 
+  .top.button {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    margin: 0;
+  }
+
   .button.inactive {
     color: var(--lightgrey);
     border: var(--lightgrey) 2px solid;
-  }
-
-  .top {
-    margin: 0 100px 0 100px;
   }
 
   .paging {

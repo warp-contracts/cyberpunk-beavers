@@ -20,18 +20,16 @@ export function GlobalLeaderboardGui() {
         return PlayerGlobalScore.loadList(leaderboardProcessId, walletAddress, currentPage, newOrder);
       };
       return m('.mithril-component', { id: 'global-leaderboard' }, [
-        m('.top', [
-          m(
-            '.button',
-            {
-              onclick: () => {
-                playClick();
-                back();
-              },
+        m(
+          '.top.button',
+          {
+            onclick: () => {
+              playClick();
+              back();
             },
-            '< Back'
-          ),
-        ]),
+          },
+          '< Back'
+        ),
         m('.title', 'hall of fame'),
         m('.table-wrapper', [
           m('.row header', [
