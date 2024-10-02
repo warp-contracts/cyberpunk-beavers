@@ -1,4 +1,5 @@
 import { doPlayAttackSound, doPlayOpponentFinishedSound } from '../sounds';
+import { GAMEPLAY_MODES } from '../../../common/const.mjs';
 
 export function handleAttacked(response, mainScene) {
   const isKillerMainPlayer = response.player?.walletAddress === mainScene.mainPlayer?.walletAddress;
@@ -38,12 +39,16 @@ export function handleAttacked(response, mainScene) {
     opponent
       ?.deathAnim(response.player.beaverId, isOpponentMainPlayer || isKillerMainPlayer || mainScene.spectatorMode)
       .once('animationcomplete', () => {
-        opponent.baseMoveTo(
-          response.opponent.pos,
-          () => {},
-          () => opponent.blink()
-        );
-        opponent.unlock();
+        if (mainScene.mode === GAMEPLAY_MODES.deathmatch) {
+          opponent.baseMoveTo(
+            response.opponent.pos,
+            () => {},
+            () => opponent.blink()
+          );
+          opponent.unlock();
+        } else {
+          opponent.kill();
+        }
       });
   } else {
     opponent?.bloodSplatAnim(isOpponentMainPlayer || isKillerMainPlayer);

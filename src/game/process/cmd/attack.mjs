@@ -1,4 +1,4 @@
-import Const, { GAME_MODES } from '../../common/const.mjs';
+import Const, { GAMEPLAY_MODES, GAME_MODES } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
@@ -44,9 +44,10 @@ export function attack(state, action, timestamp) {
       player,
       opponent,
       { range },
-      state
+      state,
+      timestamp
     );
-    if (finished) {
+    if (finished && state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
       opponent.pos = calculatePlayerRandomPos(state);
       state.playersOnTiles[attackPos.y][attackPos.x] = null;
       state.playersOnTiles[opponent.pos.y][opponent.pos.x] = opponent.walletAddress;
@@ -105,7 +106,7 @@ function calculateDamage(player, damageFigures, state) {
   };
 }
 
-export function finishHim(player, opponent, damageFigures, state) {
+export function finishHim(player, opponent, damageFigures, state, timestamp) {
   const damage = calculateDamage(player, damageFigures, state);
   console.log(`Player ${player.walletAddress} dealt ${damage?.baseDmg} to opponent ${opponent.walletAddress}`);
   opponent.stats.hp.current -= damage.finalDmg;
@@ -113,10 +114,17 @@ export function finishHim(player, opponent, damageFigures, state) {
     const { loot, additionalLoot } = lootPlayer(opponent, state);
     const revenge = player.stats.kills.killedBy === opponent.walletAddress;
     console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
-    opponent.stats.hp.current = opponent.stats.hp.max;
+    opponent.stats.hp.current = 0;
     opponent.stats.kills.deaths++;
     opponent.stats.kills.fragsInRow = 0;
     opponent.stats.kills.killedBy = player.walletAddress;
+    if (state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
+      opponent.stats.hp.current = opponent.stats.hp.max;
+    }
+    opponent.stats.death = {
+      ts: timestamp,
+      round: state.round.current,
+    };
     player.stats.kills.frags++;
     player.stats.kills.fragsInRow++;
     if (revenge) {
