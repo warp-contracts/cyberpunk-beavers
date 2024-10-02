@@ -1,4 +1,4 @@
-import Const, { BEAVER_TYPES } from '../common/const.mjs';
+import Const, { BEAVER_TYPES, GAMEPLAY_MODES } from '../common/const.mjs';
 import { convertToCamelCase, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 
@@ -129,6 +129,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     );
   }
 
+  kill() {
+    this.lock();
+    this.apBar.setVisible(false);
+    this.healthBar.setVisible(false);
+  }
+
   lock() {
     this.locked = true;
   }
@@ -218,7 +224,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
+    if (this.anims.isPlaying || this.isDead()) {
+      return;
+    }
+    this.anims.play(`${this.beaverChoice}_idle`, true);
+  }
+
+  isDead() {
+    return this.scene.mode === GAMEPLAY_MODES.battleRoyale && this.stats.hp.current <= 0;
   }
 
   initInputKeys() {

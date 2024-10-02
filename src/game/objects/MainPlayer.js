@@ -42,6 +42,14 @@ export default class MainPlayer extends Player {
     // this.maybeHideMinimap();
   }
 
+  kill() {
+    super.kill();
+    this.rangeBarXLeft.setVisible(false);
+    this.rangeBarXRight.setVisible(false);
+    this.rangeBarYUp.setVisible(false);
+    this.rangeBarYDown.setVisible(false);
+  }
+
   async update() {
     if (this.stats.ap.current === 0) {
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
@@ -55,7 +63,7 @@ export default class MainPlayer extends Player {
       return;
     }
 
-    if (this.stats.hp.current === 0 || this.locked) {
+    if (this.stats.hp.current <= 0 || this.locked) {
       return;
     }
 
