@@ -4,7 +4,7 @@ import { playClick } from '../utils/mithril';
 export function CharacterPickGui() {
   return {
     view: function (vnode) {
-      const { setCharacter, beaverChoice } = vnode.attrs;
+      const { setCharacter, beaverChoice, gameplayMode } = vnode.attrs;
       let characters = beaverChoice ? [beaverChoice] : Object.keys(BEAVER_TYPES);
       async function handleClick(character) {
         if (!beaverChoice) {
@@ -20,7 +20,7 @@ export function CharacterPickGui() {
         ),
         m(
           '.characters',
-          characters.map((c) => m(CharacterOption, { character: c, beaverChoice, handleClick }))
+          characters.map((c) => m(CharacterOption, { character: c, beaverChoice, handleClick, gameplayMode }))
         ),
       ]);
     },
@@ -30,8 +30,12 @@ export function CharacterPickGui() {
 function CharacterOption() {
   return {
     view: function (vnode) {
-      const { character, handleClick, beaverChoice } = vnode.attrs;
-      const stats = BEAVER_TYPES[character].stats;
+      const { character, handleClick, beaverChoice, gameplayMode } = vnode.attrs;
+      const stats = {
+        ...BEAVER_TYPES[character].stats,
+        ...BEAVER_TYPES[character].stats[gameplayMode],
+      };
+
       const weapon = stats.weapon;
 
       return m(

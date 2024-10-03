@@ -660,8 +660,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   lockAndKill(player, playDeathSound) {
-    player.kill();
     player.deathAnim(BEAVER_TYPES.speedy_beaver.name, playDeathSound);
+    player.kill();
   }
 
   updateStats(responsePlayer, gameStats) {
