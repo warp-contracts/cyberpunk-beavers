@@ -55,6 +55,7 @@ export function setup(state, action, message) {
   }
   return {
     playWindow: state.playWindow,
+    gameplayMode: state.gameplayMode,
   };
 }
 
@@ -111,6 +112,7 @@ function sendHubNotification(state) {
         playersLimit: state.playersLimit,
         walletsQueue: state.walletsQueue,
         mapTxId: state.mapTxId,
+        gameplayMode: state.gameplayMode,
       },
     }),
   });

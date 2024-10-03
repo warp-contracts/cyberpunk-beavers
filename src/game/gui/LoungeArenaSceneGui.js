@@ -1,4 +1,5 @@
 import { playClick } from '../utils/mithril.js';
+import { GAMEPLAY_MODE_LABEL } from '../common/const.mjs';
 
 export function LoungeArenaSceneGui(initialVnode) {
   function showJoinButton(gameStart, walletsQueue, walletAddress) {
@@ -20,6 +21,7 @@ export function LoungeArenaSceneGui(initialVnode) {
         onJoin,
         playersLimit,
         onBack,
+        gameplayMode,
       } = vnode.attrs;
       const disabled = walletsQueue && Object.keys(walletsQueue).length >= playersLimit;
       return [
@@ -27,7 +29,7 @@ export function LoungeArenaSceneGui(initialVnode) {
           playerError
             ? m(HeaderError, { playerError })
             : [
-                m(GameInfo, { gameTxId, gameStart, gameEnd, diff, walletsQueue }),
+                m(GameInfo, { gameTxId, gameStart, gameEnd, diff, walletsQueue, gameplayMode }),
                 showJoinButton(gameStart, walletsQueue, walletAddress) ? m(JoinButton, { onJoin, disabled }) : null,
                 m(
                   '.button back',
@@ -78,6 +80,7 @@ function GameInfo() {
 
       return m('.game-info', [
         vnode.attrs.gameTxId ? m('.element', [m('.title', 'Game Id'), m('.value', vnode.attrs.gameTxId)]) : null,
+        m('.element', [m('.title', 'Mode'), m('.value', GAMEPLAY_MODE_LABEL[vnode.attrs.gameplayMode])]),
         m('.element', [m('.title', 'Players'), m('.value', vnode.attrs.walletsQueue?.length)]),
         vnode.attrs.gameStart
           ? m('.element', [m('.title', 'Game Start'), m('.value', new Date(vnode.attrs.gameStart).toLocaleString())])

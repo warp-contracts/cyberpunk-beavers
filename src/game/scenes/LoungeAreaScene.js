@@ -88,6 +88,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
           this.gameEnd = response.end;
           this.walletsQueue = response.walletsQueue;
           this.playersLimit = response.playersLimit;
+          this.gameplayMode = response.gameplayMode;
 
           if (response.error) {
             console.error('Failed to fetch game info', response.error);
@@ -112,6 +113,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
                       gameEnd: self.gameEnd,
                       walletsQueue: self.walletsQueue,
                       playersLimit: self.playersLimit,
+                      gameplayMode: self.gameplayMode,
                       diff: self.diff,
                       onJoin: () =>
                         setTimeout(async () => {

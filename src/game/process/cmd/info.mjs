@@ -115,6 +115,7 @@ export function gameInfo(state, owner, ts) {
     enter: playWindow.enter,
     end: playWindow.end,
     players,
+    gameplayMode: state.gameplayMode,
   };
 }
 

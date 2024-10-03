@@ -1,5 +1,6 @@
 import { trimString } from '../utils/utils.js';
 import { playClick } from '../utils/mithril.js';
+import { GAMEPLAY_MODE_LABEL } from '../common/const.mjs';
 
 export function GameHubGui() {
   return {
@@ -42,7 +43,7 @@ function Header() {
 function GamesList() {
   function generateLabel(processId, game, index) {
     const i = index + 1;
-    let label = `${i}. ${trimString(processId, 5, 2, 4)}`;
+    let label = `${i}. ${trimString(processId, 5, 2, 4)}: ${GAMEPLAY_MODE_LABEL[game.gameplayMode]}`;
     let isActive = false;
     let isFinished = false;
     if (game.walletsQueue && game.playersLimit) {
