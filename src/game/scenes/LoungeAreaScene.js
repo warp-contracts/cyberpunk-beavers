@@ -209,6 +209,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
         gameStart: this.gameStart,
         gameEnter: this.gameEnter,
         gameEnd: this.gameEnd,
+        gameplayMode: this.gameplayMode,
       });
     }
   }
