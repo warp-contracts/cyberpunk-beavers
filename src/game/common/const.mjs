@@ -54,6 +54,11 @@ export const AP_COSTS = {
 
 export const DEFAULT_ROUND_INTERVAL_MS = 10_000;
 
+export const GAMEPLAY_MODE_LABEL = {
+  [GAMEPLAY_MODES.deathmatch]: 'Deathmatch',
+  [GAMEPLAY_MODES.battleRoyale]: 'Battle Royale',
+};
+
 const Command = {
   attack: 'attack',
   attacked: 'attacked',

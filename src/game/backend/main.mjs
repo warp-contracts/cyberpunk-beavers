@@ -154,12 +154,13 @@ async function spawnGame(processId, start, end) {
   });
 
   const processRandomId = processId;
+  const effecitveStart = start || Date.now() + 20 * 1000;
   const setupMessage = mockDataItem(
     {
       cmd: 'setup',
       type: 'custom',
-      start: start || Date.now() + 20 * 1000,
-      end: end || Date.now() + 20 * 1000 + 150 * 1000,
+      start: effecitveStart,
+      end: end || effecitveStart + 150 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
       gameplayConfig: {
@@ -185,6 +186,7 @@ async function spawnGame(processId, start, end) {
   if (result.Messages.length) {
     const message = result.Messages[0];
     message.Tags.find((t) => t.name === 'From-Process').value = processRandomId;
+    console.log(result.Messages[0]);
     hub.state = (await hub.quickJS.handle(result.Messages[0], processEnv, hub.state)).State;
   }
   return {
