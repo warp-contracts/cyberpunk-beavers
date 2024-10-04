@@ -1,12 +1,71 @@
-import { Tag } from 'warp-contracts';
-import { ArweaveSigner } from 'warp-contracts-plugin-deploy';
-import { createData } from 'warp-arbundles';
 import { readFileSync } from 'fs';
+import { Tag, WarpFactory } from 'warp-contracts';
+import { createData } from 'warp-arbundles';
+import { ArweaveSigner, DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { maps } from '../../src/game/common/const.mjs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
-import { maps } from '../src/game/common/const.mjs';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
+const warp = WarpFactory.forMainnet().use(new DeployPlugin());
+
+export async function deployModule(processName) {
+  const module = readFileSync(`./dist/output-${processName}.js`, 'utf-8');
+  const moduleTags = [
+    new Tag('Data-Protocol', 'ao'),
+    new Tag('Variant', 'ao.TN.1'),
+    new Tag('Type', 'Module'),
+    new Tag('Module-Format', 'wasm32-unknown-emscripten'),
+    new Tag('Input-Encoding', 'JSON-1'),
+    new Tag('Output-Encoding', 'JSON-1'),
+    new Tag('Memory-Limit', '500-mb'),
+    new Tag('Compute-Limit', '9000000000000'),
+    new Tag('Salt', '' + Date.now()),
+  ];
+  const moduleDataItem = createData(module, signer, { tags: moduleTags });
+  await moduleDataItem.sign(signer);
+  const moduleResponse = await fetch('https://up.arweave.net/tx', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/octet-stream',
+      Accept: 'application/json',
+    },
+    body: moduleDataItem.getRaw(),
+  }).then((res) => res.json());
+
+  //console.log("Module response", moduleResponse);
+  console.log(`-- Deployed ${processName} module with id ${moduleResponse.id}`);
+  return moduleResponse.id;
+  //const srcTx = await warp.createSource({ src: module, tags: moduleTags }, signer);
+  //return await warp.saveSource(srcTx);
+}
+
+export async function spawnProcess({ muUrl, processName, moduleId }) {
+  const processTags = [
+    new Tag('Data-Protocol', 'ao'),
+    new Tag('Variant', 'ao.TN.1'),
+    new Tag('Type', 'Process'),
+    new Tag('Name', `spawn ${processName}`),
+    new Tag('Module', moduleId),
+    new Tag('Scheduler', 'jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M'),
+    new Tag('SDK', 'ao'),
+    new Tag('Content-Type', 'text/plain'),
+  ];
+
+  const processDataItem = createData('{}', signer, { tags: processTags });
+  await processDataItem.sign(signer);
+
+  const processResponse = await fetch(muUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/octet-stream',
+      Accept: 'application/json',
+    },
+    body: processDataItem.getRaw(),
+  }).then((res) => res.json());
+  console.log(`-- Spawned ${processName} with id ${processResponse.id}`);
+  return processResponse.id;
+}
 
 const randomIntegerInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 

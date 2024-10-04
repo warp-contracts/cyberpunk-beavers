@@ -15,7 +15,7 @@ export function sendTokens(state) {
     for (let playerWallet of Object.keys(state.players)) {
       const gained = state.players[playerWallet].stats.coins.gained;
       if (gained > 0) {
-        if (state.mode == Const.GAME_MODES.ao.type) {
+        if (state.mode === Const.GAME_MODES.ao.type) {
           const type = GameTreasure.cbcoin.type;
           const target = state.gameTokens[type].id;
           console.log(`Transferring ${gained} ${type} to ${playerWallet}`);
@@ -26,7 +26,7 @@ export function sendTokens(state) {
             Recipient: playerWallet,
             Quantity: gained.toString(),
           });
-        } else if (state.mode == GAME_MODES.rsg.type) {
+        } else if (state.mode === GAME_MODES.rsg.type) {
           const type = GAME_MODES.rsg.token;
           const qty = gained * GameTreasure[type].baseVal;
           external[type].recipients[playerWallet] = `${qty}`;

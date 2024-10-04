@@ -96,48 +96,15 @@ function setVisibleGameObjects(state) {
 }
 
 function setInvisibleGameTreasures(state) {
-  setObjectsOnRandomPositions(
-    state,
-    GameTreasure.cbcoin,
-    state.gameTokens[GameTreasure.cbcoin.type].amount,
-    state.gameTreasuresTilemap,
-    Object.values(GameTreasure)
-  );
-  setObjectsOnRandomPositions(
-    state,
-    GameTreasure.tio,
-    state.gameTokens[GameTreasure.tio.type].amount,
-    state.gameTreasuresTilemap,
-    Object.values(GameTreasure)
-  );
-  setObjectsOnRandomPositions(
-    state,
-    GameTreasure.war,
-    state.gameTokens[GameTreasure.war.type].amount,
-    state.gameTreasuresTilemap,
-    Object.values(GameTreasure)
-  );
-  setObjectsOnRandomPositions(
-    state,
-    GameTreasure.trunk,
-    state.gameTokens[GameTreasure.trunk.type].amount,
-    state.gameTreasuresTilemap,
-    Object.values(GameTreasure)
-  );
-  setObjectsOnRandomPositions(
-    state,
-    GameTreasure.rsg,
-    state.gameTokens[GameTreasure.rsg.type].amount,
-    state.gameTreasuresTilemap,
-    Object.values(GameTreasure)
-  );
-  setObjectsOnRandomPositions(
-    state,
-    GameTreasure.gun,
-    state.gameTokens[GameTreasure.gun.type].amount,
-    state.gameTreasuresTilemap,
-    Object.values(GameTreasure)
-  );
+  Object.entries(state.gameTokens).forEach(([type, token]) => {
+    setObjectsOnRandomPositions(
+      state,
+      GameTreasure[type],
+      token.amount,
+      state.gameTreasuresTilemap,
+      Object.values(GameTreasure)
+    );
+  });
 }
 
 function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {

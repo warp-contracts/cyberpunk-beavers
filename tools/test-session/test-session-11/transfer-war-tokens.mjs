@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { TOKEN_CONTRACT } from '../../deploy-spawn-session-config.js';
 import { GameTreasure } from '../../../src/game/common/const.mjs';
-import { createDataItemSigner, message } from '@permaweb/aoconnect';
+import { TOKEN_CONTRACT } from '../../deploy/token-keeper.js';
 
 const wallet = JSON.parse(readFileSync('../../../.secrets/wallet.json').toString());
 const warToken = `${TOKEN_CONTRACT[GameTreasure.war.type].id}`;

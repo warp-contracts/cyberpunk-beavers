@@ -1,0 +1,66 @@
+{
+  "commonSetup": {
+    "mode": "ao",
+    "walletsWhitelist": [],
+    "playersLimit": 20,
+    "bridgeProcessId": "89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c",
+    "leaderboardProcessId": "5qzT9T2xH7sfnE66gtICnI_71c4dc9mSl0uOqYnX2o0",
+    "gameTokens": {
+      "cbcoin": {
+        "amount": 50
+      },
+      "trunk": {
+        "amount": 20
+      },
+      "tio": {
+        "amount": 20
+      },
+      "war": {
+        "amount": 20
+      },
+      "rsg": {
+        "amount": 0
+      },
+      "gun": {
+        "amount": 0
+      }
+    }
+  },
+  "sessions": [
+    {
+      "start": {
+        "dayOfTheWeek": 4,
+        "time": "16:00",
+        "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+      },
+      "gameDuration": 300000,
+      "gameDuration_comment": "5 minutes",
+      "gameBreak": 60000,
+      "gameBreak_comment": "1 minute",
+      "games": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {
+          "gameplayMode": "deathmatch",
+          "start": {
+            "dayOfTheWeek": 5,
+            "time": "16:00",
+            "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+          }
+        },
+        {},
+        {},
+        {},
+        {}
+      ]
+    }
+  ],
+  "tokensShipment": {
+    "runMainTransfer": true,
+    "runBridgeTransfers": true,
+    "mocks": false
+  }
+}
