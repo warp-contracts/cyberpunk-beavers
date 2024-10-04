@@ -1,0 +1,57 @@
+{
+  "commonSetup": {
+    "mode": "rsg",
+    "walletsWhitelist": [],
+    "bridgeProcessId": "t6rem72B6xwNnVfzNBETLkCYu5CqpmtgfCSgJt7TTx4",
+    "leaderboardProcessId": "lCviigwaPHbR8pUr8H6tbOHP_Syyu1cP4mY9ayrodF0",
+    "gameTokens": {
+      "cbcoin": {
+        "amount": 0
+      },
+      "trunk": {
+        "amount": 0
+      },
+      "tio": {
+        "amount": 0
+      },
+      "war": {
+        "amount": 0
+      },
+      "rsg": {
+        "amount": 20
+      },
+      "gun": {
+        "amount": 0
+      }
+    }
+  },
+  "sessions": [
+    {
+      "start": {
+        "secondsFromNow": 10
+      },
+      "gameDuration": 300000,
+      "gameDuration_comment": "5 minutes",
+      "gameBreak": 60000,
+      "gameBreak_comment": "1 minute",
+      "games": [
+        {
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "playersLimit": 20
+        },
+        {
+          "gameplayConfig": {
+            "mode": "battleRoyale"
+          }
+        }
+      ]
+    }
+  ],
+  "tokensShipment": {
+    "runMainTransfer": false,
+    "runBridgeTransfers": false,
+    "mocks": true
+  }
+}

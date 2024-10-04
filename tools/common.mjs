@@ -61,6 +61,22 @@ export function dateFromArg(dateStr) {
   return d;
 }
 
+export function argument(arg) {
+  const idx = process.argv.indexOf(`--${arg}`);
+  if (idx < 0) {
+    return null;
+  }
+  return process.argv[idx + 1];
+}
+
+export function mandatoryArg(arg, comment = '') {
+  const mandatory = argument(arg);
+  if (!mandatory) {
+    throw new Error(`Arg missing: '${arg}'. ${comment}`);
+  }
+  return mandatory;
+}
+
 function removeStartCharacter(word, char) {
   while (word.charAt(0) == char) {
     word = word.substring(1);
