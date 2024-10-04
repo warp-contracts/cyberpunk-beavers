@@ -375,6 +375,14 @@ export const GAME_MODES = {
   },
 };
 
+export const PRIZES = {
+  [GAMEPLAY_MODES.deathmatch]: null,
+  [GAMEPLAY_MODES.battleRoyale]: {
+    [GAME_MODES.ao.type]: 20000,
+    [GAME_MODES.rsg.type]: 10000,
+  },
+};
+
 const GAME_ENTER_DELAY = 30000;
 
 export default {
