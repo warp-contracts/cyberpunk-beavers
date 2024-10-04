@@ -162,10 +162,10 @@ async function spawnGame(processId, start, end) {
       end: end || Date.now() + 20 * 1000 + 150 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
-      gameplayConfig: {
+      /*gameplayConfig: {
         mode: GAMEPLAY_MODES.battleRoyale,
       },
-      roundInterval: 5000,
+      roundInterval: 5000,*/
       startDelay: 5000,
       walletsWhitelist: [],
     },

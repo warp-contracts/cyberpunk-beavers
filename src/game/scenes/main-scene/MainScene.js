@@ -80,7 +80,9 @@ export default class MainScene extends Phaser.Scene {
     doCreateTileMap(this);
     doAddSounds(this);
     doInitAnimations(this);
-    this.fov = new FOV(this, this.beaverChoice || this.beaverId);
+    if (!this.spectatorMode) {
+      this.fov = new FOV(this, this.beaverChoice || this.beaverId);
+    }
     /*this.lights.enable();
     this.lights.setAmbientColor(0x909090);*/
 
@@ -260,7 +262,7 @@ export default class MainScene extends Phaser.Scene {
         this.tileMap.worldToTileX(camera.worldView.width) + 2,
         this.tileMap.worldToTileX(camera.worldView.height) + 2
       );
-      this.fov.update(player, bounds);
+      this.fov?.update(player, bounds);
     }
     m.redraw();
     this.lastAttack.criticalHit = false;
