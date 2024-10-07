@@ -7,27 +7,30 @@ export function executeScan(response, mainScene) {
     if (!mainScene.scanSound.isPlaying) {
       mainScene.scanSound.play();
     }
+    const treasureFields = [];
     const grid = addScannedGrid(response.player.stats.scannerRadius, mainScene, () => {
       for (let field of response.area) {
         if (field.treasure == null) continue;
-        const treasureTile = mainScene.gameTreasuresLayer.putTileAt(field.treasure, field.tile[0], field.tile[1]);
-
-        setTimeout(() => {
-          if (!mainScene.mainPlayer.diggedTreasures[`${field.tile[0]}, ${field.tile[1]}`]) {
-            mainScene.gameTreasuresLayer.removeTileAt(field.tile[0], field.tile[1]);
-          }
-          mainScene.tweens.add({
-            targets: grid,
-            alpha: { from: 1, to: 0 },
-            duration: 500,
-            ease: 'Power2',
-            onComplete: () => {
-              grid.destroy();
-            },
-          });
-        }, 5000);
+        treasureFields.push(field);
+        mainScene.gameTreasuresLayer.putTileAt(field.treasure, field.tile[0], field.tile[1]);
       }
     });
+    setTimeout(() => {
+      for (const field of treasureFields) {
+        if (!mainScene.mainPlayer.diggedTreasures[`${field.tile[0]}, ${field.tile[1]}`]) {
+          mainScene.gameTreasuresLayer.removeTileAt(field.tile[0], field.tile[1]);
+        }
+      }
+      mainScene.tweens.add({
+        targets: grid,
+        alpha: { from: 1, to: 0 },
+        duration: 500,
+        ease: 'Power2',
+        onComplete: () => {
+          grid.destroy();
+        },
+      });
+    }, 5000);
   }
 }
 
