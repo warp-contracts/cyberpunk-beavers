@@ -96,7 +96,7 @@ function pickTreasure(state, player) {
   player.stats.ap.current -= 1;
   state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
   state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
-  const valueWithBonus = value + (player.stats.bonus[type] || 0);
+  const valueWithBonus = value + (player.stats.bonus[state.mode][type] || 0);
   addCoins(player, GAME_MODES[state.mode].token, valueWithBonus, state);
   addCoins(player, type, 1, state); //FIXME: this might be wrong in case of cbcoin
   return {

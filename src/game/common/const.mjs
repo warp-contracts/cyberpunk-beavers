@@ -32,6 +32,15 @@ export const MIN_MSG_LENGTH = 2; // Hi
 
 export const MAX_LAST_TXS = 20;
 
+export const GAME_MODES = {
+  default: { type: 'ao', token: 'cbcoin', tokenLink: (id) => `https://www.ao.link/#/token/${id}` },
+  ao: { type: 'ao', token: 'cbcoin', tokenLink: (id) => `https://www.ao.link/#/token/${id}` },
+  rsg: {
+    type: 'rsg',
+    token: 'rsg',
+    tokenLink: (id) => `https://sonar.warp.cc/#/app/contract/${id}?network=mainnet&dre=dreWarpy`,
+  },
+};
 export const GAMEPLAY_MODES = {
   deathmatch: 'deathmatch',
   battleRoyale: 'battleRoyale',
@@ -241,9 +250,14 @@ export const BEAVER_TYPES = {
       },
       weapon: WEAPONS.sniper_rifle_basic,
       bonus: {
-        [GameTreasure.cbcoin.type]: 100,
-        [GameTreasure.rsg.type]: 100,
-        [BonusType.KillBonus]: 200,
+        [GAME_MODES.ao.type]: {
+          [BonusType.KillBonus]: 200,
+          [GameTreasure.cbcoin.type]: 100,
+        },
+        [GAME_MODES.rsg.type]: {
+          [BonusType.KillBonus]: 100,
+          [GameTreasure.rsg.type]: 50,
+        },
       },
       kill: Kills.headshot,
     },
@@ -287,9 +301,14 @@ export const BEAVER_TYPES = {
       },
       weapon: WEAPONS.shotgun_basic,
       bonus: {
-        [GameTreasure.cbcoin.type]: 0,
-        [GameTreasure.rsg.type]: 0,
-        [BonusType.KillBonus]: 220,
+        [GAME_MODES.ao.type]: {
+          [BonusType.KillBonus]: 220,
+          [GameTreasure.cbcoin.type]: 0,
+        },
+        [GAME_MODES.rsg.type]: {
+          [BonusType.KillBonus]: 110,
+          [GameTreasure.rsg.type]: 0,
+        },
       },
       kill: Kills.tankshot,
     },
@@ -333,9 +352,14 @@ export const BEAVER_TYPES = {
       },
       weapon: WEAPONS.katana_basic,
       bonus: {
-        [GameTreasure.cbcoin.type]: 20,
-        [GameTreasure.rsg.type]: 20,
-        [BonusType.KillBonus]: 180,
+        [GAME_MODES.ao.type]: {
+          [BonusType.KillBonus]: 180,
+          [GameTreasure.cbcoin.type]: 20,
+        },
+        [GAME_MODES.rsg.type]: {
+          [BonusType.KillBonus]: 90,
+          [GameTreasure.rsg.type]: 10,
+        },
       },
       kill: Kills.slice,
     },
@@ -363,16 +387,6 @@ export const BEAVER_TYPES = {
 // ------- Queue Config
 const Queue = {
   defaultLimit: 15,
-};
-
-export const GAME_MODES = {
-  default: { type: 'ao', token: 'cbcoin', tokenLink: (id) => `https://www.ao.link/#/token/${id}` },
-  ao: { type: 'ao', token: 'cbcoin', tokenLink: (id) => `https://www.ao.link/#/token/${id}` },
-  rsg: {
-    type: 'rsg',
-    token: 'rsg',
-    tokenLink: (id) => `https://sonar.warp.cc/#/app/contract/${id}?network=mainnet&dre=dreWarpy`,
-  },
 };
 
 export const PRIZES = {
