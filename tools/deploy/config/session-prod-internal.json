@@ -1,6 +1,6 @@
 {
   "commonSetup": {
-    "mode": "ao",
+    "mode": "rsg",
     "walletsWhitelist": [
       "Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY",
       "Dj2ud7ui_rKtYwc_2cpGtNdlx6ifnX8w8VIksqIw42g",
@@ -11,36 +11,57 @@
       "0x50Ff383E6b308069fD525B0ABa1474d9fe086743",
       "0xC1AC0DFf4eb7c687Beaebe7151ea4F63E37fc8B5",
       "0x27B5e6004511440e8b38405B8aF03aCe7B0Ae162",
-      "0x64937ab314bc1999396De341Aa66897C30008852"
+      "0x64937ab314bc1999396De341Aa66897C30008852",
+      "0x768Ea11A51EB0aD2F041E66139f7FB1A4098A679"
     ],
     "playersLimit": 5,
     "bridgeProcessId": "t6rem72B6xwNnVfzNBETLkCYu5CqpmtgfCSgJt7TTx4",
     "leaderboardProcessId": "lCviigwaPHbR8pUr8H6tbOHP_Syyu1cP4mY9ayrodF0",
     "gameTokens": {
       "cbcoin": {
-        "amount": 50
-      },
-      "trunk": {
-        "amount": 20
-      },
-      "tio": {
-        "amount": 20
-      },
-      "war": {
-        "amount": 20
-      },
-      "rsg": {
-        "amount": 0
-      },
-      "gun": {
-        "amount": 0
+        "rsg": 50
       }
     }
   },
   "sessions": [
     {
       "start": {
-        "secondsFromNow": 10
+        "secondsFromNow": 120
+      },
+      "gameDuration": 300000,
+      "gameDuration_comment": "5 minutes",
+      "gameBreak": 60000,
+      "gameBreak_comment": "1 minute",
+      "games": [
+        {},
+        {
+          "gameplayConfig": {
+            "mode": "battleRoyale",
+            "roundInterval": 5000
+          }
+        }
+      ]
+    },
+    {
+      "start": {
+        "secondsFromNow": 240
+      },
+      "commonSetup": {
+        "mode": "ao",
+        "gameTokens": {
+          "cbcoin": {
+            "amount": 50
+          },
+          "trunk": {
+            "amount": 20
+          },
+          "tio": {
+            "amount": 20
+          },
+          "war": {
+            "amount": 20
+          }
+        }
       },
       "gameDuration": 300000,
       "gameDuration_comment": "5 minutes",
