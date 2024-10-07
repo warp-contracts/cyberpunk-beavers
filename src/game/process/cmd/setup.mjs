@@ -113,6 +113,7 @@ function sendHubNotification(state) {
         walletsQueue: state.walletsQueue,
         mapTxId: state.mapTxId,
         gameplayMode: state.gameplayMode,
+        mode: state.mode,
       },
     }),
   });
