@@ -9,8 +9,8 @@ import fs from 'node:fs';
 
 const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8'));
 const bridgeProcessId = '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c';
-const euPendingHubId = 'W6_qKGzHs9u4-EBURokBPeBt2vzvsPbGOJhfV5kuRC4'; // https://www.ao.link/#/message/xGmqLTna_AY9TYLTbz09nVhjCvSxhpGgpFtSbsXxmBM
-const asiaPendingHubId = 'B92hrXTVcqgpQSj6fdkdfbLO9cTxd1rPWJkyAjXy4O4'; // https://www.ao.link/#/message/CPN101UbCBA9j0GwSv1ls4gAOt40w_EfxBGz7ALyesg
+const euPendingHubId = 'G2qRpIcvA93MpUTh0_D9w72iCArmn4SjVu49NkVz0vI';
+const asiaPendingHubId = 'jNVcrcXss5GLw3Bwf33lVdr3wmm1jEI9U8IUos_BVaE';
 
 async function checkPending() {
   const signer = createDataItemSigner(WALLET);
@@ -19,7 +19,7 @@ async function checkPending() {
     process: bridgeProcessId,
     tags: [
       { name: 'Action', value: 'ReleasePending' },
-      { name: 'HubProcessId', value: `${asiaPendingHubId}` },
+      { name: 'HubProcessId', value: `${euPendingHubId}` },
       // { name: 'GameProcessId', value: 'UNA3jM3zUsOcneorFnE_j4huNsKU2ewkTXiF5X4N880' },
     ],
     signer,
