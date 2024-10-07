@@ -18,8 +18,8 @@
     "bridgeProcessId": "t6rem72B6xwNnVfzNBETLkCYu5CqpmtgfCSgJt7TTx4",
     "leaderboardProcessId": "lCviigwaPHbR8pUr8H6tbOHP_Syyu1cP4mY9ayrodF0",
     "gameTokens": {
-      "cbcoin": {
-        "rsg": 50
+      "rsg": {
+        "amount": 50
       }
     }
   },
