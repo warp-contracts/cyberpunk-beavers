@@ -27,6 +27,9 @@ export default class ConnectWalletScene extends Phaser.Scene {
       view: () => {
         return m(ConnectWalletSceneGui, {
           changeScene: (address) => {
+            const mode = window.warpAO.signingMode === 'metamask' ? GAME_MODES.rsg.type : GAME_MODES.ao.type;
+            warpAO.config.mode = mode;
+            warpAO.config.aoMode = mode === GAME_MODES.ao.type;
             self.changeScene(address);
             if (warpAO.config.aoMode) {
               checkProfile(address).then();
