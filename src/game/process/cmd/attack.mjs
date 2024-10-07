@@ -113,7 +113,10 @@ export function finishHim(player, opponent, damageFigures, state, timestamp) {
   if (opponent.stats.hp.current <= 0) {
     const { loot, additionalLoot } = lootPlayer(opponent, state);
     const revenge = player.stats.kills.killedBy === opponent.walletAddress;
-    console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
+    let lootWithBonus = loot + (player.stats.bonus[state.mode][Const.BonusType.KillBonus] || 0);
+    console.log(
+      `Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot with kill bonus ${lootWithBonus}`
+    );
     opponent.stats.hp.current = 0;
     opponent.stats.kills.deaths++;
     opponent.stats.kills.fragsInRow = 0;
@@ -130,12 +133,14 @@ export function finishHim(player, opponent, damageFigures, state, timestamp) {
     if (revenge) {
       player.stats.kills.killedBy = '';
     }
-    addCoins(player, GAME_MODES[state.mode].token, loot, state);
-    if (additionalLoot?.token) addCoins(player, additionalLoot.token, 1, state);
+    addCoins(player, GAME_MODES[state.mode].token, lootWithBonus, state);
+    if (additionalLoot?.token) {
+      addCoins(player, additionalLoot.token, 1, state);
+    }
     return {
       finished: true,
       revenge,
-      loot: loot + player.stats.bonus[Const.BonusType.KillBonus],
+      loot: lootWithBonus,
       additionalLoot,
       damage,
     };

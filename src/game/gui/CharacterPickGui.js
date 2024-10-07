@@ -57,11 +57,11 @@ function CharacterOption() {
                   m(CharacterAbility, { name: 'FIELD OF VIEW', value: stats.fov }),
                   m(CharacterAbility, {
                     name: 'TOKEN BONUS',
-                    value: stats.bonus[GAME_MODES[warpAO.config.mode].token],
+                    value: stats.bonus[warpAO.config.mode][GAME_MODES[warpAO.config.mode].token],
                   }),
                   m(CharacterAbility, {
                     name: 'KILL BONUS',
-                    value: stats.bonus[BonusType.KillBonus],
+                    value: stats.bonus[warpAO.config.mode][BonusType.KillBonus],
                   }),
                 ]),
                 m('.character-box-title', [m('div', weapon.name)]),

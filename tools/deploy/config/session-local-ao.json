@@ -17,12 +17,6 @@
       },
       "war": {
         "amount": 20
-      },
-      "rsg": {
-        "amount": 0
-      },
-      "gun": {
-        "amount": 0
       }
     }
   },
@@ -53,10 +47,10 @@
     },
     {
       "start": {
-        "secondsFromNow": 60
+        "secondsFromNow": 20
       },
-      "gameDuration": 120000,
-      "gameDuration_comment": "2 minutes",
+      "gameDuration": 300000,
+      "gameDuration_comment": "5 minutes",
       "gameBreak": 60000,
       "gameBreak_comment": "1 minute",
       "commonSetup": {
@@ -66,23 +60,8 @@
         },
         "playersLimit": 19,
         "gameTokens": {
-          "cbcoin": {
-            "amount": 0
-          },
-          "trunk": {
-            "amount": 0
-          },
-          "tio": {
-            "amount": 0
-          },
-          "war": {
-            "amount": 0
-          },
           "rsg": {
             "amount": 50
-          },
-          "gun": {
-            "amount": 0
           }
         }
       },
