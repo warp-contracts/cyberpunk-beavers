@@ -5,7 +5,7 @@ import { getUrlParam } from '../utils/utils.js';
 import Const from '../common/const.mjs';
 
 const env = getUrlParam('env') || 'prod';
-const mode = getUrlParam('mode') || import.meta.env.VITE_GAME_MODE || 'ao';
+// const mode = getUrlParam('mode') || import.meta.env.VITE_GAME_MODE || 'ao';
 
 console.log(`running in ${env} mode`);
 
@@ -13,8 +13,8 @@ window.warpAO = {
   config: {
     ...ids,
     env,
-    mode,
-    aoMode: mode == Const.GAME_MODES.ao.type,
+    mode: null,
+    aoMode: null,
     muAddress: env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc',
     cuAddress: env === 'local' ? 'http://localhost:8090' : 'https://cu.warp.cc',
     reload: true,

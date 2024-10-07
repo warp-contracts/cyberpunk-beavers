@@ -3,8 +3,8 @@ import { QuickJsPlugin } from 'warp-contracts-plugin-quickjs';
 import ids from '../config/warp-ao-ids.js';
 import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
-import { readMapFromArweave } from '../../../tools/game-common.js';
-import { maps, GAMEPLAY_MODES, GAME_MODES } from '../common/const.mjs';
+import { maps, GAME_MODES } from '../common/const.mjs';
+import { readMapFromArweave } from '../../../tools/deploy/deploy-spawn-common.js';
 
 const WS_PORT = 8097;
 
