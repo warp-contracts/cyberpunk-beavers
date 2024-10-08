@@ -9,7 +9,7 @@ export function GameHubGui() {
       const { lagMessage, lagClass } = formatLag(window.warpAO.lag, true);
       return [
         m('.mithril-component', { id: 'game-hub' }, [
-          m('div', [
+          m('.games-list-wrapper', [
             m(Header, { gameError }),
             vnode.attrs.games ? m(GamesList, { games, joinGame, spectateGame }) : null,
           ]),
