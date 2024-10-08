@@ -36,7 +36,11 @@
       "gameBreak_comment": "1 minute",
       "games": [
         { "map": "b1m7" },
-        { "map": "b2m1" },
+        { "map": "b2m1",
+          "gameplayConfig": {
+            "mode": "battleRoyale"
+          },
+          "roundInterval": 5000},
         { "map": "b1m5" },
         { "map": "b2m2" },
         { "map": "b1m6" },
@@ -50,7 +54,11 @@
           }
         },
         { "map": "b1m3" },
-        { "map": "b1m2" },
+        { "map": "b1m2",
+          "gameplayConfig": {
+            "mode": "battleRoyale"
+          },
+          "roundInterval": 5000},
         { "map": "b1m1" },
         { "map": "b2m1" }
       ]
