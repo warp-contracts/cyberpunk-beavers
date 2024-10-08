@@ -9,6 +9,13 @@
   display: flex;
   justify-content: space-between;
 
+  .games-list-wrapper {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-color: var(--green) black;
+    scrollbar-width: thin;
+  }
+
   .game-hub-connection {
     font-family: 'Press Start 2P';
     font-size: var(--big);
