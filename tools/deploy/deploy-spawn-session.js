@@ -6,7 +6,7 @@ import { handleTokenTransfers } from './token-keeper.js';
 
 // LOCAL OR PROD
 const env = mandatoryArg('env', "Specify 'env' flash with either 'local' or 'prod' value");
-const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu.warp.cc';
+const muUrl = env === 'local' ? 'http://localhost:8080' : 'https://mu-asia.warp.cc';
 
 // SESSION CONFIG
 const sessionConfig = mandatoryArg('config', "Should be something like 'ao', 'rsg' or 'prod-open-asia' ");
