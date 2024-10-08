@@ -33,7 +33,12 @@
       "gameBreak_comment": "1 minute",
       "games": [
         {},
-        {},
+        {
+          "gameplayConfig": {
+            "mode": "battleRoyale"
+          },
+          "roundInterval": 5000
+        },
         {},
         {},
         {},
@@ -45,7 +50,12 @@
             "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
           }
         },
-        {},
+        {
+          "gameplayConfig": {
+            "mode": "battleRoyale"
+          },
+          "roundInterval": 5000
+        },
         {},
         {},
         {}
