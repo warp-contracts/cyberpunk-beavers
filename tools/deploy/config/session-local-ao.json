@@ -23,24 +23,25 @@
   "sessions": [
     {
       "start": {
-        "secondsFromNow": 10
+        "secondsFromNow": -60
       },
       "gameDuration": 60000,
       "gameDuration_comment": "1 minute",
       "gameBreak": 10000,
       "gameBreak_comment": "10 seconds",
       "games": [
+        {},
         {
           "gameplayConfig": {
-            "mode": "deathmatch",
-            "roundInterval": 2000
-          }
+            "mode": "deathmatch"
+          },
+          "roundInterval": 2000
         },
         {
           "gameplayConfig": {
-            "mode": "battleRoyale",
-            "roundInterval": 5000
+            "mode": "battleRoyale"
           },
+          "roundInterval": 5000,
           "playersLimit": 21
         }
       ]
