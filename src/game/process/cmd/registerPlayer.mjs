@@ -56,6 +56,7 @@ export function registerPlayer(state, action) {
     stats: {
       name: BEAVER_TYPES[beaverId].name,
       ...BEAVER_TYPES[beaverId].stats,
+      ...BEAVER_TYPES[beaverId].stats[state.gameplayMode],
       round: {
         last: 0,
       },

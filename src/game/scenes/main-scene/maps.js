@@ -26,6 +26,7 @@ export function doCreateTileMap(mainScene) {
       mainScene.tileMap.obstaclesLayer = obstaclesLayer;
     } else {
       mainScene.tileMap.createLayer(layer, tileset);
+      //.setPipeline('Light2D');
     }
   }
 }
@@ -81,4 +82,30 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
 
     return layer;
   }
+}
+
+export function createSpriteOnTilemap(mainScene, type, { x, y }) {
+  const { x: worldX, y: worldY } = mainScene.tileMap.tileToWorldXY(x, y);
+
+  const sprite = mainScene.add.sprite(
+    worldX + baseTileUnit / 2,
+    worldY + baseTileUnit / 2,
+    gameObjectsTextureKey,
+    type
+  );
+  mainScene.gameObjectsSprites[y][x] = sprite;
+
+  mainScene.tweens.add({
+    targets: sprite,
+    y: '-=5',
+    duration: 250,
+    ease: 'Sine.easeInOut',
+    yoyo: true,
+    repeat: -1,
+    onStart: (tween) => {
+      if (spriteSyncedTime !== null) {
+        tween.progress = spriteSyncedTime;
+      }
+    },
+  });
 }

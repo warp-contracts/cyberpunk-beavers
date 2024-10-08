@@ -1,10 +1,10 @@
-import { WebSocketServer, WebSocket } from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 import { QuickJsPlugin } from 'warp-contracts-plugin-quickjs';
 import ids from '../config/warp-ao-ids.js';
 import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
-import { readMapFromArweave } from '../../../tools/game-common.js';
-import { GAME_MODES, maps } from '../common/const.mjs';
+import { maps, GAME_MODES } from '../common/const.mjs';
+import { readMapFromArweave } from '../../../tools/deploy/deploy-spawn-common.js';
 
 const WS_PORT = 8097;
 
@@ -73,7 +73,7 @@ wss.on('connection', (ws, request) => {
           } else {
             msg?.Tags?.push({ name: 'From-Process', value: processTagValue });
           }
-          console.log(`-- Sending message to ${msg.Target} `, msg);
+          // console.log(`-- Sending message to ${msg.Target} `, msg);
           const addresseeResult = await sendMessage(addresseeProcess.quickJS, addresseeProcess.state, msg);
           addresseeProcess.state = addresseeResult.State;
           if (addresseeResult.Output) {
@@ -154,14 +154,20 @@ async function spawnGame(processId, start, end) {
   });
 
   const processRandomId = processId;
+  const effecitveStart = start || Date.now() + 20 * 1000;
   const setupMessage = mockDataItem(
     {
       cmd: 'setup',
       type: 'custom',
-      start,
-      end,
+      start: effecitveStart,
+      end: end || effecitveStart + 150 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
+      /*gameplayConfig: {
+        mode: GAMEPLAY_MODES.battleRoyale,
+      },
+      roundInterval: 5000,*/
+      startDelay: 5000,
       walletsWhitelist: [],
     },
     processEnv.Process.Owner
@@ -180,6 +186,7 @@ async function spawnGame(processId, start, end) {
   if (result.Messages.length) {
     const message = result.Messages[0];
     message.Tags.find((t) => t.name === 'From-Process').value = processRandomId;
+    console.log(result.Messages[0]);
     hub.state = (await hub.quickJS.handle(result.Messages[0], processEnv, hub.state)).State;
   }
   return {

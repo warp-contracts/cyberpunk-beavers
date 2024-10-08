@@ -19,7 +19,6 @@ export class FOV {
     const data = Array(mainScene.tileMap.width)
       .fill([])
       .map(() => Array(mainScene.tileMap.width).fill(1));
-    console.log(data);
 
     const fovMap = mainScene.make.tilemap({
       data,
@@ -73,7 +72,7 @@ export class FOV {
 
     for (const walletAddress of Object.keys(this.mainScene.allPlayers)) {
       const player = this.mainScene.allPlayers[walletAddress];
-      if (player == this.mainScene.mainPlayer) {
+      if (player === this.mainScene.mainPlayer) {
         continue;
       }
       player.setVisible(this.isPlayerVisible(player));

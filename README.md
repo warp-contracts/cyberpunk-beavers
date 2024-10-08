@@ -26,8 +26,8 @@ In order to deploy and spawn along with games:
 or
 `node js/tools/deploy-spawn-session.js --env local  --time 23:20`
 
-Games config can be found here:
-`js/tools/deploy-spawn-session-config.js`
+Games config can be found in of multiple json configuration files, for example
+`./tools/deploy/config/session-local-ao.json`
 
 In order to deploy and spawn a single game to the existing hub
 

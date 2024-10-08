@@ -8,7 +8,7 @@ export function handle(state, message) {
   const module = message.Tags?.find((t) => t.name === 'From-Module')?.value;
   const action = JSON.parse(actionTagValue || '{}');
   action.walletAddress = message.Owner;
-  console.log('-- Game Hub process', state.games, action.walletAddress, action.cmd, gameProcess, module);
+  //console.log('-- Game Hub process', state.games, action.walletAddress, action.cmd, gameProcess, module);
   if (!state.games) {
     state.games = {};
     console.log(`-- Game Hub - assigned games `, state.games);
@@ -49,5 +49,5 @@ export function handle(state, message) {
       throw new ProcessError(`Hub Unknown action: ${action.cmd}`);
   }
 
-  console.log(`-- Game Hub state`, state);
+  //console.log(`-- Game Hub state`, state);
 }

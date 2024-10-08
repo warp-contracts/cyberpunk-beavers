@@ -26,6 +26,7 @@ export default class CharacterPickScene extends Phaser.Scene {
       view: () => {
         return m(CharacterPickGui, {
           beaverChoice: self.beaverChoice,
+          gameplayMode: self.initData.gameplayMode,
           setCharacter: async (beaverChoice) => {
             self.beaverChoice = beaverChoice;
             setTimeout(

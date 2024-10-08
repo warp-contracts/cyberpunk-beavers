@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
-import { TOKEN_CONTRACT } from '../deploy-spawn-session-config.js';
+import { TOKEN_CONTRACT } from '../deploy/token-keeper.js';
 
 /*
  * Step 2.

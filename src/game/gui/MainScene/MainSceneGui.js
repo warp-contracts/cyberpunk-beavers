@@ -34,6 +34,7 @@ export function MainSceneGui() {
         diff,
         gameActive,
         spectatorMode,
+        roundsToShrink,
       } = vnode.attrs;
 
       const { lagMessage, lagClass } = formatLag(window.warpAO.lag);
@@ -77,6 +78,12 @@ export function MainSceneGui() {
               gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
               !gameActive && diff > 0
                 ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`)
+                : null,
+              roundsToShrink > 0
+                ? m(
+                    '.main-scene-info.small.blink',
+                    `Map shrinks in ${roundsToShrink} round${roundsToShrink > 1 ? 's' : ''}`
+                  )
                 : null,
               m(BattleReport, {
                 trigger: gameActive && lastAttack.criticalHit,

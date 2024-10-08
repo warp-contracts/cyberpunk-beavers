@@ -128,57 +128,49 @@ export function ConnectWalletSceneGui(initialVnode) {
         m('.container', [
           m('.title', 'Hey stranger...'),
           m(
-            '',
-            warpAO.config.aoMode
-              ? [
-                  m(
-                    '.button green',
-                    {
-                      onclick: async () => {
-                        playClick();
-                        await handleArconnect(initialVnode.attrs.changeScene);
-                      },
-                    },
-                    'Connect wallet'
-                  ),
-                  m(
-                    '.button red',
-                    {
-                      onclick: async () => {
-                        playClick();
-                        await handleGenerateWallet(initialVnode.attrs.changeScene);
-                      },
-                    },
-                    'Generate wallet'
-                  ),
-                  hasGeneratedWallet
-                    ? m(
-                        '.button yellow',
-                        {
-                          onclick: async () => {
-                            playClick();
-                            await useGeneratedWallet(initialVnode.attrs.changeScene);
-                          },
-                        },
-                        'Use generated wallet'
-                      )
-                    : null,
-                ]
-              : [
-                  m(
-                    '.button green',
-                    {
-                      onclick: async () => {
-                        playClick();
-                        await handleMetamask(initialVnode.attrs.changeScene);
-                      },
-                    },
-                    'Connect wallet'
-                  ),
-                ],
-            m('.connection-text', walletConnectionText),
-            walletErrorText ? m('.connection-text.error', walletErrorText) : null
+            '.button green',
+            {
+              onclick: async () => {
+                playClick();
+                await handleArconnect(initialVnode.attrs.changeScene);
+              },
+            },
+            'Connect Arweave wallet (ArConnect)'
           ),
+          m(
+            '.button red',
+            {
+              onclick: async () => {
+                playClick();
+                await handleGenerateWallet(initialVnode.attrs.changeScene);
+              },
+            },
+            'Generate Arweave wallet'
+          ),
+          hasGeneratedWallet
+            ? m(
+                '.button yellow',
+                {
+                  onclick: async () => {
+                    playClick();
+                    await useGeneratedWallet(initialVnode.attrs.changeScene);
+                  },
+                },
+                'Use generated Arweave wallet'
+              )
+            : null,
+          m(
+            '.button green',
+            {
+              onclick: async () => {
+                playClick();
+                await handleMetamask(initialVnode.attrs.changeScene);
+              },
+            },
+            'Connect ETH wallet (MetaMask)'
+          ),
+          m('.connection-text', walletConnectionText),
+          walletErrorText ? m('.connection-text.error', walletErrorText) : null,
         ]),
       ]);
     },

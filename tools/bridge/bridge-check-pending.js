@@ -1,7 +1,7 @@
 import { createDataItemSigner, dryrun, message, result } from '@permaweb/aoconnect';
 import fs from 'node:fs';
 import { GameTreasure } from '../../src/game/common/const.mjs';
-import { TOKEN_CONTRACT } from '../deploy-spawn-session-config.js';
+import { TOKEN_CONTRACT } from '../deploy/token-keeper.js';
 
 /*
  * Step 1.

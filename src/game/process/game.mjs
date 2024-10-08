@@ -1,4 +1,4 @@
-import Const, { MAX_LAST_TXS } from '../common/const.mjs';
+import Const, { MAX_LAST_TXS, GAMEPLAY_MODES } from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
@@ -33,7 +33,10 @@ export function handle(state, message) {
   state.randomCounter = 0;
   if (state.hasOwnProperty('rawMap')) {
     __init(state, message);
+    console.log('Play window', state.playWindow);
   }
+
+  console.log('Gameplay Mode', state.gameplayMode);
 
   addToLastTxs(message, state);
 
@@ -60,7 +63,7 @@ export function handle(state, message) {
     ao.result({
       cmd: Const.Command.stats,
       ...gameInfo(state, action.walletAddress, message.Timestamp),
-      ...gameStats(state),
+      ...gameStats(state, message.Timestamp),
     });
     return;
   }
@@ -74,7 +77,13 @@ export function handle(state, message) {
     });
     return;
   }
-  gamePlayerTick(state, action);
+  const tickResult = gamePlayerTick(state, action);
+  if (tickResult?.dead) {
+    ao.result({
+      dead: action.walletAddress,
+      ...gameStats(state, message.Timestamp),
+    });
+  }
 
   switch (action.cmd) {
     case Const.Command.info:
@@ -82,7 +91,7 @@ export function handle(state, message) {
         cmd: Const.Command.stats,
         ...gameInfo(state, action.walletAddress, message.Timestamp),
         ...checkWhitelist(state, action.walletAddress),
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.enqueue:
@@ -91,7 +100,7 @@ export function handle(state, message) {
         cmd: Const.Command.stats,
         ...gameInfo(state, action.walletAddress, message.Timestamp),
         ...checkWhitelist(state, action.mainWalletAddress || action.walletAddress),
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.activate:
@@ -114,14 +123,14 @@ export function handle(state, message) {
         player: pickRes.player,
         picked: pickRes.picked,
         scoreToDisplay: pickRes.scoreToDisplay,
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.dig:
       ao.result({
         cmd: Const.Command.digged,
         ...dig(state, action),
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.attack:
@@ -129,35 +138,35 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.attacked,
         ...attackRes,
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.move:
       ao.result({
         cmd: Const.Command.moved,
         ...movePlayer(state, action),
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.useLandmine:
       ao.result({
         cmd: Const.Command.landmineActivated,
         ...useLandmine(state, action),
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.useTeleport:
       ao.result({
         cmd: Const.Command.teleported,
         ...teleportPlayer(state, action),
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.useScanner:
       ao.result({
         cmd: Const.Command.scanned,
         ...scan(state, action),
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.useHp:
@@ -177,7 +186,7 @@ export function handle(state, message) {
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
         round: state.round,
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.registerSpectator:
@@ -192,7 +201,7 @@ export function handle(state, message) {
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
         round: state.round,
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
         ...gameInfo(state, action.walletAddress, message.Timestamp),
       });
       break;
@@ -211,7 +220,7 @@ export function handle(state, message) {
           gameTreasuresTilemapForClient: state.gameTreasuresTilemapForClient,
         },
         round: state.round,
-        ...gameStats(state),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     default:
@@ -248,6 +257,9 @@ function gamePlayerTick(state, action) {
   if (player && player.stats.round.last < state.round.current) {
     player.stats.ap.current = player.stats.ap.max;
     player.stats.round.last = state.round.current;
+  }
+  if (player && state.gameplayMode === GAMEPLAY_MODES.battleRoyale && player.stats.hp === 0) {
+    return { dead: player.walletAddress };
   }
 }
 

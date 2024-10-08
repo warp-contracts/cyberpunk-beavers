@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { TOKEN_CONTRACT_MOCK } from '../../deploy-spawn-session-config.js';
 import { GameTreasure } from '../../../src/game/common/const.mjs';
-import { createDataItemSigner, message } from '@permaweb/aoconnect';
+import { TOKEN_CONTRACT_MOCK } from '../../deploy/token-keeper.js';
 
 const wallet = JSON.parse(readFileSync('./.secrets/jwk.json').toString());
 const tioToken = `${TOKEN_CONTRACT_MOCK[GameTreasure.tio.type].id}`;

@@ -1,0 +1,84 @@
+{
+  "commonSetup": {
+    "mode": "ao",
+    "walletsWhitelist": [],
+    "playersLimit": 12,
+    "bridgeProcessId": "t6rem72B6xwNnVfzNBETLkCYu5CqpmtgfCSgJt7TTx4",
+    "leaderboardProcessId": "lCviigwaPHbR8pUr8H6tbOHP_Syyu1cP4mY9ayrodF0",
+    "gameTokens": {
+      "cbcoin": {
+        "amount": 50
+      },
+      "trunk": {
+        "amount": 20
+      },
+      "tio": {
+        "amount": 20
+      },
+      "war": {
+        "amount": 20
+      }
+    }
+  },
+  "sessions": [
+    {
+      "start": {
+        "secondsFromNow": 10
+      },
+      "gameDuration": 60000,
+      "gameDuration_comment": "1 minute",
+      "gameBreak": 10000,
+      "gameBreak_comment": "10 seconds",
+      "games": [
+        {
+          "gameplayConfig": {
+            "mode": "deathmatch",
+            "roundInterval": 2000
+          }
+        },
+        {
+          "gameplayConfig": {
+            "mode": "battleRoyale",
+            "roundInterval": 5000
+          },
+          "playersLimit": 21
+        }
+      ]
+    },
+    {
+      "start": {
+        "secondsFromNow": 20
+      },
+      "gameDuration": 300000,
+      "gameDuration_comment": "5 minutes",
+      "gameBreak": 60000,
+      "gameBreak_comment": "1 minute",
+      "commonSetup": {
+        "mode": "rsg",
+        "gameplayConfig": {
+          "mode": "deathmatch"
+        },
+        "playersLimit": 19,
+        "gameTokens": {
+          "rsg": {
+            "amount": 50
+          }
+        }
+      },
+      "games": [
+        {},
+        {
+          "gameplayConfig": {
+            "mode": "battleRoyale",
+            "roundInterval": 5000
+          }
+        }
+      ]
+    }
+  ],
+  "tokensShipment": {
+    "runMainTransfer": false,
+    "runBridgeTransfers": true,
+    "mocks": true
+  }
+}

@@ -36,7 +36,7 @@
     color: var(--yellow);
     border: var(--yellow) 1px solid;
     cursor: pointer;
-    width: 450px;
+    width: 500px;
 
     &.active {
       color: var(--green);
@@ -51,7 +51,7 @@
 
     .spectate {
       position: absolute;
-      left: 250px;
+      left: 400px;
       top: 7px;
       padding: 3px;
       border: var(--yellow) 1px solid;

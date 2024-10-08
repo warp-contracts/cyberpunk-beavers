@@ -1,4 +1,4 @@
-import Const, { GAME_MODES } from '../../common/const.mjs';
+import Const, { GAMEPLAY_MODES, GAME_MODES } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
@@ -21,8 +21,12 @@ export function attack(state, action, timestamp) {
   let opponent = null;
   let prevPos = player.pos;
   let attackPos = prevPos;
+
   while (range < attackRange) {
     attackPos = step(prevPos, action.dir);
+    if (attackPos.x < 0 || attackPos.x > state.map.width - 1 || attackPos.y < 0 || attackPos.y > state.map.width - 1) {
+      break;
+    }
     // note: hacker beaver can shoot over obstacles, because why not.
     if (state.obstaclesTilemap[attackPos.y][attackPos.x] > Const.EMPTY_TILE && player.beaverId != 'hacker_beaver') {
       break;
@@ -40,9 +44,10 @@ export function attack(state, action, timestamp) {
       player,
       opponent,
       { range },
-      state
+      state,
+      timestamp
     );
-    if (finished) {
+    if (finished && state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
       opponent.pos = calculatePlayerRandomPos(state);
       state.playersOnTiles[attackPos.y][attackPos.x] = null;
       state.playersOnTiles[opponent.pos.y][opponent.pos.x] = opponent.walletAddress;
@@ -101,29 +106,41 @@ function calculateDamage(player, damageFigures, state) {
   };
 }
 
-export function finishHim(player, opponent, damageFigures, state) {
+export function finishHim(player, opponent, damageFigures, state, timestamp) {
   const damage = calculateDamage(player, damageFigures, state);
   console.log(`Player ${player.walletAddress} dealt ${damage?.baseDmg} to opponent ${opponent.walletAddress}`);
   opponent.stats.hp.current -= damage.finalDmg;
   if (opponent.stats.hp.current <= 0) {
     const { loot, additionalLoot } = lootPlayer(opponent, state);
     const revenge = player.stats.kills.killedBy === opponent.walletAddress;
-    console.log(`Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot ${loot}`);
-    opponent.stats.hp.current = opponent.stats.hp.max;
+    let lootWithBonus = loot + (player.stats.bonus[state.mode][Const.BonusType.KillBonus] || 0);
+    console.log(
+      `Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot with kill bonus ${lootWithBonus}`
+    );
+    opponent.stats.hp.current = 0;
     opponent.stats.kills.deaths++;
     opponent.stats.kills.fragsInRow = 0;
     opponent.stats.kills.killedBy = player.walletAddress;
+    if (state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
+      opponent.stats.hp.current = opponent.stats.hp.max;
+    }
+    opponent.stats.death = {
+      ts: timestamp,
+      round: state.round.current,
+    };
     player.stats.kills.frags++;
     player.stats.kills.fragsInRow++;
     if (revenge) {
       player.stats.kills.killedBy = '';
     }
-    addCoins(player, GAME_MODES[state.mode].token, loot, state);
-    if (additionalLoot?.token) addCoins(player, additionalLoot.token, 1, state);
+    addCoins(player, GAME_MODES[state.mode].token, lootWithBonus, state);
+    if (additionalLoot?.token) {
+      addCoins(player, additionalLoot.token, 1, state);
+    }
     return {
       finished: true,
       revenge,
-      loot: loot + player.stats.bonus[Const.BonusType.KillBonus],
+      loot: lootWithBonus,
       additionalLoot,
       damage,
     };

@@ -88,14 +88,24 @@ export default class GameHubScene extends Phaser.Scene {
         console.log(`Found games: ${Object.keys(response.games).length}`);
         if (response.games) {
           // show active games on the top
-          const gamesToSort = Object.entries(response.games).map(([k, v]) => {
-            if (v.playWindow?.end) {
-              if (v.playWindow.end > Date.now()) {
+          const gamesToSort = Object.entries(response.games)
+            .filter(([k, v]) => v.mode === warpAO.config.mode)
+            .map(([k, v]) => {
+              if (v.playWindow?.end) {
+                if (v.playWindow.end > Date.now()) {
+                  return [
+                    k,
+                    {
+                      ...v,
+                      finish: v.playWindow.end,
+                    },
+                  ];
+                }
                 return [
                   k,
                   {
                     ...v,
-                    finish: v.playWindow.end,
+                    finish: v.playWindow.end + 24 * 60 * 60 * 1000,
                   },
                 ];
               }
@@ -103,18 +113,10 @@ export default class GameHubScene extends Phaser.Scene {
                 k,
                 {
                   ...v,
-                  finish: v.playWindow.end + 24 * 60 * 60 * 1000,
+                  finish: v.playWindow?.begin,
                 },
               ];
-            }
-            return [
-              k,
-              {
-                ...v,
-                finish: v.playWindow?.begin,
-              },
-            ];
-          });
+            });
           let games = gamesToSort.sort(([k1, v1], [k2, v2]) => v1.finish - v2.finish);
           this.games = games;
           m.redraw();
