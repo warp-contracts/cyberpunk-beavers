@@ -1,12 +1,14 @@
 import { GlobalScore as PlayerGlobalScore } from './GlobalScore.js';
-import { GameTreasure } from '../../common/const.mjs';
+import { GAME_MODES, GameTreasure } from '../../common/const.mjs';
 import { playClick } from '../../utils/mithril.js';
 import { displayName, formatToken } from '../../utils/utils.js';
 
 export function GlobalLeaderboardGui() {
   let currentPage = 1;
   let lastPage = 1;
-  let orderBy = GameTreasure.cbcoin.type;
+  const leadingToken = GAME_MODES[warpAO.config.mode].token;
+  const displayAddToken = warpAO.config.aoMode;
+  let orderBy = leadingToken;
 
   return {
     oninit: function (vnode) {
@@ -36,7 +38,7 @@ export function GlobalLeaderboardGui() {
             m('.col', 'rank'),
             m('.col', 'player'),
             m(ColumnHeader, {
-              name: GameTreasure.cbcoin.type,
+              name: leadingToken,
               activeOrder: orderBy,
               loadScores,
             }),
@@ -45,21 +47,27 @@ export function GlobalLeaderboardGui() {
               activeOrder: orderBy,
               loadScores,
             }),
-            m(ColumnHeader, {
-              name: GameTreasure.war.type,
-              activeOrder: orderBy,
-              loadScores,
-            }),
-            m(ColumnHeader, {
-              name: GameTreasure.trunk.type,
-              activeOrder: orderBy,
-              loadScores,
-            }),
-            m(ColumnHeader, {
-              name: GameTreasure.tio.type,
-              activeOrder: orderBy,
-              loadScores,
-            }),
+            displayAddToken
+              ? m(ColumnHeader, {
+                  name: GameTreasure.war.type,
+                  activeOrder: orderBy,
+                  loadScores,
+                })
+              : null,
+            displayAddToken
+              ? m(ColumnHeader, {
+                  name: GameTreasure.trunk.type,
+                  activeOrder: orderBy,
+                  loadScores,
+                })
+              : null,
+            displayAddToken
+              ? m(ColumnHeader, {
+                  name: GameTreasure.tio.type,
+                  activeOrder: orderBy,
+                  loadScores,
+                })
+              : null,
             m(ColumnHeader, {
               name: 'deaths',
               activeOrder: orderBy,
@@ -69,17 +77,17 @@ export function GlobalLeaderboardGui() {
           m(
             '.user-list',
             PlayerGlobalScore.list.map(
-              ({ rowNum, rowTotal, wallet, userName, cbcoin, war, trunk, tio, frags, deaths }) => {
+              ({ rowNum, rowTotal, wallet, userName, [leadingToken]: coins, war, trunk, tio, frags, deaths }) => {
                 const ownerClass = walletAddress === wallet ? '.owner' : '';
                 lastPage = Math.ceil(rowTotal / PlayerGlobalScore.limit);
                 return m(`.row${ownerClass}`, [
                   m('.col', rowNum),
                   m('.col', displayName(userName, wallet)),
-                  m('.col', cbcoin),
+                  m('.col', coins),
                   m('.col', frags),
-                  m('.col', formatToken(war, GameTreasure.war.type)),
-                  m('.col', formatToken(trunk, GameTreasure.trunk.type)),
-                  m('.col', formatToken(tio, GameTreasure.tio.type)),
+                  displayAddToken ? m('.col', formatToken(war, GameTreasure.war.type)) : null,
+                  displayAddToken ? m('.col', formatToken(trunk, GameTreasure.trunk.type)) : null,
+                  displayAddToken ? m('.col', formatToken(tio, GameTreasure.tio.type)) : null,
                   m('.col', deaths),
                 ]);
               }
