@@ -74,6 +74,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
   async handleMessage(response) {
     console.log(`Got message`, response);
     switch (response.cmd) {
+      case Const.Command.tokensSent:
       case Const.Command.stats:
         {
           if (response.end && response.end < new Date()) {

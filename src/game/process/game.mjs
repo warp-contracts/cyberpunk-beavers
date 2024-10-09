@@ -56,6 +56,8 @@ export function handle(state, message) {
         ao.result({
           cmd: Const.Command.tokensSent,
           ...sendTokens(state),
+          ...gameInfo(state, action.walletAddress, message.Timestamp),
+          ...gameStats(state, message.Timestamp),
         });
         return;
       }

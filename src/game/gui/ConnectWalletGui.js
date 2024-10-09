@@ -128,6 +128,23 @@ export function ConnectWalletSceneGui(initialVnode) {
         m('.container', [
           m('.title', 'Hey stranger...'),
           m(
+            '.button yellow',
+            {
+              onclick: async () => {
+                playClick();
+                window.open(
+                  'https://github.com/warp-contracts/cyberpunk-beavers/blob/main/MANUAL.md#cyberpunk-beavers',
+                  '_blank'
+                );
+              },
+              style: {
+                width: '150px',
+                marginBottom: '40px',
+              },
+            },
+            'Read manual'
+          ),
+          m(
             '.button green',
             {
               onclick: async () => {
@@ -149,7 +166,7 @@ export function ConnectWalletSceneGui(initialVnode) {
           ),
           hasGeneratedWallet
             ? m(
-                '.button yellow',
+                '.button red',
                 {
                   onclick: async () => {
                     playClick();

@@ -18,6 +18,7 @@ export function setup(state, action, message) {
   state.leaderboardProcessId = action.leaderboardProcessId || state.leaderboardProcessId;
   state.playersLimit = action.playersLimit || state.playersLimit || Const.Queue.defaultLimit;
   state.walletsWhitelist = action.walletsWhitelist || state.walletsWhitelist;
+  state.tokensTransferred = action.tokensTransferred || state.tokensTransferred;
   state.mode = action.mode || state.mode || Const.GAME_MODES.default.type;
 
   state.gameplayMode = action.gameplayConfig?.mode || GAMEPLAY_MODES.deathmatch;
