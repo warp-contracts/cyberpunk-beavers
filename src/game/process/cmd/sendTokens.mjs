@@ -1,4 +1,4 @@
-import Const, { GAME_MODES } from '../../common/const.mjs';
+import Const, { GAME_MODES, TreasureLimit } from '../../common/const.mjs';
 const { GameTreasure } = Const;
 
 export function sendTokens(state) {
@@ -15,20 +15,19 @@ export function sendTokens(state) {
     for (let playerWallet of Object.keys(state.players)) {
       const gained = state.players[playerWallet].stats.coins.gained;
       if (gained > 0) {
-        if (state.mode === Const.GAME_MODES.ao.type) {
-          const type = GameTreasure.cbcoin.type;
+        const type = GAME_MODES[state.mode].token;
+        const qty = tokenValueLimit(state.mode, gained);
+        console.log(`Transferring ${qty} ${type} to ${playerWallet}`);
+        if (type === GameTreasure.cbcoin.type) {
           const target = state.gameTokens[type].id;
-          console.log(`Transferring ${gained} ${type} to ${playerWallet}`);
           ao.send({
             Target: target,
             Data: '1234',
             Action: 'Transfer',
             Recipient: playerWallet,
-            Quantity: gained.toString(),
+            Quantity: qty.toString(),
           });
-        } else if (state.mode === GAME_MODES.rsg.type) {
-          const type = GAME_MODES.rsg.token;
-          const qty = gained * GameTreasure[type].baseVal;
+        } else if (type === GameTreasure.rsg.type) {
           external[type].recipients[playerWallet] = `${qty}`;
           continue;
         }
@@ -60,4 +59,13 @@ export function sendTokens(state) {
     state.tokensTransferred = true;
     return { external };
   }
+}
+
+export function tokenValueLimit(gameMode, qty) {
+  const tokenType = GAME_MODES[gameMode].token;
+  const tokenLimit = TreasureLimit.PerGame[gameMode]?.[tokenType]?.value;
+  if (typeof tokenLimit === 'number') {
+    return Math.min(qty, tokenLimit);
+  }
+  return qty;
 }

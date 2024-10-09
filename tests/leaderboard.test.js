@@ -21,6 +21,7 @@ const state = {
   gameTokens: Const.DEFAULT_GAME_TOKENS,
   hubProcessId: 'hubId',
   leaderboardProcessId: 'AOS',
+  round: {},
   map: {
     width: 10,
     height: 10,
@@ -254,7 +255,7 @@ describe('LeaderboardTestJs', () => {
       balance: 0,
       generatedWalletAddress: 'wallet_22',
     });
-    addCoins(state.players.wallet_22, GameTreasure.rsg.type, 120, state);
+    addCoins(state.players.wallet_22, GameTreasure.rsg.type, 200_000, state);
     sendScores(state);
 
     const sendScoresRes = await Send({ ...ao.di, From: 'Game3ProcessId' });
@@ -345,11 +346,11 @@ describe('LeaderboardTestJs', () => {
     expect(globalSortedByRsg[0]).toEqual({
       rowNum: 1,
       rowTotal: 5,
-      cbcoin: 260,
+      cbcoin: 140,
       tio: 2,
-      war: 15000000000,
+      war: 9000000000,
       trunk: 0,
-      rsg: 120,
+      rsg: 10_000,
       gun: 0,
       wallet: 'wallet_22',
       userName: 'beaver_22',
