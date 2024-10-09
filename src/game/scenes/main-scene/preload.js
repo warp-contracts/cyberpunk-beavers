@@ -10,7 +10,23 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.image(`tio`, 'assets/images/tokens/tio.png');
   mainScene.load.image(`rsg`, 'assets/images/tokens/rsg.png');
   mainScene.load.image(`gun`, 'assets/images/tokens/gun.png');
-  mainScene.load.spritesheet('map_sheet', 'assets/maps/v2/Sprite_Map_Sheet.png', { frameWidth: 48, spacing: 0 });
+  mainScene.load.spritesheet('map_sheet_desert', 'assets/maps/v2/Sprite_Map_Sheet.png', { frameWidth: 48, spacing: 0 });
+  mainScene.load.spritesheet('map_sheet_city_1', 'assets/maps/v2/CC_City_Exterior_A2.png', {
+    frameWidth: 48,
+    spacing: 0,
+  });
+  mainScene.load.spritesheet('map_sheet_city_2', 'assets/maps/v2/CC_City_Exterior__A4.png', {
+    frameWidth: 48,
+    spacing: 0,
+  });
+  mainScene.load.spritesheet('map_sheet_city_3', 'assets/maps/v2/CC_City_Exterior_B.png', {
+    frameWidth: 48,
+    spacing: 0,
+  });
+  mainScene.load.spritesheet('map_sheet_city_4', 'assets/maps/v2/CC_City_Exterior_C.png', {
+    frameWidth: 48,
+    spacing: 0,
+  });
   mainScene.load.spritesheet('cyberpunk_game_treasures', 'assets/images/game_treasures.png', {
     frameWidth: 48,
     spacing: 0,
