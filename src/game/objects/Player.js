@@ -1,4 +1,4 @@
-import Const, { BEAVER_TYPES, GAMEPLAY_MODES } from '../common/const.mjs';
+import Const, { BEAVER_TYPES, GAMEPLAY_MODES, PLAYER_DEPTH } from '../common/const.mjs';
 import { convertToCamelCase, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 
@@ -22,7 +22,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     this.initInputKeys();
     this.onGameObject = null;
-    this.setDepth(10);
+    this.setDepth(PLAYER_DEPTH);
 
     this.position = this.addInfoText(x, y - 55, ``);
     this.healthBar = scene.add.rectangle(x, y - 32, this.calculateBarWidth(this.stats.hp), 6, 0xdc143c);
