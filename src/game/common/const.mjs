@@ -171,6 +171,16 @@ const DEFAULT_GAME_TOKENS = {
   },
 };
 
+export const TreasureLimit = {
+  PerGame: {
+    [GAME_MODES.rsg.type]: {
+      [GameTreasure.rsg.type]: {
+        value: 10_000,
+      },
+    },
+  },
+};
+
 const Scores = {
   hp: 'hp',
   ap: 'ap',
