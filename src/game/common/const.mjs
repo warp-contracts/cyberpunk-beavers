@@ -3,6 +3,7 @@ const EVENTS_NAME = {
 };
 
 export const maps = [
+  'Dv3csEXL8d30kYT7BbGz0sy1Ha07tsl5k9GW65Eul_A', // b2m1
   'z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA', // ch1j1
   'fcH7-DtyZk3sCJzN9qUUIVVFagV6rf5RdYR7zpQD5d4', // b1m5
   'Cbdwm_6JDDmtllVzmtrsDqK2fULK9A8YRqivCAjzDV0', // ch1j2
@@ -14,13 +15,17 @@ export const maps = [
 
 const EMPTY_TILE = 0;
 
-export const FOV_DEPTH = 100;
+export const PLAYER_DEPTH = 100;
+export const MAIN_PLAYER_DEPTH = 200;
+export const FRONT_LAYER_DEPTH = 1000;
+export const FOV_DEPTH = 10000;
 
 export const FOG_ALPHA = 0.8;
 
 export const MINIMAP_SIZE_PX = 250;
 
 export const COLLISIONS_LAYER = 'collisions';
+export const FRONT_LAYER_PREFIX = 'front';
 
 const NO_AP_COST = 0;
 const LOW_AP_COST = 1;

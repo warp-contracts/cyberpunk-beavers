@@ -1,4 +1,4 @@
-import Const, { AP_COSTS, FOV_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
+import Const, { AP_COSTS, FOV_DEPTH, MAIN_PLAYER_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
 import Player from './Player.js';
 import { doPlayAttackSound } from '../scenes/main-scene/sounds.js';
 import { CAMERA_MARGIN } from '../scenes/main-scene/camera.js';
@@ -26,17 +26,17 @@ export default class MainPlayer extends Player {
     this.rangeBarYUp = scene.add.grid(x, y - 48 * diff, 48, range * 48, 48, 48, RANGE_COLOR, 0.4);
     this.rangeBarYDown = scene.add.grid(x, y + 48 * diff, 48, range * 48, 48, 48, RANGE_COLOR, 0.4);
 
-    this.setDepth(FOV_DEPTH + 10);
-    this.rangeBarXLeft.setDepth(FOV_DEPTH + 10);
-    this.rangeBarXRight.setDepth(FOV_DEPTH + 10);
-    this.rangeBarYUp.setDepth(FOV_DEPTH + 10);
-    this.rangeBarYDown.setDepth(FOV_DEPTH + 10);
-    this.healthBar.setDepth(FOV_DEPTH + 20);
-    this.apBar.setDepth(FOV_DEPTH + 20);
-    this.position.setDepth(FOV_DEPTH + 20);
-    this.name.setDepth(FOV_DEPTH + 20);
+    this.setDepth(MAIN_PLAYER_DEPTH);
+    this.rangeBarXLeft.setDepth(this.depth + 10);
+    this.rangeBarXRight.setDepth(this.depth + 10);
+    this.rangeBarYUp.setDepth(this.depth + 10);
+    this.rangeBarYDown.setDepth(this.depth + 10);
+    this.healthBar.setDepth(this.depth + 20);
+    this.apBar.setDepth(this.depth + 20);
+    this.position.setDepth(this.depth + 20);
+    this.name.setDepth(this.depth + 20);
     if (this.medal) {
-      this.medal.setDepth(FOV_DEPTH + 20);
+      this.medal.setDepth(this.depth + 20);
     }
     this.diggedTreasures = {};
     // this.maybeHideMinimap();

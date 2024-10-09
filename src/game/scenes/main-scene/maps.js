@@ -1,4 +1,4 @@
-import Const, { COLLISIONS_LAYER, GameObject } from '../../common/const.mjs';
+import Const, { COLLISIONS_LAYER, FRONT_LAYER_DEPTH, FRONT_LAYER_PREFIX, GameObject } from '../../common/const.mjs';
 
 const gameObjectsTextureKey = `cyberpunk_game_objects`;
 const gameObjectsToAdd = {
@@ -16,16 +16,26 @@ export function doCreateTileMap(mainScene) {
   }
 
   mainScene.tileMap = mainScene.make.tilemap({ key: `map_${mainScene.mapTxId}` });
-  const tileset = mainScene.tileMap.addTilesetImage('Sprite_Map_Sheet', 'map_sheet');
+  const tilesets = [
+    mainScene.tileMap.addTilesetImage('Sprite_Map_Sheet', 'map_sheet_desert'),
+    mainScene.tileMap.addTilesetImage('CC_City_Exterior_A2', 'map_sheet_city_1'),
+    mainScene.tileMap.addTilesetImage('CC_City_Exterior__A4', 'map_sheet_city_2'),
+    mainScene.tileMap.addTilesetImage('CC_City_Exterior_B', 'map_sheet_city_3'),
+    mainScene.tileMap.addTilesetImage('CC_City_Exterior_C', 'map_sheet_city_4'),
+  ];
   const layers = mainScene.tileMap.getTileLayerNames();
+  let frontLayerDepth = FRONT_LAYER_DEPTH;
   for (const layer of layers) {
     console.log('creating layer', layer);
     if (layer === COLLISIONS_LAYER) {
-      const obstaclesLayer = mainScene.tileMap.createLayer(layer, tileset);
+      const obstaclesLayer = mainScene.tileMap.createLayer(layer, tilesets);
       obstaclesLayer.setDepth(-100);
       mainScene.tileMap.obstaclesLayer = obstaclesLayer;
     } else {
-      mainScene.tileMap.createLayer(layer, tileset);
+      const mapLayer = mainScene.tileMap.createLayer(layer, tilesets);
+      if (layer.startsWith(FRONT_LAYER_PREFIX)) {
+        mapLayer.setDepth(frontLayerDepth++);
+      }
       //.setPipeline('Light2D');
     }
   }
