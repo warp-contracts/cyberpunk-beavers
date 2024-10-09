@@ -1,4 +1,5 @@
 import Const, { GAME_MODES, GAMEPLAY_MODES, PRIZES } from '../../common/const.mjs';
+import { tokenValueLimit } from './sendTokens.mjs';
 const { GameTreasure } = Const;
 
 export function sendScores(state) {
@@ -21,9 +22,9 @@ export function sendScores(state) {
 
     for (let [wallet, data] of Object.entries(state.players)) {
       let gained = state.players[wallet].stats.coins.gained;
-      if (state.mode === GAME_MODES.rsg.type) {
-        gained = gained * GameTreasure[GAME_MODES.rsg.token].baseVal;
-      }
+      gained = tokenValueLimit(state.mode, gained);
+      state.players[wallet].stats.coins.gained = gained;
+
       const { frags, deaths } = data.stats.kills;
       gameScores[wallet] = {
         userName: data.userName,
