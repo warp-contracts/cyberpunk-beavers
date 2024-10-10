@@ -15,7 +15,15 @@ export function doPreloadAssets(mainScene) {
     frameWidth: 48,
     spacing: 0,
   });
+  mainScene.load.spritesheet('map_sheet_city_1_exp', 'assets/maps/v2/CC_City_Exterior_A2_expanded.png', {
+    frameWidth: 48,
+    spacing: 0,
+  });
   mainScene.load.spritesheet('map_sheet_city_2', 'assets/maps/v2/CC_City_Exterior__A4.png', {
+    frameWidth: 48,
+    spacing: 0,
+  });
+  mainScene.load.spritesheet('map_sheet_city_2_exp', 'assets/maps/v2/CC_City_Exterior__A4_expanded.png', {
     frameWidth: 48,
     spacing: 0,
   });

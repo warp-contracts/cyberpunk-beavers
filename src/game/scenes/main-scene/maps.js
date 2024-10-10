@@ -19,7 +19,9 @@ export function doCreateTileMap(mainScene) {
   const tilesets = [
     mainScene.tileMap.addTilesetImage('Sprite_Map_Sheet', 'map_sheet_desert'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior_A2', 'map_sheet_city_1'),
+    mainScene.tileMap.addTilesetImage('CC_City_Exterior_A2_expanded', 'map_sheet_city_1_exp'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior__A4', 'map_sheet_city_2'),
+    mainScene.tileMap.addTilesetImage('CC_City_Exterior__A4_expanded', 'map_sheet_city_2_exp'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior_B', 'map_sheet_city_3'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior_C', 'map_sheet_city_4'),
   ];
