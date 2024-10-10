@@ -1,10 +1,5 @@
 import Const from '../../src/game/common/const.mjs';
-import { setupGameContract } from './deploy-spawn-common.js';
-import { readFileSync } from 'fs';
-import { ArweaveSigner } from 'warp-contracts-plugin-deploy';
-
-const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
-const signer = new ArweaveSigner(jwk);
+import { sendAction } from './deploy-spawn-common.js';
 
 const setup = {
   cmd: Const.Command.setup,
@@ -96,12 +91,6 @@ for (const val of [
   'XLSFzTvyTTmgwE-YfN-Cl7EGBzcDcq-g8Dr78zDmQNU',
   'e_2sZbPKn3Kf-7-1PFlNRoEJXrl0S9Ux6VhRictTWJI',
 ]) {
-  const result = await setupGameContract(
-    signer,
-    'hVlsM8eTCJ_xg3Y8lomWAAdDtwZ67PmhbIKpow6klcI',
-    val,
-    setup,
-    'https://mu.warp.cc'
-  );
+  const result = await sendAction('hVlsM8eTCJ_xg3Y8lomWAAdDtwZ67PmhbIKpow6klcI', val, setup, 'https://mu.warp.cc');
   console.log(result);
 }

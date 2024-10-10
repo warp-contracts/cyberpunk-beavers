@@ -1,20 +1,9 @@
-import { ArweaveSigner } from 'warp-contracts-plugin-deploy';
-import { readFileSync } from 'fs';
 import { replaceId } from './../replace-id.js';
 import { argument, dateFromArg, mandatoryArg } from './../common.mjs';
 import Const, { maps } from '../../src/game/common/const.mjs';
 import { schedulesForEnv } from './deploy-session-schedule.js';
-import {
-  deployModule,
-  spawnProcess,
-  spawnGame,
-  setupGameContract,
-  registerGameInBridge,
-} from './deploy-spawn-common.js';
+import { deployModule, spawnProcess, spawnGame, sendAction, registerGameInBridge } from './deploy-spawn-common.js';
 import { handleTokenTransfers } from './token-keeper.js';
-
-const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
-const signer = new ArweaveSigner(jwk);
 
 // LOCAL OR PROD
 const env = mandatoryArg('env', "Specify 'env' flash with either 'local' or 'prod' value");
@@ -68,7 +57,7 @@ async function doIt() {
     // Setup game
     await sleep(100);
     console.log(`Setting up game ${gameProcessId} at ${new Date(setup?.start)}`);
-    await setupGameContract(signer, gameSrcId, gameProcessId, setup, muUrl);
+    await sendAction(gameSrcId, gameProcessId, setup, muUrl);
     counter++;
   }
 

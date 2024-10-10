@@ -1,13 +1,12 @@
 import { readFileSync } from 'fs';
-import { Tag, WarpFactory } from 'warp-contracts';
+import { Tag } from 'warp-contracts';
 import { createData } from 'warp-arbundles';
-import { ArweaveSigner, DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { ArweaveSigner } from 'warp-contracts-plugin-deploy';
 import { maps } from '../../src/game/common/const.mjs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
-const warp = WarpFactory.forMainnet().use(new DeployPlugin());
 
 export async function deployModule(processName) {
   const module = readFileSync(`./dist/output-${processName}.js`, 'utf-8');
@@ -33,11 +32,8 @@ export async function deployModule(processName) {
     body: moduleDataItem.getRaw(),
   }).then((res) => res.json());
 
-  //console.log("Module response", moduleResponse);
   console.log(`-- Deployed ${processName} module with id ${moduleResponse.id}`);
   return moduleResponse.id;
-  //const srcTx = await warp.createSource({ src: module, tags: moduleTags }, signer);
-  //return await warp.saveSource(srcTx);
 }
 
 export async function spawnProcess({ muUrl, processName, moduleId }) {
@@ -137,15 +133,14 @@ export async function transferToken(tokenProcessId, gameProcessId, fromProcess, 
   });
 }
 
-export async function setupGameContract(signer, moduleId, processId, config, muUrl) {
-  // console.log(moduleId, processId, config, env)
+export async function sendAction(moduleId, processId, action, muUrl) {
   const processTags = [
     new Tag('Data-Protocol', 'ao'),
     new Tag('Variant', 'ao.TN.1'),
     new Tag('Type', 'Message'),
     new Tag('From-Process', processId),
     new Tag('From-Module', moduleId),
-    new Tag('Action', JSON.stringify(config)),
+    new Tag('Action', JSON.stringify(action)),
     new Tag('SDK', 'ao'),
     new Tag('Name', 'setup'),
   ];
@@ -166,7 +161,7 @@ export async function setupGameContract(signer, moduleId, processId, config, muU
 
 /**
  * Registers newly created game in the ao testnet bridge process
- * in order to forward game token tranfer to ao testnet tokens.
+ * in order to forward game token transfer to ao testnet tokens.
  * This will succeed only if the owner of the bridge is the same as the message.
  */
 export async function registerGameInBridge(gameProcessId, bridgeProcessId) {
