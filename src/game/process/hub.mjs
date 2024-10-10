@@ -8,10 +8,10 @@ export function handle(state, message) {
   const module = message.Tags?.find((t) => t.name === 'From-Module')?.value;
   const action = JSON.parse(actionTagValue || '{}');
   action.walletAddress = message.Owner;
-  //console.log('-- Game Hub process', state.games, action.walletAddress, action.cmd, gameProcess, module);
+  console.log(`-- Game Hub process, action ${action.cmd} from ${message.Owner}`);
   if (!state.games) {
     state.games = {};
-    console.log(`-- Game Hub - assigned games `, state.games);
+    state.removedGames = {};
   }
 
   switch (action.cmd) {
@@ -20,7 +20,47 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.hubStats,
         games: state.games,
+        removedGames: state.removedGames,
       });
+      break;
+
+    case Const.Command.hubRemoveGame:
+      if (ao.env.Process.Owner !== message.Owner) {
+        console.log(`-- HUB Unauthorized ${Const.Command.hubRemoveGame} attempt by`, message.Owner);
+        ao.result({
+          cmd: Const.Command.hubRemovedGame,
+          error: `Unauthorized ${message.Owner}`,
+        });
+        return;
+      }
+      const gameProcessId = 'gameId';
+      const toBeRemovedId = action[gameProcessId];
+      if (toBeRemovedId) {
+        if (!state.games[toBeRemovedId]) {
+          console.log(`-- HUB game ${toBeRemovedId} not found`);
+          ao.result({
+            cmd: Const.Command.hubRemovedGame,
+            error: `Process Id not found ${toBeRemovedId}`,
+          });
+        } else {
+          const moduleId = state.games[toBeRemovedId].module;
+          state.removedGames[toBeRemovedId] = state.games[toBeRemovedId];
+          delete state.games[toBeRemovedId];
+          ao.result({
+            cmd: Const.Command.hubRemovedGame,
+            processId: toBeRemovedId,
+            moduleId,
+          });
+          console.log(`-- HUB removed game ${toBeRemovedId}`);
+          return;
+        }
+      } else {
+        console.log(`-- HUB missing argument '${gameProcessId}'`);
+        ao.result({
+          cmd: Const.Command.hubRemovedGame,
+          error: `Missing argument '${gameProcessId}'`,
+        });
+      }
       break;
 
     case Const.Command.hubRegisterGame:

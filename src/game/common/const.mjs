@@ -97,6 +97,8 @@ const Command = {
   msg: 'msg',
   nextProcessSet: 'nextProcessSet',
   tokensSent: 'tokensSent',
+  hubRemoveGame: 'hubRemoveGame',
+  hubRemovedGame: 'hubRemovedGame',
   hubRegisterGame: 'hubRegisterGame',
   hubGamePlayers: 'hubGamePlayers',
   hubInfo: 'hubInfo',

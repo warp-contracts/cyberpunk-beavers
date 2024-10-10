@@ -79,7 +79,7 @@
   ],
   "tokensShipment": {
     "runMainTransfer": false,
-    "runBridgeTransfers": true,
+    "runBridgeTransfers": false,
     "mocks": true
   }
 }
