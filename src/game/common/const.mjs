@@ -3,6 +3,7 @@ const EVENTS_NAME = {
 };
 
 export const maps = [
+  'rsWNUoml7R282kNZJpQxL3GxpUtMWEba4QRcqdwLouc', // b2m1_expanded
   'Dv3csEXL8d30kYT7BbGz0sy1Ha07tsl5k9GW65Eul_A', // b2m1
   'z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA', // ch1j1
   'fcH7-DtyZk3sCJzN9qUUIVVFagV6rf5RdYR7zpQD5d4', // b1m5
