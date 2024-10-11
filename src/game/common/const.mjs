@@ -258,8 +258,8 @@ export const BEAVER_TYPES = {
       scannerRadius: 3,
       fov: 6,
       ap: {
-        current: 100,
-        max: 100,
+        current: 22,
+        max: 22,
       },
       hp: {
         current: 130,
