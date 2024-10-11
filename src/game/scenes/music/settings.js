@@ -8,5 +8,6 @@ export const MUSIC_SETTINGS = {
     GdAsRCknjjudRxmIvGvNCtM3JLxUDW2B6cCF_Tvd7g8: 'backgroundMusic', // b1m1
     'YNFa9YBS_M4GtRF4BF2-aiy-JuX0CqO5nuclaE1yIDQ': 'backgroundMusicMetal', // b1m2
     'rnq-Mem2T_WjPPkCIBWgnFYXZuGIiPtzo0nHpTOUAxU': 'backgroundMusic', // b2m1
+    '9pupw_-i_5hIN0PrwDiDMAszZRBGLFXjlcPQX7UYye0': 'backgroundMusicMetal', // b2m2
   },
 };
