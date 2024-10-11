@@ -105,7 +105,7 @@ export default class GameHubScene extends Phaser.Scene {
                   k,
                   {
                     ...v,
-                    finish: v.playWindow.end + 24 * 60 * 60 * 1000,
+                    finish: v.playWindow.end + 365 * 24 * 60 * 60 * 1000,
                   },
                 ];
               }
