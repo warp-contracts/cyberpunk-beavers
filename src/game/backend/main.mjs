@@ -3,7 +3,7 @@ import { QuickJsPlugin } from 'warp-contracts-plugin-quickjs';
 import ids from '../config/warp-ao-ids.js';
 import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
-import { maps, GAME_MODES } from '../common/const.mjs';
+import { maps, GAME_MODES, GAMEPLAY_MODES } from '../common/const.mjs';
 import { readMapFromArweave } from '../../../tools/deploy/deploy-spawn-common.js';
 
 const WS_PORT = 8097;
@@ -154,19 +154,19 @@ async function spawnGame(processId, start, end) {
   });
 
   const processRandomId = processId;
-  const effecitveStart = start || Date.now() + 20 * 1000;
+  const effecitveStart = start || Date.now() + 5 * 1000;
   const setupMessage = mockDataItem(
     {
       cmd: 'setup',
       type: 'custom',
       start: effecitveStart,
-      end: end || effecitveStart + 150 * 1000,
+      end: end || effecitveStart + 300 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
-      /*gameplayConfig: {
-        mode: GAMEPLAY_MODES.battleRoyale,
+      gameplayConfig: {
+        mode: GAMEPLAY_MODES.deathmatch,
       },
-      roundInterval: 5000,*/
+      roundInterval: 5000,
       startDelay: 5000,
       walletsWhitelist: [],
     },
