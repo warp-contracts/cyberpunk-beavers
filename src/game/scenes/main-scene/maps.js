@@ -27,6 +27,7 @@ export function doCreateTileMap(mainScene) {
   ];
   const layers = mainScene.tileMap.getTileLayerNames();
   let frontLayerDepth = FRONT_LAYER_DEPTH;
+  let layerDepth = 1;
   for (const layer of layers) {
     console.log('creating layer', layer);
     if (layer === COLLISIONS_LAYER) {
@@ -37,6 +38,8 @@ export function doCreateTileMap(mainScene) {
       const mapLayer = mainScene.tileMap.createLayer(layer, tilesets);
       if (layer.startsWith(FRONT_LAYER_PREFIX)) {
         mapLayer.setDepth(frontLayerDepth++);
+      } else {
+        mapLayer.setDepth(layerDepth++);
       }
       //.setPipeline('Light2D');
     }

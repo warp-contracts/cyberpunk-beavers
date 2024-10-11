@@ -3,8 +3,7 @@ const EVENTS_NAME = {
 };
 
 export const maps = [
-  'rsWNUoml7R282kNZJpQxL3GxpUtMWEba4QRcqdwLouc', // b2m1_expanded
-  'Dv3csEXL8d30kYT7BbGz0sy1Ha07tsl5k9GW65Eul_A', // b2m1
+  'rnq-Mem2T_WjPPkCIBWgnFYXZuGIiPtzo0nHpTOUAxU', // b2m1
   'z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA', // ch1j1
   'fcH7-DtyZk3sCJzN9qUUIVVFagV6rf5RdYR7zpQD5d4', // b1m5
   'Cbdwm_6JDDmtllVzmtrsDqK2fULK9A8YRqivCAjzDV0', // ch1j2
@@ -259,8 +258,8 @@ export const BEAVER_TYPES = {
       scannerRadius: 3,
       fov: 6,
       ap: {
-        current: 22,
-        max: 22,
+        current: 100,
+        max: 100,
       },
       hp: {
         current: 130,
