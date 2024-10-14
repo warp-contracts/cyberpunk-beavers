@@ -160,7 +160,7 @@ async function spawnGame(processId, start, end) {
       cmd: 'setup',
       type: 'custom',
       start: effecitveStart,
-      end: end || effecitveStart + 300 * 1000,
+      end: end || effecitveStart + 100 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
       gameplayConfig: {

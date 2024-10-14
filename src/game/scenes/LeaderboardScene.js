@@ -48,7 +48,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         view: function () {
           return m(LeaderboardGui, {
             tokenTypes,
-            data: /* [
+            data: /*[
               [1, { img: 'heavy_beaver', name: 'Wu7uDPxsxTT4sm--rqJDIIJcfLrJQmX086GoPMXGVeY' }, 0, 69544, 5, 2],
               [2, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 10000, 20, 0],
               [3, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 30],
@@ -68,7 +68,11 @@ export default class LeaderboardScene extends Phaser.Scene {
               [19, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
               [20, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
               [21, { img: 'speedy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
-              [22, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [23, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [24, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [25, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [26, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
+              [27, { img: 'heavy_beaver', name: 'just_ppe' }, 0, 69544, 0, 0],
             ],*/ self.prepareCellsData(tokenTypes),
             back: () => {
               self.server.unsubscribe();
