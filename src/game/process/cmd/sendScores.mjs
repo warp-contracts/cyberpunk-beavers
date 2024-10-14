@@ -10,7 +10,7 @@ export function sendScores(state) {
       if (totalPrize > 0) {
         const playersAlive = Object.values(state.players).filter((p) => p.stats.hp.current > 0);
         if (playersAlive.length > 0) {
-          const singlePrize = Math.floor(totalPrize / playersAlive);
+          const singlePrize = Math.floor(totalPrize / playersAlive.length);
           console.log('Single prize for BR mode', totalPrize);
           for (const player in playersAlive) {
             player.stats.coins.gained += singlePrize;
