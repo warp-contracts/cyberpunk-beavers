@@ -153,27 +153,27 @@ export const GameTreasure = {
 
 const DEFAULT_GAME_TOKENS = {
   [GameTreasure.cbcoin.type]: {
-    id: `${GameTreasure.cbcoin.type}`,
+    id: `DefaultProcessId${GameTreasure.cbcoin.type}`,
     amount: 50,
   },
   [GameTreasure.tio.type]: {
-    id: `${GameTreasure.tio.type}`,
+    id: `DefaultProcessId${GameTreasure.tio.type}`,
     amount: 50,
   },
   [GameTreasure.war.type]: {
-    id: `${GameTreasure.war.type}`,
+    id: `DefaultProcessId${GameTreasure.war.type}`,
     amount: 50,
   },
   [GameTreasure.trunk.type]: {
-    id: `${GameTreasure.trunk.type}`,
+    id: `DefaultProcessId${GameTreasure.trunk.type}`,
     amount: 50,
   },
   [GameTreasure.rsg.type]: {
-    id: `${GameTreasure.rsg.type}`,
+    id: `DefaultProcessId${GameTreasure.rsg.type}`,
     amount: 50,
   },
   [GameTreasure.gun.type]: {
-    id: `${GameTreasure.gun.type}`,
+    id: `DefaultProcessId${GameTreasure.gun.type}`,
     amount: 1,
   },
 };

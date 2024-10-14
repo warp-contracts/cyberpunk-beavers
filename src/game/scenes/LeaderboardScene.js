@@ -39,10 +39,10 @@ export default class LeaderboardScene extends Phaser.Scene {
       this.server = serverConnection.game;
       this.server.subscribe(this);
 
-      var self = this;
+      const self = this;
       const tokenTypes = Object.entries(self.gameTokens)
-        .filter(([, value]) => value.id != GAME_MODES[warpAO.config.mode].token && value.amount > 0)
-        .map(([type, value]) => type);
+        .filter(([type, value]) => type !== GAME_MODES[warpAO.config.mode].token && value.amount > 0)
+        .map(([type]) => type);
 
       m.mount(showGui(), {
         view: function () {
