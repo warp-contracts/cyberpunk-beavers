@@ -32,7 +32,7 @@ export function attack(state, action, timestamp) {
       break;
     }
     opponent = state.players[state.playersOnTiles[attackPos.y][attackPos.x]];
-    if (opponent != null) {
+    if (opponent != null && opponent.stats.hp.current > 0) {
       break;
     }
     range++;
