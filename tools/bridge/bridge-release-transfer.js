@@ -9,8 +9,8 @@ import fs from 'node:fs';
 
 const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8'));
 const bridgeProcessId = '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c';
-const euPendingHubId = 'OI4OxiH32jjFPJtaoLDuJLUXSxHWb-d3YOv2mP8EB9A';
-const asiaPendingHubId = 'LDezFH61_ZyDPUGmclzMqHEiVHh_oU640q03lGFFVv0';
+const euPendingHubId = 'SK0XsmT2VkWcScquFqNpNtrkblspJXFBsyvDmWPq834';
+const asiaPendingHubId = 'qNeveS8RtTAMr2O1ay4kiuKVBMf8U4MslZbVEE_3Mg4';
 
 async function checkPending() {
   const signer = createDataItemSigner(WALLET);
@@ -19,7 +19,7 @@ async function checkPending() {
     process: bridgeProcessId,
     tags: [
       { name: 'Action', value: 'ReleasePending' },
-      { name: 'HubProcessId', value: `${asiaPendingHubId}` },
+      { name: 'HubProcessId', value: `${euPendingHubId}` },
       // { name: 'GameProcessId', value: 'UNA3jM3zUsOcneorFnE_j4huNsKU2ewkTXiF5X4N880' },
     ],
     signer,
@@ -41,3 +41,6 @@ checkPending()
     console.log(rr);
   })
   .then(() => console.log(`THE END`));
+
+// EU:   Released message https://www.ao.link/#/message/oB83Kg1MTSwaEzmOtjsl1RYYXD0ZmYJ9vYnL4dDy6GQ
+// ASIA: Released message https://www.ao.link/#/message/Be0U-eG62osYnzA4UuZnwZ5ksB2LX6GeVXw5-ofXFxc
