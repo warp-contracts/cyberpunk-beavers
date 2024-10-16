@@ -4,6 +4,7 @@ const EVENTS_NAME = {
 
 export const maps = [
   '9pupw_-i_5hIN0PrwDiDMAszZRBGLFXjlcPQX7UYye0', // b2m2
+  'S1WqprUkSrgnoZmFMS26Ur73hGn3NccHsJT6pq134sY', // b2m3
   'rnq-Mem2T_WjPPkCIBWgnFYXZuGIiPtzo0nHpTOUAxU', // b2m1
   'z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA', // ch1j1
   'fcH7-DtyZk3sCJzN9qUUIVVFagV6rf5RdYR7zpQD5d4', // b1m5
@@ -16,6 +17,7 @@ export const maps = [
 
 const EMPTY_TILE = 0;
 
+export const OBJECTS_DEPTH = 80;
 export const PLAYER_DEPTH = 100;
 export const MAIN_PLAYER_DEPTH = 200;
 export const FRONT_LAYER_DEPTH = 1000;

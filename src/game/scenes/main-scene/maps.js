@@ -1,4 +1,10 @@
-import Const, { COLLISIONS_LAYER, FRONT_LAYER_DEPTH, FRONT_LAYER_PREFIX, GameObject } from '../../common/const.mjs';
+import Const, {
+  COLLISIONS_LAYER,
+  FRONT_LAYER_DEPTH,
+  FRONT_LAYER_PREFIX,
+  GameObject,
+  OBJECTS_DEPTH,
+} from '../../common/const.mjs';
 
 const gameObjectsTextureKey = `cyberpunk_game_objects`;
 const gameObjectsToAdd = {
@@ -78,7 +84,7 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
         const { x, y } = mainScene.tileMap.worldToTileXY(sprite.x, sprite.y);
         if (!mainScene.gameObjectsSprites[y]) mainScene.gameObjectsSprites[y] = {};
         mainScene.gameObjectsSprites[y][x] = sprite;
-        sprite.setDepth(4);
+        sprite.setDepth(OBJECTS_DEPTH);
       }
 
       mainScene.tweens.add({
