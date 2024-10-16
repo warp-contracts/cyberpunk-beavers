@@ -5,13 +5,9 @@
     "dev": "yarn build && yarn nodemon src/game/backend/main.mjs",
     "dev:rsg": "yarn build && yarn nodemon src/game/backend/main.mjs --gameMode rsg",
     "serve:dev": "vite --config vite/config.dev.mjs",
-    "serve:dev:rsg": "VITE_GAME_MODE=rsg vite --config vite/config.dev.mjs",
     "serve:local": "vite --config vite/config.local.mjs",
-    "serve:local:rsg": "VITE_GAME_MODE=rsg vite --config vite/config.local.mjs",
     "serve:prod": "vite --config vite/config.prod.mjs",
-    "serve:prod:rsg": "VITE_GAME_MODE=rsg vite --config vite/config.prod.mjs",
     "build:ui": "vite build --config vite/config.build.mjs",
-    "build:ui:rsg": "VITE_GAME_MODE=rsg vite build --config vite/config.build.mjs",
     "deploy-session:local": "yarn build && node tools/deploy/deploy-spawn-session.js --env local --config ao",
     "deploy-session:local:rsg": "yarn build && node tools/deploy/deploy-spawn-session.js --env local --config rsg",
     "deploy-session-game:local": "yarn build && node tools/deploy/deploy-spawn-session-game.js --env local --config ao --time $1",
@@ -28,6 +24,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@ethersproject/address": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@metamask/sdk": "^0.28.2",
     "mrpas": "^2.0.0",
