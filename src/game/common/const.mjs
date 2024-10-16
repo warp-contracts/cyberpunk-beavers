@@ -17,6 +17,7 @@ export const maps = [
 
 const EMPTY_TILE = 0;
 
+export const OBJECTS_DEPTH = 80;
 export const PLAYER_DEPTH = 100;
 export const MAIN_PLAYER_DEPTH = 200;
 export const FRONT_LAYER_DEPTH = 1000;
