@@ -28,8 +28,9 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "mrpas": "^2.0.0",
+    "@ethersproject/providers": "^5.7.2",
     "@metamask/sdk": "^0.28.2",
+    "mrpas": "^2.0.0",
     "phaser": "^3.80.1",
     "warp-contracts": "^1.4.45",
     "warp-contracts-plugin-quickjs": "^1.1.10",
@@ -39,8 +40,8 @@
   },
   "devDependencies": {
     "@ardrive/turbo-sdk": "latest",
-    "@permaweb/aoconnect": "^0.0.55",
     "@permaweb/ao-loader": "^0.0.36",
+    "@permaweb/aoconnect": "^0.0.55",
     "arweave": "^1.15.1",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",

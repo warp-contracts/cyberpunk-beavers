@@ -144,22 +144,26 @@ export default class MainScene extends Phaser.Scene {
           : await checkBalanceRsg(this.userId);
     if (this.beaverId) {
       console.log(`Beaver has already been registered previously, joining game...`, this.beaverId);
-      await this.server.send({
-        cmd: Const.Command.join,
-        balance: balance && parseInt(balance),
-        generatedWalletAddress: generatedWalletAddress(),
-        mainWalletAddress: this.walletAddress,
-      });
+      await this.server.send(
+        {
+          cmd: Const.Command.join,
+          balance: balance && parseInt(balance),
+          generatedWalletAddress: generatedWalletAddress(),
+        },
+        true
+      );
     } else {
       console.log('Register player...');
-      await this.server.send({
-        cmd: Const.Command.register,
-        beaverId: this.beaverChoice,
-        userName: this.userName,
-        balance: balance && parseInt(balance),
-        generatedWalletAddress: generatedWalletAddress(),
-        mainWalletAddress: this.walletAddress,
-      });
+      await this.server.send(
+        {
+          cmd: Const.Command.register,
+          beaverId: this.beaverChoice,
+          userName: this.userName,
+          balance: balance && parseInt(balance),
+          generatedWalletAddress: generatedWalletAddress(),
+        },
+        true
+      );
     }
   }
 

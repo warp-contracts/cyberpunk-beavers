@@ -2,6 +2,7 @@ import { WarpFactory } from 'warp-contracts';
 import { ArweaveSigner } from 'warp-arbundles';
 import { playClick } from '../utils/mithril.js';
 import MetaMaskSDK from '@metamask/sdk';
+import { getAddress } from '@ethersproject/address';
 
 const CHANGE_SCENE_TIMEOUT_MS = window.warpAO.config.env === 'dev' ? 0 : 2000;
 
@@ -27,7 +28,7 @@ export function ConnectWalletSceneGui(initialVnode) {
     try {
       await MMSDK.connect();
       const provider = MMSDK.getProvider();
-      const walletAddress = (await provider.request({ method: 'eth_requestAccounts', params: [] }))[0];
+      const walletAddress = getAddress((await provider.request({ method: 'eth_requestAccounts', params: [] }))[0]);
       await setGeneratedWallet(walletAddress, 'metamask');
       changeSceneWithTimeout(changeScene, walletAddress);
     } catch (e) {

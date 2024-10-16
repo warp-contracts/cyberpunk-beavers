@@ -118,7 +118,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
                       diff: self.diff,
                       onJoin: () =>
                         setTimeout(async () => {
-                          await self.server.send({ cmd: Const.Command.enqueue, mainWalletAddress: self.walletAddress });
+                          await self.server.send({ cmd: Const.Command.enqueue }, true);
                         }),
                       onBack: () => {
                         self.doHideGui();
