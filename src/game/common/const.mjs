@@ -44,6 +44,10 @@ const maps_city = {
     txId: '9pupw_-i_5hIN0PrwDiDMAszZRBGLFXjlcPQX7UYye0',
     music: 'backgroundMusicMetal',
   },
+  b2m3: {
+    txId: 'S1WqprUkSrgnoZmFMS26Ur73hGn3NccHsJT6pq134sY',
+    music: 'backgroundMusic',
+  },
 };
 
 export const maps = {
