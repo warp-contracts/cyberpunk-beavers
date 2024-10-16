@@ -1,8 +1,8 @@
 import { TurboFactory, defaultTurboConfiguration } from '@ardrive/turbo-sdk/node';
 import fs from 'fs';
 
-const mapName = 'b2m2.json';
-const file = `../public/assets/maps/v2/${mapName}`;
+const mapName = 'b2m4.json';
+const file = `../public/assets/maps/v2/city/${mapName}`;
 
 (async () => {
   /**
