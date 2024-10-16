@@ -3,6 +3,7 @@ export const MUSIC_SETTINGS = {
     z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA: 'backgroundMusicMetal', // ch1j1
     'fcH7-DtyZk3sCJzN9qUUIVVFagV6rf5RdYR7zpQD5d4': 'backgroundMusic', // b1m5
     Cbdwm_6JDDmtllVzmtrsDqK2fULK9A8YRqivCAjzDV0: 'backgroundMusicMetal', // ch1j2
+    S1WqprUkSrgnoZmFMS26Ur73hGn3NccHsJT6pq134sY: 'backgroundMusicMetal', // b2m3
     XuxDKD4nXTxCB7UeKKgIjhOGkbvcEUl93Qz4lsowGoM: 'backgroundMusic', // b1m6
     v9vRtTZJfdX2cyZ_KG96cUKpvQjXz7KHJlPrJgS0Adc: 'backgroundMusicMetal', // b1m3
     GdAsRCknjjudRxmIvGvNCtM3JLxUDW2B6cCF_Tvd7g8: 'backgroundMusic', // b1m1
