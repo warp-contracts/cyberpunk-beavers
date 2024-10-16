@@ -13,7 +13,6 @@ import { hideGui, showGui } from '../utils/mithril.js';
 import { loadMapTxId } from '../utils/utils.js';
 
 export default class GameHubScene extends Phaser.Scene {
-  beaverId;
   gameButtons;
   textBorders;
 

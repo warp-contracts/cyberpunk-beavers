@@ -101,7 +101,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.stats,
         ...gameInfo(state, action.walletAddress, message.Timestamp),
-        ...checkWhitelist(state, action.mainWalletAddress || action.walletAddress),
+        ...checkWhitelist(state, action.walletAddress),
         ...gameStats(state, message.Timestamp),
       });
       break;
@@ -209,10 +209,10 @@ export function handle(state, message) {
       break;
     case Const.Command.join:
       if (action.generatedWalletAddress) {
-        state.generatedWalletsMapping[action.generatedWalletAddress] = action.mainWalletAddress;
+        state.generatedWalletsMapping[action.generatedWalletAddress] = action.walletAddress;
       }
       if (action.balance) {
-        state.players[action.mainWalletAddress].stats.coins.balance = action.balance;
+        state.players[action.walletAddress].stats.coins.balance = action.balance;
       }
       ao.result({
         cmd: Const.Command.registered,

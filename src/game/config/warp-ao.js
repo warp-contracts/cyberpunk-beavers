@@ -2,10 +2,10 @@ import { Tag } from 'warp-contracts';
 import { createData } from 'warp-arbundles';
 import ids from './warp-ao-ids.js';
 import { getUrlParam } from '../utils/utils.js';
-import Const from '../common/const.mjs';
+import { InjectedEthereumSigner } from 'warp-contracts-plugin-signature';
+import { Web3Provider } from '@ethersproject/providers';
 
 const env = getUrlParam('env') || 'prod';
-// const mode = getUrlParam('mode') || import.meta.env.VITE_GAME_MODE || 'ao';
 
 console.log(`running in ${env} mode`);
 
@@ -71,14 +71,10 @@ window.warpAO = {
       throw new Error('processId not set');
     }
 
-    if (
-      window.warpAO.signingMode == 'generated' ||
-      window.warpAO.signingMode == 'metamask' ||
-      (window.warpAO.signingMode == 'arconnect' && !useConnectedWallet)
-    ) {
+    if (window.warpAO.signingMode == 'generated' || !useConnectedWallet) {
       return sendUsingGeneratedWallet(moduleId, processId, message, window.warpAO.generatedSigner);
     } else {
-      return sendUsingConnectedWallet(moduleId, processId, message);
+      return sendUsingConnectedWallet(moduleId, processId, message, window.warpAO.signingMode);
     }
   },
 };
@@ -117,10 +113,27 @@ async function sendRawDataItem(rawData) {
   }
 }
 
-async function sendUsingConnectedWallet(moduleId, processId, message) {
+async function sendUsingConnectedWallet(moduleId, processId, message, signingMode) {
   const dataItem = window.warpAO.data(moduleId, processId, message);
   const now = performance.now();
-  const signedDataItem = await window.arweaveWallet.signDataItem(dataItem);
-  console.log(`Signing with ArConnect ${Math.floor(performance.now() - now)}ms`);
+  let signedDataItem;
+  if (signingMode == 'arconnect') {
+    signedDataItem = await window.arweaveWallet.signDataItem(dataItem);
+  } else if (signingMode == 'metamask') {
+    signedDataItem = await signWithMetamask(dataItem);
+  }
+  console.log(`Signing with ${signingMode} ${Math.floor(performance.now() - now)}ms`);
   return sendRawDataItem(signedDataItem);
+}
+
+async function signWithMetamask(dataItem) {
+  const wallet = new Web3Provider(window.ethereum);
+  const userSigner = new InjectedEthereumSigner(wallet);
+  await userSigner.setPublicKey();
+  const signedDataItem = createData(dataItem.data, userSigner, {
+    tags: [...dataItem.tags, { name: 'Signature-Type', value: 'ethereum' }],
+    target: dataItem.target,
+  });
+  await signedDataItem.sign(userSigner);
+  return signedDataItem.getRaw();
 }
