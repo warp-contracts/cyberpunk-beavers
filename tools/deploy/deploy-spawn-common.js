@@ -2,7 +2,6 @@ import { readFileSync } from 'fs';
 import { Tag } from 'warp-contracts';
 import { createData } from 'warp-arbundles';
 import { ArweaveSigner } from 'warp-contracts-plugin-deploy';
-import { maps } from '../../src/game/common/const.mjs';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
@@ -63,14 +62,10 @@ export async function spawnProcess({ muUrl, processName, moduleId }) {
   return processResponse.id;
 }
 
-const randomIntegerInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-export function randomMapTxId() {
-  return maps[randomIntegerInRange(0, maps.length - 1)];
-}
-
 export async function readMapFromArweave(mapTxId) {
-  if (!mapTxId) mapTxId = randomMapTxId();
+  if (!mapTxId) {
+    throw new Error('Missing mapTxId');
+  }
   console.log(`Loading map ${mapTxId}`);
   const response = await fetch(`https://arweave.net/${mapTxId}`);
   if (response.ok) {

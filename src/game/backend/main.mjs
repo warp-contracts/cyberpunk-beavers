@@ -172,7 +172,7 @@ async function spawnGame(processId, start, end) {
     },
     processEnv.Process.Owner
   );
-  const { mapTxId, mapJson } = await readMapFromArweave(maps[0]);
+  const { mapTxId, mapJson } = await readMapFromArweave(maps['b2m2'].txId);
 
   console.log(mapTxId);
 

@@ -1,6 +1,5 @@
 import { replaceId } from './../replace-id.js';
 import { argument, dateFromArg, mandatoryArg } from './../common.mjs';
-import Const, { maps } from '../../src/game/common/const.mjs';
 import { schedulesForEnv } from './deploy-session-schedule.js';
 import { deployModule, spawnProcess, spawnGame, sendAction, registerGameInBridge } from './deploy-spawn-common.js';
 import { handleTokenTransfers } from './token-keeper.js';
@@ -34,9 +33,8 @@ async function doIt() {
   const gameProcesses = [];
   let counter = 0;
   for (let setup of setups) {
-    const mapIndex = counter % (maps.length - 1);
     // Spawn game
-    const requestedMapTxId = maps[mapIndex];
+    const requestedMapTxId = setup.mapTxId;
     await sleep(100);
     const gameProcessId = await spawnGame({
       muUrl,

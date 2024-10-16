@@ -10,28 +10,31 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.image(`tio`, 'assets/images/tokens/tio.png');
   mainScene.load.image(`rsg`, 'assets/images/tokens/rsg.png');
   mainScene.load.image(`gun`, 'assets/images/tokens/gun.png');
-  mainScene.load.spritesheet('map_sheet_desert', 'assets/maps/v2/Sprite_Map_Sheet.png', { frameWidth: 48, spacing: 0 });
-  mainScene.load.spritesheet('map_sheet_city_1', 'assets/maps/v2/CC_City_Exterior_A2.png', {
+  mainScene.load.spritesheet('map_sheet_desert', 'assets/maps/v2/desert/tilesets/Sprite_Map_Sheet.png', {
     frameWidth: 48,
     spacing: 0,
   });
-  mainScene.load.spritesheet('map_sheet_city_1_exp', 'assets/maps/v2/CC_City_Exterior_A2_expanded.png', {
+  mainScene.load.spritesheet('map_sheet_city_1', 'assets/maps/v2/city/tilesets/CC_City_Exterior_A2.png', {
     frameWidth: 48,
     spacing: 0,
   });
-  mainScene.load.spritesheet('map_sheet_city_2', 'assets/maps/v2/CC_City_Exterior__A4.png', {
+  mainScene.load.spritesheet('map_sheet_city_1_exp', 'assets/maps/v2/city/tilesets/CC_City_Exterior_A2_expanded.png', {
     frameWidth: 48,
     spacing: 0,
   });
-  mainScene.load.spritesheet('map_sheet_city_2_exp', 'assets/maps/v2/CC_City_Exterior__A4_expanded.png', {
+  mainScene.load.spritesheet('map_sheet_city_2', 'assets/maps/v2/city/tilesets/CC_City_Exterior__A4.png', {
     frameWidth: 48,
     spacing: 0,
   });
-  mainScene.load.spritesheet('map_sheet_city_3', 'assets/maps/v2/CC_City_Exterior_B.png', {
+  mainScene.load.spritesheet('map_sheet_city_2_exp', 'assets/maps/v2/city/tilesets/CC_City_Exterior__A4_expanded.png', {
     frameWidth: 48,
     spacing: 0,
   });
-  mainScene.load.spritesheet('map_sheet_city_4', 'assets/maps/v2/CC_City_Exterior_C.png', {
+  mainScene.load.spritesheet('map_sheet_city_3', 'assets/maps/v2/city/tilesets/CC_City_Exterior_B.png', {
+    frameWidth: 48,
+    spacing: 0,
+  });
+  mainScene.load.spritesheet('map_sheet_city_4', 'assets/maps/v2/city/tilesets/CC_City_Exterior_C.png', {
     frameWidth: 48,
     spacing: 0,
   });

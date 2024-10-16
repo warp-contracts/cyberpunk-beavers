@@ -4,19 +4,19 @@
   <export target="b2m1.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" name="CC_City_Exterior__A4" tilewidth="48" tileheight="48" tilecount="240" columns="16">
-  <image source="CC_City_Exterior__A4.png" width="768" height="720"/>
+  <image source="tilesets/CC_City_Exterior__A4.png" width="768" height="720"/>
  </tileset>
  <tileset firstgid="241" name="CC_City_Exterior_A2" tilewidth="48" tileheight="48" tilecount="192" columns="16">
-  <image source="CC_City_Exterior_A2.png" width="768" height="576"/>
+  <image source="tilesets/CC_City_Exterior_A2.png" width="768" height="576"/>
  </tileset>
  <tileset firstgid="433" name="CC_City_Exterior_B" tilewidth="48" tileheight="48" tilecount="256" columns="16">
-  <image source="CC_City_Exterior_B.png" width="768" height="768"/>
+  <image source="tilesets/CC_City_Exterior_B.png" width="768" height="768"/>
  </tileset>
  <tileset firstgid="689" name="CC_City_Exterior_C" tilewidth="48" tileheight="48" tilecount="256" columns="16">
-  <image source="CC_City_Exterior_C.png" width="768" height="768"/>
+  <image source="tilesets/CC_City_Exterior_C.png" width="768" height="768"/>
  </tileset>
  <tileset firstgid="945" name="CC_City_Exterior_A2_expanded" tilewidth="48" tileheight="48" tilecount="1568" columns="56">
-  <image source="CC_City_Exterior_A2_expanded.png" width="2688" height="1344"/>
+  <image source="tilesets/CC_City_Exterior_A2_expanded.png" width="2688" height="1344"/>
  </tileset>
  <layer id="1" name="road" width="30" height="30">
   <data encoding="csv">

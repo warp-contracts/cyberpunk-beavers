@@ -1,4 +1,4 @@
-import Const from '../../src/game/common/const.mjs';
+import Const, { maps } from '../../src/game/common/const.mjs';
 import ids from '../../src/game/config/warp-ao-ids.js';
 import fs from 'fs';
 import { addTokenProcessIds } from './token-keeper.js';
@@ -36,6 +36,12 @@ export function schedulesForEnv(env, sessionConfig, execDate) {
     console.log(`--- Game session `, gameSession);
     let gameStart = (execDate || dateFromStartObject(gameSession.start)).getTime();
     for (const game of gameSession.games) {
+      if (!game.map) {
+        throw new Error('Game map not set (e.g. "b1m1")');
+      }
+      if (!maps[game.map]) {
+        throw new Error(`Unknown map ${game.map}`);
+      }
       gameStart = dateFromStartObject(game.start)?.getTime() || gameStart;
       const gameDuration = game.gameDuration || gameSession.gameDuration || 300000; // default 5 minutes
       const gameEnd = gameStart + gameDuration;
@@ -45,6 +51,7 @@ export function schedulesForEnv(env, sessionConfig, execDate) {
         ...gameSetup(env, game),
         start: gameStart,
         end: gameEnd,
+        mapTxId: maps[game.map].txId,
       };
       setup.gameTokens = addTokenProcessIds(tokensShipment, setup.gameTokens);
       displaySetup(setup);

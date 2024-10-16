@@ -1,6 +1,5 @@
-import { MUSIC_SETTINGS } from '../music/settings.js';
 import Phaser from 'phaser';
-import Const, { BEAVER_TYPES } from '../../common/const.mjs';
+import Const, { BEAVER_TYPES, DEFAULT_BG_MUSIC, maps } from '../../common/const.mjs';
 
 export function doAddSounds(mainScene) {
   mainScene.gameActiveSound = mainScene.sound.add('game_active_sound', { loop: false, volume: 1.0 });
@@ -35,7 +34,9 @@ export function doAddSounds(mainScene) {
   mainScene.shrinkWarn = mainScene.sound.add('shrink_alarm', { loop: false, volume: 2.0 });
   forDeathSounds((k, i) => addDeathSound(k, i));
 
-  const backgroundMusic = mainScene[MUSIC_SETTINGS.mapIdToBackgroundMusic[window.warpAO.mapTxId()]];
+  const mapTxId = window.warpAO.mapTxId();
+  const mapConfig = Object.values(maps).find((val) => val.txId === mapTxId);
+  const backgroundMusic = mainScene[mapConfig ? mapConfig.music : DEFAULT_BG_MUSIC];
   if (window.warpAO.config.env === 'prod') {
     backgroundMusic?.play();
   }
