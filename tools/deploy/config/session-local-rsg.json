@@ -36,12 +36,14 @@
       "gameBreak_comment": "1 minute",
       "games": [
         {
+          "map": "b2m1",
           "gameplayConfig": {
             "mode": "deathmatch"
           },
           "playersLimit": 20
         },
         {
+          "map": "b2m2",
           "gameplayConfig": {
             "mode": "battleRoyale"
           }

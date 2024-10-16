@@ -30,17 +30,19 @@
       "gameBreak": 10000,
       "gameBreak_comment": "10 seconds",
       "games": [
-        {},
+        { "map": "b1m3" },
         {
           "gameplayConfig": {
             "mode": "deathmatch"
           },
+          "map": "b1m6",
           "roundInterval": 2000
         },
         {
           "gameplayConfig": {
             "mode": "battleRoyale"
           },
+          "map": "b2m2",
           "roundInterval": 5000,
           "playersLimit": 21
         }
@@ -67,11 +69,13 @@
         }
       },
       "games": [
-        {},
+        { "map": "b1m6" },
         {
+          "map": "b1m7",
           "gameplayConfig": {
             "mode": "battleRoyale",
-            "roundInterval": 5000
+            "roundInterval": 5000,
+            "map": "b2m1"
           }
         }
       ]

@@ -109,7 +109,7 @@ export function convertToCamelCase(input) {
 export async function loadMapTxId() {
   const env = window.warpAO.config.env;
   if (env === 'dev') {
-    return maps[0];
+    return maps['b2m2'].txId;
   }
 
   const processId = window.warpAO.processId();

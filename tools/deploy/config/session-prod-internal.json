@@ -33,8 +33,9 @@
       "gameBreak": 60000,
       "gameBreak_comment": "1 minute",
       "games": [
-        {},
+        { "map": "b2m2" },
         {
+          "map": "b1m4",
           "gameplayConfig": {
             "mode": "battleRoyale",
             "roundInterval": 5000
@@ -68,8 +69,9 @@
       "gameBreak": 60000,
       "gameBreak_comment": "1 minute",
       "games": [
-        {},
+        { "map": "b1m5" },
         {
+          "map": "b1m3",
           "gameplayConfig": {
             "mode": "battleRoyale",
             "roundInterval": 5000

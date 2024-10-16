@@ -2,17 +2,54 @@ const EVENTS_NAME = {
   currentMove: 'currentMove',
 };
 
-export const maps = [
-  '9pupw_-i_5hIN0PrwDiDMAszZRBGLFXjlcPQX7UYye0', // b2m2
-  'rnq-Mem2T_WjPPkCIBWgnFYXZuGIiPtzo0nHpTOUAxU', // b2m1
-  'z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA', // ch1j1
-  'fcH7-DtyZk3sCJzN9qUUIVVFagV6rf5RdYR7zpQD5d4', // b1m5
-  'Cbdwm_6JDDmtllVzmtrsDqK2fULK9A8YRqivCAjzDV0', // ch1j2
-  'XuxDKD4nXTxCB7UeKKgIjhOGkbvcEUl93Qz4lsowGoM', // b1m6
-  'v9vRtTZJfdX2cyZ_KG96cUKpvQjXz7KHJlPrJgS0Adc', // b1m3
-  'GdAsRCknjjudRxmIvGvNCtM3JLxUDW2B6cCF_Tvd7g8', // b1m1
-  'YNFa9YBS_M4GtRF4BF2-aiy-JuX0CqO5nuclaE1yIDQ', // b1m2
-];
+export const DEFAULT_BG_MUSIC = 'backgroundMusic';
+
+const maps_desert = {
+  b1m1: {
+    txId: 'GdAsRCknjjudRxmIvGvNCtM3JLxUDW2B6cCF_Tvd7g8',
+    music: 'backgroundMusicMetal',
+  },
+  b1m2: {
+    txId: 'YNFa9YBS_M4GtRF4BF2-aiy-JuX0CqO5nuclaE1yIDQ',
+    music: 'backgroundMusic',
+  },
+  b1m3: {
+    txId: 'v9vRtTZJfdX2cyZ_KG96cUKpvQjXz7KHJlPrJgS0Adc',
+    music: 'backgroundMusicMetal',
+  },
+  b1m4: {
+    txId: 'Cbdwm_6JDDmtllVzmtrsDqK2fULK9A8YRqivCAjzDV0',
+    music: 'backgroundMusic',
+  },
+  b1m5: {
+    txId: 'fcH7-DtyZk3sCJzN9qUUIVVFagV6rf5RdYR7zpQD5d4',
+    music: 'backgroundMusicMetal',
+  },
+  b1m6: {
+    txId: 'XuxDKD4nXTxCB7UeKKgIjhOGkbvcEUl93Qz4lsowGoM',
+    music: 'backgroundMusic',
+  },
+  b1m7: {
+    txId: 'z0rycDjxuLsrP_I6hKbm7lXPQ1wsLwkKkDfvIk5EiQA',
+    music: 'backgroundMusicMetal',
+  },
+};
+
+const maps_city = {
+  b2m1: {
+    txId: 'rnq-Mem2T_WjPPkCIBWgnFYXZuGIiPtzo0nHpTOUAxU',
+    music: 'backgroundMusic',
+  },
+  b2m2: {
+    txId: '9pupw_-i_5hIN0PrwDiDMAszZRBGLFXjlcPQX7UYye0',
+    music: 'backgroundMusicMetal',
+  },
+};
+
+export const maps = {
+  ...maps_desert,
+  ...maps_city,
+};
 
 const EMPTY_TILE = 0;
 
