@@ -26,7 +26,7 @@
   "sessions": [
     {
       "start": {
-        "secondsFromNow": 120
+        "secondsFromNow": 240
       },
       "gameDuration": 300000,
       "gameDuration_comment": "5 minutes",
@@ -45,7 +45,7 @@
     },
     {
       "start": {
-        "secondsFromNow": 240
+        "secondsFromNow": 480
       },
       "commonSetup": {
         "mode": "ao",

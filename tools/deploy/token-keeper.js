@@ -57,7 +57,7 @@ export const TOKEN_CONTRACT = {
 
 export async function handleTokenTransfers(gameProcessId, bridgeProcessId, tokensShipment, gameTokens) {
   const { runMainTransfer, runBridgeTransfers } = tokensShipment;
-  if (runMainTransfer) {
+  if (runMainTransfer && gameTokens[GameTreasure.cbcoin.type]) {
     const cbcoinProcessId = gameTokens[GameTreasure.cbcoin.type].id;
     console.log(`Transferring ${GameTreasure.cbcoin.type} to game ${gameProcessId}`);
     await transferToken(cbcoinProcessId, gameProcessId, cbcoinProcessId);
