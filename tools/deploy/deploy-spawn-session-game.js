@@ -1,11 +1,9 @@
-import { readFileSync } from 'fs';
 import ids from '../../src/game/config/warp-ao-ids.js';
 import { argument, dateFromArg, mandatoryArg } from './../common.mjs';
 import { deployModule, sendAction, transferToken, spawnGame } from './deploy-spawn-common.js';
 import { gameSetup, schedulesForEnv } from './deploy-session-schedule.js';
 import { handleTokenTransfers } from './token-keeper.js';
-
-const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
+import { maps } from '../../src/game/common/const.mjs';
 
 // LOCAL OR PROD
 const env = mandatoryArg('env', "Specify 'env' flash with either 'local' or 'prod' value");
@@ -38,6 +36,7 @@ async function doIt() {
     moduleId: gameSrcId,
     additionalTags: [{ name: 'Hub-Process-Tx', value: hubProcessId }],
     gameTokens: customConfig.gameTokens,
+    requestedMapTxId: maps[customConfig.map].txId,
   });
 
   // Transfer tokens
