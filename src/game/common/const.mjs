@@ -4,7 +4,7 @@ const EVENTS_NAME = {
 
 export const DEFAULT_BG_MUSIC = 'backgroundMusic';
 
-export const DEV_MAP = 'b2m4';
+export const DEV_MAP = 'b2m5';
 
 const maps_desert = {
   b1m1: {
@@ -53,6 +53,10 @@ const maps_city = {
   b2m4: {
     txId: '5Klvs5p4EsGbMZKXHLcUG0LoYzMqsshdv1guud__lVY',
     music: 'backgroundMusicMetal',
+  },
+  b2m5: {
+    txId: 'MpjJMdxTP4iEE76aIScmSjLY6JGSUxOhWZaHJZNg8aM',
+    music: 'backgroundMusic',
   },
 };
 
