@@ -1,5 +1,5 @@
 import { doPlayAttackSound, doPlayOpponentFinishedSound } from '../sounds';
-import { GAMEPLAY_MODES } from '../../../common/const.mjs';
+import { FRONT_LAYER_DEPTH, GAMEPLAY_MODES } from '../../../common/const.mjs';
 
 export function handleAttacked(response, mainScene) {
   const isKillerMainPlayer = response.player?.walletAddress === mainScene.mainPlayer?.walletAddress;
@@ -63,21 +63,23 @@ export function handleAttacked(response, mainScene) {
 
 function animateAdditionalLoot(mainScene, opponent, killer, token) {
   const opponentOnRight = opponent.x > killer.x;
-  const emitter = mainScene.add.particles(0, 0, token, {
-    x: {
-      start: opponent.x + (opponentOnRight ? 24 : -24),
-      end: opponentOnRight ? window.innerWidth : -1,
-      ease: 'sine.in',
-    },
-    y: { start: opponent.y - 24, end: -1 },
-    lifespan: 2000,
-    frequency: 150,
-    emitting: false,
-    stopAfter: 5,
-    scale: 1,
-    rotate: { start: 0, end: 360 },
-    speed: { min: 50, max: 100 },
-  });
+  const emitter = mainScene.add
+    .particles(0, 0, token, {
+      x: {
+        start: opponent.x + (opponentOnRight ? 24 : -24),
+        end: opponentOnRight ? window.innerWidth : -1,
+        ease: 'sine.in',
+      },
+      y: { start: opponent.y - 24, end: -1 },
+      lifespan: 2000,
+      frequency: 150,
+      emitting: false,
+      stopAfter: 5,
+      scale: 1,
+      rotate: { start: 0, end: 360 },
+      speed: { min: 50, max: 100 },
+    })
+    .setDepth(FRONT_LAYER_DEPTH);
 
   emitter.start();
   mainScene.additionalLoot.play();

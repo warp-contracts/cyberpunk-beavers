@@ -1,5 +1,5 @@
 import Player from '../../objects/Player.js';
-import Const, { BEAVER_TYPES, GAMEPLAY_MODES } from '../../common/const.mjs';
+import Const, { BEAVER_TYPES, GAMEPLAY_MODES, MAIN_PLAYER_DEPTH } from '../../common/const.mjs';
 import MainPlayer from '../../objects/MainPlayer.js';
 import { Text } from '../../objects/Text.js';
 import { serverConnection } from '../../lib/serverConnection.js';
@@ -482,16 +482,9 @@ export default class MainScene extends Phaser.Scene {
           if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
             self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
             self.gameObjectsLayer?.putTileAt(2, response.player.pos.x, response.player.pos.y);
-            this[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`] = self.add.grid(
-              self.mainPlayer?.x,
-              self.mainPlayer?.y,
-              48,
-              48,
-              48,
-              48,
-              MINE_ACTIVATED_COLOR,
-              0.4
-            );
+            self[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`] = self.add
+              .grid(self.mainPlayer?.x, self.mainPlayer?.y, 48, 48, 48, 48, MINE_ACTIVATED_COLOR, 0.4)
+              .setDepth(MAIN_PLAYER_DEPTH - 1);
           }
         }
         break;
