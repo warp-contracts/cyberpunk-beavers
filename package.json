@@ -3,7 +3,6 @@
   "type": "module",
   "scripts": {
     "dev": "yarn build && yarn nodemon src/game/backend/main.mjs",
-    "dev:rsg": "yarn build && yarn nodemon src/game/backend/main.mjs --gameMode rsg",
     "serve:dev": "vite --config vite/config.dev.mjs",
     "serve:local": "vite --config vite/config.local.mjs",
     "serve:prod": "vite --config vite/config.prod.mjs",

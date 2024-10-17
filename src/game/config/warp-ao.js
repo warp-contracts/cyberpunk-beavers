@@ -21,7 +21,7 @@ window.warpAO = {
   },
   spectatorMode: false,
   generatedSigner: null,
-  signingMode: null, // generated | arconnect
+  signingMode: null, // generated | arconnect | metamask
   nonce: -1,
   gameHubProcessId: () => {
     return window.warpAO.config[`hub_processId_${env}`];
