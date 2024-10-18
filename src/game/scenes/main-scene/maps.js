@@ -4,6 +4,7 @@ import Const, {
   FRONT_LAYER_PREFIX,
   GameObject,
   OBJECTS_DEPTH,
+  OBSTACLES_DEPTH,
 } from '../../common/const.mjs';
 
 const gameObjectsTextureKey = `cyberpunk_game_objects`;
@@ -23,13 +24,34 @@ export function doCreateTileMap(mainScene) {
 
   mainScene.tileMap = mainScene.make.tilemap({ key: `map_${mainScene.mapTxId}` });
   const tilesets = [
+    // desert tilesets
     mainScene.tileMap.addTilesetImage('Sprite_Map_Sheet', 'map_sheet_desert'),
+
+    // city tilesets
     mainScene.tileMap.addTilesetImage('CC_City_Exterior_A2', 'map_sheet_city_1'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior_A2_expanded', 'map_sheet_city_1_exp'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior__A4', 'map_sheet_city_2'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior__A4_expanded', 'map_sheet_city_2_exp'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior_B', 'map_sheet_city_3'),
     mainScene.tileMap.addTilesetImage('CC_City_Exterior_C', 'map_sheet_city_4'),
+
+    // haunted tilesets
+    mainScene.tileMap.addTilesetImage('hauntedhouse_A2_dark_expanded', 'hauntedhouse_A2_dark_expanded'),
+    mainScene.tileMap.addTilesetImage('hauntedhouse_E_destroyed_dark', 'hauntedhouse_E_destroyed_dark'),
+    mainScene.tileMap.addTilesetImage('hauntedhouse_D_dark', 'hauntedhouse_D_dark'),
+    mainScene.tileMap.addTilesetImage('hauntedhouse_A4_dark_expanded', 'hauntedhouse_A4_dark_expanded'),
+    mainScene.tileMap.addTilesetImage('$!Asylum_Door_Large_dark', '$!Asylum_Door_Large_dark'),
+    mainScene.tileMap.addTilesetImage('!$mouse_holes', '!$mouse_holes'),
+    mainScene.tileMap.addTilesetImage('!$rat_gray_dark', '!$rat_gray_dark'),
+    mainScene.tileMap.addTilesetImage('$!Asylum_Door_Large_noframe_dark', '$!Asylum_Door_Large_noframe_dark'),
+    mainScene.tileMap.addTilesetImage('$!curtains_destroyed_dark', '$!curtains_destroyed_dark'),
+    mainScene.tileMap.addTilesetImage('$!Haunted_Painting_dark', '$!Haunted_Painting_dark'),
+    mainScene.tileMap.addTilesetImage('$lightning_window_small_dark', '$lightning_window_small_dark'),
+    mainScene.tileMap.addTilesetImage('floating_couch_dark', 'floating_couch_dark'),
+    mainScene.tileMap.addTilesetImage('$!sliding_bookshelf_door_dark', '$!sliding_bookshelf_door_dark'),
+    mainScene.tileMap.addTilesetImage('drip_dark', 'drip_dark'),
+    mainScene.tileMap.addTilesetImage('hauntedhouse_B_dark', 'hauntedhouse_B_dark'),
+    mainScene.tileMap.addTilesetImage('hauntedhouse_C_destroyed_dark', 'hauntedhouse_C_destroyed_dark'),
   ];
   const layers = mainScene.tileMap.getTileLayerNames();
   let frontLayerDepth = FRONT_LAYER_DEPTH;
@@ -38,7 +60,7 @@ export function doCreateTileMap(mainScene) {
     console.log('creating layer', layer);
     if (layer === COLLISIONS_LAYER) {
       const obstaclesLayer = mainScene.tileMap.createLayer(layer, tilesets);
-      obstaclesLayer.setDepth(-100);
+      obstaclesLayer.setDepth(OBSTACLES_DEPTH);
       mainScene.tileMap.obstaclesLayer = obstaclesLayer;
     } else {
       const mapLayer = mainScene.tileMap.createLayer(layer, tilesets);
