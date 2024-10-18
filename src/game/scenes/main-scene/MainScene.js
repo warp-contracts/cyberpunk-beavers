@@ -1,5 +1,5 @@
 import Player from '../../objects/Player.js';
-import Const, { BEAVER_TYPES, GAMEPLAY_MODES, MAIN_PLAYER_DEPTH } from '../../common/const.mjs';
+import Const, { BEAVER_TYPES, BOOSTS, GameObject, GAMEPLAY_MODES, MAIN_PLAYER_DEPTH } from '../../common/const.mjs';
 import MainPlayer from '../../objects/MainPlayer.js';
 import { Text } from '../../objects/Text.js';
 import { serverConnection } from '../../lib/serverConnection.js';
@@ -381,6 +381,15 @@ export default class MainScene extends Phaser.Scene {
       self.gameActive = true;
     }
 
+    if (response?.player && self.allPlayers[response.player.walletAddress]) {
+      if (!response.player.activeBoosts[BOOSTS.quad_damage.type]) {
+        self.allPlayers[response.player.walletAddress].hideQuadDamageBoost();
+        if (self.allPlayers[response.player.walletAddress].activeBoosts) {
+          delete self.allPlayers[response.player.walletAddress].activeBoosts[BOOSTS.quad_damage.type];
+        }
+      }
+    }
+
     switch (cmd) {
       case Const.Command.activated: {
         if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
@@ -538,11 +547,20 @@ export default class MainScene extends Phaser.Scene {
           if (response.picked) {
             const { x, y } = response.player?.pos;
             if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
-              self.pickUpSound.play();
+              if (response.picked.type == GameObject.quad_damage.type) {
+                self.quadDamage.play();
+              } else {
+                self.pickUpSound.play();
+              }
               self.mainPlayer.equipment = response.player.equipment;
             } else {
               self.allPlayers[response.player.walletAddress]?.pickAnim();
             }
+            self.allPlayers[response.player.walletAddress].activeBoosts = response.player.activeBoosts;
+            if (response.player.activeBoosts[BOOSTS.quad_damage.type]) {
+              self.allPlayers[response.player.walletAddress].showQuadDamageBoost();
+            }
+
             self.gameObjectsLayer?.removeTileAt(x, y);
 
             const spriteToHide = self.gameObjectsSprites[y]?.[x];

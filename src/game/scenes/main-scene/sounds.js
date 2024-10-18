@@ -32,6 +32,8 @@ export function doAddSounds(mainScene) {
   mainScene.bloodSplat2Sound = mainScene.sound.add('blood_splat_2', { loop: false, volume: 1.5 });
   mainScene.additionalLoot = mainScene.sound.add('additional_loot', { loop: false, volume: 1.5 });
   mainScene.shrinkWarn = mainScene.sound.add('shrink_alarm', { loop: false, volume: 2.0 });
+  mainScene.quadDamage = mainScene.sound.add('quad_damage', { loop: false, volume: 2.5 });
+  mainScene.shotBuzz = mainScene.sound.add('shot_buzz', { loop: false, volume: 0.5 });
   forDeathSounds((k, i) => addDeathSound(k, i));
 
   const mapTxId = window.warpAO.mapTxId();

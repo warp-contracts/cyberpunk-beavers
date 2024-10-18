@@ -1,5 +1,5 @@
 import { addCoins, scoreToDisplay } from '../../common/tools.mjs';
-import Const from '../../common/const.mjs';
+import Const, { BOOSTS } from '../../common/const.mjs';
 
 const { GameObject, GameTreasure, Scores, GAME_MODES } = Const;
 
@@ -39,6 +39,11 @@ export function pick(state, action) {
         value,
         type: GameObject.scanner_device.type,
         equipmentType: `scanners`,
+      });
+    case GameObject.quad_damage.type:
+      return pickBoost(state, player, {
+        value,
+        type: GameObject.quad_damage.type,
       });
     case GameObject.none.type:
       return pickTreasure(state, player);
@@ -82,6 +87,25 @@ function pickEquipment(state, player, device) {
       scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
     };
   }
+}
+
+function pickBoost(state, player, boost) {
+  const { type, value } = boost;
+  player.activeBoosts[type] = {
+    type,
+    roundAdded: state.round.current + 1, // so that player had "full" 'duration' rounds for using the item
+    duration: BOOSTS[type].duration_rounds,
+    effect: BOOSTS[type].effect,
+  };
+  addCoins(player, GAME_MODES[state.mode].token, value, state);
+  state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
+  addGameObjectToRespawn(state, type, player);
+
+  return {
+    player,
+    picked: { type },
+    scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
+  };
 }
 
 function pickTreasure(state, player) {
