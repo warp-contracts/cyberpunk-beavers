@@ -10,38 +10,12 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.image(`tio`, 'assets/images/tokens/tio.png');
   mainScene.load.image(`rsg`, 'assets/images/tokens/rsg.png');
   mainScene.load.image(`gun`, 'assets/images/tokens/gun.png');
-  mainScene.load.spritesheet('map_sheet_desert', 'assets/maps/v2/desert/tilesets/Sprite_Map_Sheet.png', {
-    frameWidth: 48,
-    spacing: 0,
-  });
-  mainScene.load.spritesheet('map_sheet_city_1', 'assets/maps/v2/city/tilesets/CC_City_Exterior_A2.png', {
-    frameWidth: 48,
-    spacing: 0,
-  });
-  mainScene.load.spritesheet('map_sheet_city_1_exp', 'assets/maps/v2/city/tilesets/CC_City_Exterior_A2_expanded.png', {
-    frameWidth: 48,
-    spacing: 0,
-  });
-  mainScene.load.spritesheet('map_sheet_city_2', 'assets/maps/v2/city/tilesets/CC_City_Exterior__A4.png', {
-    frameWidth: 48,
-    spacing: 0,
-  });
-  mainScene.load.spritesheet('map_sheet_city_2_exp', 'assets/maps/v2/city/tilesets/CC_City_Exterior__A4_expanded.png', {
-    frameWidth: 48,
-    spacing: 0,
-  });
-  mainScene.load.spritesheet('map_sheet_city_3', 'assets/maps/v2/city/tilesets/CC_City_Exterior_B.png', {
-    frameWidth: 48,
-    spacing: 0,
-  });
-  mainScene.load.spritesheet('map_sheet_city_4', 'assets/maps/v2/city/tilesets/CC_City_Exterior_C.png', {
-    frameWidth: 48,
-    spacing: 0,
-  });
-  mainScene.load.spritesheet('cyberpunk_game_treasures', 'assets/images/game_treasures.png', {
-    frameWidth: 48,
-    spacing: 0,
-  });
+
+  preloadDesertMapAssets(mainScene);
+  preloadCityMapAssets(mainScene);
+  preloadHauntedMapAssets(mainScene);
+
+  loadSpriteSheet(mainScene, 'cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
   // load the JSON file
   if (mainScene.mapTxId) {
@@ -132,4 +106,79 @@ export function doPreloadAssets(mainScene) {
       `assets/images/beavers/${beaver}/${beaver}_anim_${asset}_atlas.json`
     );
   }
+}
+
+function loadSpriteSheet(mainScene, key, url) {
+  mainScene.load.spritesheet(key, url, {
+    frameWidth: 48,
+    spacing: 0,
+  });
+}
+
+function preloadDesertMapAssets(mainScene) {
+  loadSpriteSheet(mainScene, 'map_sheet_desert', 'assets/maps/v2/desert/tilesets/Sprite_Map_Sheet.png');
+}
+
+function preloadCityMapAssets(mainScene) {
+  loadSpriteSheet(mainScene, 'map_sheet_city_1', 'assets/maps/v2/city/tilesets/CC_City_Exterior_A2.png');
+  loadSpriteSheet(mainScene, 'map_sheet_city_1_exp', 'assets/maps/v2/city/tilesets/CC_City_Exterior_A2_expanded.png');
+  loadSpriteSheet(mainScene, 'map_sheet_city_2', 'assets/maps/v2/city/tilesets/CC_City_Exterior__A4.png');
+  loadSpriteSheet(mainScene, 'map_sheet_city_2_exp', 'assets/maps/v2/city/tilesets/CC_City_Exterior__A4_expanded.png');
+  loadSpriteSheet(mainScene, 'map_sheet_city_3', 'assets/maps/v2/city/tilesets/CC_City_Exterior_B.png');
+  loadSpriteSheet(mainScene, 'map_sheet_city_4', 'assets/maps/v2/city/tilesets/CC_City_Exterior_C.png');
+}
+
+function preloadHauntedMapAssets(mainScene) {
+  loadSpriteSheet(
+    mainScene,
+    'hauntedhouse_A2_dark_expanded',
+    'assets/maps/v2/haunted/tilesets/hauntedhouse_A2_dark_expanded.png'
+  );
+  loadSpriteSheet(
+    mainScene,
+    'hauntedhouse_E_destroyed_dark',
+    'assets/maps/v2/haunted/tilesets/hauntedhouse_E_destroyed_dark.png'
+  );
+  loadSpriteSheet(mainScene, 'hauntedhouse_D_dark', 'assets/maps/v2/haunted/tilesets/hauntedhouse_D_dark.png');
+  loadSpriteSheet(
+    mainScene,
+    'hauntedhouse_A4_dark_expanded',
+    'assets/maps/v2/haunted/tilesets/hauntedhouse_A4_dark_expanded.png'
+  );
+  loadSpriteSheet(
+    mainScene,
+    '$!Asylum_Door_Large_dark',
+    'assets/maps/v2/haunted/tilesets/$!Asylum_Door_Large_dark.png'
+  );
+  loadSpriteSheet(mainScene, '!$mouse_holes', 'assets/maps/v2/haunted/tilesets/!$mouse_holes.png');
+  loadSpriteSheet(mainScene, '!$rat_gray_dark', 'assets/maps/v2/haunted/tilesets/!$rat_gray_dark.png');
+  loadSpriteSheet(
+    mainScene,
+    '$!Asylum_Door_Large_noframe_dark',
+    'assets/maps/v2/haunted/tilesets/$!Asylum_Door_Large_noframe_dark.png'
+  );
+  loadSpriteSheet(
+    mainScene,
+    '$!curtains_destroyed_dark',
+    'assets/maps/v2/haunted/tilesets/$!curtains_destroyed_dark.png'
+  );
+  loadSpriteSheet(mainScene, '$!Haunted_Painting_dark', 'assets/maps/v2/haunted/tilesets/$!Haunted_Painting_dark.png');
+  loadSpriteSheet(
+    mainScene,
+    '$lightning_window_small_dark',
+    'assets/maps/v2/haunted/tilesets/$lightning_window_small_dark.png'
+  );
+  loadSpriteSheet(mainScene, 'floating_couch_dark', 'assets/maps/v2/haunted/tilesets/floating_couch_dark.png');
+  loadSpriteSheet(
+    mainScene,
+    '$!sliding_bookshelf_door_dark',
+    'assets/maps/v2/haunted/tilesets/$!sliding_bookshelf_door_dark.png'
+  );
+  loadSpriteSheet(mainScene, 'drip_dark', 'assets/maps/v2/haunted/tilesets/drip_dark.png');
+  loadSpriteSheet(mainScene, 'hauntedhouse_B_dark', 'assets/maps/v2/haunted/tilesets/hauntedhouse_B_dark.png');
+  loadSpriteSheet(
+    mainScene,
+    'hauntedhouse_C_destroyed_dark',
+    'assets/maps/v2/haunted/tilesets/hauntedhouse_C_destroyed_dark.png'
+  );
 }

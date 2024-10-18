@@ -4,7 +4,7 @@ const EVENTS_NAME = {
 
 export const DEFAULT_BG_MUSIC = 'backgroundMusic';
 
-export const DEV_MAP = 'b2m5';
+export const DEV_MAP = 'b3m2';
 
 const maps_desert = {
   b1m1: {
@@ -60,20 +60,37 @@ const maps_city = {
   },
 };
 
+const maps_haunted = {
+  b3m1: {
+    txId: 'c0kF0CSoNGLrTBnxFtIq6yRubM5xULnKmvDbuvTv8aM',
+    music: 'backgroundMusic',
+  },
+  b3m2: {
+    txId: 'xmbCXBLws-q2yP6crVnm9xDgw0QojxsIje9NO3q0LTU',
+    music: 'backgroundMusicMetal',
+  },
+  b3m3: {
+    txId: '_TBpJY3JzCyZtPaXFJ6gG8vLTyUPwyOCuTIKpUmRr8k',
+    music: 'backgroundMusic',
+  },
+};
+
 export const maps = {
   ...maps_desert,
   ...maps_city,
+  ...maps_haunted,
 };
 
 const EMPTY_TILE = 0;
 
+export const OBSTACLES_DEPTH = -100;
 export const OBJECTS_DEPTH = 80;
 export const PLAYER_DEPTH = 100;
 export const MAIN_PLAYER_DEPTH = 200;
 export const FRONT_LAYER_DEPTH = 1000;
 export const FOV_DEPTH = 10000;
 
-export const FOG_ALPHA = 0.8;
+export const FOG_ALPHA = 0.4;
 
 export const MINIMAP_SIZE_PX = 250;
 
