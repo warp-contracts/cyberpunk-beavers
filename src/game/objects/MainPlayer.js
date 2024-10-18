@@ -1,4 +1,4 @@
-import Const, { AP_COSTS, FOV_DEPTH, MAIN_PLAYER_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
+import Const, { AP_COSTS, BOOSTS, FOV_DEPTH, MAIN_PLAYER_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
 import Player from './Player.js';
 import { doPlayAttackSound } from '../scenes/main-scene/sounds.js';
 import { CAMERA_MARGIN } from '../scenes/main-scene/camera.js';
@@ -160,6 +160,9 @@ export default class MainPlayer extends Player {
       if (!this.stats.previousAttackTs || now - this.stats.previousAttackTs > this.stats.weapon.attack_recovery_ms) {
         await this.send({ cmd: attack, dir });
         doPlayAttackSound(this.beaverChoice, this.scene);
+        if (this.mainScene.mainPlayer.activeBoosts[BOOSTS.quad_damage.type]) {
+          this.mainScene.shotBuzz.play();
+        }
         this.attackAnim();
       }
       if (dir == left) {

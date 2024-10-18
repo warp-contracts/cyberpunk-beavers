@@ -200,7 +200,8 @@ export const GameObject = {
   equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 15, roundsToRespawn: 20 },
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 15, roundsToRespawn: 0 },
   scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 15, roundsToRespawn: 0 },
-  none: { type: 'none', tile: 5, value: 0 },
+  quad_damage: { type: 'quad_damage', tile: 5, value: 100, rarity: 5, roundsToRespawn: 10 },
+  none: { type: 'none', tile: 6, value: 0 },
 
   // invisible
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 75 },
@@ -277,6 +278,14 @@ const Combat = {
 // ------- Beaver Config
 export const BonusType = {
   KillBonus: 'KillBonus',
+};
+
+export const BOOSTS = {
+  quad_damage: {
+    type: 'quad_damage',
+    effect: (baseDmg) => baseDmg * 4,
+    duration_rounds: 2,
+  },
 };
 
 export const WEAPONS = {

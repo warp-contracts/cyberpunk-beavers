@@ -180,6 +180,7 @@ async function spawnGame(processId, start, end) {
     rawMap: mapJson,
     mapTxId,
   });
+  console.log('after setup');
   if (result.Error) {
     console.error(result.Error);
   }
