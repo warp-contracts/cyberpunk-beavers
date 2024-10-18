@@ -256,12 +256,21 @@ function gameRoundTick(state, message) {
 function gamePlayerTick(state, action) {
   const player = state.players[action.walletAddress];
   console.log(`Player tick - ${player?.walletAddress}`);
-  if (player && player.stats.round.last < state.round.current) {
-    player.stats.ap.current = player.stats.ap.max;
-    player.stats.round.last = state.round.current;
-  }
-  if (player && state.gameplayMode === GAMEPLAY_MODES.battleRoyale && player.stats.hp === 0) {
-    return { dead: player.walletAddress };
+  if (player) {
+    if (player.stats.round.last < state.round.current) {
+      player.stats.ap.current = player.stats.ap.max;
+      player.stats.round.last = state.round.current;
+    }
+    if (state.gameplayMode === GAMEPLAY_MODES.battleRoyale && player.stats.hp === 0) {
+      return { dead: player.walletAddress };
+    }
+    for (const key of Object.keys(player.activeBoosts)) {
+      const boost = player.activeBoosts[key];
+      if (state.round.current > boost.roundAdded + boost.duration) {
+        console.log('Boost expired');
+        delete player.activeBoosts[key];
+      }
+    }
   }
 }
 

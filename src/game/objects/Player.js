@@ -19,6 +19,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.equipment = equipment;
     this.animated = animated;
     this.locked = false;
+    this.quadDamageFx = null;
     scene.add.existing(this);
     this.initInputKeys();
     this.onGameObject = null;
@@ -71,6 +72,29 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.healthBar.setSize(this.calculateBarWidth(newStats.hp), 6);
     this.apBar.setSize(this.calculateBarWidth(newStats.ap), 6);
     this.stats = newStats;
+  }
+
+  showQuadDamageBoost() {
+    if (this.quadDamageFx === null) {
+      this.quadDamageFx = this.postFX.addGlow(0xff0000, 2, 0, false, 0.1, 16);
+
+      this.quadDamageTween = this.scene.tweens.add({
+        targets: this.quadDamageFx,
+        outerStrength: 8,
+        yoyo: true,
+        loop: -1,
+        ease: 'sine.inout',
+      });
+    }
+  }
+
+  hideQuadDamageBoost() {
+    if (this.quadDamageFx !== null) {
+      this.quadDamageTween.remove();
+      this.quadDamageTween = null;
+      this.quadDamageFx = null;
+      this.postFX.clear();
+    }
   }
 
   updatePlayerPosition() {

@@ -44,6 +44,7 @@ function initState(message, state) {
       GameObject.teleport_device,
       GameObject.equipment_mine,
       GameObject.scanner_device,
+      GameObject.quad_damage,
       GameObject.none,
     ],
     gameHiddenObjects: Array(mapHeight)
@@ -91,6 +92,7 @@ function generateTilemap(input, width) {
 function setVisibleGameObjects(state) {
   state.gameObjectsTilemap = setGameObjectsTilesOnMap(state, [GameObject.none], 0);
   for (let gameObject of state.gameObjectsTiles) {
+    console.log('Setting', gameObject);
     setObjectsOnRandomPositions(state, gameObject, gameObject.rarity, state.gameObjectsTilemap, state.gameObjectsTiles);
   }
 }
@@ -128,11 +130,18 @@ function setObjectsOnRandomPositions(state, gameObject, rarity, tilemap, tiles) 
   tiles = Object.values(tiles).map((t) => {
     if (t.type != GameObject.none.type) return t.tile;
   });
+  //console.log(tiles);
 
   while (gameObjectCount < rarity) {
     const pos = calculateRandomPos(state, state.map.width);
     const isAllowedPosition =
       state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE && !tiles.includes(tilemap[pos.y][pos.x]);
+    /*console.log({
+      pos,
+      isAllowedPosition,
+      empty: state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE,
+      tileIncludes: tilemap[pos.y][pos.x]
+    });*/
     if (isAllowedPosition) {
       tilemap[pos.y][pos.x] = gameObject.tile;
       gameObjectCount++;
