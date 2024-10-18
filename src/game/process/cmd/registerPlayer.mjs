@@ -52,6 +52,7 @@ export function registerPlayer(state, action) {
     equipment: {
       ...BEAVER_TYPES[beaverId].equipment,
     },
+    activeBoosts: {},
     stats: {
       name: BEAVER_TYPES[beaverId].name,
       ...BEAVER_TYPES[beaverId].stats,
