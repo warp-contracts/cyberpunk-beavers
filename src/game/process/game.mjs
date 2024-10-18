@@ -263,6 +263,13 @@ function gamePlayerTick(state, action) {
   if (player && state.gameplayMode === GAMEPLAY_MODES.battleRoyale && player.stats.hp === 0) {
     return { dead: player.walletAddress };
   }
+
+  for (const key of Object.keys(player.activeBoosts)) {
+    const boost = player.activeBoosts[key];
+    if (boost.roundAdded + boost.duration > state.round.current) {
+      delete player.activeBoosts[key];
+    }
+  }
 }
 
 function respawn(round, state) {

@@ -1,4 +1,4 @@
-import Const, { GAMEPLAY_MODES, GAME_MODES } from '../../common/const.mjs';
+import Const, { GAMEPLAY_MODES, GAME_MODES, BOOSTS } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
@@ -86,6 +86,9 @@ function calculateDamage(player, damageFigures, state) {
   if (criticalHitRandom <= criticalChance) {
     criticalHit = true;
     dmgMultiplier = player.stats.weapon.critical_hit_multiplier[range];
+  }
+  if (player.activeBoosts[BOOSTS.quad_damage.type]) {
+    dmgMultiplier = player.activeBoosts[BOOSTS.quad_damage.type].effect(dmgMultiplier);
   }
   const hitChance = player.stats.weapon.hit_chance[range];
   const hitRandom = Math.random(++state.randomCounter);
