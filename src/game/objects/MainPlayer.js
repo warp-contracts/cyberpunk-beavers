@@ -160,8 +160,10 @@ export default class MainPlayer extends Player {
       if (!this.stats.previousAttackTs || now - this.stats.previousAttackTs > this.stats.weapon.attack_recovery_ms) {
         await this.send({ cmd: attack, dir });
         doPlayAttackSound(this.beaverChoice, this.scene);
-        if (this.mainScene.mainPlayer.activeBoosts[BOOSTS.quad_damage.type]) {
-          this.mainScene.shotBuzz.play();
+        if (this.mainScene.mainPlayer.activeBoosts) {
+          if (this.mainScene.mainPlayer.activeBoosts[BOOSTS.quad_damage.type]) {
+            this.mainScene.shotBuzz.play();
+          }
         }
         this.attackAnim();
       }

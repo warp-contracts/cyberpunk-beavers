@@ -545,6 +545,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.picked:
         {
           if (response.picked) {
+            self.allPlayers[response.player.walletAddress].activeBoosts = response.player.activeBoosts;
             const { x, y } = response.player?.pos;
             if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
               if (response.picked.type == GameObject.quad_damage.type) {
@@ -553,10 +554,13 @@ export default class MainScene extends Phaser.Scene {
                 self.pickUpSound.play();
               }
               self.mainPlayer.equipment = response.player.equipment;
+              if (response.picked.type === GameObject.show_map.type) {
+                BOOSTS.show_map.effect(self.fov);
+              }
             } else {
               self.allPlayers[response.player.walletAddress]?.pickAnim();
             }
-            self.allPlayers[response.player.walletAddress].activeBoosts = response.player.activeBoosts;
+
             if (response.player.activeBoosts[BOOSTS.quad_damage.type]) {
               self.allPlayers[response.player.walletAddress].showQuadDamageBoost();
             }

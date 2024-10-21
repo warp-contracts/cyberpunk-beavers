@@ -15,6 +15,7 @@ const gameObjectsToAdd = {
   [GameObject.teleport_device.type]: { x: 144, y: 0 },
   [GameObject.scanner_device.type]: { x: 0, y: 48 },
   [GameObject.quad_damage.type]: { x: 48, y: 48 },
+  [GameObject.show_map.type]: { x: 96, y: 48 },
 };
 
 export function doCreateTileMap(mainScene) {

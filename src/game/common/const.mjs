@@ -200,8 +200,9 @@ export const GameObject = {
   equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 10, roundsToRespawn: 10 },
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 10, roundsToRespawn: 20 },
   scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 10, roundsToRespawn: 20 },
-  quad_damage: { type: 'quad_damage', tile: 5, value: 100, rarity: 5, roundsToRespawn: 10 },
-  none: { type: 'none', tile: 6, value: 0 },
+  quad_damage: { type: 'quad_damage', tile: 5, value: 200, rarity: 5, roundsToRespawn: 10 },
+  show_map: { type: 'show_map', tile: 6, value: 400, rarity: 30, roundsToRespawn: 20 },
+  none: { type: 'none', tile: 7, value: 0 },
 
   // invisible
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 75 },
@@ -285,6 +286,22 @@ export const BOOSTS = {
     type: 'quad_damage',
     effect: (baseDmg) => baseDmg * 4,
     duration_rounds: 2,
+  },
+  show_map: {
+    type: 'show_map',
+    effect: (fov) => {
+      for (let y = 0; y < fov.fovTileMap.height; y++) {
+        for (let x = 0; x < fov.fovTileMap.width; x++) {
+          const tile = fov.fovLayer.getTileAt(x, y, true);
+          if (!tile.seen) {
+            tile.seen = true;
+            tile.desiredAlpha = FOG_ALPHA;
+            tile.setAlpha(tile.desiredAlpha);
+          }
+        }
+      }
+    },
+    duration_rounds: Number.MAX_SAFE_INTEGER,
   },
 };
 
