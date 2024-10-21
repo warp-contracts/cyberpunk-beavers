@@ -17,24 +17,6 @@
     scrollbar-width: thin;
   }
 
-  .game-hub-connection {
-    font-family: 'Press Start 2P';
-    font-size: var(--big);
-    text-transform: uppercase;
-
-    &.success {
-      color: var(--green);
-    }
-
-    &.warn {
-      color: var(--orange);
-    }
-
-    &.error {
-      color: var(--red);
-    }
-  }
-
   .games-list .list .element {
     position: relative;
     margin-top: 10px;

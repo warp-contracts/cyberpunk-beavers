@@ -6,7 +6,6 @@ export function GameHubGui() {
   return {
     view: function (vnode) {
       const { games, gameError, joinGame, spectateGame, enterGlobalLeaderboard } = vnode.attrs;
-      const { lagMessage, lagClass } = formatLag(window.warpAO.lag, true);
       return [
         m('.mithril-component', { id: 'game-hub' }, [
           m('.games-list-wrapper', [
@@ -25,7 +24,6 @@ export function GameHubGui() {
               'GLOBAL LEADERBOARD'
             ),
           ]),
-          m(`.game-hub-connection ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage),
         ]),
       ];
     },
