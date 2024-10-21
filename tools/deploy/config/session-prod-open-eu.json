@@ -56,7 +56,7 @@
     },
     {
       "start": {
-        "dayOfTheWeek": 5,
+        "dayOfTheWeek": 1,
         "time": "20:00",
         "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
       },
@@ -83,7 +83,27 @@
         { "map": "b1m5" },
         { "map": "b2m2" },
 
-        { "map": "b1m3" },
+        {
+          "start": {
+            "dayOfTheWeek": 3,
+            "time": "20:00",
+            "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+          },
+          "map": "b1m3"
+        },
+        { "map": "b2m3" },
+        { "map": "b2m4" },
+        { "map": "b1m2" },
+        { "map": "b2m5" },
+
+        {
+          "start": {
+            "dayOfTheWeek": 5,
+            "time": "20:00",
+            "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+          },
+          "map": "b1m3"
+        },
         { "map": "b2m3" },
         { "map": "b2m4" },
         { "map": "b1m2" },
