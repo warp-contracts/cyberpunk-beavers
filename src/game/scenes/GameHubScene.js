@@ -11,6 +11,7 @@ import Phaser from 'phaser';
 import { GameHubGui } from '../gui/GameHubGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
 import { loadMapTxId } from '../utils/utils.js';
+import { safeGet } from 'warp-contracts';
 
 export default class GameHubScene extends Phaser.Scene {
   gameButtons;
@@ -36,7 +37,11 @@ export default class GameHubScene extends Phaser.Scene {
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnection.hub;
       this.server.subscribe(this);
-      this.server.send({ cmd: 'hubInfo' });
+      if (window.warpAO.config.env === 'dev') {
+        this.server.send({ cmd: 'hubInfo' });
+      } else {
+        this.doFetchHubInfo(window.warpAO.gameHubProcessId());
+      }
       const self = this;
       m.mount(showGui(), {
         view: function () {
@@ -75,6 +80,21 @@ export default class GameHubScene extends Phaser.Scene {
     } else {
       this.scene.start(connectWalletSceneKey);
     }
+  }
+
+  doFetchHubInfo(gameHubProcessId) {
+    console.log('Fetching hub info');
+    safeGet(`${window.warpAO.config.cuAddress}/current-state/${gameHubProcessId}`)
+      .then((response) => {
+        console.log('Hub info', response);
+        const message = {
+          games: response.result.State.games,
+          removedGames: response.result.State.removedGames,
+          cmd: Const.Command.hubStats,
+        };
+        this.handleMessage(message);
+      })
+      .catch(console.error);
   }
 
   update() {}
@@ -123,6 +143,8 @@ export default class GameHubScene extends Phaser.Scene {
 
         break;
       }
+      default:
+        throw new Error(`Unknown command received ${response.cmd}`);
     }
   }
 }
