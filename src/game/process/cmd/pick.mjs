@@ -45,6 +45,11 @@ export function pick(state, action) {
         value,
         type: GameObject.quad_damage.type,
       });
+    case GameObject.show_map.type:
+      return pickBoost(state, player, {
+        value,
+        type: GameObject.show_map.type,
+      });
     case GameObject.none.type:
       return pickTreasure(state, player);
   }
@@ -95,7 +100,6 @@ function pickBoost(state, player, boost) {
     type,
     roundAdded: state.round.current + 1, // so that player had "full" 'duration' rounds for using the item
     duration: BOOSTS[type].duration_rounds,
-    effect: BOOSTS[type].effect,
   };
   addCoins(player, GAME_MODES[state.mode].token, value, state);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;

@@ -45,6 +45,7 @@ function initState(message, state) {
       GameObject.equipment_mine,
       GameObject.scanner_device,
       GameObject.quad_damage,
+      GameObject.show_map,
       GameObject.none,
     ],
     gameHiddenObjects: Array(mapHeight)
