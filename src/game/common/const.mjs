@@ -195,11 +195,11 @@ const Tile = {
 };
 
 export const GameObject = {
-  ap: { type: 'ap', tile: 0, value: 5, rarity: 30, roundsToRespawn: 15 },
-  hp: { type: 'hp', tile: 1, value: 25, rarity: 30, roundsToRespawn: 20 },
-  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 15, roundsToRespawn: 20 },
-  teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 15, roundsToRespawn: 0 },
-  scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 15, roundsToRespawn: 0 },
+  ap: { type: 'ap', tile: 0, value: 5, rarity: 10, roundsToRespawn: 5 },
+  hp: { type: 'hp', tile: 1, value: 25, rarity: 10, roundsToRespawn: 5 },
+  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 10, roundsToRespawn: 10 },
+  teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 10, roundsToRespawn: 20 },
+  scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 10, roundsToRespawn: 20 },
   quad_damage: { type: 'quad_damage', tile: 5, value: 100, rarity: 5, roundsToRespawn: 10 },
   none: { type: 'none', tile: 6, value: 0 },
 
