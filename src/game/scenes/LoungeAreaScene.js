@@ -122,6 +122,7 @@ export default class LoungeAreaScene extends Phaser.Scene {
                         }),
                       onBack: () => {
                         self.doHideGui();
+                        self.server.unsubscribe();
                         self.scene.start(gameHubSceneKey);
                       },
                     });
