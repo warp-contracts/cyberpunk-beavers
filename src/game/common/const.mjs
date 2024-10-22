@@ -202,7 +202,8 @@ export const GameObject = {
   scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 10, roundsToRespawn: 20 },
   quad_damage: { type: 'quad_damage', tile: 5, value: 200, rarity: 5, roundsToRespawn: 10 },
   show_map: { type: 'show_map', tile: 6, value: 400, rarity: 30, roundsToRespawn: 20 },
-  none: { type: 'none', tile: 7, value: 0 },
+  hazard: { type: 'hazard', tile: 7, value: 1000, rarity: 10, roundsToRespawn: 100 },
+  none: { type: 'none', tile: 8, value: 0 },
 
   // invisible
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 75 },
