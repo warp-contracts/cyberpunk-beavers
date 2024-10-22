@@ -1,5 +1,7 @@
 import { addCoins, scoreToDisplay } from '../../common/tools.mjs';
 import Const, { BOOSTS } from '../../common/const.mjs';
+import { calculatePlayerRandomPos } from './registerPlayer.mjs';
+import { lootPlayer, respawnPlayer } from './attack.mjs';
 
 const { GameObject, GameTreasure, Scores, GAME_MODES } = Const;
 
@@ -41,15 +43,13 @@ export function pick(state, action) {
         equipmentType: `scanners`,
       });
     case GameObject.quad_damage.type:
-      return pickBoost(state, player, {
-        value,
-        type: GameObject.quad_damage.type,
-      });
     case GameObject.show_map.type:
       return pickBoost(state, player, {
         value,
-        type: GameObject.show_map.type,
+        type,
       });
+    case GameObject.hazard.type:
+      return pickHazardItem(state, player, message.Timestamp);
     case GameObject.none.type:
       return pickTreasure(state, player);
   }
@@ -94,6 +94,46 @@ function pickEquipment(state, player, device) {
   }
 }
 
+function pickHazardItem(state, player, timestamp) {
+  const hazardRandom = Math.random(++state.randomCounter);
+  player.stats.ap.current -= 1;
+  const tokenName = GAME_MODES[state.mode].token;
+  const value = GameTreasure[tokenName].value; // ? or baseValue? da fuck
+  const valueWithBonus = value + (player.stats.bonus[state.mode][tokenName] || 0);
+  if (hazardRandom < 0.5) {
+    addCoins(player, GAME_MODES[state.mode].token, valueWithBonus, state);
+    return {
+      player,
+      picked: { type: GameObject.hazard.type, result: 'win' },
+      scoreToDisplay: scoreToDisplay([
+        { value: valueWithBonus, type: Scores.coin },
+        { value: -1, type: Scores.ap },
+      ]),
+    };
+  } else {
+    const dmg = Const.GameObject.active_mine.damage;
+    player.stats.hp.current -= dmg;
+    let finished = false;
+    let loot = 0;
+    let additionalLoot = null;
+    if (player.stats.hp.current <= 0) {
+      finished = true;
+      const { loot, additionalLoot } = lootPlayer(player, state);
+      respawnPlayer(player, state, timestamp);
+    }
+
+    return {
+      player,
+      picked: { type: GameObject.hazard.type, result: 'loose', finished, additionalLoot },
+      scoreToDisplay: scoreToDisplay([
+        { value: loot, type: Scores.coin },
+        { value: -dmg, type: Scores.hp },
+        { value: -1, type: Scores.ap },
+      ]),
+    };
+  }
+}
+
 function pickBoost(state, player, boost) {
   const { type, value } = boost;
   player.activeBoosts[type] = {
@@ -108,7 +148,10 @@ function pickBoost(state, player, boost) {
   return {
     player,
     picked: { type },
-    scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
+    scoreToDisplay: scoreToDisplay([
+      { value: -1, type: Scores.ap },
+      { value: value, type: Scores.coin },
+    ]),
   };
 }
 
@@ -126,7 +169,9 @@ function pickTreasure(state, player) {
   state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
   const valueWithBonus = value + (player.stats.bonus[state.mode][type] || 0);
   addCoins(player, GAME_MODES[state.mode].token, valueWithBonus, state);
-  addCoins(player, type, 1, state); //FIXME: this might be wrong in case of cbcoin
+  if (type !== GAME_MODES[state.mode].token) {
+    addCoins(player, type, 1, state);
+  }
   return {
     player,
     picked: { type, tile: treasureTile },

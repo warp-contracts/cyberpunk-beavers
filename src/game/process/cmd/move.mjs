@@ -14,8 +14,7 @@ export function movePlayer(state, action) {
 
   const newPos = step(player.pos, dir);
 
-  console.log(newPos);
-  //console.log(state.obstaclesTilemap);
+  // console.log(newPos);
 
   if (newPos.x < 0 || newPos.x >= state.map.width || newPos.y < 0 || newPos.y >= state.map.width) {
     console.log(`Cannot move ${player.walletAddress}. Reached edge of the universe ${newPos}`);
@@ -26,12 +25,12 @@ export function movePlayer(state, action) {
     );
     return { player };
   } else if (state.obstaclesTilemap[newPos.y][newPos.x] > EMPTY_TILE) {
-    console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
+    // console.log(`Cannot move ${player.walletAddress}. Tile ${newPos} has obstacle`);
     return { player };
   } else {
     const apCost = calculateApCost(state, newPos.y, newPos.x);
     if (player.stats.ap.current < apCost) {
-      console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
+      // console.log(`Cannot move ${player.walletAddress}. Not enough ap`);
       return { player, moved: false };
     }
 
@@ -62,12 +61,6 @@ export function movePlayer(state, action) {
 
     if (encounter?.type === GameObject.active_mine.type) {
       const { finished, revenge, loot, tokenTransfer, damage } = triggerLandmine(state, player, hiddenObject);
-      if (finished) {
-        player.pos = calculatePlayerRandomPos(state);
-        state.playersOnTiles[newPos.y][newPos.x] = null;
-        state.playersOnTiles[player.pos.y][player.pos.x] = player.walletAddress;
-      }
-
       scores.push({ value: -damage.finalDmg, type: Const.GameObject.hp.type });
 
       if (parseInt(loot) > 0) {

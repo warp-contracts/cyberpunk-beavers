@@ -37,6 +37,7 @@ export function triggerLandmine(state, player, landmine) {
   const damage = {
     baseDmg: Const.GameObject.active_mine.damage,
     range: 0,
+    type: Const.GameObject.active_mine.type,
   };
   state.gameHiddenObjects[player.pos.y][player.pos.x] = undefined;
   return finishHim(state.players[landmine.owner], player, damage, state);

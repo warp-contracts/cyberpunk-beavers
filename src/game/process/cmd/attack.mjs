@@ -79,6 +79,16 @@ export function attack(state, action, timestamp) {
 function calculateDamage(player, damageFigures, state) {
   const { range } = damageFigures;
   const baseDmg = damageFigures.baseDmg || player.stats.weapon.damage[range];
+  if (damageFigures.type === Const.GameObject.active_mine.type) {
+    return {
+      range,
+      baseDmg,
+      criticalHit: false,
+      dmgMultiplier: 1,
+      finalDmg: baseDmg,
+    };
+  }
+
   const criticalChance = player.stats.weapon.critical_hit_chance[range];
   const criticalHitRandom = Math.random(++state.randomCounter);
   let dmgMultiplier = 1;
@@ -88,8 +98,6 @@ function calculateDamage(player, damageFigures, state) {
     dmgMultiplier = player.stats.weapon.critical_hit_multiplier[range];
   }
   if (player.activeBoosts[BOOSTS.quad_damage.type]) {
-    console.log(player.activeBoosts);
-    console.log('applying quad damage', player.activeBoosts[BOOSTS.quad_damage.type]);
     dmgMultiplier = BOOSTS.quad_damage.effect(dmgMultiplier);
   }
   const hitChance = player.stats.weapon.hit_chance[range];
@@ -123,17 +131,8 @@ export function finishHim(player, opponent, damageFigures, state, timestamp) {
     console.log(
       `Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot with kill bonus ${lootWithBonus}`
     );
-    opponent.stats.hp.current = 0;
-    opponent.stats.kills.deaths++;
-    opponent.stats.kills.fragsInRow = 0;
+    respawnPlayer(opponent, state, timestamp);
     opponent.stats.kills.killedBy = player.walletAddress;
-    if (state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
-      opponent.stats.hp.current = opponent.stats.hp.max;
-    }
-    opponent.stats.death = {
-      ts: timestamp,
-      round: state.round.current,
-    };
     player.stats.kills.frags++;
     player.stats.kills.fragsInRow++;
     if (revenge) {
@@ -160,7 +159,23 @@ export function finishHim(player, opponent, damageFigures, state, timestamp) {
   };
 }
 
-function lootPlayer(player, state) {
+export function respawnPlayer(player, state, timestamp) {
+  player.stats.hp.current = 0;
+  player.stats.kills.deaths++;
+  player.stats.kills.fragsInRow = 0;
+  if (state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
+    player.stats.hp.current = player.stats.hp.max;
+    state.playersOnTiles[player.pos.y][player.pos.x] = null;
+    player.pos = calculatePlayerRandomPos(state);
+    state.playersOnTiles[player.pos.y][player.pos.x] = player.walletAddress;
+  }
+  player.stats.death = {
+    ts: timestamp,
+    round: state.round.current,
+  };
+}
+
+export function lootPlayer(player, state) {
   const loot = Math.min(player.stats.coins.gained, Const.Combat.DefaultLoot);
   player.stats.coins.gained -= loot;
 
@@ -170,7 +185,7 @@ function lootPlayer(player, state) {
 
   let additionalLoot;
   if (additionalTokens.length > 0) {
-    const random = Math.floor(Math.random(state.randomCounter) * additionalTokens.length);
+    const random = Math.floor(Math.random(state.randomCounter++) * additionalTokens.length);
     additionalLoot = { token: additionalTokens[random], amount: 1 };
     player.stats.additionalTokens[additionalLoot.token].gained -= 1;
   }
