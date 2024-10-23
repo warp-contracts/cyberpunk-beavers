@@ -5,7 +5,7 @@ import { lootPlayer, respawnPlayer } from './attack.mjs';
 
 const { GameObject, GameTreasure, Scores, GAME_MODES } = Const;
 
-export function pick(state, action) {
+export function pick(state, action, message) {
   const walletAddress = action.walletAddress;
   const player = state.players[walletAddress];
 
@@ -95,7 +95,7 @@ function pickEquipment(state, player, device) {
 }
 
 function pickHazardItem(state, player, timestamp) {
-  const hazardRandom = Math.random(++state.randomCounter);
+  const hazardRandom = Math.random(++state.randomCounter); //0.6
   player.stats.ap.current -= 1;
   const tokenName = GAME_MODES[state.mode].token;
   const value = GameTreasure[tokenName].value; // ? or baseValue? da fuck
@@ -113,6 +113,7 @@ function pickHazardItem(state, player, timestamp) {
   } else {
     const dmg = Const.GameObject.active_mine.damage;
     player.stats.hp.current -= dmg;
+    const prevPos = player.pos;
     let finished = false;
     let loot = 0;
     let additionalLoot = null;
@@ -124,7 +125,7 @@ function pickHazardItem(state, player, timestamp) {
 
     return {
       player,
-      picked: { type: GameObject.hazard.type, result: 'loose', finished, additionalLoot },
+      picked: { type: GameObject.hazard.type, result: 'loose', finished, additionalLoot, prevPos },
       scoreToDisplay: scoreToDisplay([
         { value: loot, type: Scores.coin },
         { value: -dmg, type: Scores.hp },
