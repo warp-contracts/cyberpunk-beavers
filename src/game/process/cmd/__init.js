@@ -94,7 +94,6 @@ function generateTilemap(input, width) {
 function setVisibleGameObjects(state) {
   state.gameObjectsTilemap = setGameObjectsTilesOnMap(state, [GameObject.none], 0);
   for (let gameObject of state.gameObjectsTiles) {
-    console.log('Setting', gameObject);
     setObjectsOnRandomPositions(state, gameObject, gameObject.rarity, state.gameObjectsTilemap, state.gameObjectsTiles);
   }
 }
