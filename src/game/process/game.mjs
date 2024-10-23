@@ -119,7 +119,7 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.pick:
-      const pickRes = pick(state, action);
+      const pickRes = pick(state, action, message);
       ao.result({
         cmd: Const.Command.picked,
         player: pickRes.player,

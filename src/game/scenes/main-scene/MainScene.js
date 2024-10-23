@@ -304,14 +304,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   handleTx(lastTxs) {
-    /*console.log('Checking locked tx', {
-      lastTxs,
-      locking: this.lockingTx,
-    });*/
     const lockingTx = this.lockingTx;
     if (lastTxs && lastTxs.includes(this.lockingTx)) {
       this.lockingTx = null;
-      //console.log('Actions unlocked', lockingTx);
     }
   }
 
@@ -390,6 +385,7 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
+    const picked = response.picked;
     switch (cmd) {
       case Const.Command.activated: {
         if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
@@ -430,7 +426,7 @@ export default class MainScene extends Phaser.Scene {
                   });
                   self.scene.remove(mainSceneLoadingKey);
                   /*self.light = self.lights.addLight(self.mainPlayer.x, self.mainPlayer.y, 200)
-                .setIntensity(3);*/
+              .setIntensity(3);*/
                 }
                 self.isEverythingFuckingInitialized = true;
               } else {
@@ -544,18 +540,46 @@ export default class MainScene extends Phaser.Scene {
         break;
       case Const.Command.picked:
         {
-          if (response.picked) {
+          if (picked) {
             self.allPlayers[response.player.walletAddress].activeBoosts = response.player.activeBoosts;
-            const { x, y } = response.player?.pos;
+            const { x, y } = response?.picked?.prevPos || response.player?.pos;
+            self.gameObjectsLayer?.removeTileAt(x, y);
+            const spriteToHide = self.gameObjectsSprites[y]?.[x];
+            if (spriteToHide) {
+              spriteToHide.setVisible(false);
+            }
             if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
-              if (response.picked.type == GameObject.quad_damage.type) {
+              if (picked.type == GameObject.quad_damage.type) {
                 self.quadDamage.play();
-              } else {
+              } else if (picked.type !== GameObject.hazard.type) {
                 self.pickUpSound.play();
               }
               self.mainPlayer.equipment = response.player.equipment;
-              if (response.picked.type === GameObject.show_map.type) {
+              if (picked.type === GameObject.show_map.type) {
                 BOOSTS.show_map.effect(self.fov);
+              }
+              if (picked.type === GameObject.hazard.type) {
+                if (picked.result === 'win') {
+                  self.treasureSound.play();
+                } else {
+                  self.hahaSound.play();
+                  self.explosionSound.play();
+                  self.mainPlayer.explosionAnim().once('animationcomplete', () => {
+                    if (picked.finished) {
+                      self.mainPlayer.deathAnim(BEAVER_TYPES.speedy_beaver.name, true).once('animationcomplete', () => {
+                        if (self.mode === GAMEPLAY_MODES.deathmatch) {
+                          self.mainPlayer.baseMoveTo(
+                            response.player.pos,
+                            () => {},
+                            () => self.mainPlayer.blink()
+                          );
+                        } else {
+                          self.mainPlayer.kill();
+                        }
+                      });
+                    }
+                  });
+                }
               }
             } else {
               self.allPlayers[response.player.walletAddress]?.pickAnim();
@@ -565,33 +589,20 @@ export default class MainScene extends Phaser.Scene {
               self.allPlayers[response.player.walletAddress].showQuadDamageBoost();
             }
 
-            self.gameObjectsLayer?.removeTileAt(x, y);
-
-            const spriteToHide = self.gameObjectsSprites[y]?.[x];
-            if (spriteToHide) {
-              spriteToHide.setVisible(false);
-            } else {
-              console.error('Could not find sprite to remove at tile position', {
-                x,
-                y,
-              });
-            }
-
             if (response.player.onGameTreasure?.tile > 0) {
-              //FIXME: create some dedicated fun for this
               self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
             }
 
-            if (response.picked.type == GameTreasure.gun.type && !self.theGunCollectedSound.isPlaying) {
+            if (picked.type == GameTreasure.gun.type && !self.theGunCollectedSound.isPlaying) {
               self.theGunCollectedSound.play();
             }
+            self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
           } else {
             if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
               self.noCollectSound.play();
             }
           }
           self.updateStats(response.player, response.gameStats);
-          response.picked && self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
         }
         break;
 

@@ -34,6 +34,7 @@ export function doAddSounds(mainScene) {
   mainScene.shrinkWarn = mainScene.sound.add('shrink_alarm', { loop: false, volume: 2.0 });
   mainScene.quadDamage = mainScene.sound.add('quad_damage', { loop: false, volume: 2.5 });
   mainScene.shotBuzz = mainScene.sound.add('shot_buzz', { loop: false, volume: 0.5 });
+  mainScene.hahaSound = mainScene.sound.add('haha', { loop: false, volume: 2 });
   forDeathSounds((k, i) => addDeathSound(k, i));
 
   const mapTxId = window.warpAO.mapTxId();
