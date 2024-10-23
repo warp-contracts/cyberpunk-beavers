@@ -103,7 +103,6 @@ function calculateDamage(player, damageFigures, state) {
   const hitChance = player.stats.weapon.hit_chance[range];
   const hitRandom = Math.random(++state.randomCounter);
   let finalDmg = Math.floor(baseDmg * dmgMultiplier);
-  console.log('DMG', finalDmg);
   if (hitRandom > hitChance) {
     console.log({
       hitRandom,
