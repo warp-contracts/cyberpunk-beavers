@@ -35,6 +35,10 @@ export function MainSceneGui() {
         gameActive,
         spectatorMode,
         roundsToShrink,
+        waitingForNewWave,
+        hordeAliveMonsters,
+        hordeAlivePlayers,
+        hordeWaveNumber,
       } = vnode.attrs;
 
       const { lagMessage, lagClass } = formatLag(window.warpAO.lag);
@@ -83,6 +87,13 @@ export function MainSceneGui() {
                 ? m(
                     '.main-scene-info.small.blink',
                     `Map shrinks in ${roundsToShrink} round${roundsToShrink > 1 ? 's' : ''}`
+                  )
+                : null,
+              waitingForNewWave ? m('.main-scene-info.small.blink', `Prepare for new monsters wave!`) : null,
+              hordeWaveNumber > 0 && !waitingForNewWave
+                ? m(
+                    '.main-scene-info.small',
+                    `Wave: ${hordeWaveNumber}, monsters left: ${hordeAliveMonsters}, players alive: ${hordeAlivePlayers}`
                   )
                 : null,
               m(BattleReport, {

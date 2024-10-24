@@ -51,6 +51,10 @@ export default class MainPlayer extends Player {
   }
 
   async update() {
+    if (this.isDead() || this.locked) {
+      return;
+    }
+
     if (this.stats.ap.current === 0 || (this.combatMode && this.stats.ap.current < AP_COSTS.attack)) {
       if (this.combatMode) {
         this.combatMode = false;
@@ -64,10 +68,6 @@ export default class MainPlayer extends Player {
         }
       }
 
-      return;
-    }
-
-    if (this.stats.hp.current <= 0 || this.locked) {
       return;
     }
 

@@ -10,7 +10,9 @@ const WS_PORT = 8097;
 
 // Create a WebSocket server
 const wss = new WebSocketServer({ port: WS_PORT });
-const quickJSPlugin = new QuickJsPlugin({});
+const quickJSPlugin = new QuickJsPlugin({
+  interruptCycles: 100000,
+});
 
 // GAME MODE
 const modeIdx = process.argv.indexOf('--gameMode');
@@ -164,7 +166,7 @@ async function spawnGame(processId, start, end) {
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
       gameplayConfig: {
-        mode: GAMEPLAY_MODES.deathmatch,
+        mode: GAMEPLAY_MODES.horde,
       },
       roundInterval: 10000,
       startDelay: 5000,

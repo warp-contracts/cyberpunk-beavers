@@ -2,7 +2,7 @@ import Const, { GAMEPLAY_MODES, GAME_MODES, BOOSTS, AP_COSTS } from '../../commo
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
-export function attack(state, action, timestamp) {
+export function attack(state, action, timestamp, monsters) {
   const player = state.players[action.walletAddress];
   if (player.stats.ap.current < AP_COSTS.attack) {
     return { player, tokenTransfer: 0 };
@@ -31,7 +31,11 @@ export function attack(state, action, timestamp) {
     if (state.obstaclesTilemap[attackPos.y][attackPos.x] > Const.EMPTY_TILE && player.beaverId != 'hacker_beaver') {
       break;
     }
-    opponent = state.players[state.playersOnTiles[attackPos.y][attackPos.x]];
+    if (state.gameplayMode === GAMEPLAY_MODES.horde) {
+      opponent = state.currentWave.monsters[state.monstersOnTiles[attackPos.y][attackPos.x]];
+    } else {
+      opponent = state.players[state.playersOnTiles[attackPos.y][attackPos.x]];
+    }
     if (opponent != null && opponent.stats.hp.current > 0) {
       break;
     }
@@ -40,6 +44,19 @@ export function attack(state, action, timestamp) {
   }
 
   if (opponent && opponent.stats.hp.current > 0) {
+    if (state.gameplayMode === GAMEPLAY_MODES.horde) {
+      if (!monsters) {
+        throw new Error('Monsters instance should be set');
+      }
+      const dmg = calculateDamage(player, { range }, state);
+      monsters.registerAttack({
+        dmg,
+        player,
+        monster: opponent,
+      });
+      return;
+    }
+
     const { finished, revenge, loot, tokenTransfer, damage, additionalLoot } = finishHim(
       player,
       opponent,
@@ -70,9 +87,9 @@ export function attack(state, action, timestamp) {
   return { player, pos: attackPos, tokenTransfer: 0 };
 }
 
-function calculateDamage(player, opponent, damageFigures, state) {
+export function calculateDamage(objectWithWeapon, opponent, damageFigures, state) {
   const { range } = damageFigures;
-  const baseDmg = damageFigures.baseDmg || player.stats.weapon.damage[range];
+  const baseDmg = damageFigures.baseDmg || objectWithWeapon.stats.weapon.damage[range];
   if (damageFigures.type === Const.GameObject.active_mine.type) {
     return {
       range,
@@ -83,28 +100,24 @@ function calculateDamage(player, opponent, damageFigures, state) {
     };
   }
 
-  const criticalChance = player.stats.weapon.critical_hit_chance[range];
+  const criticalChance = objectWithWeapon.stats.weapon.critical_hit_chance[range];
   const criticalHitRandom = Math.random(++state.randomCounter);
   let dmgMultiplier = 1;
   let criticalHit = false;
   if (criticalHitRandom <= criticalChance) {
     criticalHit = true;
-    dmgMultiplier = player.stats.weapon.critical_hit_multiplier[range];
+    dmgMultiplier = objectWithWeapon.stats.weapon.critical_hit_multiplier[range];
   }
-  if (player.activeBoosts[BOOSTS.quad_damage.type]) {
+  if (objectWithWeapon?.activeBoosts[BOOSTS.quad_damage.type]) {
     dmgMultiplier = BOOSTS.quad_damage.effect(dmgMultiplier);
   }
   if (opponent.activeBoosts[BOOSTS.shield.type]) {
     dmgMultiplier = BOOSTS.shield.effect(dmgMultiplier, opponent);
   }
-  const hitChance = player.stats.weapon.hit_chance[range];
+  const hitChance = objectWithWeapon.stats.weapon.hit_chance[range];
   const hitRandom = Math.random(++state.randomCounter);
   let finalDmg = Math.floor(baseDmg * dmgMultiplier);
   if (hitRandom > hitChance) {
-    console.log({
-      hitRandom,
-      hitChance,
-    });
     finalDmg = 0;
   }
   return {
@@ -116,6 +129,10 @@ function calculateDamage(player, opponent, damageFigures, state) {
   };
 }
 
+export function calculateLootBonus(player, state) {
+  return player.stats.bonus[state.mode][Const.BonusType.KillBonus] || 0;
+}
+
 export function finishHim(player, opponent, damageFigures, state, timestamp) {
   const damage = calculateDamage(player, opponent, damageFigures, state);
   console.log(`Player ${player.walletAddress} dealt ${damage?.baseDmg} to opponent ${opponent.walletAddress}`);
@@ -123,7 +140,7 @@ export function finishHim(player, opponent, damageFigures, state, timestamp) {
   if (opponent.stats.hp.current <= 0) {
     const { loot, additionalLoot } = lootPlayer(opponent, state);
     const revenge = player.stats.kills.killedBy === opponent.walletAddress;
-    let lootWithBonus = loot + (player.stats.bonus[state.mode][Const.BonusType.KillBonus] || 0);
+    let lootWithBonus = loot + calculateLootBonus(player, state);
     console.log(
       `Player ${player.walletAddress} finished ${opponent.walletAddress}. Loot with kill bonus ${lootWithBonus}`
     );

@@ -21,7 +21,12 @@ export function movePlayer(state, action) {
     return { player };
   } else if (state.playersOnTiles[newPos.y][newPos.x]) {
     console.log(
-      `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by ${state.playersOnTiles[newPos.y][newPos.x]}`
+      `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by player ${state.playersOnTiles[newPos.y][newPos.x]}`
+    );
+    return { player };
+  } else if (state.monstersOnTiles[newPos.y][newPos.x]) {
+    console.log(
+      `Cannot move ${player.walletAddress}. Tile ${newPos} occupied by monster ${state.monstersOnTiles[newPos.y][newPos.x]}`
     );
     return { player };
   } else if (state.obstaclesTilemap[newPos.y][newPos.x] > EMPTY_TILE) {

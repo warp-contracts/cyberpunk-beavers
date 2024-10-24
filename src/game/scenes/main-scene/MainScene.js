@@ -25,6 +25,7 @@ import { executeScan } from './commands/scanned.js';
 import { Shrink } from '../../objects/Shrink.js';
 import { handleAttacked } from './commands/attacked.js';
 import { executeDrill } from './commands/drilled.js';
+import { HordeManager } from './HordeManager.js';
 
 const { GameTreasure } = Const;
 
@@ -67,6 +68,11 @@ export default class MainScene extends Phaser.Scene {
     this.userId = user.id;
     this.spectatorMode = window.warpAO.spectatorMode;
     this.isEverythingFuckingInitialized = false;
+    this.hordeManager = new HordeManager(this);
+    this.waitingForNewWave = false;
+    this.hordeAliveMonsters = 0;
+    this.hordeAlivePlayers = 0;
+    this.hordeWaveNumber = 0;
   }
 
   preload() {
@@ -119,9 +125,19 @@ export default class MainScene extends Phaser.Scene {
           gameActive: self.gameActive,
           spectatorMode: self.spectatorMode,
           roundsToShrink: self.shrink?.roundsToShrink,
+          waitingForNewWave: self.waitingForNewWave,
+          hordeAliveMonsters: self.hordeAliveMonsters,
+          hordeAlivePlayers: self.hordeAlivePlayers,
+          hordeWaveNumber: self.hordeWaveNumber,
         });
       },
     });
+
+    // TODO: just for testing!
+    this.tickIntervalId = setInterval(() => {
+      self.server.send({ cmd: Const.Command.tick }).then();
+    }, 800);
+
     console.log('After MainSceneGui');
   }
 
@@ -209,6 +225,27 @@ export default class MainScene extends Phaser.Scene {
     return player;
   }
 
+  endGame() {
+    if (this.tickIntervalId) {
+      clearInterval(this.tickIntervalId);
+    }
+    this.gameOver = true;
+    this.backgroundMusic.stop();
+    this.backgroundMusicMetal.stop();
+    this.backgroundMusicHaunted_1.stop();
+    this.backgroundMusicHaunted_2.stop();
+    this.gameOverSound.play();
+    this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
+    setTimeout(() => {
+      hideGui();
+      this.scene.start(leaderboardSceneKey, {
+        players: this.allPlayers,
+        mainPlayer: this.mainPlayer,
+        gameTokens: this.gameStats.gameTokens,
+      });
+    }, 3000);
+  }
+
   update(time, delta) {
     if (this.gameOver) {
       m.redraw();
@@ -221,21 +258,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.roundInfo = this.roundTick();
     if ((this.gameEnd && this.gameEnd < Date.now()) || this.roundInfo.roundsToGo == 0) {
-      this.gameOver = true;
-      this.backgroundMusic.stop();
-      this.backgroundMusicMetal.stop();
-      this.backgroundMusicHaunted_1.stop();
-      this.backgroundMusicHaunted_2.stop();
-      this.gameOverSound.play();
-      this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
-      setTimeout(() => {
-        hideGui();
-        this.scene.start(leaderboardSceneKey, {
-          players: this.allPlayers,
-          mainPlayer: this.mainPlayer,
-          gameTokens: this.gameStats.gameTokens,
-        });
-      }, 3000);
+      this.endGame();
     }
     if (this.roundInfo.roundsToGo == 3 && !this.threeRoundsPlayed) {
       this.threeRoundsPlayed = true;
@@ -412,7 +435,11 @@ export default class MainScene extends Phaser.Scene {
           } else {
             self.round = response.round;
             self.gameStats = response.gameStats;
-            self.mode = response.battleRoyale ? GAMEPLAY_MODES.battleRoyale : GAMEPLAY_MODES.deathmatch;
+            self.mode = response.battleRoyale
+              ? GAMEPLAY_MODES.battleRoyale
+              : response.hordeTick
+                ? GAMEPLAY_MODES.horde
+                : GAMEPLAY_MODES.deathmatch;
             if (self.gameEnd) {
               self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
             }
@@ -482,7 +509,9 @@ export default class MainScene extends Phaser.Scene {
         break;
 
       case Const.Command.attacked:
-        handleAttacked(response, self);
+        if (!response.hordeTick) {
+          handleAttacked(response, self);
+        }
         break;
 
       case Const.Command.landmineActivated:
@@ -499,6 +528,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.teleported:
       case Const.Command.moved:
         {
+          console.log('moved');
           const isMainPlayer = response.player.walletAddress === self.mainPlayer?.walletAddress;
           if (!self.allPlayers[response.player.walletAddress]) {
             self.addOtherPlayer(response.player);
@@ -506,8 +536,7 @@ export default class MainScene extends Phaser.Scene {
             if (response.encounter?.type === Const.GameObject.active_mine.type) {
               const mineLeftByMainPlayer = response.encounter?.leftBy === self.mainPlayer?.walletAddress;
               if (mineLeftByMainPlayer) {
-                self.gameObjectsLayer?.removeTileAt(response.player.movedPos.x, response.player.movedPos.y);
-                self[`mineGrid_${response.player.movedPos.x}_${response.player.movedPos.y}`].destroy();
+                self.clearLandmine(response.player.movedPos);
               }
 
               if (isMainPlayer) {
@@ -668,6 +697,15 @@ export default class MainScene extends Phaser.Scene {
         self.killThemAll();
       }
     }
+
+    if (response.hordeTick && !this.gameOver) {
+      this.hordeManager.processUpdate(response);
+    }
+  }
+
+  clearLandmine(pos) {
+    this.gameObjectsLayer?.removeTileAt(pos.x, pos.y);
+    this[`mineGrid_${pos.x}_${pos.y}`].destroy();
   }
 
   followWinner() {
@@ -717,13 +755,15 @@ export default class MainScene extends Phaser.Scene {
       newCoinsGained = responsePlayer.stats.coins.gained;
       self.mainPlayer.equipment = responsePlayer.equipment;
       self.mainPlayer.updateStats(responsePlayer.stats);
-      self.gameStats = gameStats;
+      if (gameStats) {
+        self.gameStats = gameStats;
+      }
     } else if (responsePlayer && this.allPlayers[responsePlayer.walletAddress]) {
       currentCoinsGained = this.allPlayers[responsePlayer?.walletAddress].stats.coins.gained;
       newCoinsGained = responsePlayer.stats.coins.gained;
       this.allPlayers[responsePlayer?.walletAddress].updateStats(responsePlayer.stats);
     }
-    if (currentCoinsGained != newCoinsGained) {
+    if (currentCoinsGained !== newCoinsGained) {
       self.updateRanking();
     }
   }
@@ -794,14 +834,14 @@ export default class MainScene extends Phaser.Scene {
               ? player.x + 15
               : player.x - 30
             : player.x + 15,
-      player.y - (score.sign == 'negative' ? 40 : 60),
+      player.y - (score.sign === 'negative' ? 40 : 60),
       `${score.value}${score.type}`,
       {
         backgroundColor: 'black',
         fontFamily: '"Press Start 2P"',
         fontSize: '12px',
         textTransform: 'uppercase',
-        fill: score.sign == 'positive' ? 'green' : 'red',
+        fill: score.sign === 'positive' ? 'green' : 'red',
       }
     ).setDepth(20);
   }
