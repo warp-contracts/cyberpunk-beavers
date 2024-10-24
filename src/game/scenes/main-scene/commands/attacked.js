@@ -22,6 +22,7 @@ export function handleAttacked(response, mainScene) {
   const killer = mainScene.allPlayers[response.player?.walletAddress];
   if (response.opponentFinished) {
     opponent?.lock();
+    opponent.hideQuadDamageBoost();
     if (isKillerMainPlayer) {
       setTimeout(() => {
         doPlayOpponentFinishedSound(response.player, response.revenge, mainScene);

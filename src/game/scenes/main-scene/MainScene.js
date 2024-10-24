@@ -379,9 +379,6 @@ export default class MainScene extends Phaser.Scene {
     if (response?.player && self.allPlayers[response.player.walletAddress]) {
       if (!response.player.activeBoosts[BOOSTS.quad_damage.type]) {
         self.allPlayers[response.player.walletAddress].hideQuadDamageBoost();
-        if (self.allPlayers[response.player.walletAddress].activeBoosts) {
-          delete self.allPlayers[response.player.walletAddress].activeBoosts[BOOSTS.quad_damage.type];
-        }
       }
     }
 

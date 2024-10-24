@@ -162,6 +162,7 @@ export function respawnPlayer(player, state, timestamp) {
   player.stats.hp.current = 0;
   player.stats.kills.deaths++;
   player.stats.kills.fragsInRow = 0;
+  delete player.activeBoosts[BOOSTS.quad_damage.type];
   if (state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
     player.stats.hp.current = player.stats.hp.max;
     state.playersOnTiles[player.pos.y][player.pos.x] = null;

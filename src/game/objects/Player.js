@@ -1,4 +1,4 @@
-import Const, { BEAVER_TYPES, GAMEPLAY_MODES, PLAYER_DEPTH } from '../common/const.mjs';
+import Const, { BEAVER_TYPES, BOOSTS, GAMEPLAY_MODES, PLAYER_DEPTH } from '../common/const.mjs';
 import { convertToCamelCase, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 
@@ -90,6 +90,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   hideQuadDamageBoost() {
     if (this.quadDamageFx !== null) {
+      if (this.activeBoosts) {
+        delete this.activeBoosts[BOOSTS.quad_damage.type];
+      }
       this.quadDamageTween.remove();
       this.quadDamageTween = null;
       this.quadDamageFx = null;
@@ -157,6 +160,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.lock();
     this.apBar.setVisible(false);
     this.healthBar.setVisible(false);
+    this.hideQuadDamageBoost();
   }
 
   lock() {
