@@ -77,6 +77,9 @@ function initState(message, state) {
     playersOnTiles: Array(mapHeight)
       .fill([])
       .map(() => Array(mapHeight)),
+    monstersOnTiles: Array(mapHeight)
+      .fill([])
+      .map(() => Array(mapHeight)),
     obstaclesTilemap: generateTilemap(obstaclesLayer.data, obstaclesLayer.width),
     mode: state.mode || Const.GAME_MODES.default.type,
     gameObjectsToRespawn: {},
@@ -121,10 +124,8 @@ function setGameObjectsTilesOnMap(state, tilesToPropagate, noneTileFrequency) {
 }
 
 export function calculateRandomPos(state, max) {
-  state.randomCounter++;
-  const x = Math.floor(Math.random(state.randomCounter) * max);
-  state.randomCounter++;
-  const y = Math.floor(Math.random(state.randomCounter) * max);
+  const x = Math.floor(Math.random(++state.randomCounter) * max);
+  const y = Math.floor(Math.random(++state.randomCounter) * max);
   return { x, y };
 }
 
@@ -139,12 +140,6 @@ function setObjectsOnRandomPositions(state, gameObject, rarity, tilemap, tiles) 
     const pos = calculateRandomPos(state, state.map.width);
     const isAllowedPosition =
       state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE && !tiles.includes(tilemap[pos.y][pos.x]);
-    /*console.log({
-      pos,
-      isAllowedPosition,
-      empty: state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE,
-      tileIncludes: tilemap[pos.y][pos.x]
-    });*/
     if (isAllowedPosition) {
       tilemap[pos.y][pos.x] = gameObject.tile;
       gameObjectCount++;

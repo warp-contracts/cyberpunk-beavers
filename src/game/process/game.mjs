@@ -1,4 +1,4 @@
-import Const, { MAX_LAST_TXS, GAMEPLAY_MODES } from '../common/const.mjs';
+import Const, { GAMEPLAY_MODES, MAX_LAST_TXS } from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
@@ -11,10 +11,11 @@ import { sendTokens } from './cmd/sendTokens.mjs';
 import { sendScores } from './cmd/sendScores.mjs';
 import { useLandmine } from './cmd/landmine.mjs';
 import { teleportPlayer } from './cmd/teleport.mjs';
-import { activate, standInQueue, checkWhitelist } from './cmd/queue.mjs';
+import { activate, checkWhitelist, standInQueue } from './cmd/queue.mjs';
 import { scan } from './cmd/scan.mjs';
 import { useHp } from './cmd/hp.mjs';
 import { drill } from './cmd/drill.js';
+import { Monsters } from './monsters/Monsters.js';
 
 function restrictedAccess(state, action, ts) {
   return (
@@ -37,7 +38,7 @@ export function handle(state, message) {
     console.log('Play window', state.playWindow);
   }
 
-  console.log('Gameplay Mode', state.gameplayMode);
+  // console.log('Gameplay Mode', state.gameplayMode);
 
   addToLastTxs(message, state);
 
@@ -48,6 +49,11 @@ export function handle(state, message) {
   action.walletAddress = state.generatedWalletsMapping.hasOwnProperty(message.Owner)
     ? state.generatedWalletsMapping[message.Owner]
     : message.Owner;
+
+  let monsters = null;
+  if (state.gameplayMode === GAMEPLAY_MODES.horde) {
+    monsters = new Monsters(state, message.Timestamp);
+  }
 
   if (restrictedAccess(state, action, message.Timestamp)) {
     console.log(`The game access is restricted`, action, message.Timestamp, state.playWindow);
@@ -86,9 +92,20 @@ export function handle(state, message) {
       dead: action.walletAddress,
       ...gameStats(state, message.Timestamp),
     });
+    return;
   }
 
   switch (action.cmd) {
+    case Const.Command.tick: {
+      if (monsters) {
+        const hordeTick = monsters.tick(message.Timestamp);
+        ao.result({
+          ...gameStats(state, message.Timestamp),
+          hordeTick,
+        });
+      }
+      break;
+    }
     case Const.Command.info:
       ao.result({
         cmd: Const.Command.stats,
@@ -144,7 +161,7 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.attack:
-      const attackRes = attack(state, action, message.Timestamp);
+      const attackRes = attack(state, action, message.Timestamp, monsters);
       ao.result({
         cmd: Const.Command.attacked,
         ...attackRes,
@@ -237,6 +254,14 @@ export function handle(state, message) {
       throw new ProcessError(`Unknown action: ${action.cmd}`);
   }
 
+  if (monsters && action.cmd !== Const.Command.tick) {
+    const hordeTick = monsters.tick(message.Timestamp);
+    ao.result({
+      ...ao.outbox.Output,
+      hordeTick,
+    });
+  }
+
   state.gameObjectsToRespawnInRound = [];
 }
 
@@ -244,12 +269,12 @@ function gameRoundTick(state, message) {
   const tsNow = message.Timestamp; //ms
   const tsChange = tsNow - state.round.start;
   const round = ~~(tsChange / state.round.interval);
-  console.log('Last round ', state.round);
+  // console.log('Last round ', state.round);
   if (state.round.current !== round) respawn(round, state);
   state.round.current = round;
   if (state.playWindow?.roundsTotal) {
     const roundsToGo = state.playWindow?.roundsTotal - state.round.current;
-    console.log('Rounds to go', roundsToGo);
+    // console.log('Rounds to go', roundsToGo);
     if (roundsToGo === 0) {
       sendScores(state);
       return {
@@ -258,12 +283,12 @@ function gameRoundTick(state, message) {
       };
     }
   }
-  console.log(`new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`);
+  // console.log(`new ts ${tsNow}  change ${tsChange}  round up to ${state.round.current}`);
 }
 
 function gamePlayerTick(state, action) {
   const player = state.players[action.walletAddress];
-  console.log(`Player tick - ${player?.walletAddress}`);
+  // console.log(`Player tick - ${player?.walletAddress}`);
   if (player) {
     if (player.stats.round.last < state.round.current) {
       player.stats.ap.current = player.stats.ap.max;

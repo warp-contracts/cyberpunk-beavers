@@ -127,6 +127,7 @@ export const GAME_MODES = {
 export const GAMEPLAY_MODES = {
   deathmatch: 'deathmatch',
   battleRoyale: 'battleRoyale',
+  horde: 'horde',
 };
 
 const DEATH_SOUND_OPTIONS = 3;
@@ -152,6 +153,7 @@ export const DEFAULT_ROUND_INTERVAL_MS = 10_000;
 export const GAMEPLAY_MODE_LABEL = {
   [GAMEPLAY_MODES.deathmatch]: 'Deathmatch',
   [GAMEPLAY_MODES.battleRoyale]: 'Battle Royale',
+  [GAMEPLAY_MODES.horde]: 'Horde',
 };
 
 const Command = {
@@ -192,6 +194,7 @@ const Command = {
   registerSpectator: 'registerSpectator',
   registeredSpectator: 'registeredSpectator',
   respawned: 'respawned',
+  tick: 'tick',
   drilled: 'drilled',
   useDrill: 'useDrill',
 };
@@ -210,7 +213,7 @@ const Tile = {
 export const GameObject = {
   ap: { type: 'ap', tile: 0, value: 5, rarity: 10, roundsToRespawn: 5 },
   hp: { type: 'hp', tile: 1, value: 25, rarity: 10, roundsToRespawn: 5 },
-  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 10, roundsToRespawn: 10 },
+  equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 40, roundsToRespawn: 10 },
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 10, roundsToRespawn: 20 },
   scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 10, roundsToRespawn: 20 },
   quad_damage: { type: 'quad_damage', tile: 5, value: 500, rarity: 3, roundsToRespawn: 5 },
@@ -289,7 +292,8 @@ const Errors = {
 
 // ------- Combat
 const Combat = {
-  DefaultLoot: 1000, // Tokens that will be taken after the defeating the opponent.
+  DefaultLoot: 1000, // Tokens that will be taken after defeating the opponent.
+  DefaultAttack: 100, // Tokens that will be taken after attacking the opponent.
 };
 
 // ------- Beaver Config
@@ -376,12 +380,12 @@ export const BEAVER_TYPES = {
       drillRadius: 1,
       fov: 6,
       ap: {
-        current: 22,
-        max: 22,
+        current: 100,
+        max: 100,
       },
       hp: {
-        current: 130,
-        max: 130,
+        current: 1000,
+        max: 1000,
       },
       weapon: WEAPONS.sniper_rifle_basic,
       bonus: {
@@ -437,8 +441,8 @@ export const BEAVER_TYPES = {
         max: 20,
       },
       hp: {
-        current: 200,
-        max: 200,
+        current: 600,
+        max: 600,
       },
       weapon: WEAPONS.shotgun_basic,
       bonus: {

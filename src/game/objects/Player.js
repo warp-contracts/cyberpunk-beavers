@@ -99,14 +99,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   moveTo(response) {
+    if (this.isDead()) {
+      return;
+    }
     const self = this;
     this.baseMoveTo(
       response.pos,
       () => {
+        if (self.isDead()) {
+          return;
+        }
         self.anims.stop();
         self.anims.play(`${self.beaverChoice}_walk`, true);
       },
       () => {
+        if (self.isDead()) {
+          return;
+        }
         self.anims.stop();
         self.anims.play(`${self.beaverChoice}_idle`, true);
       }
@@ -114,14 +123,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   moveAndExplode(response, isMainPlayer) {
+    if (this.isDead()) {
+      return;
+    }
     const self = this;
     this.baseMoveTo(
       response.movedPos,
       () => {
+        if (self.isDead()) {
+          return;
+        }
         self.anims.stop();
         self.anims.play(`${self.beaverChoice}_walk`, true);
       },
       () => {
+        if (self.isDead()) {
+          return;
+        }
         self.anims.stop();
         if (isMainPlayer || this.scene.spectatorMode) this.scene.explosionSound.play();
         this.explosionAnim().once('animationcomplete', () => {
@@ -132,6 +150,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   kill() {
+    this.stats.hp.current = 0;
+    this.updateStats(this.stats);
     this.lock();
     this.apBar.setVisible(false);
     this.healthBar.setVisible(false);
@@ -158,6 +178,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const kill = BEAVER_TYPES[killer].stats.kill;
     const random = Math.floor(Math.random() * Const.DEATH_SOUND_OPTIONS + 1);
     if (shouldPlaySound) this.scene[`${kill}${random}DeathSound`].play();
+    console.log('Playing death anim', `${this.beaverChoice}_death_${kill}`);
     return this.anims.play(`${this.beaverChoice}_death_${kill}`, true);
   }
 
@@ -173,7 +194,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     return this.anims.play(`explosion_anim`, true);
   }
 
-  bloodSplatAnim(isMainPlayer) {
+  bloodSplatAnim(playSound) {
     const self = this;
     const bloodSplat = `blood_splat_${self.stats.hp.current >= self.stats.hp.max * 0.5 ? '1' : '2'}`;
     const bloodSplatSprite = self[bloodSplat];
@@ -181,7 +202,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     bloodSplatSprite.setPosition(self.x, self.y);
     bloodSplatSprite.setVisible(true);
     bloodSplatSprite.anims.play(bloodSplat, true);
-    if (isMainPlayer || self.scene.spectatorMode) bloodSplatSound.play();
+    if (playSound || self.scene.spectatorMode) bloodSplatSound.play();
     bloodSplatSprite.on('animationcomplete', () => {
       bloodSplatSprite.setVisible(false);
     });
@@ -234,7 +255,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   isDead() {
-    return this.scene.mode === GAMEPLAY_MODES.battleRoyale && this.stats.hp.current <= 0;
+    return this.stats.hp.current <= 0;
   }
 
   initInputKeys() {

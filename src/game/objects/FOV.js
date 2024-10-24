@@ -75,7 +75,15 @@ export class FOV {
       if (player === this.mainScene.mainPlayer) {
         continue;
       }
-      player.setVisible(this.isPlayerVisible(player));
+      player.setVisible(this.isObjectVisible(player));
+    }
+
+    const monsters = this.mainScene.hordeManager?.monsters;
+    if (monsters) {
+      for (const walletAddress of Object.keys(monsters)) {
+        const monster = monsters[walletAddress];
+        monster.setVisible(this.isObjectVisible(monster));
+      }
     }
   }
 
@@ -104,12 +112,12 @@ export class FOV {
     );
   }
 
-  isPlayerVisible(player) {
-    const playerTilePos = new Phaser.Math.Vector2({
-      x: this.mainScene.tileMap.worldToTileX(player.x),
-      y: this.mainScene.tileMap.worldToTileY(player.y),
+  isObjectVisible(object) {
+    const objectTilePos = new Phaser.Math.Vector2({
+      x: this.mainScene.tileMap.worldToTileX(object.x),
+      y: this.mainScene.tileMap.worldToTileY(object.y),
     });
-    const fovTile = this.fovLayer.getTileAt(playerTilePos.x, playerTilePos.y, true);
+    const fovTile = this.fovLayer.getTileAt(objectTilePos.x, objectTilePos.y, true);
     return fovTile && fovTile.alpha < FOG_ALPHA;
   }
 }
