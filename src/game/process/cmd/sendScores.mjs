@@ -5,14 +5,14 @@ const { GameTreasure } = Const;
 export function sendScores(state) {
   if (!state.scoresSent) {
     if (state.gameplayMode === GAMEPLAY_MODES.battleRoyale) {
-      const totalPrize = PRIZES[state.gameplayMode][state.mode];
+      const totalPrize = state.gameplayPrizes || 0;
       console.log('Total prize for BR mode', totalPrize);
       if (totalPrize > 0) {
         const playersAlive = Object.values(state.players).filter((p) => p.stats.hp.current > 0);
         if (playersAlive.length > 0) {
           const singlePrize = Math.floor(totalPrize / playersAlive.length);
           console.log('Single prize for BR mode', totalPrize);
-          for (const player in playersAlive) {
+          for (const player of playersAlive) {
             player.stats.coins.gained += singlePrize;
           }
         }

@@ -1,4 +1,4 @@
-import Const, { DEFAULT_ROUND_INTERVAL_MS, GAMEPLAY_MODES } from '../../common/const.mjs';
+import Const, { DEFAULT_ROUND_INTERVAL_MS, GAMEPLAY_MODES, PRIZES } from '../../common/const.mjs';
 
 const SetupTimes = {
   custom: 'custom',
@@ -22,7 +22,9 @@ export function setup(state, action, message) {
   state.scoresSent = action.scoresSent || state.scoresSent;
   state.mode = action.mode || state.mode || Const.GAME_MODES.default.type;
 
-  state.gameplayMode = action.gameplayConfig?.mode || GAMEPLAY_MODES.deathmatch;
+  state.gameplayMode = action.gameplayConfig?.mode || state.gameplayMode || GAMEPLAY_MODES.deathmatch;
+  state.gameplayPrizes =
+    action.gameplayConfig?.prizes || state.gameplayPrizes || PRIZES[state.gameplayMode]?.[state.mode];
 
   switch (action.type) {
     case SetupTimes.custom:

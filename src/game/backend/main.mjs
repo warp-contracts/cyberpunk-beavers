@@ -154,13 +154,13 @@ async function spawnGame(processId, start, end) {
   });
 
   const processRandomId = processId;
-  const effecitveStart = start || Date.now() + 5 * 1000;
+  const effectiveStart = start || Date.now() + 5 * 1000;
   const setupMessage = mockDataItem(
     {
       cmd: 'setup',
       type: 'custom',
-      start: effecitveStart,
-      end: end || effecitveStart + 300 * 1000,
+      start: effectiveStart,
+      end: end || effectiveStart + 300 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
       gameplayConfig: {

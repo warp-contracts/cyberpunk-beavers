@@ -105,7 +105,7 @@ export function gameStats(state, timestamp) {
 }
 
 export function gameInfo(state, owner, ts) {
-  const { walletsQueue, players, playWindow } = state;
+  const { walletsQueue, players, playWindow, gameplayMode, gameplayPrize } = state;
   return {
     player: players[owner],
     active: isGameActive(state, ts),
@@ -115,7 +115,8 @@ export function gameInfo(state, owner, ts) {
     enter: playWindow.enter,
     end: playWindow.end,
     players,
-    gameplayMode: state.gameplayMode,
+    gameplayMode,
+    gameplayPrize,
   };
 }
 
