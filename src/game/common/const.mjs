@@ -66,7 +66,7 @@ const maps_haunted = {
     music: 'backgroundMusic',
   },
   b3m2: {
-    txId: 'xmbCXBLws-q2yP6crVnm9xDgw0QojxsIje9NO3q0LTU',
+    txId: 'SaEQ3VGuJNDjoj47LNHuRLe_mUD61SSyr3yWBCKLIcM',
     music: 'backgroundMusicMetal',
   },
   b3m3: {
