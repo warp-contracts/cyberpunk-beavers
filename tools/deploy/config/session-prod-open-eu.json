@@ -35,26 +35,27 @@
       "gameBreak": 60000,
       "gameBreak_comment": "1 minute",
       "games": [
-        { "map": "b1m7" },
+        { "map": "b3m1" },
         {
-          "map": "b2m2",
+          "map": "b3m2",
           "gameplayConfig": {
             "mode": "battleRoyale"
           },
           "roundInterval": 5000
         },
-        { "map": "b1m6" },
+        { "map": "b3m4" },
         {
-          "map": "b2m1",
+          "map": "b3m3",
           "gameplayConfig": {
             "mode": "battleRoyale"
           },
           "roundInterval": 5000
         },
-        { "map": "b1m5" }
+        { "map": "b3m5" }
       ]
     },
     {
+      "session_comment": "RSG: mon, tue - shorter session",
       "start": {
         "dayOfTheWeek": 1,
         "time": "20:00",
@@ -77,24 +78,82 @@
         }
       },
       "games": [
-        { "map": "b1m4" },
-        { "map": "b1m7" },
-        { "map": "b2m1" },
-        { "map": "b1m5" },
-        { "map": "b2m2" },
+        { "map": "b3m1" },
+        { "map": "b3m2" },
+        { "map": "b3m3" },
+        { "map": "b3m4" },
+        { "map": "b3m5" },
 
         {
           "start": {
-            "dayOfTheWeek": 3,
+            "dayOfTheWeek": 2,
             "time": "20:00",
             "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
           },
-          "map": "b1m3"
+          "map": "b3m3"
         },
-        { "map": "b2m3" },
-        { "map": "b2m4" },
-        { "map": "b1m2" },
-        { "map": "b2m5" },
+        { "map": "b3m1" },
+        { "map": "b3m5" },
+        { "map": "b3m2" },
+        { "map": "b3m4" }
+      ]
+    },
+
+    {
+      "session_comment": "RSG: wed, thu, fr - BR, longer session",
+      "start": {
+        "dayOfTheWeek": 3,
+        "time": "20:00",
+        "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+      },
+      "gameDuration": 300000,
+      "gameDuration_comment": "5 minutes",
+      "gameBreak": 60000,
+      "gameBreak_comment": "1 minute",
+      "commonSetup": {
+        "mode": "rsg",
+        "walletsWhitelist": [],
+        "playersLimit": 20,
+        "bridgeProcessId": "89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c",
+        "leaderboardProcessId": "5qzT9T2xH7sfnE66gtICnI_71c4dc9mSl0uOqYnX2o0",
+        "gameplayConfig": {
+          "mode": "battleRoyale"
+        },
+        "gameTokens": {
+          "rsg": {
+            "amount": 50
+          }
+        }
+      },
+      "games": [
+        { "map": "b3m1" },
+        { "map": "b3m2" },
+        { "map": "b3m3" },
+        { "map": "b3m4" },
+        { "map": "b3m5" },
+        { "map": "b3m1" },
+        { "map": "b3m2" },
+        { "map": "b3m3" },
+        { "map": "b3m4" },
+        { "map": "b3m5" },
+
+        {
+          "start": {
+            "dayOfTheWeek": 4,
+            "time": "20:00",
+            "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+          },
+          "map": "b3m3"
+        },
+        { "map": "b3m1" },
+        { "map": "b3m5" },
+        { "map": "b3m2" },
+        { "map": "b3m4" },
+        { "map": "b3m1" },
+        { "map": "b3m5" },
+        { "map": "b3m2" },
+        { "map": "b3m4" },
+        { "map": "b3m3" },
 
         {
           "start": {
@@ -102,12 +161,62 @@
             "time": "20:00",
             "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
           },
-          "map": "b1m3"
+          "map": "b3m3"
         },
-        { "map": "b2m3" },
-        { "map": "b2m4" },
-        { "map": "b1m2" },
-        { "map": "b2m5" }
+        { "map": "b3m1" },
+        { "map": "b3m5" },
+        { "map": "b3m2" },
+        { "map": "b3m4" },
+        { "map": "b3m1" },
+        { "map": "b3m5" },
+        { "map": "b3m2" },
+        { "map": "b3m4" },
+        { "map": "b3m3" }
+      ]
+    },
+
+    {
+      "session_comment": "RSG: sat, sun - shorter session",
+      "start": {
+        "dayOfTheWeek": 6,
+        "time": "20:00",
+        "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+      },
+      "gameDuration": 300000,
+      "gameDuration_comment": "5 minutes",
+      "gameBreak": 60000,
+      "gameBreak_comment": "1 minute",
+      "commonSetup": {
+        "mode": "rsg",
+        "walletsWhitelist": [],
+        "playersLimit": 20,
+        "bridgeProcessId": "89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c",
+        "leaderboardProcessId": "5qzT9T2xH7sfnE66gtICnI_71c4dc9mSl0uOqYnX2o0",
+        "gameTokens": {
+          "rsg": {
+            "amount": 50
+          }
+        }
+      },
+      "games": [
+        { "map": "b3m1" },
+        { "map": "b3m2" },
+        { "map": "b3m3" },
+        { "map": "b3m4" },
+        { "map": "b3m5" },
+
+        {
+          "start": {
+            "dayOfTheWeek": 0,
+            "time": "20:00",
+            "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+          },
+          "map": "b3m3"
+        },
+        { "map": "b3m1" },
+        { "map": "b3m5" },
+        { "map": "b3m2" },
+        { "map": "b3m4" }
       ]
     }
   ],
