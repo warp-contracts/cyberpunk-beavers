@@ -208,9 +208,9 @@ export const GameObject = {
   equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 10, roundsToRespawn: 10 },
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 10, roundsToRespawn: 20 },
   scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 10, roundsToRespawn: 20 },
-  quad_damage: { type: 'quad_damage', tile: 5, value: 200, rarity: 5, roundsToRespawn: 10 },
-  show_map: { type: 'show_map', tile: 6, value: 400, rarity: 30, roundsToRespawn: 20 },
-  hazard: { type: 'hazard', tile: 7, value: 1000, rarity: 10, roundsToRespawn: 100 },
+  quad_damage: { type: 'quad_damage', tile: 5, value: 500, rarity: 2, roundsToRespawn: 5 },
+  show_map: { type: 'show_map', tile: 6, value: 200, rarity: 5, roundsToRespawn: 10 },
+  hazard: { type: 'hazard', tile: 7, value: 1000, rarity: 40, roundsToRespawn: 100 },
   none: { type: 'none', tile: 8, value: 0 },
 
   // invisible
