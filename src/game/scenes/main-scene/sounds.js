@@ -35,6 +35,9 @@ export function doAddSounds(mainScene) {
   mainScene.quadDamage = mainScene.sound.add('quad_damage', { loop: false, volume: 2.5 });
   mainScene.shotBuzz = mainScene.sound.add('shot_buzz', { loop: false, volume: 0.5 });
   mainScene.hahaSound = mainScene.sound.add('haha', { loop: false, volume: 2 });
+  mainScene.backgroundMusicHaunted_1 = mainScene.sound.add('background_music_haunted_1', { loop: true, volume: 0.25 });
+  mainScene.backgroundMusicHaunted_2 = mainScene.sound.add('background_music_haunted_2', { loop: true, volume: 0.25 });
+
   forDeathSounds((k, i) => addDeathSound(k, i));
 
   const mapTxId = window.warpAO.mapTxId();

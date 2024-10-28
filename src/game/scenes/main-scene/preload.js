@@ -85,6 +85,8 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('quad_damage', ['assets/audio/quad_damage.m4a']);
   mainScene.load.audio('shot_buzz', ['assets/audio/shot_buzz.mp3']);
   mainScene.load.audio('haha', ['assets/audio/haha.mp3']);
+  mainScene.load.audio('background_music_haunted_1', ['assets/audio/background_music_haunted_1.mp3']);
+  mainScene.load.audio('background_music_haunted_2', ['assets/audio/background_music_haunted_2.mp3']);
   forDeathSounds((k, i) => loadDeathSound(k, i));
 
   function loadDeathSound(k, i) {

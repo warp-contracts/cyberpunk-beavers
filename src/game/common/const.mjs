@@ -63,23 +63,23 @@ const maps_city = {
 const maps_haunted = {
   b3m1: {
     txId: 'c0kF0CSoNGLrTBnxFtIq6yRubM5xULnKmvDbuvTv8aM',
-    music: 'backgroundMusic',
+    music: 'backgroundMusicHaunted_2',
   },
   b3m2: {
     txId: 'SaEQ3VGuJNDjoj47LNHuRLe_mUD61SSyr3yWBCKLIcM',
-    music: 'backgroundMusicMetal',
+    music: 'backgroundMusicHaunted_1',
   },
   b3m3: {
     txId: '_TBpJY3JzCyZtPaXFJ6gG8vLTyUPwyOCuTIKpUmRr8k',
-    music: 'backgroundMusic',
+    music: 'backgroundMusicHaunted_2',
   },
   b3m4: {
     txId: 'HsIpwTIIlTRZT1apXSznirc7Z8x-C4vvot9LggbcA00',
-    music: 'backgroundMusicMetal',
+    music: 'backgroundMusicHaunted_1',
   },
   b3m5: {
     txId: 'e05NyR9DSGpJC_H9_f17fsTsbh3mtklxn-fK1713ugo',
-    music: 'backgroundMusic',
+    music: 'backgroundMusicHaunted_2',
   },
 };
 
