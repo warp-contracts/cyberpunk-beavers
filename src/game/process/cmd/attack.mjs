@@ -39,7 +39,7 @@ export function attack(state, action, timestamp) {
     prevPos = attackPos;
   }
 
-  if (opponent) {
+  if (opponent && opponent.stats.hp.current > 0) {
     const { finished, revenge, loot, tokenTransfer, damage, additionalLoot } = finishHim(
       player,
       opponent,
