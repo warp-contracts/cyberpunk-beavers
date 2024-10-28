@@ -30,7 +30,7 @@ export function scan(state, action) {
   return { area, player };
 }
 
-function getAreaAroundPlayer(playerPosition, radius = 1) {
+export function getAreaAroundPlayer(playerPosition, radius = 1) {
   const { x, y } = playerPosition;
   let area = [];
 
