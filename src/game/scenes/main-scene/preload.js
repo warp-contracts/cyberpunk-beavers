@@ -27,7 +27,7 @@ export function doPreloadAssets(mainScene) {
 
   //mainScene.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
-  mainScene.load.image('post_apocalyptic_background', 'assets/images/background_graveyard.png');
+  mainScene.load.image('post_apocalyptic_background', 'assets/images/background_graveyard.jpg');
 
   mainScene.load.image('medal_gold', 'assets/images/medal-gold.png');
   mainScene.load.image('medal_silver', 'assets/images/medal-silver.png');
