@@ -14,6 +14,7 @@ import { teleportPlayer } from './cmd/teleport.mjs';
 import { activate, standInQueue, checkWhitelist } from './cmd/queue.mjs';
 import { scan } from './cmd/scan.mjs';
 import { useHp } from './cmd/hp.mjs';
+import { drill } from './cmd/drill.js';
 
 function restrictedAccess(state, action, ts) {
   return (
@@ -132,6 +133,13 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.digged,
         ...dig(state, action),
+        ...gameStats(state, message.Timestamp),
+      });
+      break;
+    case Const.Command.useDrill:
+      ao.result({
+        cmd: Const.Command.drilled,
+        ...drill(state, action),
         ...gameStats(state, message.Timestamp),
       });
       break;

@@ -144,6 +144,7 @@ export const AP_COSTS = {
   hp: 1,
   attack: 3,
   dig: 2,
+  drill: 3,
 };
 
 export const DEFAULT_ROUND_INTERVAL_MS = 10_000;
@@ -191,6 +192,8 @@ const Command = {
   registerSpectator: 'registerSpectator',
   registeredSpectator: 'registeredSpectator',
   respawned: 'respawned',
+  drilled: 'drilled',
+  useDrill: 'useDrill',
 };
 
 const Direction = {
@@ -213,7 +216,8 @@ export const GameObject = {
   quad_damage: { type: 'quad_damage', tile: 5, value: 500, rarity: 3, roundsToRespawn: 5 },
   show_map: { type: 'show_map', tile: 6, value: 200, rarity: 5, roundsToRespawn: 10 },
   hazard: { type: 'hazard', tile: 7, value: 1000, rarity: 40, roundsToRespawn: 100 },
-  none: { type: 'none', tile: 8, value: 0 },
+  drill: { type: 'drill', tile: 8, value: 100, rarity: 10, roundsToRespawn: 20 },
+  none: { type: 'none', tile: 9, value: 0 },
 
   // invisible
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 75 },
@@ -363,6 +367,7 @@ export const BEAVER_TYPES = {
         },
       },
       scannerRadius: 3,
+      drillRadius: 1,
       fov: 6,
       ap: {
         current: 22,
@@ -398,6 +403,10 @@ export const BEAVER_TYPES = {
         current: 0,
         max: 3,
       },
+      drills: {
+        current: 0,
+        max: 3,
+      },
       hp: {
         current: 0,
         max: 5,
@@ -414,6 +423,7 @@ export const BEAVER_TYPES = {
         },
       },
       scannerRadius: 2,
+      drillRadius: 1,
       fov: 5,
       ap: {
         current: 20,
@@ -449,6 +459,10 @@ export const BEAVER_TYPES = {
         current: 0,
         max: 3,
       },
+      drills: {
+        current: 0,
+        max: 3,
+      },
       hp: {
         current: 0,
         max: 5,
@@ -465,6 +479,7 @@ export const BEAVER_TYPES = {
         },
       },
       scannerRadius: 1,
+      drillRadius: 1,
       fov: 4,
       ap: {
         current: 25,
@@ -497,6 +512,10 @@ export const BEAVER_TYPES = {
         max: 5,
       },
       scanners: {
+        current: 0,
+        max: 3,
+      },
+      drills: {
         current: 0,
         max: 3,
       },

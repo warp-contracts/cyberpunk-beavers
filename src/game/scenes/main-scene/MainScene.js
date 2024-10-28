@@ -24,6 +24,7 @@ import { FOV } from '../../objects/FOV.js';
 import { executeScan } from './commands/scanned.js';
 import { Shrink } from '../../objects/Shrink.js';
 import { handleAttacked } from './commands/attacked.js';
+import { executeDrill } from './commands/drilled.js';
 
 const { GameTreasure } = Const;
 
@@ -623,6 +624,11 @@ export default class MainScene extends Phaser.Scene {
         }
         self.updateStats(response.player, response.gameStats);
         self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+        break;
+      }
+
+      case Const.Command.drilled: {
+        executeDrill(response, self);
         break;
       }
 

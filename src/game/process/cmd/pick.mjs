@@ -50,6 +50,12 @@ export function pick(state, action, message) {
       });
     case GameObject.hazard.type:
       return pickHazardItem(state, player, message.Timestamp);
+    case GameObject.drill.type:
+      return pickEquipment(state, player, {
+        value,
+        type: GameObject.drill.type,
+        equipmentType: 'drills',
+      });
     case GameObject.none.type:
       return pickTreasure(state, player);
   }
