@@ -4,7 +4,7 @@ const EVENTS_NAME = {
 
 export const DEFAULT_BG_MUSIC = 'backgroundMusic';
 
-export const DEV_MAP = 'b3m5';
+export const DEV_MAP = 'b3m4';
 
 const maps_desert = {
   b1m1: {
@@ -78,7 +78,7 @@ const maps_haunted = {
     music: 'backgroundMusicHaunted_1',
   },
   b3m5: {
-    txId: 'XT98-4cX801PRY6X1CamC9ZxZRtKfIVUBsif_OV4g4s',
+    txId: 'Kyiw5H3sxkLflVmT2cn3A3j2Z9vXxs02Dy2O78eU8x4',
     music: 'backgroundMusicHaunted_2',
   },
 };
@@ -208,7 +208,7 @@ export const GameObject = {
   equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 10, roundsToRespawn: 10 },
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 10, roundsToRespawn: 20 },
   scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 10, roundsToRespawn: 20 },
-  quad_damage: { type: 'quad_damage', tile: 5, value: 500, rarity: 2, roundsToRespawn: 5 },
+  quad_damage: { type: 'quad_damage', tile: 5, value: 500, rarity: 3, roundsToRespawn: 5 },
   show_map: { type: 'show_map', tile: 6, value: 200, rarity: 5, roundsToRespawn: 10 },
   hazard: { type: 'hazard', tile: 7, value: 1000, rarity: 40, roundsToRespawn: 100 },
   none: { type: 'none', tile: 8, value: 0 },
