@@ -229,7 +229,7 @@ export const GameTreasure = {
   war: { type: 'war', label: 'Wrapped AR', tile: 3, value: 300, baseVal: 10_000_000_000, denomination: 12 },
   trunk: { type: 'trunk', label: 'TRUNK', tile: 4, value: 100, baseVal: 30, denomination: 3 },
   gun: { type: 'gun', label: 'GUN', tile: 5, value: 300, baseVal: 1, denomination: 0 },
-  rsg: { type: 'rsg', label: 'RSG', tile: 6, value: 100, baseVal: 1, denomination: 0 },
+  rsg: { type: 'rsg', label: 'RSG', tile: 6, value: 200, baseVal: 1, denomination: 0 },
 };
 
 const DEFAULT_GAME_TOKENS = {
@@ -263,7 +263,7 @@ export const TreasureLimit = {
   PerGame: {
     [GAME_MODES.rsg.type]: {
       [GameTreasure.rsg.type]: {
-        value: 10_000,
+        value: 20_000,
       },
     },
   },
@@ -378,7 +378,7 @@ export const BEAVER_TYPES = {
         },
         [GAME_MODES.rsg.type]: {
           [BonusType.KillBonus]: 100,
-          [GameTreasure.rsg.type]: 50,
+          [GameTreasure.rsg.type]: 100,
         },
       },
       kill: Kills.headshot,
@@ -428,7 +428,7 @@ export const BEAVER_TYPES = {
           [GameTreasure.cbcoin.type]: 0,
         },
         [GAME_MODES.rsg.type]: {
-          [BonusType.KillBonus]: 110,
+          [BonusType.KillBonus]: 220,
           [GameTreasure.rsg.type]: 0,
         },
       },
@@ -479,8 +479,8 @@ export const BEAVER_TYPES = {
           [GameTreasure.cbcoin.type]: 20,
         },
         [GAME_MODES.rsg.type]: {
-          [BonusType.KillBonus]: 90,
-          [GameTreasure.rsg.type]: 10,
+          [BonusType.KillBonus]: 180,
+          [GameTreasure.rsg.type]: 20,
         },
       },
       kill: Kills.slice,
@@ -514,8 +514,8 @@ const Queue = {
 export const PRIZES = {
   [GAMEPLAY_MODES.deathmatch]: null,
   [GAMEPLAY_MODES.battleRoyale]: {
-    [GAME_MODES.ao.type]: 20000,
-    [GAME_MODES.rsg.type]: 10000,
+    [GAME_MODES.ao.type]: 20_000,
+    [GAME_MODES.rsg.type]: 20_000,
   },
 };
 
