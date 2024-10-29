@@ -48,6 +48,7 @@ function initState(message, state) {
       GameObject.show_map,
       GameObject.hazard,
       GameObject.drill,
+      GameObject.shield,
       GameObject.none,
     ],
     gameHiddenObjects: Array(mapHeight)

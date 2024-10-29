@@ -217,7 +217,8 @@ export const GameObject = {
   show_map: { type: 'show_map', tile: 6, value: 200, rarity: 5, roundsToRespawn: 10 },
   hazard: { type: 'hazard', tile: 7, value: 1000, rarity: 40, roundsToRespawn: 100 },
   drill: { type: 'drill', tile: 8, value: 100, rarity: 10, roundsToRespawn: 20 },
-  none: { type: 'none', tile: 9, value: 0 },
+  shield: { type: 'shield', tile: 9, value: 300, rarity: 5, roundsToRespawn: 20 },
+  none: { type: 'none', tile: 10, value: 0 },
 
   // invisible
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 75 },
@@ -318,6 +319,11 @@ export const BOOSTS = {
     },
     duration_rounds: Number.MAX_SAFE_INTEGER,
   },
+  shield: {
+    type: 'shield',
+    effect: (baseDmg, player) => baseDmg * player.stats.shield,
+    duration_rounds: 2,
+  },
 };
 
 export const WEAPONS = {
@@ -389,6 +395,7 @@ export const BEAVER_TYPES = {
         },
       },
       kill: Kills.headshot,
+      shield: 0.2,
     },
     equipment: {
       teleports: {
@@ -445,6 +452,7 @@ export const BEAVER_TYPES = {
         },
       },
       kill: Kills.tankshot,
+      shield: 0.1,
     },
     equipment: {
       teleports: {
@@ -501,6 +509,7 @@ export const BEAVER_TYPES = {
         },
       },
       kill: Kills.slice,
+      shield: 0.2,
     },
     equipment: {
       teleports: {

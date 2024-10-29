@@ -19,15 +19,22 @@ export function handleAttacked(response, mainScene) {
     mainScene.allPlayers[response.player.walletAddress]?.attackAnim();
   }
   const opponent = mainScene.allPlayers[response.opponent?.walletAddress];
+  opponent.boosts.animateShieldBoost();
   const killer = mainScene.allPlayers[response.player?.walletAddress];
+  killer.boosts.animateQuadDamageBoost();
+  if (isKillerMainPlayer || isOpponentMainPlayer) {
+    killer.boosts.playQuadDamageSound(mainScene);
+    opponent.boosts.playShieldSound(mainScene);
+  }
   if (response.opponentFinished) {
     opponent?.lock();
-    opponent.hideQuadDamageBoost();
+    opponent.boosts.hideQuadDamageBoost();
+    opponent.boosts.hideShieldBoost();
     if (isKillerMainPlayer) {
       setTimeout(() => {
         doPlayOpponentFinishedSound(response.player, response.revenge, mainScene);
       }, 900);
-    } else {
+    } else if (isOpponentMainPlayer) {
       if (!mainScene.beaverEliminatedSound.isPlaying) {
         mainScene.beaverEliminatedSound.play();
       }

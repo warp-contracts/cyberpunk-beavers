@@ -18,6 +18,7 @@ const gameObjectsToAdd = {
   [GameObject.show_map.type]: { x: 96, y: 48 },
   [GameObject.hazard.type]: { x: 144, y: 48 },
   [GameObject.drill.type]: { x: 0, y: 96 },
+  [GameObject.shield.type]: { x: 48, y: 96 },
 };
 
 export function doCreateTileMap(mainScene) {
