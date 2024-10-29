@@ -70,7 +70,7 @@ export function attack(state, action, timestamp) {
   return { player, pos: attackPos, tokenTransfer: 0 };
 }
 
-function calculateDamage(player, damageFigures, state) {
+function calculateDamage(player, opponent, damageFigures, state) {
   const { range } = damageFigures;
   const baseDmg = damageFigures.baseDmg || player.stats.weapon.damage[range];
   if (damageFigures.type === Const.GameObject.active_mine.type) {
@@ -94,6 +94,9 @@ function calculateDamage(player, damageFigures, state) {
   if (player.activeBoosts[BOOSTS.quad_damage.type]) {
     dmgMultiplier = BOOSTS.quad_damage.effect(dmgMultiplier);
   }
+  if (opponent.activeBoosts[BOOSTS.shield.type]) {
+    dmgMultiplier = BOOSTS.shield.effect(dmgMultiplier, opponent);
+  }
   const hitChance = player.stats.weapon.hit_chance[range];
   const hitRandom = Math.random(++state.randomCounter);
   let finalDmg = Math.floor(baseDmg * dmgMultiplier);
@@ -114,7 +117,7 @@ function calculateDamage(player, damageFigures, state) {
 }
 
 export function finishHim(player, opponent, damageFigures, state, timestamp) {
-  const damage = calculateDamage(player, damageFigures, state);
+  const damage = calculateDamage(player, opponent, damageFigures, state);
   console.log(`Player ${player.walletAddress} dealt ${damage?.baseDmg} to opponent ${opponent.walletAddress}`);
   opponent.stats.hp.current -= damage.finalDmg;
   if (opponent.stats.hp.current <= 0) {
@@ -156,7 +159,7 @@ export function respawnPlayer(player, state, timestamp) {
   player.stats.hp.current = 0;
   player.stats.kills.deaths++;
   player.stats.kills.fragsInRow = 0;
-  delete player.activeBoosts[BOOSTS.quad_damage.type];
+  [BOOSTS.quad_damage.type, BOOSTS.shield.type].forEach((b) => delete player.activeBoosts[b]);
   if (state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
     player.stats.hp.current = player.stats.hp.max;
     state.playersOnTiles[player.pos.y][player.pos.x] = null;

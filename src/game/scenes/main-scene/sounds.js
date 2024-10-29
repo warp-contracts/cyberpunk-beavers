@@ -38,6 +38,7 @@ export function doAddSounds(mainScene) {
   mainScene.backgroundMusicHaunted_1 = mainScene.sound.add('background_music_haunted_1', { loop: true, volume: 0.25 });
   mainScene.backgroundMusicHaunted_2 = mainScene.sound.add('background_music_haunted_2', { loop: true, volume: 0.25 });
   mainScene.drillSound = mainScene.sound.add('drill', { loop: false, volume: 0.5 });
+  mainScene.shieldSound = mainScene.sound.add('shield', { loop: false, volume: 2.0 });
 
   forDeathSounds((k, i) => addDeathSound(k, i));
 

@@ -1,6 +1,7 @@
 import Const, { BEAVER_TYPES, BOOSTS, GAMEPLAY_MODES, PLAYER_DEPTH } from '../common/const.mjs';
 import { convertToCamelCase, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
+import { Boosts } from './Boosts.js';
 
 const RANKING_TO_TEXTURE = {
   1: 'medal_gold',
@@ -19,7 +20,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.equipment = equipment;
     this.animated = animated;
     this.locked = false;
-    this.quadDamageFx = null;
     scene.add.existing(this);
     this.initInputKeys();
     this.onGameObject = null;
@@ -41,6 +41,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.name.setDepth(this.depth + 20);
     this.additionalElements.push(this.position, this.healthBar, this.apBar, this.name);
     this.addLayeredSprites();
+    this.boosts = new Boosts(this);
   }
 
   addLayeredSprites() {
@@ -72,32 +73,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.healthBar.setSize(this.calculateBarWidth(newStats.hp), 6);
     this.apBar.setSize(this.calculateBarWidth(newStats.ap), 6);
     this.stats = newStats;
-  }
-
-  showQuadDamageBoost() {
-    if (this.quadDamageFx === null) {
-      this.quadDamageFx = this.postFX.addGlow(0xff0000, 2, 0, false, 0.1, 16);
-
-      this.quadDamageTween = this.scene.tweens.add({
-        targets: this.quadDamageFx,
-        outerStrength: 8,
-        yoyo: true,
-        loop: -1,
-        ease: 'sine.inout',
-      });
-    }
-  }
-
-  hideQuadDamageBoost() {
-    if (this.quadDamageFx !== null) {
-      if (this.activeBoosts) {
-        delete this.activeBoosts[BOOSTS.quad_damage.type];
-      }
-      this.quadDamageTween.remove();
-      this.quadDamageTween = null;
-      this.quadDamageFx = null;
-      this.postFX.clear();
-    }
   }
 
   updatePlayerPosition() {
@@ -160,7 +135,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.lock();
     this.apBar.setVisible(false);
     this.healthBar.setVisible(false);
-    this.hideQuadDamageBoost();
+    this.boosts.hideQuadDamageBoost();
   }
 
   lock() {

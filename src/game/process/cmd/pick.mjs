@@ -43,6 +43,7 @@ export function pick(state, action, message) {
         equipmentType: `scanners`,
       });
     case GameObject.quad_damage.type:
+    case GameObject.shield.type:
     case GameObject.show_map.type:
       return pickBoost(state, player, {
         value,

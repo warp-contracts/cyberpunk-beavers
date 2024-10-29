@@ -381,7 +381,10 @@ export default class MainScene extends Phaser.Scene {
 
     if (response?.player && self.allPlayers[response.player.walletAddress]) {
       if (!response.player.activeBoosts[BOOSTS.quad_damage.type]) {
-        self.allPlayers[response.player.walletAddress].hideQuadDamageBoost();
+        self.allPlayers[response.player.walletAddress].boosts.hideQuadDamageBoost();
+      }
+      if (!response.player.activeBoosts[BOOSTS.shield.type]) {
+        self.allPlayers[response.player.walletAddress].boosts.hideShieldBoost();
       }
     }
 
@@ -541,7 +544,7 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.picked:
         {
           if (picked) {
-            self.allPlayers[response.player.walletAddress].activeBoosts = response.player.activeBoosts;
+            self.allPlayers[response.player.walletAddress].boosts.active = response.player.activeBoosts;
             const { x, y } = response?.picked?.prevPos || response.player?.pos;
             self.gameObjectsLayer?.removeTileAt(x, y);
             const spriteToHide = self.gameObjectsSprites[y]?.[x];
@@ -551,6 +554,8 @@ export default class MainScene extends Phaser.Scene {
             if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
               if (picked.type == GameObject.quad_damage.type) {
                 self.quadDamage.play();
+              } else if (picked.type == GameObject.shield.type) {
+                self.shieldSound.play();
               } else if (picked.type !== GameObject.hazard.type) {
                 self.pickUpSound.play();
               }
@@ -586,7 +591,11 @@ export default class MainScene extends Phaser.Scene {
             }
 
             if (response.player.activeBoosts[BOOSTS.quad_damage.type]) {
-              self.allPlayers[response.player.walletAddress].showQuadDamageBoost();
+              self.allPlayers[response.player.walletAddress].boosts.showQuadDamageBoost();
+            }
+
+            if (response.player.activeBoosts[BOOSTS.shield.type]) {
+              self.allPlayers[response.player.walletAddress].boosts.showShieldBoost();
             }
 
             if (response.player.onGameTreasure?.tile > 0) {
