@@ -47,13 +47,7 @@ export function attack(state, action, timestamp) {
       state,
       timestamp
     );
-    if (finished && state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
-      opponent.pos = calculatePlayerRandomPos(state);
-      state.playersOnTiles[attackPos.y][attackPos.x] = null;
-      state.playersOnTiles[opponent.pos.y][opponent.pos.x] = opponent.walletAddress;
-    }
     const playerScores = [{ value: -AP_COSTS.attack, type: Const.GameObject.ap.type }];
-
     const opponentScores = [{ value: -damage.finalDmg, type: Const.GameObject.hp.type }];
 
     if (parseInt(loot) > 0) {
