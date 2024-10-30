@@ -142,6 +142,8 @@ export const AP_COSTS = {
   teleport: 4,
   landmine: 4,
   hp: 1,
+  attack: 3,
+  dig: 2,
 };
 
 export const DEFAULT_ROUND_INTERVAL_MS = 10_000;

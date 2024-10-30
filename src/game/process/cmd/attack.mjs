@@ -1,10 +1,10 @@
-import Const, { GAMEPLAY_MODES, GAME_MODES, BOOSTS } from '../../common/const.mjs';
+import Const, { GAMEPLAY_MODES, GAME_MODES, BOOSTS, AP_COSTS } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
 export function attack(state, action, timestamp) {
   const player = state.players[action.walletAddress];
-  if (player.stats.ap.current < 1) {
+  if (player.stats.ap.current < AP_COSTS.attack) {
     return { player, tokenTransfer: 0 };
   }
   if (
@@ -15,7 +15,7 @@ export function attack(state, action, timestamp) {
   }
 
   player.stats.previousAttackTs = timestamp;
-  player.stats.ap.current -= 1;
+  player.stats.ap.current -= AP_COSTS.attack;
   const attackRange = player.stats.weapon.attack_range;
   let range = 0;
   let opponent = null;
@@ -52,7 +52,7 @@ export function attack(state, action, timestamp) {
       state.playersOnTiles[attackPos.y][attackPos.x] = null;
       state.playersOnTiles[opponent.pos.y][opponent.pos.x] = opponent.walletAddress;
     }
-    const playerScores = [{ value: -1, type: Const.GameObject.ap.type }];
+    const playerScores = [{ value: -AP_COSTS.attack, type: Const.GameObject.ap.type }];
 
     const opponentScores = [{ value: -damage.finalDmg, type: Const.GameObject.hp.type }];
 

@@ -166,7 +166,7 @@ async function spawnGame(processId, start, end) {
       gameplayConfig: {
         mode: GAMEPLAY_MODES.deathmatch,
       },
-      roundInterval: 5000,
+      roundInterval: 10000,
       startDelay: 5000,
       walletsWhitelist: [],
     },

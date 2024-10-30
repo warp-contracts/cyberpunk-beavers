@@ -51,7 +51,10 @@ export default class MainPlayer extends Player {
   }
 
   async update() {
-    if (this.stats.ap.current === 0) {
+    if (this.stats.ap.current === 0 || (this.combatMode && this.stats.ap.current < AP_COSTS.attack)) {
+      if (this.combatMode) {
+        this.combatMode = false;
+      }
       if (!this.anims.isPlaying) this.anims.play(`${this.beaverChoice}_idle`, true);
       if (!this.mainScene.notEnoughApSound.isPlaying && !this.mainScene.beaverEliminatedSound.isPlaying) {
         const now = Date.now();
@@ -60,6 +63,7 @@ export default class MainPlayer extends Player {
           this.lastNoApPlayTimestamp = now;
         }
       }
+
       return;
     }
 
@@ -88,7 +92,7 @@ export default class MainPlayer extends Player {
           await this.send({ cmd: pick });
           this.pickAnim();
         }
-      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.d) && this.stats.ap.current >= 2) {
+      } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.d) && this.stats.ap.current >= AP_COSTS.dig) {
         await this.send({ cmd: dig });
         this.digAnim();
       } else if (Phaser.Input.Keyboard.JustDown(this.inputKeys.one) && this.stats.ap.current >= AP_COSTS.teleport) {
