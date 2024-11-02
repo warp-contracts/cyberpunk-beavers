@@ -85,6 +85,10 @@ export class FOV {
         monster.setVisible(this.isObjectVisible(monster));
       }
     }
+
+    for (const gameObjectSprite of this.mainScene.gameObjectsSpritesArray) {
+      gameObjectSprite.setVisible(this.isObjectVisible(gameObjectSprite));
+    }
   }
 
   updateMRPAS(pos) {

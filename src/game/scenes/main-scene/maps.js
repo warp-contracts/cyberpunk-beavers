@@ -114,10 +114,12 @@ export function initMapObjects({ treasuresLayer, objectsLayer, mainScene }) {
         sprite.setDepth(OBJECTS_DEPTH);
       }
 
+      mainScene.gameObjectsSpritesArray = sprites;
+
       mainScene.tweens.add({
         targets: sprites,
-        y: '-=5',
-        duration: 250,
+        y: '+=3',
+        duration: 200,
         ease: 'Sine.easeInOut',
         yoyo: true,
         repeat: -1,
