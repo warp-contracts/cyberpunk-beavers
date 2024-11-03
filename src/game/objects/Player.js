@@ -87,6 +87,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       ease: 'sine.inout',
       onComplete: function () {
         healGlowFx.destroy();
+        self.postFX.remove(healGlowFx);
       },
     });
   }

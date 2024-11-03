@@ -391,7 +391,9 @@ export default class MainScene extends Phaser.Scene {
     const toRespawn = response.gameStats?.gameObjectsToRespawnInRound;
     if (toRespawn?.length) {
       for (let { pos } of toRespawn) {
-        self.gameObjectsSprites[pos.y]?.[pos.x]?.setVisible(true);
+        if (self.gameObjectsSprites[pos.y] && self.gameObjectsSprites[pos.y][pos.x]) {
+          self.gameObjectsSprites[pos.y][pos.x]['picked'] = false;
+        }
       }
     }
 
@@ -579,7 +581,7 @@ export default class MainScene extends Phaser.Scene {
             self.gameObjectsLayer?.removeTileAt(x, y);
             const spriteToHide = self.gameObjectsSprites[y]?.[x];
             if (spriteToHide) {
-              spriteToHide.setVisible(false);
+              spriteToHide.picked = true;
             }
             if (self.mainPlayer?.walletAddress === responsePlayer.walletAddress) {
               if (picked.type == GameObject.quad_damage.type) {
