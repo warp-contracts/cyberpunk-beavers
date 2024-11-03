@@ -87,7 +87,7 @@ export class FOV {
     }
 
     for (const gameObjectSprite of this.mainScene.gameObjectsSpritesArray) {
-      gameObjectSprite.setVisible(this.isObjectVisible(gameObjectSprite));
+      gameObjectSprite.setVisible(gameObjectSprite.picked !== true && this.isObjectVisible(gameObjectSprite));
     }
   }
 
