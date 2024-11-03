@@ -383,8 +383,9 @@ export default class MainScene extends Phaser.Scene {
       console.log("You're already dead");
     }
 
+    const responsePlayer = response.player;
     if (self.allPlayers && response?.player?.walletAddress) {
-      if (self.allPlayers[response.player.walletAddress]?.isLocked()) return;
+      if (self.allPlayers[responsePlayer.walletAddress]?.isLocked()) return;
     }
 
     const toRespawn = response.gameStats?.gameObjectsToRespawnInRound;
@@ -397,7 +398,7 @@ export default class MainScene extends Phaser.Scene {
     if (
       !self.gameActive &&
       response.gameStats?.activated &&
-      response.player?.walletAddress == self.mainPlayer?.walletAddress
+      responsePlayer?.walletAddress == self.mainPlayer?.walletAddress
     ) {
       self.gameActive = true;
     }
@@ -414,7 +415,7 @@ export default class MainScene extends Phaser.Scene {
     const picked = response.picked;
     switch (cmd) {
       case Const.Command.activated: {
-        if (self.mainPlayer?.walletAddress == response.player?.walletAddress) {
+        if (self.mainPlayer?.walletAddress == responsePlayer?.walletAddress) {
           self.gameActive = true;
           // self.gameActiveSound.play();
         }
@@ -426,12 +427,12 @@ export default class MainScene extends Phaser.Scene {
 
           if (
             response.error ||
-            (response.player && response.player.walletAddress === self.walletAddress && response.player.error)
+            (responsePlayer && responsePlayer.walletAddress === self.walletAddress && responsePlayer.error)
           ) {
-            console.error('Failed to join the game', response.player);
+            console.error('Failed to join the game', responsePlayer);
             self.scene.remove('main-scene-loading');
             hideGui();
-            self.scene.start(loungeAreaSceneKey, { error: response.player.error });
+            self.scene.start(loungeAreaSceneKey, { error: responsePlayer.error });
           } else {
             self.round = response.round;
             self.gameStats = response.gameStats;
@@ -517,9 +518,9 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.landmineActivated:
         {
           if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
-            self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
-            self.gameObjectsLayer?.putTileAt(2, response.player.pos.x, response.player.pos.y);
-            self[`mineGrid_${response.player.pos.x}_${response.player.pos.y}`] = self.add
+            self.displayPlayerScore(response.scoreToDisplay, responsePlayer.walletAddress);
+            self.gameObjectsLayer?.putTileAt(2, responsePlayer.pos.x, responsePlayer.pos.y);
+            self[`mineGrid_${responsePlayer.pos.x}_${responsePlayer.pos.y}`] = self.add
               .grid(self.mainPlayer?.x, self.mainPlayer?.y, 48, 48, 48, 48, MINE_ACTIVATED_COLOR, 0.4)
               .setDepth(MAIN_PLAYER_DEPTH - 1);
           }
@@ -529,36 +530,36 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.moved:
         {
           console.log('moved');
-          const isMainPlayer = response.player.walletAddress === self.mainPlayer?.walletAddress;
-          if (!self.allPlayers[response.player.walletAddress]) {
-            self.addOtherPlayer(response.player);
+          const isMainPlayer = responsePlayer.walletAddress === self.mainPlayer?.walletAddress;
+          if (!self.allPlayers[responsePlayer.walletAddress]) {
+            self.addOtherPlayer(responsePlayer);
           } else {
             if (response.encounter?.type === Const.GameObject.active_mine.type) {
               const mineLeftByMainPlayer = response.encounter?.leftBy === self.mainPlayer?.walletAddress;
               if (mineLeftByMainPlayer) {
-                self.clearLandmine(response.player.movedPos);
+                self.clearLandmine(responsePlayer.movedPos);
               }
 
               if (isMainPlayer) {
-                self.mainPlayer.moveAndExplode(response.player, true);
+                self.mainPlayer.moveAndExplode(responsePlayer, true);
               } else {
-                self.allPlayers[response.player.walletAddress].moveAndExplode(response.player, mineLeftByMainPlayer);
+                self.allPlayers[responsePlayer.walletAddress].moveAndExplode(responsePlayer, mineLeftByMainPlayer);
               }
             } else {
-              self.allPlayers[response.player.walletAddress].moveTo(response.player);
+              self.allPlayers[responsePlayer.walletAddress].moveTo(responsePlayer);
             }
           }
 
-          if (response.player.onGameObject != null && isMainPlayer) {
-            self.mainPlayer.onGameObject = response.player.onGameObject;
+          if (responsePlayer.onGameObject != null && isMainPlayer) {
+            self.mainPlayer.onGameObject = responsePlayer.onGameObject;
           }
 
-          if (response.player.onGameTreasure != null && isMainPlayer) {
-            self.mainPlayer.onGameTreasure = response.player.onGameTreasure;
+          if (responsePlayer.onGameTreasure != null && isMainPlayer) {
+            self.mainPlayer.onGameTreasure = responsePlayer.onGameTreasure;
           }
 
-          self.updateStats(response.player, response.gameStats);
-          self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+          self.updateStats(responsePlayer, response.gameStats);
+          self.displayPlayerScore(response.scoreToDisplay, responsePlayer.walletAddress);
           if (isMainPlayer && response.moved === false) {
             if (!self.notEnoughApSound.isPlaying) {
               self.notEnoughApSound.play();
@@ -580,7 +581,7 @@ export default class MainScene extends Phaser.Scene {
             if (spriteToHide) {
               spriteToHide.setVisible(false);
             }
-            if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
+            if (self.mainPlayer?.walletAddress === responsePlayer.walletAddress) {
               if (picked.type == GameObject.quad_damage.type) {
                 self.quadDamage.play();
               } else if (picked.type == GameObject.shield.type) {
@@ -588,7 +589,7 @@ export default class MainScene extends Phaser.Scene {
               } else if (picked.type !== GameObject.hazard.type) {
                 self.pickUpSound.play();
               }
-              self.mainPlayer.equipment = response.player.equipment;
+              self.mainPlayer.equipment = responsePlayer.equipment;
               if (picked.type === GameObject.show_map.type) {
                 BOOSTS.show_map.effect(self.fov);
               }
@@ -603,7 +604,7 @@ export default class MainScene extends Phaser.Scene {
                       self.mainPlayer.deathAnim(BEAVER_TYPES.speedy_beaver.name, true).once('animationcomplete', () => {
                         if (self.mode === GAMEPLAY_MODES.deathmatch) {
                           self.mainPlayer.baseMoveTo(
-                            response.player.pos,
+                            responsePlayer.pos,
                             () => {},
                             () => self.mainPlayer.blink()
                           );
@@ -616,7 +617,7 @@ export default class MainScene extends Phaser.Scene {
                 }
               }
             } else {
-              self.allPlayers[response.player.walletAddress]?.pickAnim();
+              self.allPlayers[responsePlayer.walletAddress]?.pickAnim();
             }
 
             if (response.player.activeBoosts[BOOSTS.quad_damage.type]) {
@@ -627,20 +628,20 @@ export default class MainScene extends Phaser.Scene {
               self.allPlayers[response.player.walletAddress].boosts.showShieldBoost();
             }
 
-            if (response.player.onGameTreasure?.tile > 0) {
+            if (responsePlayer.onGameTreasure?.tile > 0) {
               self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
             }
 
             if (picked.type == GameTreasure.gun.type && !self.theGunCollectedSound.isPlaying) {
               self.theGunCollectedSound.play();
             }
-            self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+            self.displayPlayerScore(response.scoreToDisplay, responsePlayer.walletAddress);
           } else {
-            if (self.mainPlayer?.walletAddress === response.player.walletAddress) {
+            if (self.mainPlayer?.walletAddress === responsePlayer.walletAddress) {
               self.noCollectSound.play();
             }
           }
-          self.updateStats(response.player, response.gameStats);
+          self.updateStats(responsePlayer, response.gameStats);
         }
         break;
 
@@ -648,20 +649,20 @@ export default class MainScene extends Phaser.Scene {
         if (!response.digged) {
           return;
         }
-        if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {
-          self.allPlayers[response.player.walletAddress]?.digAnim();
+        if (responsePlayer.walletAddress !== self.mainPlayer?.walletAddress) {
+          self.allPlayers[responsePlayer.walletAddress]?.digAnim();
         }
         if (response.digged?.tile > 0) {
-          if (self.mainPlayer?.walletAddress === response.player.walletAddress || self.spectatorMode)
+          if (self.mainPlayer?.walletAddress === responsePlayer.walletAddress || self.spectatorMode)
             self.treasureSound.play();
-          self.mainPlayer.diggedTreasures[`${response.player.pos.x}, ${response.player.pos.y}`] = response.digged.tile;
-          self.gameTreasuresLayer?.putTileAt(response.digged.tile, response.player.pos.x, response.player.pos.y);
+          self.mainPlayer.diggedTreasures[`${responsePlayer.pos.x}, ${responsePlayer.pos.y}`] = response.digged.tile;
+          self.gameTreasuresLayer?.putTileAt(response.digged.tile, responsePlayer.pos.x, responsePlayer.pos.y);
         } else {
-          if (self.mainPlayer?.walletAddress === response.player.walletAddress) self.digSound.play();
-          self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, response.player.pos.x, response.player.pos.y);
+          if (self.mainPlayer?.walletAddress === responsePlayer.walletAddress) self.digSound.play();
+          self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, responsePlayer.pos.x, responsePlayer.pos.y);
         }
-        self.updateStats(response.player, response.gameStats);
-        self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+        self.updateStats(responsePlayer, response.gameStats);
+        self.displayPlayerScore(response.scoreToDisplay, responsePlayer.walletAddress);
         break;
       }
 
@@ -680,8 +681,9 @@ export default class MainScene extends Phaser.Scene {
           self.noCollectSound.play();
           return;
         }
-        self.updateStats(response.player, response.gameStats);
-        self.displayPlayerScore(response.scoreToDisplay, response.player.walletAddress);
+        self.updateStats(responsePlayer, response.gameStats);
+        self.displayPlayerScore(response.scoreToDisplay, responsePlayer.walletAddress);
+        self.allPlayers[responsePlayer.walletAddress]?.playHealEffect();
         break;
       }
     }

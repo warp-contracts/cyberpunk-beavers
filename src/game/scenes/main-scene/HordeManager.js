@@ -9,6 +9,7 @@ export class HordeManager {
     this.scene = scene;
     this.wave = null;
     this.monsters = {};
+    this.prepareNextWavePlayed = false;
   }
 
   processUpdate(response) {
@@ -25,19 +26,27 @@ export class HordeManager {
     switch (game.status) {
       case HORDE_GAME_STATUS.NEW_WAVE: {
         this.processNewWave(game.newWave);
+        this.prepareNextWavePlayed = false;
         this.scene.waitingForNewWave = false;
+        this.scene.newWave.play();
         break;
       }
       case HORDE_GAME_STATUS.WAITING_FOR_WAVE: {
         this.scene.waitingForNewWave = true;
+        if (!this.prepareNextWavePlayed) {
+          this.scene.prepareNextWave.play();
+          this.prepareNextWavePlayed = true;
+        }
         break;
       }
       case HORDE_GAME_STATUS.CONTINUE_WAVE: {
+        this.prepareNextWavePlayed = false;
         this.scene.waitingForNewWave = false;
         break;
       }
       case HORDE_GAME_STATUS.LOOSE:
       case HORDE_GAME_STATUS.WIN: {
+        this.prepareNextWavePlayed = false;
         this.scene.endGame(game.status);
         break;
       }
@@ -89,6 +98,7 @@ export class HordeManager {
           case 'attacking': {
             monsterObject.scaleX = action.data.dir === 'left' ? -1 : 1;
             monsterObject.attackAnim();
+            doPlayAttackSound(MONSTER_TO_BEAVER[monsterObject.stats.type], self.scene);
             break;
           }
           case 'attacked': {

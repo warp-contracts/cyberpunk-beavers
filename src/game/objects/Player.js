@@ -75,6 +75,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.stats = newStats;
   }
 
+  playHealEffect() {
+    const self = this;
+    const healGlowFx = this.postFX.addGlow(0x00ff00, 2, 0, false, 0.1, 16);
+    this.scene.healEffect.play();
+    this.scene.tweens.add({
+      targets: healGlowFx,
+      outerStrength: 12,
+      yoyo: true,
+      loop: 0,
+      ease: 'sine.inout',
+      onComplete: function () {
+        healGlowFx.destroy();
+      },
+    });
+  }
+
   updatePlayerPosition() {
     const newPlayerRanking = this.scene.ranking.indexOf(this.scene.ranking.find((r) => r[0] == this.walletAddress)) + 1;
     if (this.playerRanking != newPlayerRanking) {
