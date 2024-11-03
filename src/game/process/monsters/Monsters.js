@@ -44,10 +44,9 @@ function getChebyshevDistance(x1, y1, x2, y2) {
 }
 
 // a.k.a. Manhattan distance https://www.datacamp.com/tutorial/manhattan-distance
-// - for calculating movement range (same alg. is used in A* pathfinding)
-// keep in mind that this is an approximation - as it does not take obstacles into account
-// (doing so would require calculating a full path with aStar - which is time-consuming)
-function getSnakeDistance(x1, y1, x2, y2) {
+// - heuristic used for calculating distance between player and monster
+// (same is used in A* pathfinding)
+export function getSnakeDistance(x1, y1, x2, y2) {
   function SnakeDistance(x1, y1, x2, y2) {
     return Math.abs(x1 - x2) + Math.abs(y1 - y2);
   }
@@ -193,21 +192,15 @@ export class Monsters {
     function generateNewMove(monster) {
       let targetPlayer = null;
       console.log(` ==== ${monster.walletAddress} =====`);
-      // console.log('attackedPlayerId', monster.attackedPlayerId);
-      // console.log('attackingPlayerId', monster.attackingPlayerId);
 
       if (isAlreadyAttackingPlayer(monster)) {
-        // console.log('isAlreadyAttackingPlayer');
         if (isPlayerWithIdAlive(monster.attackedPlayerId)) {
-          // console.log('attacking player alive');
           targetPlayer = self.state.players[monster.attackedPlayerId];
         } else {
           monster.attackedPlayerId = null;
         }
       } else if (isBeingAttackedByOtherPlayer(monster)) {
-        // console.log('isBeingAttackedByOtherPlayer');
         if (isPlayerWithIdAlive(monster.attackingPlayerId)) {
-          // console.log('attacking player alive');
           targetPlayer = self.state.players[monster.attackingPlayerId];
         } else {
           monster.attackingPlayerId = null;
@@ -224,11 +217,15 @@ export class Monsters {
         console.log(`Monster ${monster.walletAddress} is moving to player ${targetPlayer.player.walletAddress}`);
         if (!monster.currentPath?.length) {
           const path = findShortestPath(monster, targetPlayer.player);
+          if (!path || path.length === 1) {
+            console.error(`Monster ${monster.walletAddress}: I don\'t know what to do with my life :(`);
+            // TODO: commit suicide?
+            return;
+          }
           path.shift(); // remove the first element, as it is the current position
           if (path.length > MAX_PATH_LENGTH) {
             path.splice(MAX_PATH_LENGTH);
           }
-          console.log('Path length', path.length);
           monster.currentPath = path;
         } else {
           move(monster, monster.currentPath.shift());

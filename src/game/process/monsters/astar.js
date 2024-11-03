@@ -1,4 +1,5 @@
 import Const from '../../common/const.mjs';
+import { getSnakeDistance } from './Monsters.js';
 
 const { EMPTY_TILE } = Const;
 
@@ -96,7 +97,8 @@ export class AStar {
     }
 
     function heuristic(a, b) {
-      return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
+      // Math.abs(a.row - b.row) + Math.abs(a.col - b.col);Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
+      return getSnakeDistance(a.col, a.row, b.col, b.row);
     }
   }
 

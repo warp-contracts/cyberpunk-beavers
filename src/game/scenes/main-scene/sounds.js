@@ -37,6 +37,10 @@ export function doAddSounds(mainScene) {
   mainScene.hahaSound = mainScene.sound.add('haha', { loop: false, volume: 2 });
   mainScene.backgroundMusicHaunted_1 = mainScene.sound.add('background_music_haunted_1', { loop: true, volume: 0.25 });
   mainScene.backgroundMusicHaunted_2 = mainScene.sound.add('background_music_haunted_2', { loop: true, volume: 0.25 });
+  mainScene.healEffect = mainScene.sound.add('heal_effect', { loop: false, volume: 1 });
+  mainScene.monsterEliminated = mainScene.sound.add('monster_eliminated', { loop: false, volume: 4.0 });
+  mainScene.newWave = mainScene.sound.add('new_wave', { loop: false, volume: 4.0 });
+  mainScene.prepareNextWave = mainScene.sound.add('prepare_next_wave', { loop: false, volume: 4.0 });
   mainScene.drillSound = mainScene.sound.add('drill', { loop: false, volume: 0.5 });
   mainScene.shieldSound = mainScene.sound.add('shield', { loop: false, volume: 2.0 });
 

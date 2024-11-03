@@ -87,6 +87,10 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('haha', ['assets/audio/haha.mp3']);
   mainScene.load.audio('background_music_haunted_1', ['assets/audio/background_music_haunted_1.mp3']);
   mainScene.load.audio('background_music_haunted_2', ['assets/audio/background_music_haunted_2.mp3']);
+  mainScene.load.audio('heal_effect', ['assets/audio/heal_effect.mp3']);
+  mainScene.load.audio('monster_eliminated', ['assets/audio/monster_eliminated.m4a']);
+  mainScene.load.audio('new_wave', ['assets/audio/new_wave.m4a']);
+  mainScene.load.audio('prepare_next_wave', ['assets/audio/prepare_next_wave.m4a']);
   mainScene.load.audio('drill', ['assets/audio/drill.mp3']);
   mainScene.load.audio('shield', ['assets/audio/shield.mp3']);
   forDeathSounds((k, i) => loadDeathSound(k, i));
