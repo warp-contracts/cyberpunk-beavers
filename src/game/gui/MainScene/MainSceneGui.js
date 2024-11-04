@@ -93,7 +93,7 @@ export function MainSceneGui() {
               hordeWaveNumber > 0 && !waitingForNewWave
                 ? m(
                     '.main-scene-info.small',
-                    `Wave: ${hordeWaveNumber}, monsters left: ${hordeAliveMonsters}, players alive: ${hordeAlivePlayers}`
+                    `Wave: ${hordeWaveNumber}, monsters alive: ${hordeAliveMonsters}, players alive: ${hordeAlivePlayers}`
                   )
                 : null,
               m(BattleReport, {

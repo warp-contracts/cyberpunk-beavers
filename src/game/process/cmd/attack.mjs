@@ -2,7 +2,7 @@ import Const, { GAMEPLAY_MODES, GAME_MODES, BOOSTS, AP_COSTS } from '../../commo
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 
-export function attack(state, action, timestamp, monsters) {
+export function attack(state, action, timestamp, horde) {
   const player = state.players[action.walletAddress];
   if (player.stats.ap.current < AP_COSTS.attack) {
     return { player, tokenTransfer: 0 };
@@ -31,7 +31,7 @@ export function attack(state, action, timestamp, monsters) {
     if (state.obstaclesTilemap[attackPos.y][attackPos.x] > Const.EMPTY_TILE && player.beaverId != 'hacker_beaver') {
       break;
     }
-    if (state.gameplayMode === GAMEPLAY_MODES.horde) {
+    if (state.gameplayMode === GAMEPLAY_MODES.horde && state.currentWave) {
       opponent = state.currentWave.monsters[state.monstersOnTiles[attackPos.y][attackPos.x]];
     } else {
       opponent = state.players[state.playersOnTiles[attackPos.y][attackPos.x]];
@@ -45,11 +45,8 @@ export function attack(state, action, timestamp, monsters) {
 
   if (opponent && opponent.stats.hp.current > 0) {
     if (state.gameplayMode === GAMEPLAY_MODES.horde) {
-      if (!monsters) {
-        throw new Error('Monsters instance should be set');
-      }
       const dmg = calculateDamage(player, { range }, state);
-      monsters.registerAttack({
+      horde.registerAttack({
         dmg,
         player,
         monster: opponent,

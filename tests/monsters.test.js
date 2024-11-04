@@ -1,4 +1,4 @@
-import { Monsters } from '../src/game/process/monsters/Monsters.js';
+import { Horde } from '../src/game/process/monsters/Horde.js';
 
 const state = {
   randomCounter: 0,
@@ -16,6 +16,6 @@ const state = {
     .map(() => Array(30)),
 };
 
-const monsters = new Monsters(state, Date.now());
+const monsters = new Horde(state, Date.now());
 
 console.table(monsters.waves);

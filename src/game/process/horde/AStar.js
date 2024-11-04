@@ -1,5 +1,5 @@
 import Const from '../../common/const.mjs';
-import { getSnakeDistance } from './Monsters.js';
+import { getSnakeDistance } from './Horde.js';
 
 const { EMPTY_TILE } = Const;
 

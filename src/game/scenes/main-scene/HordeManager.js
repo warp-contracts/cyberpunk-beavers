@@ -7,7 +7,6 @@ import { HORDE_GAME_STATUS } from '../../common/horde-const.mjs';
 export class HordeManager {
   constructor(scene) {
     this.scene = scene;
-    this.wave = null;
     this.monsters = {};
     this.prepareNextWavePlayed = false;
   }
@@ -16,7 +15,7 @@ export class HordeManager {
     const { players, monsters, game } = response.hordeTick;
     const { gameStats } = response;
     //console.log('========= HORDE TICK BEGIN ==========');
-    //console.log({ players, monsters, game });
+    console.log({ players, monsters, game });
     this.updateMonsters(monsters);
     this.updatePlayers(players, gameStats);
     this.scene.hordeWaveNumber = game.waveNumber;
@@ -59,10 +58,6 @@ export class HordeManager {
   processNewWave(newWave) {
     console.log('Processing new wave!');
     const self = this;
-    this.wave = {
-      index: newWave.index,
-      roundEnd: newWave.roundEnd,
-    };
     Object.values(this.monsters).forEach((monster) => monster.destroy());
     this.monsters = {};
     Object.values(newWave.monsters).forEach((monster) => {

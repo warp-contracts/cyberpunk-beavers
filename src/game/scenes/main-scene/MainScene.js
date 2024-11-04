@@ -133,11 +133,6 @@ export default class MainScene extends Phaser.Scene {
       },
     });
 
-    // TODO: just for testing!
-    this.tickIntervalId = setInterval(() => {
-      self.server.send({ cmd: Const.Command.tick }).then();
-    }, 800);
-
     console.log('After MainSceneGui');
   }
 
@@ -704,6 +699,11 @@ export default class MainScene extends Phaser.Scene {
 
     if (response.hordeTick && !this.gameOver) {
       this.hordeManager.processUpdate(response);
+      if (!this.tickIntervalId) {
+        this.tickIntervalId = setInterval(() => {
+          self.server.send({ cmd: Const.Command.tick }).then();
+        }, 800);
+      }
     }
   }
 

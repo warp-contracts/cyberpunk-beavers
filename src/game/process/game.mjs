@@ -14,8 +14,8 @@ import { teleportPlayer } from './cmd/teleport.mjs';
 import { activate, checkWhitelist, standInQueue } from './cmd/queue.mjs';
 import { scan } from './cmd/scan.mjs';
 import { useHp } from './cmd/hp.mjs';
+import { Horde } from './horde/Horde.js';
 import { drill } from './cmd/drill.js';
-import { Monsters } from './monsters/Monsters.js';
 
 function restrictedAccess(state, action, ts) {
   return (
@@ -50,9 +50,9 @@ export function handle(state, message) {
     ? state.generatedWalletsMapping[message.Owner]
     : message.Owner;
 
-  let monsters = null;
+  let horde = null;
   if (state.gameplayMode === GAMEPLAY_MODES.horde) {
-    monsters = new Monsters(state, message.Timestamp);
+    horde = new Horde(state, message.Timestamp);
   }
 
   if (restrictedAccess(state, action, message.Timestamp)) {
@@ -97,8 +97,8 @@ export function handle(state, message) {
 
   switch (action.cmd) {
     case Const.Command.tick: {
-      if (monsters) {
-        const hordeTick = monsters.tick(message.Timestamp);
+      if (horde) {
+        const hordeTick = horde.tick(message.Timestamp);
         ao.result({
           ...gameStats(state, message.Timestamp),
           hordeTick,
@@ -161,7 +161,7 @@ export function handle(state, message) {
       });
       break;
     case Const.Command.attack:
-      const attackRes = attack(state, action, message.Timestamp, monsters);
+      const attackRes = attack(state, action, message.Timestamp, horde);
       ao.result({
         cmd: Const.Command.attacked,
         ...attackRes,
@@ -254,8 +254,8 @@ export function handle(state, message) {
       throw new ProcessError(`Unknown action: ${action.cmd}`);
   }
 
-  if (monsters && action.cmd !== Const.Command.tick) {
-    const hordeTick = monsters.tick(message.Timestamp);
+  if (horde && action.cmd !== Const.Command.tick) {
+    const hordeTick = horde.tick(message.Timestamp);
     ao.result({
       ...ao.outbox.Output,
       hordeTick,
