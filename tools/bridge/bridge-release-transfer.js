@@ -9,8 +9,8 @@ import fs from 'node:fs';
 
 const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8'));
 const bridgeProcessId = '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c';
-const euPendingHubId = 'ogIStZPyMFOkiMg1np4L_0ZAaCQZu9lckI8mZwOhnBg';
-const asiaPendingHubId = 'gBSogAQl7Iolf5w8cUwN_3R_gMuj_KMCHMXuBt9RQr4';
+const euPendingHubId = 'a6-5oLFyaeNTFxioc6bEvtpgCnt4ZDwgCCECo7bF3XY';
+const asiaPendingHubId = '0NHveDmVa_CVx1oDCOYUtM0qiJAGLRh9PI8UZjh2f8Y';
 
 async function checkPending() {
   const signer = createDataItemSigner(WALLET);
@@ -19,7 +19,7 @@ async function checkPending() {
     process: bridgeProcessId,
     tags: [
       { name: 'Action', value: 'ReleasePending' },
-      { name: 'HubProcessId', value: `${euPendingHubId}` },
+      { name: 'HubProcessId', value: `${asiaPendingHubId}` },
       // { name: 'GameProcessId', value: 'UNA3jM3zUsOcneorFnE_j4huNsKU2ewkTXiF5X4N880' },
     ],
     signer,
