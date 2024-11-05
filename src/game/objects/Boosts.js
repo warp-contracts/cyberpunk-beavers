@@ -49,10 +49,10 @@ export class Boosts {
       if (this.active) {
         delete this.active[BOOSTS.quad_damage.type];
       }
-      this.quadDamageTween.remove();
+      this.quadDamageTween?.remove();
+      this.player.postFX.remove(this.quadDamageFx);
       this.quadDamageTween = null;
       this.quadDamageFx = null;
-      this.player.postFX.clear();
     }
   }
 
@@ -85,10 +85,10 @@ export class Boosts {
       if (this.active) {
         delete this.active[BOOSTS.shield.type];
       }
-      this.shieldTween.remove();
+      this.shieldTween?.remove();
+      this.player.postFX.remove(this.shieldFx);
       this.shieldTween = null;
       this.shieldFx = null;
-      this.player.postFX.clear();
     }
   }
 }
