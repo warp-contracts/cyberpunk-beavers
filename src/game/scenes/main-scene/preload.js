@@ -13,7 +13,7 @@ export function doPreloadAssets(mainScene) {
 
   preloadDesertMapAssets(mainScene);
   preloadCityMapAssets(mainScene);
-  preloadHauntedMapAssets(mainScene);
+  // preloadHauntedMapAssets(mainScene);
 
   loadSpriteSheet(mainScene, 'cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
@@ -27,7 +27,7 @@ export function doPreloadAssets(mainScene) {
 
   //mainScene.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
-  mainScene.load.image('post_apocalyptic_background', 'assets/images/background_graveyard.jpg');
+  mainScene.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.jpg');
 
   mainScene.load.image('medal_gold', 'assets/images/medal-gold.png');
   mainScene.load.image('medal_silver', 'assets/images/medal-silver.png');
@@ -85,8 +85,8 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('quad_damage', ['assets/audio/quad_damage.m4a']);
   mainScene.load.audio('shot_buzz', ['assets/audio/shot_buzz.mp3']);
   mainScene.load.audio('haha', ['assets/audio/haha.mp3']);
-  mainScene.load.audio('background_music_haunted_1', ['assets/audio/background_music_haunted_1.mp3']);
-  mainScene.load.audio('background_music_haunted_2', ['assets/audio/background_music_haunted_2.mp3']);
+  // mainScene.load.audio('background_music_haunted_1', ['assets/audio/background_music_haunted_1.mp3']);
+  // mainScene.load.audio('background_music_haunted_2', ['assets/audio/background_music_haunted_2.mp3']);
   mainScene.load.audio('heal_effect', ['assets/audio/heal_effect.mp3']);
   mainScene.load.audio('monster_eliminated', ['assets/audio/monster_eliminated.m4a']);
   mainScene.load.audio('new_wave', ['assets/audio/new_wave.m4a']);
