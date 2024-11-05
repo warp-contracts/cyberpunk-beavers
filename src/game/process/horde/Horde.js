@@ -66,7 +66,7 @@ function getDistance({ x1, y1, x2, y2 }, distanceCalcFunction, cache) {
 }
 
 export class Horde {
-  constructor(state, msgTimestamp, devMode = true) {
+  constructor(state) {
     this.state = state;
     this.playerAttack = null;
     // an object that is supposed to be sent back to clients - and clients should

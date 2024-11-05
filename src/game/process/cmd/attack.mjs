@@ -45,7 +45,7 @@ export function attack(state, action, timestamp, horde) {
 
   if (opponent && opponent.stats.hp.current > 0) {
     if (state.gameplayMode === GAMEPLAY_MODES.horde) {
-      const dmg = calculateDamage(player, { range }, state);
+      const dmg = calculateDamage(player, opponent, { range }, state);
       horde.registerAttack({
         dmg,
         player,

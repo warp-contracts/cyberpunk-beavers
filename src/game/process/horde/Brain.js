@@ -8,12 +8,12 @@ import { AStar } from './AStar.js';
 const MAX_PATH_LENGTH = 6;
 
 export class Brain {
-  constructor(monsters, monster) {
+  constructor(horde, monster) {
     this._monster = monster;
-    this._state = monsters.state;
-    this._alivePlayers = monsters.alivePlayers();
+    this._state = horde.state;
+    this._alivePlayers = horde.alivePlayers();
     this._pathFinder = new AStar(this._state.obstaclesTilemap, this._state.playersOnTiles, this._state.monstersOnTiles);
-    this._monsters = monsters; // this one sucks hard (required for verifyLandmines)
+    this._monsters = horde; // this one sucks hard (required for verifyLandmines)
   }
 
   /**
@@ -125,7 +125,7 @@ export class Brain {
   _attackPlayer(player) {
     const distance = getChebyshevDistance(this._monster.pos.x, this._monster.pos.y, player.pos.x, player.pos.y);
 
-    const { finalDmg } = calculateDamage(this._monster, { range: distance - 1 }, this._state);
+    const { finalDmg } = calculateDamage(this._monster, player, { range: distance - 1 }, this._state);
     console.log('Damage', finalDmg);
     const result = [
       {
