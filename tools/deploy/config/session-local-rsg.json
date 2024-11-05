@@ -23,6 +23,9 @@
       "gun": {
         "amount": 0
       }
+    },
+    "gameObjectsConfig": {
+      "respawned": "random"
     }
   },
   "sessions": [

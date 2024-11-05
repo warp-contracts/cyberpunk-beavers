@@ -1,4 +1,8 @@
-import Const, { COLLISIONS_LAYER, DEFAULT_ROUND_INTERVAL_MS } from '../../common/const.mjs';
+import Const, {
+  COLLISIONS_LAYER,
+  DEFAULT_ROUND_INTERVAL_MS,
+  DEFAULT_GAME_OBJECTS_CONFIG,
+} from '../../common/const.mjs';
 
 const { GameObject, GameTreasure, Scores, Map, EMPTY_TILE } = Const;
 
@@ -84,6 +88,7 @@ function initState(message, state) {
     mode: state.mode || Const.GAME_MODES.default.type,
     gameObjectsToRespawn: {},
     gameObjectsToRespawnInRound: [],
+    gameObjectsConfig: state.gameObjectsConfig || DEFAULT_GAME_OBJECTS_CONFIG,
   };
 }
 
@@ -134,15 +139,22 @@ function setObjectsOnRandomPositions(state, gameObject, rarity, tilemap, tiles) 
   tiles = Object.values(tiles).map((t) => {
     if (t.type != GameObject.none.type) return t.tile;
   });
-  //console.log(tiles);
 
   while (gameObjectCount < rarity) {
-    const pos = calculateRandomPos(state, state.map.width);
-    const isAllowedPosition =
-      state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE && !tiles.includes(tilemap[pos.y][pos.x]);
-    if (isAllowedPosition) {
-      tilemap[pos.y][pos.x] = gameObject.tile;
-      gameObjectCount++;
-    }
+    ({ count: gameObjectCount } = setObjectOnPos(gameObjectCount, state, tilemap, tiles, gameObject));
   }
+}
+
+export function setObjectOnPos(count, state, tilemap, tiles, gameObject) {
+  let finalPos;
+  const pos = calculateRandomPos(state, state.map.width);
+  const isAllowedPosition =
+    state.obstaclesTilemap[pos.y][pos.x] === EMPTY_TILE && !tiles.includes(tilemap[pos.y][pos.x]);
+  if (isAllowedPosition) {
+    tilemap[pos.y][pos.x] = gameObject.tile;
+    finalPos = pos;
+    count++;
+  }
+
+  return { count, pos: finalPos };
 }

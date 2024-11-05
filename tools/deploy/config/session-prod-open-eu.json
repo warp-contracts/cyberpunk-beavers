@@ -18,6 +18,9 @@
       "war": {
         "amount": 20
       }
+    },
+    "gameObjectsConfig": {
+      "respawned": "random"
     }
   },
   "sessions": [

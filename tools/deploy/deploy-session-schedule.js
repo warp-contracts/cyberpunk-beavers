@@ -110,7 +110,7 @@ function dateFromStartObject(startInfo) {
 
 function displaySetup(setup) {
   console.log(`--- Game Setup `);
-  const { start, end, gameplayConfig, gameTokens, walletsWhitelist } = setup;
+  const { start, end, gameplayConfig, gameTokens, walletsWhitelist, gameObjectsConfig } = setup;
   console.table({
     ...setup,
     start: new Date(start).toLocaleString(),
@@ -118,6 +118,7 @@ function displaySetup(setup) {
     gameplayConfig: JSON.stringify(gameplayConfig || {}),
     gameTokens: formatTokens(gameTokens),
     walletsWhitelist: upTo(JSON.stringify(walletsWhitelist || []), 200),
+    gameObjectsConfig: JSON.stringify(gameObjectsConfig || {}),
   });
 }
 

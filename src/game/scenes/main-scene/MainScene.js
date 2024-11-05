@@ -19,13 +19,14 @@ import { doPreloadAssets } from './preload.js';
 import { doAddSounds } from './sounds.js';
 import { doInitCamera } from './camera.js';
 import { doInitAnimations } from './animations.js';
-import { doCreateTileMap, initMapObjects } from './maps.js';
+import { createSpriteOnTilemap, doCreateTileMap, initMapObjects } from './maps.js';
 import { FOV } from '../../objects/FOV.js';
 import { executeScan } from './commands/scanned.js';
 import { Shrink } from '../../objects/Shrink.js';
 import { handleAttacked } from './commands/attacked.js';
 import { executeDrill } from './commands/drilled.js';
 import { HordeManager } from './HordeManager.js';
+import { executePick } from './commands/picked.js';
 
 const { GameTreasure } = Const;
 
@@ -383,9 +384,13 @@ export default class MainScene extends Phaser.Scene {
 
     const toRespawn = response.gameStats?.gameObjectsToRespawnInRound;
     if (toRespawn?.length) {
-      for (let { pos } of toRespawn) {
-        if (self.gameObjectsSprites[pos.y] && self.gameObjectsSprites[pos.y][pos.x]) {
+      for (let { pos, type, constant } of toRespawn) {
+        if (constant) {
+          // sprite is generated at the same position after every respawn
           self.gameObjectsSprites[pos.y][pos.x]['picked'] = false;
+        } else {
+          // new sprite is generated at random position
+          createSpriteOnTilemap(self, type, pos);
         }
       }
     }
@@ -407,7 +412,6 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
-    const picked = response.picked;
     switch (cmd) {
       case Const.Command.activated: {
         if (self.mainPlayer?.walletAddress == responsePlayer?.walletAddress) {
@@ -567,77 +571,7 @@ export default class MainScene extends Phaser.Scene {
         }
         break;
       case Const.Command.picked:
-        {
-          if (picked) {
-            self.allPlayers[response.player.walletAddress].boosts.active = response.player.activeBoosts;
-            const { x, y } = response?.picked?.prevPos || response.player?.pos;
-            self.gameObjectsLayer?.removeTileAt(x, y);
-            const spriteToHide = self.gameObjectsSprites[y]?.[x];
-            if (spriteToHide) {
-              spriteToHide.picked = true;
-            }
-            if (self.mainPlayer?.walletAddress === responsePlayer.walletAddress) {
-              if (picked.type == GameObject.quad_damage.type) {
-                self.quadDamage.play();
-              } else if (picked.type == GameObject.shield.type) {
-                self.shieldSound.play();
-              } else if (picked.type !== GameObject.hazard.type) {
-                self.pickUpSound.play();
-              }
-              self.mainPlayer.equipment = responsePlayer.equipment;
-              if (picked.type === GameObject.show_map.type) {
-                BOOSTS.show_map.effect(self.fov);
-              }
-              if (picked.type === GameObject.hazard.type) {
-                if (picked.result === 'win') {
-                  self.treasureSound.play();
-                } else {
-                  self.hahaSound.play();
-                  self.explosionSound.play();
-                  self.mainPlayer.explosionAnim().once('animationcomplete', () => {
-                    if (picked.finished) {
-                      self.mainPlayer.deathAnim(BEAVER_TYPES.speedy_beaver.name, true).once('animationcomplete', () => {
-                        if (self.mode === GAMEPLAY_MODES.deathmatch) {
-                          self.mainPlayer.baseMoveTo(
-                            responsePlayer.pos,
-                            () => {},
-                            () => self.mainPlayer.blink()
-                          );
-                        } else {
-                          self.mainPlayer.kill();
-                        }
-                      });
-                    }
-                  });
-                }
-              }
-            } else {
-              self.allPlayers[responsePlayer.walletAddress]?.pickAnim();
-            }
-
-            if (response.player.activeBoosts[BOOSTS.quad_damage.type]) {
-              self.allPlayers[response.player.walletAddress].boosts.showQuadDamageBoost();
-            }
-
-            if (response.player.activeBoosts[BOOSTS.shield.type]) {
-              self.allPlayers[response.player.walletAddress].boosts.showShieldBoost();
-            }
-
-            if (responsePlayer.onGameTreasure?.tile > 0) {
-              self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
-            }
-
-            if (picked.type == GameTreasure.gun.type && !self.theGunCollectedSound.isPlaying) {
-              self.theGunCollectedSound.play();
-            }
-            self.displayPlayerScore(response.scoreToDisplay, responsePlayer.walletAddress);
-          } else {
-            if (self.mainPlayer?.walletAddress === responsePlayer.walletAddress) {
-              self.noCollectSound.play();
-            }
-          }
-          self.updateStats(responsePlayer, response.gameStats);
-        }
+        executePick(response, self);
         break;
 
       case Const.Command.digged: {
