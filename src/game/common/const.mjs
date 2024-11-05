@@ -380,12 +380,12 @@ export const BEAVER_TYPES = {
       drillRadius: 1,
       fov: 6,
       ap: {
-        current: 100,
-        max: 100,
+        current: 22,
+        max: 22,
       },
       hp: {
-        current: 1000,
-        max: 1000,
+        current: 130,
+        max: 130,
       },
       weapon: WEAPONS.sniper_rifle_basic,
       bonus: {
@@ -441,8 +441,8 @@ export const BEAVER_TYPES = {
         max: 20,
       },
       hp: {
-        current: 600,
-        max: 600,
+        current: 200,
+        max: 200,
       },
       weapon: WEAPONS.shotgun_basic,
       bonus: {
