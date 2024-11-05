@@ -1,5 +1,5 @@
 import { addCoins, scoreToDisplay } from '../../common/tools.mjs';
-import Const, { BOOSTS } from '../../common/const.mjs';
+import Const, { BOOSTS, Respawned } from '../../common/const.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 import { lootPlayer, respawnPlayer } from './attack.mjs';
 
@@ -69,10 +69,10 @@ function pickAP(state, player, value) {
   player.stats.ap.current += value;
   addCoins(player, GAME_MODES[state.mode].token, value, state);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-  addGameObjectToRespawn(state, GameObject.ap.type, player);
+  const respawnedPos = addGameObjectToRespawn(state, GameObject.ap.type, player);
   return {
     player,
-    picked: { type: GameObject.ap.type },
+    picked: { type: GameObject.ap.type, respawned: respawnedPos },
     scoreToDisplay: scoreToDisplay([
       { value: value, type: Scores.ap },
       { value: -1, type: Scores.ap },
@@ -92,10 +92,10 @@ function pickEquipment(state, player, device) {
     player.equipment[equipmentType].current += 1;
     addCoins(player, GAME_MODES[state.mode].token, value, state);
     state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-    addGameObjectToRespawn(state, type, player);
+    const respawnedPos = addGameObjectToRespawn(state, type, player);
     return {
       player,
-      picked: { type },
+      picked: { type, respawned: respawnedPos },
       scoreToDisplay: scoreToDisplay([{ value: -1, type: Scores.ap }]),
     };
   }
@@ -151,11 +151,11 @@ function pickBoost(state, player, boost) {
   };
   addCoins(player, GAME_MODES[state.mode].token, value, state);
   state.gameObjectsTilemap[player.pos.y][player.pos.x] = GameObject.none.tile;
-  addGameObjectToRespawn(state, type, player);
+  const respawnedPos = addGameObjectToRespawn(state, type, player);
 
   return {
     player,
-    picked: { type },
+    picked: { type, respawned: respawnedPos },
     scoreToDisplay: scoreToDisplay([
       { value: -1, type: Scores.ap },
       { value: value, type: Scores.coin },
@@ -195,7 +195,11 @@ function addGameObjectToRespawn(state, gameObjectType, player) {
   if (!roundsToRespawn) return;
   const round = state.round.current + roundsToRespawn;
   let respawnInRound = state.gameObjectsToRespawn[round];
-  const gameObjectToRespawn = { type: gameObjectType, tile: GameObject[gameObjectType].tile, pos: player.pos };
+  const gameObjectToRespawn = {
+    type: gameObjectType,
+    tile: GameObject[gameObjectType].tile,
+    pos: state.gameObjectsConfig.respawned == Respawned.constant ? player.pos : null,
+  };
 
   if (!respawnInRound) {
     state.gameObjectsToRespawn[round] = [gameObjectToRespawn];
@@ -204,4 +208,5 @@ function addGameObjectToRespawn(state, gameObjectType, player) {
   }
 
   console.log('respawn in round added', state.gameObjectsToRespawn);
+  return gameObjectToRespawn.pos;
 }

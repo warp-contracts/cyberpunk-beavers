@@ -237,6 +237,15 @@ export const GameObject = {
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 75 },
 };
 
+export const Respawned = {
+  random: 'random',
+  constant: 'constant',
+};
+
+export const DEFAULT_GAME_OBJECTS_CONFIG = {
+  respawned: Respawned.random,
+};
+
 /*
   Tokens data is sent to leaderboard process and bridge process.
   Adding new entries requires updating tokens dictionary in the bridge

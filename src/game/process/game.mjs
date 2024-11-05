@@ -1,4 +1,4 @@
-import Const, { GAMEPLAY_MODES, MAX_LAST_TXS } from '../common/const.mjs';
+import Const, { MAX_LAST_TXS, GAMEPLAY_MODES, GameObject } from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
@@ -6,7 +6,7 @@ import { pick } from './cmd/pick.mjs';
 import { registerPlayer } from './cmd/registerPlayer.mjs';
 import { gameFinished, gameInfo, gameNotStarted, gameStats } from './cmd/info.mjs';
 import { setup } from './cmd/setup.mjs';
-import { __init } from './cmd/__init.js';
+import { __init, setObjectOnPos } from './cmd/__init.js';
 import { sendTokens } from './cmd/sendTokens.mjs';
 import { sendScores } from './cmd/sendScores.mjs';
 import { useLandmine } from './cmd/landmine.mjs';
@@ -311,8 +311,25 @@ function respawn(round, state) {
   for (let roundToRespawn in state?.gameObjectsToRespawn) {
     if (roundToRespawn <= round) {
       for (let gameObjectToRespawn of state?.gameObjectsToRespawn[roundToRespawn]) {
-        const { tile, pos } = gameObjectToRespawn;
-        state.gameObjectsTilemap[pos.y][pos.x] = tile;
+        const { type, tile, pos } = gameObjectToRespawn;
+        if (pos) {
+          state.gameObjectsTilemap[pos.y][pos.x] = tile;
+          gameObjectToRespawn.constant = true;
+        } else {
+          let calculatedPos;
+          while (!calculatedPos) {
+            ({ pos: calculatedPos } = setObjectOnPos(
+              0,
+              state,
+              state.gameObjectsTilemap,
+              state.gameObjectsTiles,
+              GameObject[type]
+            ));
+          }
+          gameObjectToRespawn.pos = calculatedPos;
+          gameObjectToRespawn.constant = false;
+        }
+
         state.gameObjectsToRespawnInRound.push(gameObjectToRespawn);
       }
       delete state.gameObjectsToRespawn[roundToRespawn];

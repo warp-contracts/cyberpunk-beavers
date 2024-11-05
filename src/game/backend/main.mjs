@@ -3,7 +3,7 @@ import { QuickJsPlugin } from 'warp-contracts-plugin-quickjs';
 import ids from '../config/warp-ao-ids.js';
 import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
-import { maps, GAME_MODES, GAMEPLAY_MODES, DEV_MAP } from '../common/const.mjs';
+import { maps, GAME_MODES, GAMEPLAY_MODES, DEV_MAP, Respawned } from '../common/const.mjs';
 import { readMapFromArweave } from '../../../tools/deploy/deploy-spawn-common.js';
 
 const WS_PORT = 8097;
@@ -171,6 +171,9 @@ async function spawnGame(processId, start, end) {
       roundInterval: 10000,
       startDelay: 5000,
       walletsWhitelist: [],
+      gameObjectsConfig: {
+        respawned: Respawned.random,
+      },
     },
     processEnv.Process.Owner
   );
