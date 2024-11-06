@@ -34,7 +34,11 @@ export function setup(state, action, message) {
       state.round.start = state.playWindow.enter;
       state.round.interval = action.roundInterval || DEFAULT_ROUND_INTERVAL_MS;
 
-      if (state.gameplayMode === GAMEPLAY_MODES.deathmatch || state.gameplayMode === GAMEPLAY_MODES.battleRoyale) {
+      if (
+        state.gameplayMode === GAMEPLAY_MODES.deathmatch ||
+        state.gameplayMode === GAMEPLAY_MODES.battleRoyale ||
+        state.gameplayMode === GAMEPLAY_MODES.horde
+      ) {
         state.playWindow.end = action.end + delay;
         state.playWindow.roundsTotal = calculateTotalRounds(state);
       }
@@ -50,9 +54,6 @@ export function setup(state, action, message) {
           shrinkCount: 0,
           totalShrinkSize: 0,
         };
-      }
-
-      if (state.gameplayMode === GAMEPLAY_MODES.horde) {
       }
 
       console.log(`Setup custom`, action, state.playWindow);

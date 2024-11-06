@@ -28,7 +28,7 @@ export function attack(state, action, timestamp, horde) {
       break;
     }
     // note: hacker beaver can shoot over obstacles, because why not.
-    if (state.obstaclesTilemap[attackPos.y][attackPos.x] > Const.EMPTY_TILE && player.beaverId != 'hacker_beaver') {
+    if (state.obstaclesTilemap[attackPos.y][attackPos.x] > Const.EMPTY_TILE && player.beaverId !== 'hacker_beaver') {
       break;
     }
     if (state.gameplayMode === GAMEPLAY_MODES.horde && state.currentWave) {

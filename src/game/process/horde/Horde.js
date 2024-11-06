@@ -132,7 +132,10 @@ export class Horde {
       monsters: {},
     };
 
-    for (let i = 0; i < MONSTERS_PER_WAVE; i++) {
+    const currentPlayers = Object.keys(state.players).length;
+    const monstersToGenerate = Math.min(currentPlayers * 2, MONSTERS_PER_WAVE);
+
+    for (let i = 0; i < monstersToGenerate; i++) {
       const randomValue = Math.random(++state.randomCounter);
       let monsterIdx = MONSTERS_FOR_WAVE_PROBABILITIES[waveIndex].findIndex((e) => randomValue <= e);
       if (monsterIdx === -1) {
@@ -271,6 +274,7 @@ export class Horde {
     monster.stats.hp.current -= dmg.finalDmg;
     if (monster.stats.hp.current < 0) {
       monster.stats.hp.current = 0;
+      this.state.monstersOnTiles[monster.pos.y][monster.pos.x] = null;
     }
     monster.attackingPlayerId = player.walletAddress;
     const finished = monster.stats.hp === 0;

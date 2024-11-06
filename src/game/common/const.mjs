@@ -4,7 +4,7 @@ const EVENTS_NAME = {
 
 export const DEFAULT_BG_MUSIC = 'backgroundMusic';
 
-export const DEV_MAP = 'b2m4';
+export const DEV_MAP = 'b2m2';
 
 const maps_desert = {
   b1m1: {
@@ -212,7 +212,17 @@ const Tile = {
 
 export const GameObject = {
   ap: { type: 'ap', tile: 0, value: 5, rarity: 10, roundsToRespawn: 5 },
-  hp: { type: 'hp', tile: 1, value: 25, rarity: 10, roundsToRespawn: 5 },
+  hp: {
+    type: 'hp',
+    tile: 1,
+    value: {
+      [GAMEPLAY_MODES.deathmatch]: 25,
+      [GAMEPLAY_MODES.horde]: 50,
+      [GAMEPLAY_MODES.battleRoyale]: 50,
+    },
+    rarity: 10,
+    roundsToRespawn: 5,
+  },
   equipment_mine: { type: 'equipment_mine', tile: 2, value: 20, rarity: 40, roundsToRespawn: 10 },
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 10, roundsToRespawn: 20 },
   scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 10, roundsToRespawn: 20 },
@@ -376,6 +386,16 @@ export const BEAVER_TYPES = {
           max: 260,
         },
       },
+      horde: {
+        hp: {
+          current: 260,
+          max: 260,
+        },
+        ap: {
+          current: 30,
+          max: 30,
+        },
+      },
       scannerRadius: 3,
       drillRadius: 1,
       fov: 6,
@@ -433,6 +453,16 @@ export const BEAVER_TYPES = {
           max: 400,
         },
       },
+      horde: {
+        hp: {
+          current: 400,
+          max: 400,
+        },
+        ap: {
+          current: 28,
+          max: 28,
+        },
+      },
       scannerRadius: 2,
       drillRadius: 1,
       fov: 5,
@@ -488,6 +518,16 @@ export const BEAVER_TYPES = {
         hp: {
           current: 200,
           max: 200,
+        },
+      },
+      horde: {
+        hp: {
+          current: 200,
+          max: 200,
+        },
+        ap: {
+          current: 33,
+          max: 33,
         },
       },
       scannerRadius: 1,

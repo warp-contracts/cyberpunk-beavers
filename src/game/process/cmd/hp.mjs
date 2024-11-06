@@ -18,29 +18,23 @@ export function useHp(state, action) {
     console.log(`Cannot use hp ${walletAddress}. There are no available.`);
     return { player, applied: false };
   }
-  if (player.stats.hp.current == player.stats.hp.max) {
+  if (player.stats.hp.current === player.stats.hp.max) {
     console.log(`Cannot use hp ${walletAddress}. User has maximum hp.`);
     return { player, applied: false };
   }
 
   player.stats.ap.current -= AP_COSTS.hp;
   player.equipment.hp.current -= 1;
-  let hpValue;
+  const baseHpValue = GameObject.hp.value[state.gameplayMode];
   const hpMissing = player.stats.hp.max - player.stats.hp.current;
-  if (hpMissing >= GameObject.hp.value) {
-    hpValue = GameObject.hp.value;
-    player.stats.hp.current += hpValue;
-  } else {
-    hpValue = hpMissing;
-    player.stats.hp.current += hpValue;
-  }
-
-  console.log(`Applied ${hpValue} to player: ${walletAddress}.`);
+  const hpApplied = Math.min(hpMissing, baseHpValue);
+  player.stats.hp.current += hpApplied;
+  console.log(`Applied ${hpApplied} to player: ${walletAddress}.`);
 
   return {
     player,
     scoreToDisplay: scoreToDisplay([
-      { value: hpValue, type: Scores.hp },
+      { value: hpApplied, type: Scores.hp },
       { value: -AP_COSTS.hp, type: Scores.ap },
     ]),
     applied: true,
