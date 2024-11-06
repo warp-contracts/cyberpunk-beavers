@@ -120,6 +120,16 @@ export class Horde {
     return Object.values(this.state.players).filter((p) => p.stats.hp.current > 0);
   }
 
+  // returns 1 if all monsters in the last wave are dead
+  // otherwise returns waveIndex/WAVES_NUMBER rounded to 2 decimal places
+  // - so beating only first wave returns 0
+  progress() {
+    if (this._isLastWave() && this._allMonstersDead()) {
+      return 1;
+    }
+    return Math.floor((this.state.currentWave.index / WAVES_NUMBER) * 100) / 100;
+  }
+
   _generateWave(msgTimestamp) {
     const state = this.state;
     const waveIndex = state.currentWave ? state.currentWave.index + 1 : 0;
@@ -129,6 +139,7 @@ export class Horde {
 
     const newWave = {
       index: waveIndex,
+      // roundEnd is currently not used...
       roundEnd: state.round.current + WAVE_ROUNDS_LIMIT + waveIndex, // hmm...
       monsters: {},
     };
@@ -223,8 +234,8 @@ export class Horde {
       return false;
     }
 
-    if (allMonstersDead()) {
-      if (isLastWave()) {
+    if (this._allMonstersDead()) {
+      if (this._isLastWave()) {
         this.clientUpdates.gameStatus = HORDE_GAME_STATUS.WIN;
         return false;
       } else {
@@ -233,27 +244,16 @@ export class Horde {
       }
     }
 
-    /*if (isWaveFinished()) {
-      // we've already checked whether all monsters have been killed
-      // - so at this point the game is lost...
-      this.clientUpdates.game.status = HORDE_GAME_STATUS.LOOSE;
-      return false;
-    }*/
-
     this.clientUpdates.gameStatus = HORDE_GAME_STATUS.CONTINUE_WAVE;
     return true;
+  }
 
-    function isWaveFinished() {
-      return self.state.round.current > self.state.currentWave.roundEnd;
-    }
+  _allMonstersDead() {
+    return this._aliveMonsters().length === 0;
+  }
 
-    function allMonstersDead() {
-      return self._aliveMonsters().length === 0;
-    }
-
-    function isLastWave() {
-      return self.state.currentWave.index === WAVES_NUMBER - 1;
-    }
+  _isLastWave() {
+    return this.state.currentWave.index === WAVES_NUMBER - 1;
   }
 
   _isNewWaveReady() {

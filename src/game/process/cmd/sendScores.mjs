@@ -2,16 +2,27 @@ import Const, { GAME_MODES, GAMEPLAY_MODES, PRIZES } from '../../common/const.mj
 import { tokenValueLimit } from './sendTokens.mjs';
 const { GameTreasure } = Const;
 
-export function sendScores(state) {
+function calculateEndGamePrize(state, horde) {
+  if (state.gameplayMode === GAMEPLAY_MODES.battleRoyale) {
+    return state.gameplayPrizes || 0;
+  }
+  if (state.gameplayMode === GAMEPLAY_MODES.horde) {
+    const basePrize = state.gameplayPrizes || 0;
+    return basePrize * horde.progress();
+  }
+  return 0;
+}
+
+export function sendScores(state, horde) {
   if (!state.scoresSent) {
-    if (state.gameplayMode === GAMEPLAY_MODES.battleRoyale) {
-      const totalPrize = state.gameplayPrizes || 0;
-      console.log('Total prize for BR mode', totalPrize);
+    if (state.gameplayMode === GAMEPLAY_MODES.battleRoyale || state.gameplayMode === GAMEPLAY_MODES.horde) {
+      const totalPrize = calculateEndGamePrize(state, horde);
+      console.log(`Total prize for ${state.gameplayMode} mode`, totalPrize);
       if (totalPrize > 0) {
         const playersAlive = Object.values(state.players).filter((p) => p.stats.hp.current > 0);
         if (playersAlive.length > 0) {
           const singlePrize = Math.floor(totalPrize / playersAlive.length);
-          console.log('Single prize for BR mode', totalPrize);
+          console.log(`Single prize for ${state.gameplayMode} mode`, totalPrize);
           for (const player of playersAlive) {
             player.stats.coins.gained += singlePrize;
           }

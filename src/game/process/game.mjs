@@ -58,7 +58,7 @@ export function handle(state, message) {
   if (restrictedAccess(state, action, message.Timestamp)) {
     console.log(`The game access is restricted`, action, message.Timestamp, state.playWindow);
     if (gameFinished(state, message.Timestamp)) {
-      sendScores(state);
+      sendScores(state, horde);
       if (!state.tokensTransferred) {
         ao.result({
           cmd: Const.Command.tokensSent,
@@ -77,7 +77,7 @@ export function handle(state, message) {
     return;
   }
 
-  const gameRoundTickResult = gameRoundTick(state, message);
+  const gameRoundTickResult = gameRoundTick(state, message, horde);
   if (gameRoundTickResult?.tokensSent) {
     const { tokensSent, ...output } = gameRoundTickResult;
     ao.result({
@@ -265,7 +265,7 @@ export function handle(state, message) {
   state.gameObjectsToRespawnInRound = [];
 }
 
-function gameRoundTick(state, message) {
+function gameRoundTick(state, message, horde) {
   const tsNow = message.Timestamp; //ms
   const tsChange = tsNow - state.round.start;
   const round = ~~(tsChange / state.round.interval);
@@ -276,7 +276,7 @@ function gameRoundTick(state, message) {
     const roundsToGo = state.playWindow?.roundsTotal - state.round.current;
     // console.log('Rounds to go', roundsToGo);
     if (roundsToGo === 0) {
-      sendScores(state);
+      sendScores(state, horde);
       return {
         tokensSent: true,
         ...sendTokens(state),

@@ -108,7 +108,7 @@ export default class MonsterObject extends Phaser.Physics.Arcade.Sprite {
   }
 
   kill() {
-    this.healthBar.setVisible(false);
+    this.healthBar.destroy();
     this.lock();
     this.anims.stop();
   }
