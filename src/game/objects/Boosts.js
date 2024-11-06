@@ -74,6 +74,7 @@ export class Boosts {
       this.shieldTween = this.player.scene.tweens.add({
         targets: this.shieldFx,
         outerStrength: 12,
+        color: 0xffde21,
         yoyo: true,
         ease: 'sine.inout',
       });

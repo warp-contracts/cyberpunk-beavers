@@ -6,9 +6,9 @@ import { HORDE_GAME_STATUS, MONSTER_TYPES, MONSTERS_HIERARCHY } from '../../comm
 import { ClientUpdates } from './ClientUpdates.js';
 import { Brain } from './Brain.js';
 
-const MONSTERS_PER_WAVE = 2;
+const MAX_MONSTERS_PER_WAVE = 10;
 // remember to update MONSTERS_FOR_WAVE_PROBS if changing this value
-const WAVES_NUMBER = 5;
+const WAVES_NUMBER = 6;
 const WAVE_ROUNDS_LIMIT = 100;
 
 // the amount of rounds before a next monsters wave is generated
@@ -21,6 +21,7 @@ const WAVE_INTERVAL_ROUNDS = 2;
  */
 const MONSTERS_FOR_WAVE_PROBABILITIES = [
   [0.3, 0.6, 0.9, 2, 3],
+  [0.2, 0.4, 0.8, 0.9, 1],
   [0.15, 0.3, 0.7, 0.8, 0.9],
   [0.1, 0.2, 0.4, 0.65, 0.8],
   [0.0, 0.0, 0.3, 0.6, 0.7],
@@ -133,7 +134,7 @@ export class Horde {
     };
 
     const currentPlayers = Object.keys(state.players).length;
-    const monstersToGenerate = Math.min(currentPlayers * 2, MONSTERS_PER_WAVE);
+    const monstersToGenerate = Math.min(currentPlayers * 2, MAX_MONSTERS_PER_WAVE);
 
     for (let i = 0; i < monstersToGenerate; i++) {
       const randomValue = Math.random(++state.randomCounter);

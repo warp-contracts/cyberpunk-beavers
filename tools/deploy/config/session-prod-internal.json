@@ -46,7 +46,18 @@
       "gameBreak": 10000,
       "gameBreak_comment": "10 seconds",
       "games": [
-        { "map": "b2m1" },
+        {
+          "map": "b2m2",
+          "gameplayConfig": {
+            "mode": "horde"
+          }
+        },
+        {
+          "map": "b2m2",
+          "gameplayConfig": {
+            "mode": "horde"
+          }
+        },
         {
           "map": "b2m2",
           "gameplayConfig": {

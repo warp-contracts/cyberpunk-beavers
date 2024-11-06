@@ -107,6 +107,7 @@ export class HordeManager {
             break;
           }
           case 'killed': {
+            monsterObject.stats.hp.current = 0;
             monsterObject.kill();
             monsterObject.deathAnim(action.data.attackingPlayerType, true);
             break;
