@@ -1,42 +1,69 @@
 import { Tag, WarpFactory } from 'warp-contracts';
 import { ArweaveSigner, createData } from 'warp-arbundles/build/node/esm/index.js';
 import Const from './src/game/common/const.mjs';
+import ids from './src/game/config/warp-ao-ids.js';
 
 const direction = Object.values(Const.Direction);
 const characters = ['hacker_beaver', 'speedy_beaver', 'heavy_beaver'];
-const moduleId = 'iZWVADl_rjTu2FQA7jN6zyQYWa3dUbvxztNnCL2gWKM';
-const processIds = [
-  '-H8l8nmg1bwKCG5Cnz_vGLgGhRqahecqYfPPa7M7qQ0',
-  /*'oKolyRBKWf5Y8rdlXh9rd8F4R7Nk0HMnmxS5-WMZ_KM'*/
-];
 
-async function runNpc() {
-  for (let i = 0; i < 5; i++) {
+async function fetchAvailableGames() {
+  let hubState = await (await fetch(`http://localhost:8090/current-state/${ids.hub_processId_local}`)).json();
+  return Object.fromEntries(
+    Object.entries(hubState.result.Output.games).filter(
+      ([_, game]) => Date.now() >= game.playWindow.begin && Date.now() < game.playWindow.end
+    )
+  ); // filter only currently active games
+}
+
+async function runNpc(processes) {
+  console.log(`Processes`, Object.keys(processes));
+  for (let i = 0; i < 19; i++) {
     const warp = WarpFactory.forMainnet();
     const { address, jwk } = await warp.generateWallet();
     const signer = new ArweaveSigner(jwk);
 
-    for (const processId of processIds) {
-      await sendDataItem(
-        {
-          cmd: Const.Command.register,
-          walletAddress: address,
-          beaverId: characters[Math.floor(Math.random() * characters.length)],
-        },
-        signer,
-        moduleId,
-        processId
-      );
-      console.log(`NPC ${address} in the game ${processId}.`);
-      setInterval(async () => {
-        const randomDirection = Math.floor(Math.random() * direction.length);
-        try {
-          await sendDataItem({ cmd: 'dig', dir: direction[randomDirection] }, signer, moduleId, processId);
-        } catch (err) {
-          console.error(err);
-        }
-      }, 100);
+    for (const [processId, game] of Object.entries(processes)) {
+      const {
+        module: moduleId,
+        playWindow: { end },
+      } = game;
+      await registerNpc(signer, address, moduleId, processId);
+
+      (function loop() {
+        setTimeout(async () => {
+          await randomMove(signer, moduleId, processId);
+
+          if (Date.now() < end) {
+            loop();
+          } else {
+            console.log(`Game ${processId} finished. Player ${address} steps down.`);
+          }
+        }, 2000);
+      })();
     }
+  }
+}
+
+async function registerNpc(signer, address, moduleId, processId) {
+  await sendDataItem(
+    {
+      cmd: Const.Command.register,
+      walletAddress: address,
+      beaverId: characters[Math.floor(Math.random() * characters.length)],
+    },
+    signer,
+    moduleId,
+    processId
+  );
+  console.log(`NPC ${address} in the game ${processId}.`);
+}
+
+async function randomMove(signer, moduleId, processId) {
+  const randomDirection = Math.floor(Math.random() * direction.length);
+  try {
+    await sendDataItem({ cmd: 'move', dir: direction[randomDirection] }, signer, moduleId, processId);
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -76,4 +103,6 @@ const createMessageWithTags = (message, processId, moduleId) => {
   };
 };
 
-await runNpc().catch((e) => console.error(e));
+await fetchAvailableGames()
+  .then(runNpc)
+  .catch((e) => console.error(e));

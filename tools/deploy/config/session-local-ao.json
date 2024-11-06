@@ -2,7 +2,7 @@
   "commonSetup": {
     "mode": "ao",
     "walletsWhitelist": [],
-    "playersLimit": 12,
+    "playersLimit": 20,
     "bridgeProcessId": "t6rem72B6xwNnVfzNBETLkCYu5CqpmtgfCSgJt7TTx4",
     "leaderboardProcessId": "lCviigwaPHbR8pUr8H6tbOHP_Syyu1cP4mY9ayrodF0",
     "gameTokens": {
@@ -25,60 +25,50 @@
       "start": {
         "secondsFromNow": -60
       },
-      "gameDuration": 60000,
+      "gameDuration": 420000,
       "gameDuration_comment": "1 minute",
       "gameBreak": 10000,
       "gameBreak_comment": "10 seconds",
-      "games": [
-        { "map": "b1m3" },
-        {
-          "gameplayConfig": {
-            "mode": "deathmatch"
-          },
-          "map": "b1m6",
-          "roundInterval": 2000
-        },
-        {
-          "gameplayConfig": {
-            "mode": "battleRoyale"
-          },
-          "map": "b2m2",
-          "roundInterval": 5000,
-          "playersLimit": 21
-        }
-      ]
+      "games": [{ "map": "b1m3" }]
     },
     {
       "start": {
         "secondsFromNow": 20
       },
-      "gameDuration": 300000,
-      "gameDuration_comment": "5 minutes",
-      "gameBreak": 60000,
-      "gameBreak_comment": "1 minute",
+      "gameDuration": 420000,
+      "gameDuration_comment": "1 minute",
+      "gameBreak": 10000,
+      "gameBreak_comment": "10 seconds",
       "commonSetup": {
-        "mode": "rsg",
-        "gameplayConfig": {
-          "mode": "deathmatch"
-        },
-        "playersLimit": 19,
-        "gameTokens": {
-          "rsg": {
-            "amount": 50
-          }
-        }
+        "playersLimit": 20
       },
-      "games": [
-        { "map": "b1m6" },
-        {
-          "map": "b1m7",
-          "gameplayConfig": {
-            "mode": "battleRoyale",
-            "roundInterval": 5000,
-            "map": "b2m1"
-          }
-        }
-      ]
+      "games": [{ "map": "b1m6" }]
+    },
+    {
+      "start": {
+        "secondsFromNow": 20
+      },
+      "gameDuration": 420000,
+      "gameDuration_comment": "1 minute",
+      "gameBreak": 10000,
+      "gameBreak_comment": "10 seconds",
+      "commonSetup": {
+        "playersLimit": 20
+      },
+      "games": [{ "map": "b1m6" }]
+    },
+    {
+      "start": {
+        "secondsFromNow": 20
+      },
+      "gameDuration": 420000,
+      "gameDuration_comment": "1 minute",
+      "gameBreak": 10000,
+      "gameBreak_comment": "10 seconds",
+      "commonSetup": {
+        "playersLimit": 20
+      },
+      "games": [{ "map": "b1m4" }]
     }
   ],
   "tokensShipment": {
