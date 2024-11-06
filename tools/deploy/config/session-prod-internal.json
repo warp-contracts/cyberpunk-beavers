@@ -15,7 +15,7 @@
       "0x768Ea11A51EB0aD2F041E66139f7FB1A4098A679",
       "0x70746d7d51b1b7b506f42118f55d977371640341"
     ],
-    "playersLimit": 10,
+    "playersLimit": 20,
     "bridgeProcessId": "t6rem72B6xwNnVfzNBETLkCYu5CqpmtgfCSgJt7TTx4",
     "leaderboardProcessId": "lCviigwaPHbR8pUr8H6tbOHP_Syyu1cP4mY9ayrodF0",
     "gameTokens": {
@@ -41,10 +41,10 @@
       "start": {
         "secondsFromNow": 240
       },
-      "gameDuration": 150000,
-      "gameDuration_comment": "5 minutes",
+      "gameDuration": 420000,
+      "gameDuration_comment": "7 minutes",
       "gameBreak": 10000,
-      "gameBreak_comment": "1 minute",
+      "gameBreak_comment": "10 seconds",
       "games": [
         { "map": "b2m1" },
         {
@@ -53,22 +53,39 @@
             "mode": "battleRoyale",
             "roundInterval": 5000
           }
-        },
-        { "map": "b2m3" },
-        {
-          "map": "b2m4",
-          "gameplayConfig": {
-            "mode": "battleRoyale",
-            "roundInterval": 5000
-          }
-        },
-        { "map": "b2m5" }
+        }
       ]
+    },
+    {
+      "start": {
+        "secondsFromNow": 240
+      },
+      "gameDuration": 420000,
+      "gameDuration_comment": "1 minute",
+      "gameBreak": 10000,
+      "gameBreak_comment": "10 seconds",
+      "commonSetup": {
+        "playersLimit": 20
+      },
+      "games": [{ "map": "b2m5" }]
+    },
+    {
+      "start": {
+        "secondsFromNow": 240
+      },
+      "gameDuration": 420000,
+      "gameDuration_comment": "1 minute",
+      "gameBreak": 10000,
+      "gameBreak_comment": "10 seconds",
+      "commonSetup": {
+        "playersLimit": 20
+      },
+      "games": [{ "map": "b2m3" }]
     }
   ],
   "tokensShipment": {
-    "runMainTransfer": true,
-    "runBridgeTransfers": true,
+    "runMainTransfer": false,
+    "runBridgeTransfers": false,
     "mocks": true
   }
 }
