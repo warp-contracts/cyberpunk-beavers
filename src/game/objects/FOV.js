@@ -11,9 +11,11 @@ export class FOV {
   fovTileMap;
   mainScene;
   radius;
+  xray = false;
 
   constructor(mainScene, beaverChoice) {
     console.log('adding FOV layer');
+    this.beaverChoice = beaverChoice;
     this.radius = Const.BEAVER_TYPES[beaverChoice].stats.fov;
 
     const data = Array(mainScene.tileMap.width)
@@ -27,36 +29,39 @@ export class FOV {
     });
 
     const utilTiles = fovMap.addTilesetImage('cyberpunk_game_fov');
-
     this.fovLayer = fovMap.createBlankLayer('Dark', utilTiles, 0, 0).fill(0);
     this.fovLayer.setDepth(FOV_DEPTH);
-
     this.fovTileMap = fovMap;
     this.recalculate();
     console.log('FOV layer added');
     this.obstaclesLayer = mainScene.tileMap.obstaclesLayer;
-
     this.lastPos = new Phaser.Math.Vector2({ x: -1, y: -1 });
     this.mainScene = mainScene;
   }
 
+  setXRay() {
+    this.mainScene.xraySound.play();
+    this.radius = Const.BEAVER_TYPES[this.beaverChoice].stats.fovExtended;
+    this.xray = true;
+    this.mainScene.update();
+  }
+
+  removeXRay() {
+    this.radius = Const.BEAVER_TYPES[this.beaverChoice].stats.fov;
+    this.xray = false;
+    this.mainScene.update();
+  }
+
   recalculate() {
+    const self = this;
     this.mrpas = new Mrpas(this.fovTileMap.width, this.fovTileMap.height, (x, y) => {
-      const tile = this.obstaclesLayer.getTileAt(x, y, true);
-      return tile && tile.index <= Const.EMPTY_TILE; // no obstacle - visible
-      // obstacle next to other obstacle
-      /*|| (tile && tile.index > Const.EMPTY_TILE
-        && (
-          this.obstaclesLayer.getTileAt(x, y + 1, true)?.index > Const.EMPTY_TILE
-          || this.obstaclesLayer.getTileAt(x, y - 1, true)  ?.index > Const.EMPTY_TILE
-          || this.obstaclesLayer.getTileAt(x + 1, y, true)?.index > Const.EMPTY_TILE
-          || this.obstaclesLayer.getTileAt(x - 1, y, true)?.index > Const.EMPTY_TILE
-        ));*/
+      const tile = self.obstaclesLayer.getTileAt(x, y, true);
+      return self.xray || (tile && tile.index <= Const.EMPTY_TILE); // no obstacle - visible
     });
   }
 
   update(pos, bounds) {
-    if (!this.lastPos.equals(pos)) {
+    if (this.xray || !this.lastPos.equals(pos)) {
       this.updateMRPAS(pos);
       this.lastPos = pos.clone();
       for (let y = bounds.y; y < bounds.y + bounds.height; y++) {

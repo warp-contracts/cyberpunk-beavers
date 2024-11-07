@@ -93,6 +93,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('prepare_next_wave', ['assets/audio/prepare_next_wave.m4a']);
   mainScene.load.audio('drill', ['assets/audio/drill.mp3']);
   mainScene.load.audio('shield', ['assets/audio/shield.mp3']);
+  mainScene.load.audio('xray', ['assets/audio/xray.mp3']);
   forDeathSounds((k, i) => loadDeathSound(k, i));
 
   function loadDeathSound(k, i) {

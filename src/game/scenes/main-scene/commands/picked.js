@@ -1,48 +1,52 @@
-import { BEAVER_TYPES, BOOSTS, GameObject, GAMEPLAY_MODES, GameTreasure } from '../../../common/const.mjs';
+import { BEAVER_TYPES, GameObject, GAMEPLAY_MODES, GameTreasure } from '../../../common/const.mjs';
+import { BOOSTS } from '../../../common/BOOSTS.mjs';
 
-export function executePick(response, self) {
+export function executePick(response, mainScene) {
   const picked = response.picked;
   const player = response.player;
   if (picked) {
-    self.allPlayers[player?.walletAddress].boosts.active = player?.activeBoosts;
+    mainScene.allPlayers[player?.walletAddress].boosts.active = player?.activeBoosts;
     const { x, y } = picked?.prevPos || player?.pos;
-    self.gameObjectsLayer?.removeTileAt(x, y);
-    removeSprite(self, picked, x, y);
-    if (self.mainPlayer?.walletAddress === player?.walletAddress) {
-      playSound(picked, self);
-      self.mainPlayer.equipment = player?.equipment;
+    mainScene.gameObjectsLayer?.removeTileAt(x, y);
+    removeSprite(mainScene, picked, x, y);
+    if (mainScene.mainPlayer?.walletAddress === player?.walletAddress) {
+      playSound(picked, mainScene);
+      mainScene.mainPlayer.equipment = player?.equipment;
       if (picked.type === GameObject.show_map.type) {
-        BOOSTS.show_map.effect(self.fov);
+        BOOSTS.show_map.effect(mainScene.fov);
       }
       if (picked.type === GameObject.hazard.type) {
-        handleHazard(picked, self, player);
+        handleHazard(picked, mainScene, player);
+      }
+      if (response.player.activeBoosts[BOOSTS.xray.type]) {
+        BOOSTS.xray.effect(mainScene.fov);
       }
     } else {
-      self.allPlayers[player.walletAddress]?.pickAnim();
+      mainScene.allPlayers[player.walletAddress]?.pickAnim();
     }
 
     if (response.player.activeBoosts[BOOSTS.quad_damage.type]) {
-      self.allPlayers[response.player.walletAddress].boosts.showQuadDamageBoost();
+      mainScene.allPlayers[response.player.walletAddress].boosts.showQuadDamageBoost();
     }
 
     if (response.player.activeBoosts[BOOSTS.shield.type]) {
-      self.allPlayers[response.player.walletAddress].boosts.showShieldBoost();
+      mainScene.allPlayers[response.player.walletAddress].boosts.showShieldBoost();
     }
 
     if (player.onGameTreasure?.tile > 0) {
-      self.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
+      mainScene.gameTreasuresLayer?.putTileAt(GameTreasure.hole.tile, x, y);
     }
 
-    if (picked.type == GameTreasure.gun.type && !self.theGunCollectedSound.isPlaying) {
-      self.theGunCollectedSound.play();
+    if (picked.type === GameTreasure.gun.type && !mainScene.theGunCollectedSound.isPlaying) {
+      mainScene.theGunCollectedSound.play();
     }
-    self.displayPlayerScore(response.scoreToDisplay, player.walletAddress);
+    mainScene.displayPlayerScore(response.scoreToDisplay, player.walletAddress);
   } else {
-    if (self.mainPlayer?.walletAddress === player.walletAddress) {
-      self.noCollectSound.play();
+    if (mainScene.mainPlayer?.walletAddress === player.walletAddress) {
+      mainScene.noCollectSound.play();
     }
   }
-  self.updateStats(player, response.gameStats);
+  mainScene.updateStats(player, response.gameStats);
 }
 
 function removeSprite(self, picked, x, y) {

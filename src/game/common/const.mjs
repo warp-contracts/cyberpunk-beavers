@@ -227,11 +227,12 @@ export const GameObject = {
   teleport_device: { type: 'teleport_device', tile: 3, value: 50, rarity: 10, roundsToRespawn: 20 },
   scanner_device: { type: 'scanner_device', tile: 4, value: 50, rarity: 10, roundsToRespawn: 20 },
   quad_damage: { type: 'quad_damage', tile: 5, value: 500, rarity: 3, roundsToRespawn: 5 },
-  show_map: { type: 'show_map', tile: 6, value: 200, rarity: 5, roundsToRespawn: 10 },
+  show_map: { type: 'show_map', tile: 6, value: 200, rarity: 2, roundsToRespawn: 10 },
   hazard: { type: 'hazard', tile: 7, value: 1000, rarity: 0, roundsToRespawn: 100 },
   drill: { type: 'drill', tile: 8, value: 100, rarity: 10, roundsToRespawn: 20 },
   shield: { type: 'shield', tile: 9, value: 300, rarity: 5, roundsToRespawn: 20 },
-  none: { type: 'none', tile: 10, value: 0 },
+  xray: { type: 'xray', tile: 10, value: 300, rarity: 5, roundsToRespawn: 10 },
+  none: { type: 'none', tile: 11, value: 0 },
 
   // invisible
   active_mine: { type: 'active_mine', tile: 0, value: 0, damage: 75 },
@@ -320,35 +321,6 @@ export const BonusType = {
   KillBonus: 'KillBonus',
 };
 
-export const BOOSTS = {
-  quad_damage: {
-    type: 'quad_damage',
-    effect: (baseDmg) => baseDmg * 4,
-    duration_rounds: 2,
-  },
-  show_map: {
-    type: 'show_map',
-    effect: (fov) => {
-      for (let y = 0; y < fov.fovTileMap.height; y++) {
-        for (let x = 0; x < fov.fovTileMap.width; x++) {
-          const tile = fov.fovLayer.getTileAt(x, y, true);
-          if (!tile.seen) {
-            tile.seen = true;
-            tile.desiredAlpha = FOG_ALPHA;
-            tile.setAlpha(tile.desiredAlpha);
-          }
-        }
-      }
-    },
-    duration_rounds: Number.MAX_SAFE_INTEGER,
-  },
-  shield: {
-    type: 'shield',
-    effect: (baseDmg, player) => baseDmg * player.stats.shield,
-    duration_rounds: 2,
-  },
-};
-
 export const WEAPONS = {
   sniper_rifle_basic: {
     type: 'sniper_rifle_basic',
@@ -408,6 +380,7 @@ export const BEAVER_TYPES = {
       scannerRadius: 3,
       drillRadius: 1,
       fov: 6,
+      fovExtended: 6,
       ap: {
         current: 22,
         max: 22,
@@ -475,6 +448,7 @@ export const BEAVER_TYPES = {
       scannerRadius: 2,
       drillRadius: 1,
       fov: 5,
+      fovExtended: 7,
       ap: {
         current: 20,
         max: 20,
@@ -542,6 +516,7 @@ export const BEAVER_TYPES = {
       scannerRadius: 1,
       drillRadius: 1,
       fov: 4,
+      fovExtended: 6,
       ap: {
         current: 25,
         max: 25,

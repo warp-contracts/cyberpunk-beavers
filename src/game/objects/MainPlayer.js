@@ -1,7 +1,8 @@
-import Const, { AP_COSTS, BOOSTS, FOV_DEPTH, MAIN_PLAYER_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
+import Const, { AP_COSTS, FOV_DEPTH, MAIN_PLAYER_DEPTH, MINIMAP_SIZE_PX } from '../common/const.mjs';
 import Player from './Player.js';
 import { doPlayAttackSound } from '../scenes/main-scene/sounds.js';
 import { CAMERA_MARGIN } from '../scenes/main-scene/camera.js';
+import { BOOSTS } from '../common/BOOSTS.mjs';
 
 const { up, left, right, down } = Const.Direction;
 const { attack, move, pick, dig, useLandmine, useTeleport, useScanner, useHp, useDrill } = Const.Command;

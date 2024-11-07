@@ -19,6 +19,7 @@ const gameObjectsToAdd = {
   [GameObject.hazard.type]: { x: 144, y: 48 },
   [GameObject.drill.type]: { x: 0, y: 96 },
   [GameObject.shield.type]: { x: 48, y: 96 },
+  [GameObject.xray.type]: { x: 96, y: 96 },
 };
 let spriteSyncedTime = null;
 const baseTileUnit = 48;

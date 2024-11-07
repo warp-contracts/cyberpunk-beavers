@@ -1,6 +1,7 @@
-import Const, { GAMEPLAY_MODES, GAME_MODES, BOOSTS, AP_COSTS } from '../../common/const.mjs';
+import Const, { GAMEPLAY_MODES, GAME_MODES, AP_COSTS } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
+import { BOOSTS } from '../../common/BOOSTS.mjs';
 
 export function attack(state, action, timestamp, horde) {
   const player = state.players[action.walletAddress];
