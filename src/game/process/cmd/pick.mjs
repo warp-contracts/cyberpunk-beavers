@@ -1,7 +1,8 @@
 import { addCoins, scoreToDisplay } from '../../common/tools.mjs';
-import Const, { BOOSTS, Respawned } from '../../common/const.mjs';
+import Const, { Respawned } from '../../common/const.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 import { lootPlayer, respawnPlayer } from './attack.mjs';
+import { BOOSTS } from '../../common/BOOSTS.mjs';
 
 const { GameObject, GameTreasure, Scores, GAME_MODES } = Const;
 
@@ -45,6 +46,7 @@ export function pick(state, action, message) {
     case GameObject.quad_damage.type:
     case GameObject.shield.type:
     case GameObject.show_map.type:
+    case GameObject.xray.type:
       return pickBoost(state, player, {
         value,
         type,

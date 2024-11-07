@@ -53,6 +53,7 @@ function initState(message, state) {
       GameObject.hazard,
       GameObject.drill,
       GameObject.shield,
+      GameObject.xray,
       GameObject.none,
     ],
     gameHiddenObjects: Array(mapHeight)

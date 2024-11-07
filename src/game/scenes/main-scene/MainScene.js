@@ -1,5 +1,5 @@
 import Player from '../../objects/Player.js';
-import Const, { BEAVER_TYPES, BOOSTS, GameObject, GAMEPLAY_MODES, MAIN_PLAYER_DEPTH } from '../../common/const.mjs';
+import Const, { BEAVER_TYPES, GameObject, GAMEPLAY_MODES, MAIN_PLAYER_DEPTH } from '../../common/const.mjs';
 import MainPlayer from '../../objects/MainPlayer.js';
 import { Text } from '../../objects/Text.js';
 import { serverConnection } from '../../lib/serverConnection.js';
@@ -27,6 +27,7 @@ import { handleAttacked } from './commands/attacked.js';
 import { executeDrill } from './commands/drilled.js';
 import { HordeManager } from './HordeManager.js';
 import { executePick } from './commands/picked.js';
+import { BOOSTS } from '../../common/BOOSTS.mjs';
 
 const { GameTreasure } = Const;
 
@@ -246,6 +247,28 @@ export default class MainScene extends Phaser.Scene {
       return;
     }
 
+    if (this.mainPlayer) {
+      const camera = this.cameras.main;
+      if (camera.worldView.x === 0 && camera.worldView.y === 0) {
+        //sometimes initial camera coords are fucked, therefore FOV calculation is fucked up
+        //and everything is fucking black, until player moves.
+        return;
+      }
+
+      const player = new Phaser.Math.Vector2({
+        x: this.tileMap.worldToTileX(this.mainPlayer.x),
+        y: this.tileMap.worldToTileY(this.mainPlayer.y),
+      });
+
+      const bounds = new Phaser.Geom.Rectangle(
+        this.tileMap.worldToTileX(camera.worldView.x) - 1,
+        this.tileMap.worldToTileY(camera.worldView.y) - 1,
+        this.tileMap.worldToTileX(camera.worldView.width) + 2,
+        this.tileMap.worldToTileY(camera.worldView.height) + 2
+      );
+      this.fov?.update(player, bounds);
+    }
+
     if (this.gameEnter && !this.gameActive && !this.gameEnterTimeUp) {
       this.waitForGameEnter();
     }
@@ -267,27 +290,6 @@ export default class MainScene extends Phaser.Scene {
       this.allPlayers[p].update();
     });
 
-    if (this.mainPlayer) {
-      const camera = this.cameras.main;
-      if (camera.worldView.x === 0 && camera.worldView.y === 0) {
-        //sometimes initial camera coords are fucked, therefore FOV calculation is fucked up
-        //and everything is fucking black, until player moves.
-        return;
-      }
-
-      const player = new Phaser.Math.Vector2({
-        x: this.tileMap.worldToTileX(this.mainPlayer.x),
-        y: this.tileMap.worldToTileY(this.mainPlayer.y),
-      });
-
-      const bounds = new Phaser.Geom.Rectangle(
-        this.tileMap.worldToTileX(camera.worldView.x) - 1,
-        this.tileMap.worldToTileY(camera.worldView.y) - 1,
-        this.tileMap.worldToTileX(camera.worldView.width) + 2,
-        this.tileMap.worldToTileX(camera.worldView.height) + 2
-      );
-      this.fov?.update(player, bounds);
-    }
     m.redraw();
     this.lastAttack.criticalHit = false;
   }
@@ -410,13 +412,15 @@ export default class MainScene extends Phaser.Scene {
       if (!response.player.activeBoosts[BOOSTS.shield.type]) {
         self.allPlayers[response.player.walletAddress].boosts.hideShieldBoost();
       }
+      if (!response.player.activeBoosts[BOOSTS.xray.type]) {
+        self.fov.removeXRay();
+      }
     }
 
     switch (cmd) {
       case Const.Command.activated: {
-        if (self.mainPlayer?.walletAddress == responsePlayer?.walletAddress) {
+        if (self.mainPlayer?.walletAddress === responsePlayer?.walletAddress) {
           self.gameActive = true;
-          // self.gameActiveSound.play();
         }
         break;
       }

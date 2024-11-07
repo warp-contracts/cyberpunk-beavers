@@ -41,6 +41,7 @@ export function doAddSounds(mainScene) {
   mainScene.prepareNextWave = mainScene.sound.add('prepare_next_wave', { loop: false, volume: 4.0 });
   mainScene.drillSound = mainScene.sound.add('drill', { loop: false, volume: 0.5 });
   mainScene.shieldSound = mainScene.sound.add('shield', { loop: false, volume: 2.0 });
+  mainScene.xraySound = mainScene.sound.add('xray', { loop: false, volume: 1.0 });
 
   forDeathSounds((k, i) => addDeathSound(k, i));
 
