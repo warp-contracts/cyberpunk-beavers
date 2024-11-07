@@ -145,7 +145,8 @@ export class Horde {
     };
 
     const currentPlayers = Object.keys(state.players).length;
-    const monstersToGenerate = Math.min(currentPlayers * 2, MAX_MONSTERS_PER_WAVE);
+    const monstersMultiplier = this.progress() <= 0.5 ? 3 : 2;
+    const monstersToGenerate = Math.min(currentPlayers * monstersMultiplier, MAX_MONSTERS_PER_WAVE);
 
     for (let i = 0; i < monstersToGenerate; i++) {
       const randomValue = Math.random(++state.randomCounter);
