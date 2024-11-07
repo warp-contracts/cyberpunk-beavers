@@ -17,10 +17,10 @@
       },
       "war": {
         "amount": 20
-      },
-      "gameObjectsConfig": {
-        "respawned": "random"
       }
+    },
+    "gameObjectsConfig": {
+      "respawned": "random"
     }
   },
   "sessions": [
@@ -32,7 +32,7 @@
       "gameDuration_comment": "1 minute",
       "gameBreak": 10000,
       "gameBreak_comment": "10 seconds",
-      "games": [{ "map": "b1m3" }]
+      "games": [{ "map": "b2m3" }]
     },
     {
       "start": {
@@ -45,7 +45,7 @@
       "commonSetup": {
         "playersLimit": 20
       },
-      "games": [{ "map": "b1m6" }]
+      "games": [{ "map": "b2m1" }]
     },
     {
       "start": {
@@ -58,20 +58,7 @@
       "commonSetup": {
         "playersLimit": 20
       },
-      "games": [{ "map": "b1m6" }]
-    },
-    {
-      "start": {
-        "secondsFromNow": 20
-      },
-      "gameDuration": 420000,
-      "gameDuration_comment": "1 minute",
-      "gameBreak": 10000,
-      "gameBreak_comment": "10 seconds",
-      "commonSetup": {
-        "playersLimit": 20
-      },
-      "games": [{ "map": "b1m4" }]
+      "games": [{ "map": "b2m2" }]
     }
   ],
   "tokensShipment": {
