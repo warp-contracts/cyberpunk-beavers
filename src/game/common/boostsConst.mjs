@@ -1,4 +1,4 @@
-import { FOG_ALPHA } from './const.mjs';
+import { FOG_ALPHA } from './mapsLayersConst.mjs';
 
 export const BOOSTS = {
   quad_damage: {

@@ -1,5 +1,6 @@
-import { BEAVER_TYPES, GameObject, GAMEPLAY_MODES, GameTreasure } from '../../../common/const.mjs';
-import { BOOSTS } from '../../../common/BOOSTS.mjs';
+import { BEAVER_TYPES, GAMEPLAY_MODES, GameTreasure } from '../../../common/const.mjs';
+import { BOOSTS } from '../../../common/boostsConst.mjs';
+import { GameObject } from '../../../common/gameObject.mjs';
 
 export function executePick(response, mainScene) {
   const picked = response.picked;

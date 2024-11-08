@@ -1,4 +1,5 @@
-import { GameObject, GameTreasure } from '../../../common/const.mjs';
+import { GameTreasure } from '../../../common/const.mjs';
+import { GameObject } from '../../../common/gameObject.mjs';
 
 export function executeDrill(response, self) {
   if (response.player.walletAddress !== self.mainPlayer?.walletAddress) {

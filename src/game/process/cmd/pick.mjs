@@ -1,10 +1,10 @@
 import { addCoins, scoreToDisplay } from '../../common/tools.mjs';
-import Const, { Respawned } from '../../common/const.mjs';
-import { calculatePlayerRandomPos } from './registerPlayer.mjs';
+import Const from '../../common/const.mjs';
 import { lootPlayer, respawnPlayer } from './attack.mjs';
-import { BOOSTS } from '../../common/BOOSTS.mjs';
+import { BOOSTS } from '../../common/boostsConst.mjs';
+import { GameObject, Respawned } from '../../common/gameObject.mjs';
 
-const { GameObject, GameTreasure, Scores, GAME_MODES } = Const;
+const { GameTreasure, Scores, GAME_MODES } = Const;
 
 export function pick(state, action, message) {
   const walletAddress = action.walletAddress;
@@ -120,7 +120,7 @@ function pickHazardItem(state, player, timestamp) {
       ]),
     };
   } else {
-    const dmg = Const.GameObject.active_mine.damage;
+    const dmg = GameObject.active_mine.damage;
     player.stats.hp.current -= dmg;
     const prevPos = player.pos;
     let finished = false;
@@ -200,7 +200,7 @@ function addGameObjectToRespawn(state, gameObjectType, player) {
   const gameObjectToRespawn = {
     type: gameObjectType,
     tile: GameObject[gameObjectType].tile,
-    pos: state.gameObjectsConfig.respawned == Respawned.constant ? player.pos : null,
+    pos: state.gameObjectsConfig.respawned === Respawned.constant ? player.pos : null,
   };
 
   if (!respawnInRound) {

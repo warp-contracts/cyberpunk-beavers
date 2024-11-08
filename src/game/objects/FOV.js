@@ -1,6 +1,7 @@
 import { Mrpas } from 'mrpas';
 import Phaser from 'phaser';
-import Const, { FOG_ALPHA, FOV_DEPTH } from '../common/const.mjs';
+import Const from '../common/const.mjs';
+import { EMPTY_TILE, FOG_ALPHA, FOV_DEPTH } from '../common/mapsLayersConst.mjs';
 
 const lightDropoff = [/*0.35, 0.3, 0.25, */ 0.15, 0.1, 0.05];
 
@@ -56,7 +57,7 @@ export class FOV {
     const self = this;
     this.mrpas = new Mrpas(this.fovTileMap.width, this.fovTileMap.height, (x, y) => {
       const tile = self.obstaclesLayer.getTileAt(x, y, true);
-      return self.xray || (tile && tile.index <= Const.EMPTY_TILE); // no obstacle - visible
+      return self.xray || (tile && tile.index <= EMPTY_TILE); // no obstacle - visible
     });
   }
 

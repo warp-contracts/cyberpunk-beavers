@@ -1,7 +1,8 @@
 import { scoreToDisplay } from '../../common/tools.mjs';
 import Const from '../../common/const.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
 
-const { GameObject, GameTreasure, Scores } = Const;
+const { GameTreasure, Scores } = Const;
 
 export function dig(state, action) {
   const player = state.players[action.walletAddress];

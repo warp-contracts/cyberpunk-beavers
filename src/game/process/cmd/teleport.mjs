@@ -1,8 +1,7 @@
 import Const, { AP_COSTS } from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
-
-const { GameObject } = Const;
+import { GameObject } from '../../common/gameObject.mjs';
 
 export function teleportPlayer(state, action) {
   const { walletAddress } = action;

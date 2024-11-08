@@ -2,7 +2,7 @@ import { calculatePlayerRandomPos } from '../cmd/registerPlayer.mjs';
 import Const, { AP_COSTS, GAME_MODES } from '../../common/const.mjs';
 import { calculateLootBonus } from '../cmd/attack.mjs';
 import { addCoins } from '../../common/tools.mjs';
-import { HORDE_GAME_STATUS, MONSTER_TYPES, MONSTERS_HIERARCHY } from '../../common/horde-const.mjs';
+import { HORDE_GAME_STATUS, MONSTER_TYPES, MONSTERS_HIERARCHY } from '../../common/hordeConst.mjs';
 import { ClientUpdates } from './ClientUpdates.js';
 import { Brain } from './Brain.js';
 

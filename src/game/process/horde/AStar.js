@@ -1,7 +1,6 @@
 import Const from '../../common/const.mjs';
 import { getSnakeDistance } from './Horde.js';
-
-const { EMPTY_TILE } = Const;
+import { EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
 
 export class AStar {
   constructor(obstaclesGrid, playersGrid, monstersGrid) {

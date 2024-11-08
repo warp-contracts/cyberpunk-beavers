@@ -1,5 +1,6 @@
 import { doPlayAttackSound, doPlayOpponentFinishedSound } from '../sounds';
-import { FRONT_LAYER_DEPTH, GAMEPLAY_MODES } from '../../../common/const.mjs';
+import { GAMEPLAY_MODES } from '../../../common/const.mjs';
+import { FRONT_LAYER_DEPTH } from '../../../common/mapsLayersConst.mjs';
 
 export function handleAttacked(response, mainScene) {
   const isKillerMainPlayer = response.player?.walletAddress === mainScene.mainPlayer?.walletAddress;

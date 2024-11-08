@@ -1,5 +1,5 @@
 import Player from '../../objects/Player.js';
-import Const, { BEAVER_TYPES, GameObject, GAMEPLAY_MODES, MAIN_PLAYER_DEPTH } from '../../common/const.mjs';
+import Const, { BEAVER_TYPES, GAMEPLAY_MODES } from '../../common/const.mjs';
 import MainPlayer from '../../objects/MainPlayer.js';
 import { Text } from '../../objects/Text.js';
 import { serverConnection } from '../../lib/serverConnection.js';
@@ -27,7 +27,9 @@ import { handleAttacked } from './commands/attacked.js';
 import { executeDrill } from './commands/drilled.js';
 import { HordeManager } from './HordeManager.js';
 import { executePick } from './commands/picked.js';
-import { BOOSTS } from '../../common/BOOSTS.mjs';
+import { BOOSTS } from '../../common/boostsConst.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
+import { MAIN_PLAYER_DEPTH } from '../../common/mapsLayersConst.mjs';
 
 const { GameTreasure } = Const;
 
@@ -539,7 +541,7 @@ export default class MainScene extends Phaser.Scene {
           if (!self.allPlayers[responsePlayer.walletAddress]) {
             self.addOtherPlayer(responsePlayer);
           } else {
-            if (response.encounter?.type === Const.GameObject.active_mine.type) {
+            if (response.encounter?.type === GameObject.active_mine.type) {
               const mineLeftByMainPlayer = response.encounter?.leftBy === self.mainPlayer?.walletAddress;
               if (mineLeftByMainPlayer) {
                 self.clearLandmine(responsePlayer.movedPos);

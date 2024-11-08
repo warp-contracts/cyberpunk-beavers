@@ -1,8 +1,8 @@
-import { GameObject } from '../../common/const.mjs';
 import MonsterObject, { MONSTER_TO_BEAVER } from '../../objects/MonsterObject.js';
 import { scoreToDisplay } from '../../common/tools.mjs';
 import { doPlayAttackSound } from './sounds.js';
-import { HORDE_GAME_STATUS } from '../../common/horde-const.mjs';
+import { HORDE_GAME_STATUS } from '../../common/hordeConst.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
 
 export class HordeManager {
   constructor(scene) {

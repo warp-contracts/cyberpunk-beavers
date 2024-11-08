@@ -1,5 +1,6 @@
 import { createDataItemSigner, dryrun } from '@permaweb/aoconnect';
-import { DEV_MAP, GAME_MODES, GameTreasure, maps } from '../common/const.mjs';
+import { GAME_MODES, GameTreasure } from '../common/const.mjs';
+import { DEV_MAP, maps } from '../common/mapsLayersConst.mjs';
 
 export function getEnv() {
   const urlParams = new URLSearchParams(window.location.search);

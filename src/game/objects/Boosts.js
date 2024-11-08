@@ -1,4 +1,4 @@
-import { BOOSTS } from '../common/BOOSTS.mjs';
+import { BOOSTS } from '../common/boostsConst.mjs';
 
 export class Boosts {
   active;

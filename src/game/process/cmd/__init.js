@@ -1,10 +1,8 @@
-import Const, {
-  COLLISIONS_LAYER,
-  DEFAULT_ROUND_INTERVAL_MS,
-  DEFAULT_GAME_OBJECTS_CONFIG,
-} from '../../common/const.mjs';
+import Const, { DEFAULT_ROUND_INTERVAL_MS } from '../../common/const.mjs';
+import { DEFAULT_GAME_OBJECTS_CONFIG, GameObject } from '../../common/gameObject.mjs';
+import { COLLISIONS_LAYER, EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
 
-const { GameObject, GameTreasure, Scores, Map, EMPTY_TILE } = Const;
+const { GameTreasure, Scores, Map } = Const;
 
 export function __init(state, message) {
   state = Object.assign(state, initState(message, state));
@@ -24,10 +22,41 @@ function tryLoadLayer(type, rawMap) {
   return layer;
 }
 
+function overwriteGameObjectParams(gameObjectsTiles, items) {
+  if (!items) {
+    return;
+  }
+
+  for (const item of items) {
+    const gameObjectIdx = gameObjectsTiles.findIndex((o) => o.type === item.type);
+    gameObjectsTiles[gameObjectIdx] = {
+      ...gameObjectsTiles[gameObjectIdx],
+      ...item,
+    };
+  }
+}
+
 function initState(message, state) {
   const obstaclesLayer = tryLoadLayer(COLLISIONS_LAYER, state.rawMap);
   const mapWidth = obstaclesLayer.width;
   const mapHeight = obstaclesLayer.height;
+
+  const gameObjectsTiles = [
+    GameObject.ap,
+    GameObject.hp,
+    GameObject.teleport_device,
+    GameObject.equipment_mine,
+    GameObject.scanner_device,
+    GameObject.quad_damage,
+    GameObject.show_map,
+    GameObject.hazard,
+    GameObject.drill,
+    GameObject.shield,
+    GameObject.xray,
+    GameObject.none,
+  ];
+
+  overwriteGameObjectParams(gameObjectsTiles, state.gameObjectsConfig?.items);
 
   return {
     nextModuleId: null,
@@ -42,20 +71,7 @@ function initState(message, state) {
       height: mapHeight,
     },
     lastTxs: [],
-    gameObjectsTiles: [
-      GameObject.ap,
-      GameObject.hp,
-      GameObject.teleport_device,
-      GameObject.equipment_mine,
-      GameObject.scanner_device,
-      GameObject.quad_damage,
-      GameObject.show_map,
-      GameObject.hazard,
-      GameObject.drill,
-      GameObject.shield,
-      GameObject.xray,
-      GameObject.none,
-    ],
+    gameObjectsTiles,
     gameHiddenObjects: Array(mapHeight)
       .fill([])
       .map(() => Array(mapHeight)),

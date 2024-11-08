@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { MINIMAP_SIZE_PX } from '../../common/const.mjs';
+
+import { MINIMAP_SIZE_PX } from '../../common/mapsLayersConst.mjs';
 
 let lastPointerDownTime = 0;
 

@@ -1,7 +1,8 @@
-import Const, { maps } from '../../src/game/common/const.mjs';
+import Const from '../../src/game/common/const.mjs';
 import ids from '../../src/game/config/warp-ao-ids.js';
 import fs from 'fs';
 import { addTokenProcessIds } from './token-keeper.js';
+import { maps } from '../../src/game/common/mapsLayersConst.mjs';
 
 export function gameSetup(env, gameConfig, overrideConfig = {}) {
   const hubProcessId = ids[`hub_processId_${env}`];

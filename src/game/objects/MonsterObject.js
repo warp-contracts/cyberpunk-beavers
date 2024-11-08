@@ -1,6 +1,7 @@
-import Const, { BEAVER_TYPES, PLAYER_DEPTH } from '../common/const.mjs';
+import Const, { BEAVER_TYPES } from '../common/const.mjs';
 import Phaser from 'phaser';
-import { MONSTER_TYPES, MONSTERS_HIERARCHY } from '../common/horde-const.mjs';
+import { MONSTER_TYPES, MONSTERS_HIERARCHY } from '../common/hordeConst.mjs';
+import { PLAYER_DEPTH } from '../common/mapsLayersConst.mjs';
 
 export const MONSTER_TO_BEAVER = {
   [MONSTER_TYPES.private.type]: BEAVER_TYPES.hacker_beaver.name,

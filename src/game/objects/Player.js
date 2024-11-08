@@ -1,8 +1,9 @@
-import Const, { BEAVER_TYPES, GAMEPLAY_MODES, PLAYER_DEPTH } from '../common/const.mjs';
+import Const, { BEAVER_TYPES, GAMEPLAY_MODES } from '../common/const.mjs';
 import { convertToCamelCase, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { Boosts } from './Boosts.js';
-import { BOOSTS } from '../common/BOOSTS.mjs';
+import { BOOSTS } from '../common/boostsConst.mjs';
+import { PLAYER_DEPTH } from '../common/mapsLayersConst.mjs';
 
 const RANKING_TO_TEXTURE = {
   1: 'medal_gold',

@@ -1,7 +1,8 @@
 import Const from '../../common/const.mjs';
 import { scoreToDisplay } from '../../common/tools.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
 
-const { GameObject, AP_COSTS, Scores } = Const;
+const { AP_COSTS, Scores } = Const;
 
 export function useHp(state, action) {
   const { walletAddress } = action;

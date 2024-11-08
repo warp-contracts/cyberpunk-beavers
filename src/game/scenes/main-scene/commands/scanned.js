@@ -1,5 +1,5 @@
-import { FOV_DEPTH } from '../../../common/const.mjs';
 import { SCANNED_COLOR } from '../../../utils/style';
+import { FOV_DEPTH } from '../../../common/mapsLayersConst.mjs';
 
 export function executeScan(response, mainScene) {
   if (!response.area.length) return;

@@ -1,6 +1,7 @@
 import Const, { AP_COSTS } from '../../common/const.mjs';
 import { finishHim } from './attack.mjs';
 import { scoreToDisplay } from '../../common/tools.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
 
 export function useLandmine(state, action) {
   const { walletAddress } = action;
@@ -23,7 +24,7 @@ export function useLandmine(state, action) {
   player.stats.ap.current -= AP_COSTS.landmine;
   player.equipment.landmines.current -= 1;
   state.gameHiddenObjects[player.pos.y][player.pos.x] = {
-    type: Const.GameObject.active_mine.type,
+    type: GameObject.active_mine.type,
     owner: walletAddress,
   };
 
@@ -35,9 +36,9 @@ export function useLandmine(state, action) {
 
 export function triggerLandmine(state, player, landmine) {
   const damage = {
-    baseDmg: Const.GameObject.active_mine.damage,
+    baseDmg: GameObject.active_mine.damage,
     range: 0,
-    type: Const.GameObject.active_mine.type,
+    type: GameObject.active_mine.type,
   };
   state.gameHiddenObjects[player.pos.y][player.pos.x] = undefined;
   return finishHim(state.players[landmine.owner], player, damage, state);

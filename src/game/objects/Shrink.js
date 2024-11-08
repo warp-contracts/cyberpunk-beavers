@@ -1,4 +1,5 @@
-import Const, { FOV_DEPTH } from '../common/const.mjs';
+import Const from '../common/const.mjs';
+import { FOV_DEPTH } from '../common/mapsLayersConst.mjs';
 
 export class Shrink {
   shrinkMap;

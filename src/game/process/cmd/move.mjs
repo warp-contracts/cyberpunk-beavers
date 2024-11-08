@@ -1,8 +1,9 @@
 import Const from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
 import { triggerLandmine } from './landmine.mjs';
-import { calculatePlayerRandomPos } from './registerPlayer.mjs';
-const { GameObject, Map, LOW_AP_COST, NO_AP_COST, EMPTY_TILE, GameTreasure } = Const;
+import { EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
+const { LOW_AP_COST, NO_AP_COST, GameTreasure } = Const;
 
 export function movePlayer(state, action) {
   const { walletAddress, dir } = action;
@@ -66,7 +67,7 @@ export function movePlayer(state, action) {
 
     if (encounter?.type === GameObject.active_mine.type) {
       const { finished, revenge, loot, tokenTransfer, damage } = triggerLandmine(state, player, hiddenObject);
-      scores.push({ value: -damage.finalDmg, type: Const.GameObject.hp.type });
+      scores.push({ value: -damage.finalDmg, type: GameObject.hp.type });
 
       if (parseInt(loot) > 0) {
         opponentScores.push({ value: loot, type: Const.Scores.coin });

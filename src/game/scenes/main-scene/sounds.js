@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import Const, { BEAVER_TYPES, DEFAULT_BG_MUSIC, maps } from '../../common/const.mjs';
+import Const, { BEAVER_TYPES } from '../../common/const.mjs';
+import { DEFAULT_BG_MUSIC, maps } from '../../common/mapsLayersConst.mjs';
 
 export function doAddSounds(mainScene) {
   mainScene.gameActiveSound = mainScene.sound.add('game_active_sound', { loop: false, volume: 1.0 });

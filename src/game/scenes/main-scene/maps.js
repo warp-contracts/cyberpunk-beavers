@@ -1,11 +1,12 @@
-import Const, {
+import Const from '../../common/const.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
+import {
   COLLISIONS_LAYER,
   FRONT_LAYER_DEPTH,
   FRONT_LAYER_PREFIX,
-  GameObject,
   OBJECTS_DEPTH,
   OBSTACLES_DEPTH,
-} from '../../common/const.mjs';
+} from '../../common/mapsLayersConst.mjs';
 
 const gameObjectsTextureKey = `cyberpunk_game_objects`;
 const gameObjectsToAdd = {

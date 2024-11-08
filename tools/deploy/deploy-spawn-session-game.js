@@ -1,9 +1,10 @@
 import ids from '../../src/game/config/warp-ao-ids.js';
 import { argument, dateFromArg, mandatoryArg } from './../common.mjs';
-import { deployModule, sendAction, transferToken, spawnGame } from './deploy-spawn-common.js';
+import { deployModule, sendAction, spawnGame } from './deploy-spawn-common.js';
 import { gameSetup, schedulesForEnv } from './deploy-session-schedule.js';
 import { handleTokenTransfers } from './token-keeper.js';
-import { maps } from '../../src/game/common/const.mjs';
+
+import { maps } from '../../src/game/common/mapsLayersConst.mjs';
 
 // LOCAL OR PROD
 const env = mandatoryArg('env', "Specify 'env' flash with either 'local' or 'prod' value");

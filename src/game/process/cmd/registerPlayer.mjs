@@ -1,8 +1,9 @@
 import Const, { GAME_MODES } from '../../common/const.mjs';
 import { calculateRandomPos } from './__init';
 import { checkWhitelist } from './queue.mjs';
+import { EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
 
-const { BEAVER_TYPES, Map, EMPTY_TILE, GameTreasure } = Const;
+const { BEAVER_TYPES, Map, GameTreasure } = Const;
 
 export function registerPlayer(state, action) {
   const { beaverId, userName, balance, generatedWalletAddress, walletAddress } = action;

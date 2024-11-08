@@ -1,4 +1,4 @@
-import Const, { MAX_LAST_TXS, GAMEPLAY_MODES, GameObject } from '../common/const.mjs';
+import Const, { MAX_LAST_TXS, GAMEPLAY_MODES } from '../common/const.mjs';
 import { attack } from './cmd/attack.mjs';
 import { movePlayer } from './cmd/move.mjs';
 import { dig } from './cmd/dig.mjs';
@@ -16,6 +16,7 @@ import { scan } from './cmd/scan.mjs';
 import { useHp } from './cmd/hp.mjs';
 import { Horde } from './horde/Horde.js';
 import { drill } from './cmd/drill.js';
+import { GameObject } from '../common/gameObject.mjs';
 
 function restrictedAccess(state, action, ts) {
   return (

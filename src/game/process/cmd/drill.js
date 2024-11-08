@@ -1,8 +1,10 @@
 import { scoreToDisplay } from '../../common/tools.mjs';
 import Const, { AP_COSTS } from '../../common/const.mjs';
 import { getAreaAroundPlayer } from './scan.mjs';
+import { EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
 
-const { GameObject, GameTreasure, Scores, EMPTY_TILE } = Const;
+const { GameTreasure, Scores } = Const;
 
 export function drill(state, action) {
   const player = state.players[action.walletAddress];

@@ -1,7 +1,8 @@
 import { getChebyshevDistance, getSnakeDistance } from './Horde.js';
 import { calculateDamage } from '../cmd/attack.mjs';
-import Const, { GameObject } from '../../common/const.mjs';
+import Const from '../../common/const.mjs';
 import { AStar } from './AStar.js';
+import { GameObject } from '../../common/gameObject.mjs';
 
 // how much of the generated path monsters 'remember' before
 // recalculating the path again
@@ -107,7 +108,7 @@ export class Brain {
       if (hiddenObject?.type === GameObject.active_mine.type) {
         self._state.gameHiddenObjects[monster.pos.y][monster.pos.x] = null;
         self._monsters.playerAttack = {
-          dmg: { finalDmg: Const.GameObject.active_mine.damage },
+          dmg: { finalDmg: GameObject.active_mine.damage },
           player: self._state.players[hiddenObject.owner],
           monster,
         };

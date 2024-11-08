@@ -1,7 +1,9 @@
 import Const, { GAMEPLAY_MODES, GAME_MODES, AP_COSTS } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
-import { BOOSTS } from '../../common/BOOSTS.mjs';
+import { BOOSTS } from '../../common/boostsConst.mjs';
+import { EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
+import { GameObject } from '../../common/gameObject.mjs';
 
 export function attack(state, action, timestamp, horde) {
   const player = state.players[action.walletAddress];
@@ -29,7 +31,7 @@ export function attack(state, action, timestamp, horde) {
       break;
     }
     // note: hacker beaver can shoot over obstacles, because why not.
-    if (state.obstaclesTilemap[attackPos.y][attackPos.x] > Const.EMPTY_TILE && player.beaverId !== 'hacker_beaver') {
+    if (state.obstaclesTilemap[attackPos.y][attackPos.x] > EMPTY_TILE && player.beaverId !== 'hacker_beaver') {
       break;
     }
     if (state.gameplayMode === GAMEPLAY_MODES.horde && state.currentWave) {
@@ -62,8 +64,8 @@ export function attack(state, action, timestamp, horde) {
       state,
       timestamp
     );
-    const playerScores = [{ value: -AP_COSTS.attack, type: Const.GameObject.ap.type }];
-    const opponentScores = [{ value: -damage.finalDmg, type: Const.GameObject.hp.type }];
+    const playerScores = [{ value: -AP_COSTS.attack, type: GameObject.ap.type }];
+    const opponentScores = [{ value: -damage.finalDmg, type: GameObject.hp.type }];
 
     if (parseInt(loot) > 0) {
       playerScores.push({ value: loot, type: Const.Scores.coin });
@@ -88,7 +90,7 @@ export function attack(state, action, timestamp, horde) {
 export function calculateDamage(objectWithWeapon, opponent, damageFigures, state) {
   const { range } = damageFigures;
   const baseDmg = damageFigures.baseDmg || objectWithWeapon.stats.weapon.damage[range];
-  if (damageFigures.type === Const.GameObject.active_mine.type) {
+  if (damageFigures.type === GameObject.active_mine.type) {
     return {
       range,
       baseDmg,
