@@ -27,7 +27,11 @@ export class HordeManager {
         this.processNewWave(game.newWave);
         this.prepareNextWavePlayed = false;
         this.scene.waitingForNewWave = false;
-        this.scene.newWave.play();
+        if (game.isLastWave) {
+          this.scene.bringItOn.play();
+        } else {
+          this.scene.newWave.play();
+        }
         break;
       }
       case HORDE_GAME_STATUS.WAITING_FOR_WAVE: {

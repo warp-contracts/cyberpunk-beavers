@@ -180,6 +180,7 @@ export class Horde {
     this.clientUpdates.gameStatus = HORDE_GAME_STATUS.NEW_WAVE;
     this.clientUpdates.waveNumber = waveIndex + 1;
     this.clientUpdates.newWave = newWave;
+    this.clientUpdates.isLastWave = this._isLastWave();
 
     console.log('Wave generated');
 

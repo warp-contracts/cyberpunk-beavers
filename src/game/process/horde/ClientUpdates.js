@@ -48,6 +48,10 @@ export class ClientUpdates {
     this._updates.game.newWave = value;
   }
 
+  set isLastWave(value) {
+    this._updates.game.isLastWave = value;
+  }
+
   set aliveMonsters(value) {
     this._updates.game.aliveMonsters = value;
   }

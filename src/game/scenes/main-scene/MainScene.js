@@ -75,6 +75,7 @@ export default class MainScene extends Phaser.Scene {
     this.hordeAliveMonsters = 0;
     this.hordeAlivePlayers = 0;
     this.hordeWaveNumber = 0;
+    this.lastUpdateTs = 0;
   }
 
   preload() {
@@ -334,6 +335,7 @@ export default class MainScene extends Phaser.Scene {
 
   handleMessage(response, lag, msgWalletAddress) {
     const self = this;
+    self.lastUpdateTs = Date.now();
     const cmd = response.cmd;
 
     if (!self.isEverythingFuckingInitialized && !REGISTER_COMMANDS.includes(cmd)) {
@@ -637,8 +639,10 @@ export default class MainScene extends Phaser.Scene {
       this.hordeManager.processUpdate(response);
       if (!this.tickIntervalId) {
         this.tickIntervalId = setInterval(() => {
-          self.server.send({ cmd: Const.Command.tick }).then();
-        }, 800);
+          if (Date.now() - self.lastUpdateTs > 600) {
+            self.server.send({ cmd: Const.Command.tick }).then();
+          }
+        }, 350);
       }
     }
   }
