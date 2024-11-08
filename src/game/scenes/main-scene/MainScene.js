@@ -448,6 +448,14 @@ export default class MainScene extends Phaser.Scene {
               : response.hordeTick
                 ? GAMEPLAY_MODES.horde
                 : GAMEPLAY_MODES.deathmatch;
+
+            if (self.mode === GAMEPLAY_MODES.horde && !self.tickIntervalId) {
+              self.tickIntervalId = setInterval(() => {
+                if (Date.now() - self.lastUpdateTs > 800) {
+                  self.server.send({ cmd: Const.Command.tick }).then();
+                }
+              }, 350);
+            }
             if (self.gameEnd) {
               self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
             }
@@ -639,13 +647,6 @@ export default class MainScene extends Phaser.Scene {
 
     if (response.hordeTick && !this.gameOver) {
       this.hordeManager.processUpdate(response);
-      if (!this.tickIntervalId) {
-        this.tickIntervalId = setInterval(() => {
-          if (Date.now() - self.lastUpdateTs > 600) {
-            self.server.send({ cmd: Const.Command.tick }).then();
-          }
-        }, 350);
-      }
     }
   }
 

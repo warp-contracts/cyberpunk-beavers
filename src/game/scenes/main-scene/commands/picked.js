@@ -19,7 +19,7 @@ export function executePick(response, mainScene) {
       if (picked.type === GameObject.hazard.type) {
         handleHazard(picked, mainScene, player);
       }
-      if (response.player.activeBoosts[BOOSTS.xray.type]) {
+      if (picked.type === GameObject.xray.type) {
         BOOSTS.xray.effect(mainScene.fov);
       }
     } else {

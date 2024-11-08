@@ -34,6 +34,8 @@ function overwriteGameObjectParams(gameObjectsTiles, items) {
       ...item,
     };
   }
+
+  console.log(JSON.stringify(gameObjectsTiles, null, 2));
 }
 
 function initState(message, state) {
