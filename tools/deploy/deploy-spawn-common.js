@@ -3,6 +3,7 @@ import { Tag } from 'warp-contracts';
 import { createData } from 'warp-arbundles';
 import { ArweaveSigner } from 'warp-contracts-plugin-deploy';
 import { createDataItemSigner, message } from '@permaweb/aoconnect';
+import { gzipSync } from 'node:zlib';
 
 const jwk = JSON.parse(readFileSync('./.secrets/wallet.json', 'utf-8'));
 const signer = new ArweaveSigner(jwk);
@@ -20,7 +21,7 @@ export async function deployModule(processName) {
     new Tag('Compute-Limit', '9000000000000'),
     new Tag('Salt', '' + Date.now()),
   ];
-  const moduleDataItem = createData(module, signer, { tags: moduleTags });
+  const moduleDataItem = createData(gzipSync(module), signer, { tags: moduleTags });
   await moduleDataItem.sign(signer);
   const moduleResponse = await fetch('https://up.arweave.net/tx', {
     method: 'POST',
