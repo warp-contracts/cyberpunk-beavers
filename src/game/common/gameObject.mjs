@@ -7,7 +7,7 @@ export const GameObject = {
     tile: 1,
     value: {
       [GAMEPLAY_MODES.deathmatch]: 25,
-      [GAMEPLAY_MODES.horde]: 50,
+      [GAMEPLAY_MODES.horde]: 75,
       [GAMEPLAY_MODES.battleRoyale]: 50,
     },
     rarity: 10,

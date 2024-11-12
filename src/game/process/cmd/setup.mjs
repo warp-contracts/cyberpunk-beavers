@@ -1,4 +1,5 @@
 import Const, { DEFAULT_ROUND_INTERVAL_MS, GAMEPLAY_MODES, PRIZES } from '../../common/const.mjs';
+import { allGameObjectTiles, overwriteGameObjectParams, setVisibleGameObjects } from './__init.js';
 
 const SetupTimes = {
   custom: 'custom',
@@ -19,6 +20,11 @@ export function setup(state, action, message) {
   state.playersLimit = action.playersLimit || state.playersLimit || Const.Queue.defaultLimit;
   state.walletsWhitelist = action.walletsWhitelist || state.walletsWhitelist;
   state.gameObjectsConfig = action.gameObjectsConfig || state.gameObjectsConfig;
+  if (action.gameObjectsConfig?.items?.length > 0) {
+    state.gameObjectsTiles = allGameObjectTiles();
+    overwriteGameObjectParams(state.gameObjectsTiles, action.gameObjectsConfig.items);
+    setVisibleGameObjects(state);
+  }
   state.tokensTransferred = action.tokensTransferred || state.tokensTransferred;
   state.scoresSent = action.scoresSent || state.scoresSent;
   state.mode = action.mode || state.mode || Const.GAME_MODES.default.type;

@@ -168,13 +168,19 @@ async function spawnGame(processId, start, end) {
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
       gameplayConfig: {
-        mode: GAMEPLAY_MODES.horde,
+        mode: GAMEPLAY_MODES.deathmatch,
       },
       roundInterval: 10000,
       startDelay: 5000,
       walletsWhitelist: [],
       gameObjectsConfig: {
         respawned: Respawned.random,
+        items: [
+          { type: 'shield', value: 300, rarity: 20, roundsToRespawn: 20 },
+          { type: 'quad_damage', value: 500, rarity: 50, roundsToRespawn: 5 },
+          { type: 'drill', rarity: 0 },
+          { type: 'scanner_device', rarity: 0 },
+        ],
       },
     },
     processEnv.Process.Owner

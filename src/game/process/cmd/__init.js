@@ -22,13 +22,14 @@ function tryLoadLayer(type, rawMap) {
   return layer;
 }
 
-function overwriteGameObjectParams(gameObjectsTiles, items) {
+export function overwriteGameObjectParams(gameObjectsTiles, items) {
   if (!items) {
     return;
   }
 
   for (const item of items) {
     const gameObjectIdx = gameObjectsTiles.findIndex((o) => o.type === item.type);
+    console.log('Overwriting item', item.type);
     gameObjectsTiles[gameObjectIdx] = {
       ...gameObjectsTiles[gameObjectIdx],
       ...item,
@@ -38,12 +39,8 @@ function overwriteGameObjectParams(gameObjectsTiles, items) {
   console.log(JSON.stringify(gameObjectsTiles, null, 2));
 }
 
-function initState(message, state) {
-  const obstaclesLayer = tryLoadLayer(COLLISIONS_LAYER, state.rawMap);
-  const mapWidth = obstaclesLayer.width;
-  const mapHeight = obstaclesLayer.height;
-
-  const gameObjectsTiles = [
+export function allGameObjectTiles() {
+  return [
     GameObject.ap,
     GameObject.hp,
     GameObject.teleport_device,
@@ -57,7 +54,16 @@ function initState(message, state) {
     GameObject.xray,
     GameObject.none,
   ];
+}
 
+function initState(message, state) {
+  const obstaclesLayer = tryLoadLayer(COLLISIONS_LAYER, state.rawMap);
+  const mapWidth = obstaclesLayer.width;
+  const mapHeight = obstaclesLayer.height;
+
+  const gameObjectsTiles = allGameObjectTiles();
+
+  console.log('======== OVERWRITE GAME OBJECT PARAMS ====', state.gameObjectsConfig?.items);
   overwriteGameObjectParams(gameObjectsTiles, state.gameObjectsConfig?.items);
 
   return {
@@ -120,7 +126,7 @@ function generateTilemap(input, width) {
   return result;
 }
 
-function setVisibleGameObjects(state) {
+export function setVisibleGameObjects(state) {
   state.gameObjectsTilemap = setGameObjectsTilesOnMap(state, [GameObject.none], 0);
   for (let gameObject of state.gameObjectsTiles) {
     setObjectsOnRandomPositions(state, gameObject, gameObject.rarity, state.gameObjectsTilemap, state.gameObjectsTiles);
@@ -156,7 +162,7 @@ export function calculateRandomPos(state, max) {
 function setObjectsOnRandomPositions(state, gameObject, rarity, tilemap, tiles) {
   let gameObjectCount = 0;
   tiles = Object.values(tiles).map((t) => {
-    if (t.type != GameObject.none.type) return t.tile;
+    if (t.type !== GameObject.none.type) return t.tile;
   });
 
   while (gameObjectCount < rarity) {
