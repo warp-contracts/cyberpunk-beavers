@@ -13,7 +13,7 @@ export function doPreloadAssets(mainScene) {
 
   preloadDesertMapAssets(mainScene);
   preloadCityMapAssets(mainScene);
-  // preloadHauntedMapAssets(mainScene);
+  preloadHauntedMapAssets(mainScene);
 
   loadSpriteSheet(mainScene, 'cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 

@@ -10,6 +10,7 @@
     "deploy-session:local": "yarn build && node tools/deploy/deploy-spawn-session.js --env local --config ao",
     "deploy-session:local:rsg": "yarn build && node tools/deploy/deploy-spawn-session.js --env local --config rsg",
     "deploy-session:local:horde": "yarn build && node tools/deploy/deploy-spawn-session.js --env local --config horde",
+    "deploy-session:prod:internal:horde": "yarn build && node tools/deploy/deploy-spawn-session.js --env prod --config internal-horde",
     "deploy-session-game:local": "yarn build && node tools/deploy/deploy-spawn-session-game.js --env local --config ao --time $1",
     "deploy-session:prod:internal": "yarn build && node tools/deploy/deploy-spawn-session.js --env prod --config internal",
     "deploy-session:prod:eu": "yarn build && node tools/deploy/deploy-spawn-session.js --env prod --config open-eu",
