@@ -40,6 +40,7 @@
     "@ardrive/turbo-sdk": "latest",
     "@permaweb/ao-loader": "^0.0.36",
     "@permaweb/aoconnect": "^0.0.55",
+    "ar-gql": "^2.0.2",
     "arweave": "^1.15.1",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
