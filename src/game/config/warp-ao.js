@@ -46,6 +46,9 @@ window.warpAO = {
     new Tag('Data-Protocol', 'ao'),
     new Tag('Type', 'Message'),
     new Tag('Variant', 'ao.TN.1'),
+    new Tag('Application', 'cyberpunk.beavers'),
+    new Tag('env', window.warpAO?.config?.env),
+    new Tag('mode', window.warpAO?.config?.mode),
     new Tag(
       'Lag',
       `${JSON.stringify({
