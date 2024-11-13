@@ -13,6 +13,7 @@ import { formatCoin, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { showGui } from '../utils/mithril.js';
 import { LeaderboardGui } from '../gui/LeaderboardGui.js';
+import m from 'mithril';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {

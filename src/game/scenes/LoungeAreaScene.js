@@ -12,6 +12,7 @@ import { loadMapTxId } from '../utils/utils.js';
 import Phaser from 'phaser';
 import { LoungeArenaSceneGui } from '../gui/LoungeArenaSceneGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
+import m from 'mithril';
 
 export default class LoungeAreaScene extends Phaser.Scene {
   beaverId;

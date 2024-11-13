@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import m from 'mithril';
 
 export class Preloader extends Scene {
   constructor() {

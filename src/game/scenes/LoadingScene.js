@@ -1,6 +1,7 @@
 import { connectWalletSceneKey, loadingSceneKey } from '../../main.js';
 import Phaser from 'phaser';
 import { doPreloadAssets } from './main-scene/preload.js';
+import m from 'mithril';
 
 export default class LoadingScene extends Phaser.Scene {
   constructor() {

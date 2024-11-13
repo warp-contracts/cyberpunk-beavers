@@ -30,6 +30,7 @@ import { executePick } from './commands/picked.js';
 import { BOOSTS } from '../../common/boostsConst.mjs';
 import { GameObject } from '../../common/gameObject.mjs';
 import { MAIN_PLAYER_DEPTH } from '../../common/mapsLayersConst.mjs';
+import m from 'mithril';
 
 const { GameTreasure } = Const;
 

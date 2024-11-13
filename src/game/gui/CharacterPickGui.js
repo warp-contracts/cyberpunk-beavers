@@ -1,5 +1,6 @@
 import { BEAVER_TYPES, BonusType, GameTreasure, GAME_MODES } from '../common/const.mjs';
 import { playClick } from '../utils/mithril';
+import m from 'mithril';
 
 export function CharacterPickGui() {
   return {

@@ -1,4 +1,5 @@
 import { WeaponInfo } from './WeaponInfo.js';
+import m from 'mithril';
 
 export function Equipment() {
   return {

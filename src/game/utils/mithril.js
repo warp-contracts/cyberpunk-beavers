@@ -1,3 +1,5 @@
+import m from 'mithril';
+
 export function showGui(noPointerEvents) {
   const guiRoot = document.getElementById('mithril-gui');
   guiRoot.classList.toggle('mithril-gui-show', true);

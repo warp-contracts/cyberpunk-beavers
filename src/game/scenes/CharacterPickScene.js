@@ -3,6 +3,7 @@ import { mainSceneKey, characterPickSceneKey, mainSceneLoadingKey } from '../../
 import Phaser from 'phaser';
 import { CharacterPickGui } from '../gui/CharacterPickGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
+import m from 'mithril';
 
 export default class CharacterPickScene extends Phaser.Scene {
   constructor() {

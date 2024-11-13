@@ -1,5 +1,6 @@
 import { dryrun } from '@permaweb/aoconnect';
 import { GameTreasure } from '../../common/const.mjs';
+import m from 'mithril';
 
 export const GlobalScore = {
   list: [],

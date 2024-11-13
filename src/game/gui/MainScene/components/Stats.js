@@ -1,5 +1,6 @@
 import { formatCoin, trimString } from '../../../utils/utils';
 import Const, { GAME_MODES } from '../../../common/const.mjs';
+import m from 'mithril';
 
 const { GameTreasure } = Const;
 

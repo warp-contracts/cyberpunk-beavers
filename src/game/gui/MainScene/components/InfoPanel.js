@@ -1,4 +1,4 @@
-import { formatCountdownTo } from '../../LoungeArenaSceneGui';
+import m from 'mithril';
 
 export function InfoPanel() {
   return {

@@ -1,6 +1,7 @@
 import { GAME_MODES } from '../common/const.mjs';
 import { playClick } from '../utils/mithril.js';
 import { trimString } from '../utils/utils.js';
+import m from 'mithril';
 
 export function LeaderboardGui(initialVnode) {
   return {

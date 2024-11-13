@@ -3,6 +3,7 @@ import { ArweaveSigner } from 'warp-arbundles';
 import { playClick } from '../utils/mithril.js';
 import MetaMaskSDK from '@metamask/sdk';
 import { getAddress } from '@ethersproject/address';
+import m from 'mithril';
 
 const CHANGE_SCENE_TIMEOUT_MS = window.warpAO.config.env === 'dev' ? 0 : 2000;
 
