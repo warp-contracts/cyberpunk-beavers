@@ -12,6 +12,7 @@ import { GameHubGui } from '../gui/GameHubGui.js';
 import { hideGui, showGui } from '../utils/mithril.js';
 import { loadMapTxId } from '../utils/utils.js';
 import { safeGet } from 'warp-contracts';
+import m from 'mithril';
 
 export default class GameHubScene extends Phaser.Scene {
   gameButtons;

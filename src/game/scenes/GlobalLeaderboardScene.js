@@ -3,6 +3,7 @@ import { connectWalletSceneKey, gameHubSceneKey, globalLeaderboardSceneKey } fro
 import Phaser from 'phaser';
 import { hideGui, showGui } from '../utils/mithril.js';
 import { GlobalLeaderboardGui } from '../gui/Leaderboard/GlobalLeaderboardGui.js';
+import m from 'mithril';
 
 export default class GlobalLeaderboardScene extends Phaser.Scene {
   constructor() {

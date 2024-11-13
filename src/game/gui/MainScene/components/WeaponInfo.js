@@ -1,3 +1,5 @@
+import m from 'mithril';
+
 export function WeaponInfo() {
   function calculateRecoveryPercent(stats) {
     if (stats.previousAttackTs === null) {

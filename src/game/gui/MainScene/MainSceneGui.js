@@ -4,6 +4,7 @@ import { PlayerInfo, SpectatorStats } from './components/Stats';
 import { KeyboardMapping } from './components/KeyboardMapping';
 import { formatCountdownTo } from '../LoungeArenaSceneGui.js';
 import { formatLag } from '../GameHubGui.js';
+import m from 'mithril';
 
 export function MainSceneGui() {
   let visible = false;

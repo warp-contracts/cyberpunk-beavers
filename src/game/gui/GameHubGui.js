@@ -1,6 +1,7 @@
 import { trimString } from '../utils/utils.js';
 import { playClick } from '../utils/mithril.js';
 import { GAMEPLAY_MODE_LABEL } from '../common/const.mjs';
+import m from 'mithril';
 
 export function GameHubGui() {
   return {

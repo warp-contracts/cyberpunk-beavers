@@ -5,6 +5,7 @@ import { showGui, hideGui } from '../utils/mithril.js';
 import { WebFontFile } from '../objects/WebFontFile.js';
 import { checkProfile, checkProfileRsg } from '../utils/utils.js';
 import { GAME_MODES } from '../common/const.mjs';
+import m from 'mithril';
 
 export default class ConnectWalletScene extends Phaser.Scene {
   constructor() {

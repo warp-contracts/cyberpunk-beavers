@@ -1,3 +1,5 @@
+import m from 'mithril';
+
 export function KeyboardMapping() {
   return {
     view: function (vnode) {

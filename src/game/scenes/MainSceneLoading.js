@@ -1,6 +1,7 @@
 import { Text } from '../objects/Text.js';
 import { mainSceneLoadingKey } from '../../main.js';
 import Phaser from 'phaser';
+import m from 'mithril';
 
 export default class MainSceneLoading extends Phaser.Scene {
   constructor() {

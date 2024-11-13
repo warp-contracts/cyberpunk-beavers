@@ -2,6 +2,7 @@ import { GlobalScore as PlayerGlobalScore } from './GlobalScore.js';
 import { GAME_MODES, GameTreasure } from '../../common/const.mjs';
 import { playClick } from '../../utils/mithril.js';
 import { displayName, formatToken } from '../../utils/utils.js';
+import m from 'mithril';
 
 export function GlobalLeaderboardGui() {
   let currentPage = 1;
