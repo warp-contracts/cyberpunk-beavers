@@ -22,7 +22,11 @@ export function pick(state, action, message) {
 
   switch (type) {
     case GameObject.hp.type:
-      return pickEquipment(state, player, { value, type: GameObject.hp.type, equipmentType: `hp` });
+      return pickEquipment(state, player, {
+        value: GameObject.hp.value[state.gameplayMode] || 0,
+        type: GameObject.hp.type,
+        equipmentType: `hp`,
+      });
     case GameObject.ap.type:
       return pickAP(state, player, value);
     case GameObject.equipment_mine.type:
