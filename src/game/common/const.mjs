@@ -435,8 +435,8 @@ export const PRIZES = {
     [GAME_MODES.rsg.type]: 20_000,
   },
   [GAMEPLAY_MODES.horde]: {
-    [GAME_MODES.ao.type]: 40_000,
-    [GAME_MODES.rsg.type]: 40_000,
+    [GAME_MODES.ao.type]: 20_000,
+    [GAME_MODES.rsg.type]: 20_000,
   },
 };
 

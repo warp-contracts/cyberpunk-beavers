@@ -39,7 +39,7 @@ export const MONSTER_TYPES = {
       critical_hit_multiplier: [1.8, 1.5, 1.2],
     },
     move_recovery_ms: 900,
-    points_multiplier: 1.2,
+    points_multiplier: 1.1,
   },
   lieutenant: {
     type: 'lieutenant',
@@ -56,7 +56,7 @@ export const MONSTER_TYPES = {
       critical_hit_multiplier: [2.0, 1.8, 1.5],
     },
     move_recovery_ms: 800,
-    points_multiplier: 1.4,
+    points_multiplier: 1.2,
   },
   captain: {
     type: 'captain',
@@ -73,7 +73,7 @@ export const MONSTER_TYPES = {
       critical_hit_multiplier: [1.8, 1.6, 1.4, 1.2],
     },
     move_recovery_ms: 700,
-    points_multiplier: 1.6,
+    points_multiplier: 1.3,
   },
   major: {
     type: 'major',
@@ -90,7 +90,7 @@ export const MONSTER_TYPES = {
       critical_hit_multiplier: [1.9, 1.7, 1.4, 1.2],
     },
     move_recovery_ms: 600,
-    points_multiplier: 1.8,
+    points_multiplier: 1.4,
   },
   colonel: {
     type: 'colonel',
@@ -107,7 +107,7 @@ export const MONSTER_TYPES = {
       critical_hit_multiplier: [2.0, 1.8, 1.6, 1.4, 1.2],
     },
     move_recovery_ms: 500,
-    points_multiplier: 2.0,
+    points_multiplier: 1.5,
   },
 };
 
