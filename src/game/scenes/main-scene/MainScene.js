@@ -389,6 +389,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     const responsePlayer = response.player;
+    const isMainPlayer = responsePlayer.walletAddress === self.mainPlayer?.walletAddress;
     if (self.allPlayers && response?.player?.walletAddress) {
       if (self.allPlayers[responsePlayer.walletAddress]?.isLocked()) return;
     }
@@ -551,8 +552,6 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.teleported:
       case Const.Command.moved:
         {
-          console.log('moved');
-          const isMainPlayer = responsePlayer.walletAddress === self.mainPlayer?.walletAddress;
           if (!self.allPlayers[responsePlayer.walletAddress]) {
             self.addOtherPlayer(responsePlayer);
           } else {
@@ -629,13 +628,13 @@ export default class MainScene extends Phaser.Scene {
       }
 
       case Const.Command.hpApplied: {
-        if (!response.applied) {
+        if (!response.applied && isMainPlayer) {
           self.noCollectSound.play();
           return;
         }
         self.updateStats(responsePlayer, response.gameStats);
         self.displayPlayerScore(response.scoreToDisplay, responsePlayer.walletAddress);
-        self.allPlayers[responsePlayer.walletAddress]?.playHealEffect();
+        if (isMainPlayer) self.allPlayers[responsePlayer.walletAddress]?.playHealEffect();
         break;
       }
     }

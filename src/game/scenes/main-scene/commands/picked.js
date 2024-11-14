@@ -56,7 +56,7 @@ function removeSprite(self, picked, x, y) {
     spriteToRemove.picked = true;
   } else if (spriteToRemove) {
     spriteToRemove.destroy();
-    self.gameObjectsSprites[y][x] = {};
+    self.gameObjectsSprites[y][x] = null;
   }
 }
 
