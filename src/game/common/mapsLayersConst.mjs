@@ -12,7 +12,7 @@ export const FRONT_LAYER_PREFIX = 'front';
 
 export const DEFAULT_BG_MUSIC = 'backgroundMusic';
 
-export const DEV_MAP = 'b2m2';
+export const DEV_MAP = 'b3m4';
 
 const maps_desert = {
   b1m1: {

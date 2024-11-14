@@ -54,7 +54,7 @@
       "gameDuration_comment": "5 minutes",
       "gameBreak": 10000,
       "gameBreak_comment": "10 seconds",
-      "games": [{ "map": "b2m2" }, { "map": "b2m4" }, { "map": "b2m2" }, { "map": "b2m4" }]
+      "games": [{ "map": "b2m2" }, { "map": "b3m4" }, { "map": "b2m2" }, { "map": "b3m4" }]
     }
   ],
   "tokensShipment": {

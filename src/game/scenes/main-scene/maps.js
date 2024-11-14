@@ -45,7 +45,6 @@ export function doCreateTileMap(mainScene) {
     mainScene.tileMap.addTilesetImage('CC_City_Exterior_C', 'map_sheet_city_4'),
 
     // haunted tilesets
-    mainScene.tileMap.addTilesetImage('hauntedhouse_A2_dark_expanded', 'hauntedhouse_A2_dark_expanded'),
     mainScene.tileMap.addTilesetImage('hauntedhouse_E_destroyed_dark', 'hauntedhouse_E_destroyed_dark'),
     mainScene.tileMap.addTilesetImage('hauntedhouse_D_dark', 'hauntedhouse_D_dark'),
     mainScene.tileMap.addTilesetImage('hauntedhouse_A4_dark_expanded', 'hauntedhouse_A4_dark_expanded'),
