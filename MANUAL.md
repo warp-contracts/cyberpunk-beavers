@@ -48,6 +48,7 @@ The aim of the game is to gain the most amount of points and win in one of the a
 1. deathmatch - where players collect tokens and fight each others, respawning after each death
 2. battle royale - where additionally the map shrinks in certain moments of the game and players are not
    respawned after death.
+3. horde - players cooperate and try to defeat new waves of monsters
 
 ### Core mechanics
 
