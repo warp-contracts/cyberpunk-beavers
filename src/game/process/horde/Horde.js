@@ -300,6 +300,7 @@ export class Horde {
         action: {
           type: monster.stats.hp.current === 0 ? 'killed' : 'attacked',
           data: {
+            attackingPlayer: player.walletAddress,
             attackingPlayerType: player.stats.name,
             hp: monster.stats.hp.current,
           },

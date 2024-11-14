@@ -82,6 +82,7 @@ export class HordeManager {
       const monsterObject = self.monsters[monsterId];
       const actions = monsterUpdates.actions;
       for (const action of actions) {
+        const isAttackingMainPlayer = action.data.attackingPlayer == self.scene.mainPlayer.walletAddress;
         switch (action.type) {
           case 'move': {
             const { encounter, newPosition } = action.data;
@@ -101,19 +102,19 @@ export class HordeManager {
             break;
           }
           case 'attacked': {
-            monsterObject.bloodSplatAnim(true);
+            monsterObject.bloodSplatAnim(isAttackingMainPlayer);
             monsterObject.stats.hp.current = action.data.hp;
             monsterObject.updateStats(monsterObject.stats);
             break;
           }
           case 'landmine': {
-            monsterObject.bloodSplatAnim(true);
+            monsterObject.bloodSplatAnim(isAttackingMainPlayer);
             break;
           }
           case 'killed': {
             monsterObject.stats.hp.current = 0;
             monsterObject.kill();
-            monsterObject.deathAnim(action.data.attackingPlayerType, true);
+            monsterObject.deathAnim(action.data.attackingPlayerType, isAttackingMainPlayer);
             break;
           }
         }
