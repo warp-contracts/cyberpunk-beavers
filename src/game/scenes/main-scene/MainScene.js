@@ -389,7 +389,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     const responsePlayer = response.player;
-    const isMainPlayer = responsePlayer.walletAddress === self.mainPlayer?.walletAddress;
+    const isMainPlayer = responsePlayer?.walletAddress === self.mainPlayer?.walletAddress;
     if (self.allPlayers && response?.player?.walletAddress) {
       if (self.allPlayers[responsePlayer.walletAddress]?.isLocked()) return;
     }
