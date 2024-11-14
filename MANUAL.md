@@ -134,6 +134,17 @@ In the above example (Shotgun) - player can perform at most 2 attacks per second
 - For the field 3 (i.e. when the target is at the 3rd. field from the player) - it deals 22HP of damage with 70% change of hitting the target,
   the critical hit is only 5% and the critical hit multiplier is 1.6x
 
+#### Boosts
+
+There are several boosts, that can greatly increase your chances to win and survive.
+In contrary to items - boosts are becoming active immediately after being picked.
+Each boost (apart from the "map reveal") usually lasts for only 2 rounds.
+
+1. quad damage - as the name implies, increases the damage 4x. Kill them all!
+2. shield - reduces the damage taken while being hit.
+3. map reveal - instantly reveals the whole map
+4. xray - increases field of view (i.e. viewing range) and allows to see through obstacles.
+
 ### Controlling your beaver
 
 1. **arrow keys** - move left, right, up, down
