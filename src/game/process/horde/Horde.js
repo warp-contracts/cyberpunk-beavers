@@ -331,14 +331,16 @@ export class Horde {
    * - the more, the higher is the monster's rank
    */
   _calculateKillPoints(monster, player) {
-    return Const.Combat.DefaultLoot * monster.stats.points_multiplier + calculateLootBonus(player, this.state);
+    return Math.floor(
+      Const.Combat.DefaultLoot * monster.stats.points_multiplier + calculateLootBonus(player, this.state)
+    );
   }
 
   /**
    * not sure how many points should be added after a successful attack...
    */
   _calculateAttackPoints(monster, player) {
-    return Const.Combat.DefaultAttack * monster.stats.points_multiplier;
+    return Math.floor(Const.Combat.DefaultAttack * monster.stats.points_multiplier);
   }
 
   setWaveInfo() {
