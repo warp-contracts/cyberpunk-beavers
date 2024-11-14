@@ -61,7 +61,7 @@ export class Brain {
       if (!monster.currentPath?.length) {
         const path = this._findShortestPath(targetPlayer.player);
         if (!path || path.length === 1) {
-          console.error(`Monster ${monster.walletAddress}: I don\'t know what to do with my life :(`);
+          console.log(`Monster ${monster.walletAddress}: I don\'t know what to do with my life :(`);
           // TODO: commit suicide?
           return result;
         }
