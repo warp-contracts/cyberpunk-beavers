@@ -7,7 +7,6 @@ export function LeaderboardGui(initialVnode) {
   return {
     view: function (vnode) {
       const { tokenTypes, data, back, teams } = vnode.attrs;
-      console.log(data);
       return [
         m('.mithril-component', { id: 'leaderboard' }, [
           m(
