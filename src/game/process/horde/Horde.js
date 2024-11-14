@@ -127,7 +127,7 @@ export class Horde {
     if (this._isLastWave() && this._allMonstersDead()) {
       return 1;
     }
-    return Math.floor((this.state.currentWave?.index || 0 / WAVES_NUMBER) * 100) / 100;
+    return Math.floor(((this.state.currentWave?.index || 0) / WAVES_NUMBER) * 100) / 100;
   }
 
   _generateWave(msgTimestamp) {

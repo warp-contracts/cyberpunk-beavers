@@ -8,7 +8,7 @@ function calculateEndGamePrize(state, horde) {
   }
   if (state.gameplayMode === GAMEPLAY_MODES.horde) {
     const basePrize = state.gameplayPrizes || 0;
-    return basePrize * horde.progress();
+    return Math.floor(basePrize * horde.progress());
   }
   return 0;
 }
