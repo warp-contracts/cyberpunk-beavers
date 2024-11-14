@@ -160,6 +160,7 @@ export class Brain {
         action: {
           type: player.stats.hp.current === 0 ? 'killed' : 'attacked',
           data: {
+            attackingPlayer: player.walletAddress,
             attackingMonsterType: this._monster.stats.type,
             hp: player.stats.hp.current,
           },
