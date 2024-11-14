@@ -459,7 +459,7 @@ export default class MainScene extends Phaser.Scene {
 
             if (self.mode === GAMEPLAY_MODES.horde && !self.tickIntervalId) {
               self.tickIntervalId = setInterval(() => {
-                if (Date.now() - self.lastUpdateTs > 800) {
+                if (Date.now() - self.lastUpdateTs > 900) {
                   self.server.send({ cmd: Const.Command.tick }).then();
                 }
               }, 350);
