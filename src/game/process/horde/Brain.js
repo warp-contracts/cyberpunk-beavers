@@ -32,7 +32,7 @@ export class Brain {
   generateNewMove() {
     const monster = this._monster;
     let targetPlayer = null;
-    console.log(` ==== ${monster.walletAddress} =====`);
+    // console.log(` ==== ${monster.walletAddress} =====`);
 
     if (this._isAlreadyAttackingPlayer()) {
       if (this._isPlayerWithIdAlive(monster.attackedPlayerId)) {
@@ -54,10 +54,10 @@ export class Brain {
     const result = [];
 
     if (this._state.activated && this._isPlayerInAttackRange(targetPlayer)) {
-      console.log(`Monster ${monster.walletAddress} is attacking player ${targetPlayer.player.walletAddress}`);
+      // console.log(`Monster ${monster.walletAddress} is attacking player ${targetPlayer.player.walletAddress}`);
       return result.concat(this._attackPlayer(targetPlayer.player));
     } else {
-      console.log(`Monster ${monster.walletAddress} is moving to player ${targetPlayer.player.walletAddress}`);
+      // console.log(`Monster ${monster.walletAddress} is moving to player ${targetPlayer.player.walletAddress}`);
       if (!monster.currentPath?.length) {
         const path = this._findShortestPath(targetPlayer.player);
         if (!path || path.length === 1) {
@@ -84,7 +84,7 @@ export class Brain {
       x: nextStep.col,
       y: nextStep.row,
     };
-    console.log(`New monster ${this._monster.walletAddress} position`, this._monster.pos);
+    // console.log(`New monster ${this._monster.walletAddress} position`, this._monster.pos);
     this._state.monstersOnTiles[nextStep.row][nextStep.col] = this._monster.walletAddress;
     const encounter = verifyLandmine(this._monster);
 
@@ -127,7 +127,7 @@ export class Brain {
     const distance = getChebyshevDistance(this._monster.pos.x, this._monster.pos.y, player.pos.x, player.pos.y);
 
     const { finalDmg } = calculateDamage(this._monster, player, { range: distance - 1 }, this._state);
-    console.log('Damage', finalDmg);
+    // console.log('Damage', finalDmg);
     const result = [
       {
         target: {
@@ -148,8 +148,9 @@ export class Brain {
 
       if (player.stats.hp.current < 0) {
         player.stats.hp.current = 0;
+        player.stats.kills.deaths++;
       }
-      console.log('Player HP:', player.stats.hp.current);
+      // console.log('Player HP:', player.stats.hp.current);
       result.push({
         target: {
           type: 'players',
@@ -236,12 +237,12 @@ export class Brain {
     const playerPosition = playerWithDistance.player.pos;
 
     const distance = getChebyshevDistance(monsterPosition.x, monsterPosition.y, playerPosition.x, playerPosition.y);
-    console.log({
+    /*console.log({
       attackRange,
       monsterPosition,
       playerPosition,
       distance,
-    });
+    });*/
 
     return distance <= attackRange;
   }

@@ -277,6 +277,7 @@ export class Horde {
     monster.stats.hp.current -= dmg.finalDmg;
     if (monster.stats.hp.current < 0) {
       monster.stats.hp.current = 0;
+      player.stats.kills.frags++;
       this.state.monstersOnTiles[monster.pos.y][monster.pos.x] = null;
     }
     monster.attackingPlayerId = player.walletAddress;
