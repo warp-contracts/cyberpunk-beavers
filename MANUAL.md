@@ -82,6 +82,22 @@ The aim of the game is to gain the most amount of points and win in one of the a
 - Round in this mode lasts 5s and a typical game session - 2.5 minutes.
 - At the end all players that managed to stay alive are additionally rewarded with either CB or RSG tokens.
 
+#### Horde
+
+- In this mode players cooperate and try to defeat new waves of enemies
+- There is no friendly fire between players
+- At max 10 players can fight together
+- At max 10 monsters are spawned in each wave
+- There are currently 6 type of monsters, each next type has more HP, deals more damage and has higher attack range
+- Monsters can attack diagonally
+- The higher the wave, the more dangerous monsters are spawned
+- Between each wave players have a full round for healing, grabbing boosts, etc.
+- There are 6 waves in total
+- After beating all the waves - all the alive players are additionally rewarded
+- Players are not respawned in this mode - so watch out for you HP! Med-kits restore more HP than in Deathmatch mode.
+- All beavers in this mode have 2x the HP (in comparison to the deathmatch mode) and slightly more AP.
+- Remember - healing and using boosts (shield, quad damage, etc.) is essential in this mode!
+
 ### Gaining points
 
 You can gain points by
