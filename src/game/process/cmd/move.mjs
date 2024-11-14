@@ -1,4 +1,4 @@
-import Const from '../../common/const.mjs';
+import Const, { GAMEPLAY_MODES } from '../../common/const.mjs';
 import { scoreToDisplay, step } from '../../common/tools.mjs';
 import { triggerLandmine } from './landmine.mjs';
 import { EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
@@ -65,9 +65,9 @@ export function movePlayer(state, action) {
       };
     }
 
-    if (encounter?.type === GameObject.active_mine.type) {
+    if (state.gameplayMode !== GAMEPLAY_MODES.horde && encounter?.type === GameObject.active_mine.type) {
       // if teams are on we must check whether mine hasn't been left by the same team member
-      if (!state.teamsConfig?.amount || !(state.players[hiddenObject.owner].team?.id == player.team?.id)) {
+      if (!state.teamsConfig?.amount || !(state.players[hiddenObject.owner].team?.id === player.team?.id)) {
         const { loot, damage } = triggerLandmine(state, player, hiddenObject);
         scores.push({ value: -damage.finalDmg, type: GameObject.hp.type });
 
