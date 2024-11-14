@@ -80,7 +80,6 @@ const Command = {
   useHp: 'useHp',
   hpApplied: 'hpApplied',
   msg: 'msg',
-  nextProcessSet: 'nextProcessSet',
   tokensSent: 'tokensSent',
   hubRemoveGame: 'hubRemoveGame',
   hubRemovedGame: 'hubRemovedGame',

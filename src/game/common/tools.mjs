@@ -25,10 +25,14 @@ function scoreToDisplay(scoreValues) {
   });
 }
 
-function addCoins(player, type, amount, state) {
+function addCoins(player, type, amount, state, teamWeight) {
   console.log(`Adding ${amount} ${type} to wallet ${player.walletAddress}`);
   if (type === GAME_MODES[state.mode].token) {
     player.stats.coins.gained += Number(amount);
+    if (state.teamsConfig?.amount > 0) {
+      const team = state.teamsConfig.teams.find((t) => t.id == player.team.id);
+      team.points += Number(amount) * (teamWeight || 1);
+    }
   } else {
     player.stats.additionalTokens[type].gained += Number(amount);
   }

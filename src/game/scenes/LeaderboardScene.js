@@ -1,5 +1,5 @@
 import { WebFontFile } from '../objects/WebFontFile.js';
-import Const, { GAME_MODES } from '../common/const.mjs';
+import { GAME_MODES } from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
 import {
   mainSceneKey,
@@ -11,7 +11,7 @@ import {
 } from '../../main.js';
 import { formatCoin, trimString } from '../utils/utils.js';
 import Phaser from 'phaser';
-import { hideGui, showGui } from '../utils/mithril.js';
+import { showGui } from '../utils/mithril.js';
 import { LeaderboardGui } from '../gui/LeaderboardGui.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
@@ -21,7 +21,6 @@ export default class LeaderboardScene extends Phaser.Scene {
 
   init(data) {
     console.log('Leaderboard Scene - 1. Init');
-    this.allPlayers = data.players;
     this.mainPlayer = data.mainPlayer;
     this.walletAddress = data.mainPlayer?.walletAddress || data.walletAddress;
     this.mainScene = this.scene.get(mainSceneKey);
@@ -38,8 +37,9 @@ export default class LeaderboardScene extends Phaser.Scene {
     if (window.arweaveWallet || window.warpAO.generatedSigner) {
       this.server = serverConnection.game;
       this.server.subscribe(this);
-
       const self = this;
+      const state = await self.fetchState();
+      self.allPlayers = state.players;
       const tokenTypes = Object.entries(self.gameTokens)
         .filter(([type, value]) => type !== GAME_MODES[warpAO.config.mode].token && value.amount > 0)
         .map(([type]) => type);
@@ -81,6 +81,7 @@ export default class LeaderboardScene extends Phaser.Scene {
                 walletAddress: self.walletAddress,
               });
             },
+            teams: state.teamsConfig?.amount > 0,
           });
         },
       });
@@ -104,6 +105,7 @@ export default class LeaderboardScene extends Phaser.Scene {
         {
           img: player.beaverChoice || player.beaverId,
           name: player.userName || player.walletAddress,
+          team: player.team,
         },
         player.stats?.coins?.gained,
         player.stats?.coins?.balance + player.stats?.coins?.gained,
@@ -125,32 +127,6 @@ export default class LeaderboardScene extends Phaser.Scene {
     return trimString(player.walletAddress);
   }
 
-  handleMessage(response) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const env = urlParams.get('env') || 'prod';
-
-    if (response.cmd == Const.Command.nextProcessSet) {
-      if (warpAO.config.reload) {
-        window.location.reload();
-      } else {
-        this.server.switchProcess(response.processId, response.moduleId);
-
-        window.warpAO.config[`processId_${env}`] = response.processId;
-        window.warpAO.processId = () => {
-          return response.processId;
-        };
-
-        window.warpAO.config[`moduleId_${env}`] = response.moduleId;
-        window.warpAO.moduleId = () => {
-          return response.moduleId;
-        };
-        hideGui();
-        this.restartScenes();
-        this.scene.start(loungeAreaSceneKey, { walletAddress: this.walletAddress });
-      }
-    }
-  }
-
   restartScenes() {
     const self = this;
     self.mainScene.tileMap?.destroy();
@@ -169,5 +145,10 @@ export default class LeaderboardScene extends Phaser.Scene {
       const scene = scenes[s];
       if (scene.key != leaderboardSceneKey) self.scene.add(scene.key, scene.scene, false);
     });
+  }
+
+  async fetchState() {
+    const self = this;
+    return await self.server.get('state', { processId: warpAO.processId() });
   }
 }

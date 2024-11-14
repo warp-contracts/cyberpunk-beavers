@@ -5,8 +5,9 @@ import fs from 'fs';
 import { mockDataItem } from '../../../tools/common.mjs';
 import { GAME_MODES, GAMEPLAY_MODES } from '../common/const.mjs';
 import { readMapFromArweave } from '../../../tools/deploy/deploy-spawn-common.js';
-import { Respawned } from '../common/gameObject.mjs';
 import { DEV_MAP, maps } from '../common/mapsLayersConst.mjs';
+import { Respawned } from '../common/gameObject.mjs';
+import { TEAM_BONUS } from '../common/teams.mjs';
 
 const WS_PORT = 8097;
 
@@ -50,6 +51,20 @@ wss.on('connection', (ws, request) => {
   // Event listener for messages from the client
   ws.on('message', async (req) => {
     const message = JSON.parse(req);
+    if (message.get) {
+      const requestId = message.requestId;
+      switch (message.request) {
+        case 'state': {
+          const processId = message.data.processId;
+          const process = ongoingProcesses[processId];
+          broadcast(process.state, processId, requestId);
+          break;
+        }
+        default:
+          console.log(`Get request: ${message.request} not found.`);
+      }
+      return;
+    }
     const actionTagValue = message.Tags.find((t) => t.name === 'Action').value;
     const processTagValue = message.Tags.find((t) => t.name === 'From-Process')?.value;
     console.log(`-------------------------------------------`);
@@ -101,6 +116,13 @@ wss.on('connection', (ws, request) => {
 function logAndBroadcast(message, processId) {
   message.txId = txId;
   console.log('WS RES:', message.txId, message.cmd, message[message.cmd], message.scoreToDisplay);
+  broadcast(message, processId);
+}
+
+function broadcast(message, processId, requestId) {
+  if (requestId) {
+    message = { ...message, requestId };
+  }
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN && client.processId === processId) {
       setTimeout(() => {
@@ -164,7 +186,7 @@ async function spawnGame(processId, start, end) {
       cmd: 'setup',
       type: 'custom',
       start: effectiveStart,
-      end: end || effectiveStart + 300 * 1000,
+      end: end || effectiveStart + 60 * 1000,
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
       gameplayConfig: {
@@ -181,6 +203,14 @@ async function spawnGame(processId, start, end) {
           { type: 'drill', rarity: 0 },
           { type: 'scanner_device', rarity: 0 },
         ],
+      },
+      teamsConfig: {
+        amount: 2,
+        weight: {
+          frags: 2,
+        },
+        teams: [],
+        bonus: TEAM_BONUS,
       },
     },
     processEnv.Process.Owner

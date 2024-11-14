@@ -49,6 +49,7 @@ export default class MainScene extends Phaser.Scene {
   fov = null;
   gameObjectsSprites = {};
   lastAttack = { criticalHit: false };
+  winningTeam;
 
   constructor() {
     super(mainSceneKey);
@@ -119,6 +120,7 @@ export default class MainScene extends Phaser.Scene {
             walletAddress: self.mainPlayer?.walletAddress,
             userName: self.mainPlayer?.userName,
             beaverChoice: self.beaverId || self.beaverChoice,
+            team: self.mainPlayer?.team,
           },
           lastAttack: self.lastAttack,
           mainPlayerEquipment: self.mainPlayer?.equipment,
@@ -134,6 +136,7 @@ export default class MainScene extends Phaser.Scene {
           hordeAliveMonsters: self.hordeAliveMonsters,
           hordeAlivePlayers: self.hordeAlivePlayers,
           hordeWaveNumber: self.hordeWaveNumber,
+          winningTeam: self.winningTeam,
         });
       },
     });
@@ -190,6 +193,7 @@ export default class MainScene extends Phaser.Scene {
       userName: playerInfo.userName,
       equipment: playerInfo.equipment,
       stats: playerInfo.stats,
+      team: playerInfo.team,
       scene: this,
       x: 24 + playerInfo.pos.x * Const.Tile.size,
       y: 24 + playerInfo.pos.y * Const.Tile.size,
@@ -208,7 +212,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createPlayer(playerInfo) {
-    //if ()
     const player = new Player({
       walletAddress: playerInfo.walletAddress,
       userName: playerInfo.userName,
@@ -219,6 +222,7 @@ export default class MainScene extends Phaser.Scene {
       texture: `${playerInfo.beaverId}_48`,
       animated: true,
       beaverChoice: playerInfo.beaverId,
+      team: playerInfo.team,
     });
     this.allPlayers[playerInfo.walletAddress] = player;
     this.updateRanking();
@@ -420,6 +424,8 @@ export default class MainScene extends Phaser.Scene {
         self.fov.removeXRay();
       }
     }
+
+    self.winningTeam = response?.gameStats?.winningTeam;
 
     switch (cmd) {
       case Const.Command.activated: {

@@ -12,13 +12,14 @@ const RANKING_TO_TEXTURE = {
 };
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(data) {
-    let { walletAddress, userName, stats, equipment, scene, x, y, texture, animated, beaverChoice, tilePos } = data;
+    let { walletAddress, userName, stats, equipment, scene, x, y, texture, animated, beaverChoice, team } = data;
     super(scene, x, y, texture);
     this.additionalElements = [];
     this.walletAddress = walletAddress;
     this.beaverChoice = beaverChoice;
     this.userName = userName;
     this.stats = stats;
+    this.team = team;
     this.equipment = equipment;
     this.animated = animated;
     this.locked = false;
@@ -36,9 +37,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const name = this.displayName();
     this.name = scene.add.text(x - 2 * name.length - 8, y + 22, `${name}`, {
       font: '10px',
-      fill: '#ffffff',
-      backgroundColor: '#000000',
+      fill: this.team?.color ? '#000000' : '#ffffff',
+      backgroundColor: this.team?.color || '#000000',
       align: 'center',
+      fontWeight: '900',
     });
     this.name.setDepth(this.depth + 20);
     this.additionalElements.push(this.position, this.healthBar, this.apBar, this.name);

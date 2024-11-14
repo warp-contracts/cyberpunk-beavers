@@ -66,12 +66,17 @@ export function movePlayer(state, action) {
     }
 
     if (encounter?.type === GameObject.active_mine.type) {
-      const { finished, revenge, loot, tokenTransfer, damage } = triggerLandmine(state, player, hiddenObject);
-      scores.push({ value: -damage.finalDmg, type: GameObject.hp.type });
+      // if teams are on we must check whether mine hasn't been left by the same team member
+      if (!state.teamsConfig?.amount || !(state.players[hiddenObject.owner].team?.id == player.team?.id)) {
+        const { loot, damage } = triggerLandmine(state, player, hiddenObject);
+        scores.push({ value: -damage.finalDmg, type: GameObject.hp.type });
 
-      if (parseInt(loot) > 0) {
-        opponentScores.push({ value: loot, type: Const.Scores.coin });
-        scores.push({ value: -loot, type: Const.Scores.coin });
+        if (parseInt(loot) > 0) {
+          opponentScores.push({ value: loot, type: Const.Scores.coin });
+          scores.push({ value: -loot, type: Const.Scores.coin });
+        }
+      } else {
+        encounter = false;
       }
     }
 

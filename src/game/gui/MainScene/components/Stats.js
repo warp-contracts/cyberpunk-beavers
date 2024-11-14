@@ -11,7 +11,6 @@ export function PlayerInfo() {
 
       const processId = window.warpAO.processId();
       const tokenProcessId = gameTokens[GAME_MODES[warpAO.config.mode].token]?.id;
-
       return m('.player-info', [
         m(`.stats-main ${visible && 'extended'}`, [
           m('img', {
@@ -23,7 +22,7 @@ export function PlayerInfo() {
             m(Label, {
               name: 'player',
               content: displayName({ userName, walletAddress }),
-              style: `pl-0`,
+              style: `pl-0 ${mainPlayer?.team ? 'mt-5' : ''}`,
               inlineStyle: `pr-10`,
             }),
             m(Label, {
@@ -45,9 +44,16 @@ export function PlayerInfo() {
             m(Label, {
               name: 'beavers',
               content: `${playersTotal || 0}`,
-              style: 'mt-10 pl-0',
+              style: `mt-10 pl-0 ${mainPlayer?.team ? '' : 'mb-5'}`,
               inlineStyle: `pr-10 w-170 text-right`,
             }),
+            mainPlayer?.team &&
+              m(Label, {
+                name: 'team',
+                content: mainPlayer?.team?.name,
+                style: 'mt-10 pl-0 mb-5',
+                inlineStyle: `pr-10 w-170 text-right`,
+              }),
           ]),
         ]),
         visible &&

@@ -64,6 +64,10 @@
       line-height: 24px;
       text-overflow: ellipsis;
       overflow: hidden;
+
+      &.wide {
+        width: 200px;
+      }
     }
   }
 
