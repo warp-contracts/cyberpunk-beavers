@@ -97,7 +97,7 @@ export class HordeManager {
           case 'attacking': {
             monsterObject.scaleX = action.data.dir === 'left' ? -1 : 1;
             monsterObject.attackAnim();
-            doPlayAttackSound(MONSTER_TO_BEAVER[monsterObject.stats.type], self.scene);
+            //doPlayAttackSound(MONSTER_TO_BEAVER[monsterObject.stats.type], self.scene);
             break;
           }
           case 'attacked': {
@@ -140,7 +140,7 @@ export class HordeManager {
           // i.e. is being attacked by monster
           case 'attacked': {
             if (isMainPLayer) {
-              doPlayAttackSound(player.beaverId, self.scene);
+              doPlayAttackSound(MONSTER_TO_BEAVER[action.data.attackingMonsterType], self.scene);
             }
             player.bloodSplatAnim(isMainPLayer);
             player.stats.hp.current = action.data.hp;

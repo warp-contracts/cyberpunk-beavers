@@ -190,7 +190,7 @@ async function spawnGame(processId, start, end) {
       playersLimit: 30,
       hubProcessId: ids.hub_processId_dev,
       gameplayConfig: {
-        mode: GAMEPLAY_MODES.deathmatch,
+        mode: GAMEPLAY_MODES.horde,
       },
       roundInterval: 10000,
       startDelay: 5000,
