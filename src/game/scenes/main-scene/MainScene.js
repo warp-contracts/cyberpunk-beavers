@@ -347,7 +347,11 @@ export default class MainScene extends Phaser.Scene {
     self.lastUpdateTs = Date.now();
     const cmd = response.cmd;
 
-    if (!self.isEverythingFuckingInitialized && !REGISTER_COMMANDS.includes(cmd)) {
+    if (
+      !self.isEverythingFuckingInitialized &&
+      !REGISTER_COMMANDS.includes(cmd) &&
+      msgWalletAddress === self.walletAddress
+    ) {
       console.log('Not fully fucking initialized, skipping cmd', cmd);
       return;
     }
