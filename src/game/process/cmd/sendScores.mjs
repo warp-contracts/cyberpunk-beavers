@@ -22,7 +22,7 @@ export function sendScores(state, horde) {
         const playersAlive = Object.values(state.players).filter((p) => p.stats.hp.current > 0);
         if (playersAlive.length > 0) {
           const singlePrize = Math.floor(totalPrize / playersAlive.length);
-          console.log(`Single prize for ${state.gameplayMode} mode`, totalPrize);
+          console.log(`Single prize for ${state.gameplayMode} mode`, singlePrize);
           for (const player of playersAlive) {
             player.stats.coins.gained += singlePrize;
           }
