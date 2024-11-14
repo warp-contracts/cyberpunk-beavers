@@ -1,6 +1,6 @@
 export default {
-  hub_moduleId_prod: 'UWaLEUqomdE7bkXQ9Qo0Vl9AxBCor_VfwXUG2vCfVMY',
-  hub_processId_prod: '7xrTz93Z3aF_lbVx2ZK_QjMl5PpQswnR_PloCjR7tvk',
+  hub_moduleId_prod: '6QjwUh5pLMOtrNSR_Q0k60s0U_JucDvuycZHlIOaQ2o',
+  hub_processId_prod: '84qwvEuuxPaWAPNshXvl2d6njn-i_M4mJxCPszUDxOw',
   hub_moduleId_local: 'VxKSIex1f51Fy_j0YXEsKGNnYm2engLpY2Je3-hF6ho',
   hub_processId_local: 'JFlLjFW4bdzl1L2w7lwdM3FhSBUrSwJRFJXMKU_J4eo',
   hub_moduleId_dev: 'aaabbb',
