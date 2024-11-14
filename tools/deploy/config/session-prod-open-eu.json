@@ -25,7 +25,7 @@
   },
   "sessions": [
     {
-      "session_comment": "AO: fr, sat, sun - shorter session",
+      "session_comment": "AO: fr, sat - shorter session",
       "start": {
         "dayOfTheWeek": 5,
         "time": "18:00",
@@ -36,23 +36,62 @@
       "gameBreak": 60000,
       "gameBreak_comment": "1 minute",
       "games": [
-        { "map": "b2m1" },
         {
           "map": "b2m2",
           "gameplayConfig": {
-            "mode": "battleRoyale"
+            "mode": "horde"
           },
-          "roundInterval": 5000
+          "gameObjectsConfig": {
+            "respawned": "constant",
+            "items": [
+              { "type": "shield", "value": 300, "rarity": 20, "roundsToRespawn": 20 },
+              { "type": "quad_damage", "value": 500, "rarity": 20, "roundsToRespawn": 5 },
+              { "type": "drill", "rarity": 0 },
+              { "type": "hp", "rarity": 50 },
+              { "type": "scanner_device", "rarity": 0 }
+            ]
+          }
         },
-        { "map": "b1m6" },
         {
-          "map": "b2m1",
+          "map": "b2m3",
           "gameplayConfig": {
             "mode": "battleRoyale"
           },
           "roundInterval": 5000
         },
+        {
+          "map": "b3m4",
+          "gameplayConfig": {
+            "mode": "horde"
+          },
+          "gameObjectsConfig": {
+            "respawned": "constant",
+            "items": [
+              { "type": "shield", "value": 300, "rarity": 20, "roundsToRespawn": 20 },
+              { "type": "quad_damage", "value": 500, "rarity": 20, "roundsToRespawn": 5 },
+              { "type": "drill", "rarity": 0 },
+              { "type": "hp", "rarity": 50 },
+              { "type": "scanner_device", "rarity": 0 }
+            ]
+          }
+        },
         { "map": "b1m5" },
+        {
+          "map": "b2m2",
+          "gameplayConfig": {
+            "mode": "horde"
+          },
+          "gameObjectsConfig": {
+            "respawned": "constant",
+            "items": [
+              { "type": "shield", "value": 300, "rarity": 20, "roundsToRespawn": 20 },
+              { "type": "quad_damage", "value": 500, "rarity": 20, "roundsToRespawn": 5 },
+              { "type": "drill", "rarity": 0 },
+              { "type": "hp", "rarity": 50 },
+              { "type": "scanner_device", "rarity": 0 }
+            ]
+          }
+        },
 
         {
           "start": {
@@ -62,23 +101,77 @@
           },
           "map": "b2m3"
         },
-        { "map": "b2m1" },
-        { "map": "b2m5" },
-        { "map": "b2m2" },
-        { "map": "b2m4" },
-
         {
-          "start": {
-            "dayOfTheWeek": 0,
-            "time": "20:00",
-            "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
+          "map": "b2m2",
+          "gameplayConfig": {
+            "mode": "horde"
           },
-          "map": "b2m3"
+          "gameObjectsConfig": {
+            "respawned": "constant",
+            "items": [
+              { "type": "shield", "value": 300, "rarity": 20, "roundsToRespawn": 20 },
+              { "type": "quad_damage", "value": 500, "rarity": 20, "roundsToRespawn": 5 },
+              { "type": "drill", "rarity": 0 },
+              { "type": "hp", "rarity": 50 },
+              { "type": "scanner_device", "rarity": 0 }
+            ]
+          }
         },
-        { "map": "b2m1" },
-        { "map": "b2m5" },
-        { "map": "b2m2" },
-        { "map": "b2m4" }
+        {
+          "map": "b2m3",
+          "gameplayConfig": {
+            "mode": "battleRoyale"
+          },
+          "roundInterval": 5000
+        },
+        {
+          "map": "b3m4",
+          "gameplayConfig": {
+            "mode": "horde"
+          },
+          "gameObjectsConfig": {
+            "respawned": "constant",
+            "items": [
+              { "type": "shield", "value": 300, "rarity": 20, "roundsToRespawn": 20 },
+              { "type": "quad_damage", "value": 500, "rarity": 20, "roundsToRespawn": 5 },
+              { "type": "drill", "rarity": 0 },
+              { "type": "hp", "rarity": 50 },
+              { "type": "scanner_device", "rarity": 0 }
+            ]
+          }
+        },
+        {
+          "map": "b2m2",
+          "gameplayConfig": {
+            "mode": "horde"
+          },
+          "gameObjectsConfig": {
+            "respawned": "constant",
+            "items": [
+              { "type": "shield", "value": 300, "rarity": 20, "roundsToRespawn": 20 },
+              { "type": "quad_damage", "value": 500, "rarity": 20, "roundsToRespawn": 5 },
+              { "type": "drill", "rarity": 0 },
+              { "type": "hp", "rarity": 50 },
+              { "type": "scanner_device", "rarity": 0 }
+            ]
+          }
+        },
+        {
+          "map": "b2m2",
+          "gameplayConfig": {
+            "mode": "horde"
+          },
+          "gameObjectsConfig": {
+            "respawned": "constant",
+            "items": [
+              { "type": "shield", "value": 300, "rarity": 20, "roundsToRespawn": 20 },
+              { "type": "quad_damage", "value": 500, "rarity": 20, "roundsToRespawn": 5 },
+              { "type": "drill", "rarity": 0 },
+              { "type": "hp", "rarity": 50 },
+              { "type": "scanner_device", "rarity": 0 }
+            ]
+          }
+        }
       ]
     }
   ],
