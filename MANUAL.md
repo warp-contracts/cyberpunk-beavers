@@ -155,6 +155,7 @@ Each boost (apart from the "map reveal") usually lasts for only 2 rounds.
    - **"2" - mine** - allows to deploy a mine - as a form of a trap for other players
    - **"3" - scanner** - scans the area around the beaver and reveals hidden tokens. The scan range is determined by weapon range.
    - **"4" - med-kit** - allows to restore health
+   - **"5" - drill** - dig multiple holes in the ground based on specific radius; it allows to find game treasures
 3. **d** - dig - you can dig in the ground in search for tokens. All collected tokens will be transferred to your wallet at the end of the game.
 4. **c** - collect item
 5. **tab** - show detailed info about collected tokens, players, etc.
