@@ -59,7 +59,9 @@ function GamesList() {
         label += `\nActive ${termination}`;
       }
     }
-
+    if (game.teams) {
+      label += `\nTEAMS`;
+    }
     return { label, isActive, isFinished };
   }
 

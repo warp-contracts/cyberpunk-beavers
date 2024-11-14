@@ -1,4 +1,4 @@
-import Const, { GAME_MODES } from '../common/const.mjs';
+import Const from '../common/const.mjs';
 import { serverConnection } from '../lib/serverConnection.js';
 import {
   connectWalletSceneKey,

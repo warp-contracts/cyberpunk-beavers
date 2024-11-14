@@ -1,8 +1,9 @@
 import Const, { DEFAULT_ROUND_INTERVAL_MS } from '../../common/const.mjs';
 import { DEFAULT_GAME_OBJECTS_CONFIG, GameObject } from '../../common/gameObject.mjs';
 import { COLLISIONS_LAYER, EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
+import { DEFAULT_TEAMS_CONFIG } from '../../common/teams.mjs';
 
-const { GameTreasure, Scores, Map } = Const;
+const { GameTreasure } = Const;
 
 export function __init(state, message) {
   state = Object.assign(state, initState(message, state));
@@ -114,6 +115,7 @@ function initState(message, state) {
     gameObjectsToRespawn: {},
     gameObjectsToRespawnInRound: [],
     gameObjectsConfig: state.gameObjectsConfig || DEFAULT_GAME_OBJECTS_CONFIG,
+    teamsConfig: state.teamsConfig || DEFAULT_TEAMS_CONFIG,
   };
 }
 

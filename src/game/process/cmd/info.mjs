@@ -1,4 +1,5 @@
 import { GAMEPLAY_MODES } from '../../common/const.mjs';
+import { findWinningTeam } from './teams';
 
 function calculateOffset(battleRoyale, shrinkCount) {
   if (shrinkCount === 0) {
@@ -52,7 +53,7 @@ function killThemAll(state, positionsToCheck, timestamp) {
 }
 
 export function gameStats(state, timestamp) {
-  const { gameTokens, gameTreasuresCounter, lastTxs, round, gameObjectsToRespawnInRound } = state;
+  const { gameTokens, gameTreasuresCounter, lastTxs, round, gameObjectsToRespawnInRound, teamsConfig } = state;
   const result = {
     gameStats: { gameTokens, gameTreasuresCounter, lastTxs, round, gameObjectsToRespawnInRound },
   };
@@ -99,6 +100,10 @@ export function gameStats(state, timestamp) {
     } else {
       result.battleRoyale.totalShrinkSize = state.battleRoyale.totalShrinkSize;
     }
+  }
+
+  if (teamsConfig?.amount > 0) {
+    result.gameStats.winningTeam = findWinningTeam(state.teamsConfig.teams);
   }
 
   return result;

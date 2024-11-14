@@ -1,3 +1,5 @@
+import { safeGet } from 'warp-contracts';
+
 export async function initSubscription(moduleId, processId, verifyNonce, verifyLag, alwaysUseConnectedWallet) {
   console.log('Subscribing for processId: ', processId);
 
@@ -37,6 +39,22 @@ export async function initSubscription(moduleId, processId, verifyNonce, verifyL
       sse.close();
       console.log('Switching subscription for processId: ', newProcessId);
       sse = new EventSource(`${window.warpAO.config.cuAddress}/subscribe/${newProcessId}`);
+    },
+    get: async (request, data) => {
+      let fetchRequest;
+      switch (request) {
+        case 'state': {
+          fetchRequest = `${window.warpAO.config.cuAddress}/current-state/${data.processId}`;
+          break;
+        }
+        default:
+          console.log(`Get request: ${message.request} not found.`);
+      }
+      return await safeGet(fetchRequest)
+        .then((response) => {
+          return response.result.State;
+        })
+        .catch(console.error);
     },
   };
 }

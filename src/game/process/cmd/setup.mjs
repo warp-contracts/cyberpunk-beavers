@@ -1,5 +1,6 @@
 import Const, { DEFAULT_ROUND_INTERVAL_MS, GAMEPLAY_MODES, PRIZES } from '../../common/const.mjs';
 import { allGameObjectTiles, overwriteGameObjectParams, setVisibleGameObjects } from './__init.js';
+import { setTeams } from './teams.js';
 
 const SetupTimes = {
   custom: 'custom',
@@ -25,6 +26,8 @@ export function setup(state, action, message) {
     overwriteGameObjectParams(state.gameObjectsTiles, action.gameObjectsConfig.items);
     setVisibleGameObjects(state);
   }
+  state.teamsConfig = action.teamsConfig || state.teamsConfig;
+  if (state.teamsConfig?.amount > 0) setTeams(state);
   state.tokensTransferred = action.tokensTransferred || state.tokensTransferred;
   state.scoresSent = action.scoresSent || state.scoresSent;
   state.mode = action.mode || state.mode || Const.GAME_MODES.default.type;
@@ -132,6 +135,7 @@ function sendHubNotification(state) {
         mapTxId: state.mapTxId,
         gameplayMode: state.gameplayMode,
         mode: state.mode,
+        teams: state.teamsConfig.amount > 0,
       },
     }),
   });

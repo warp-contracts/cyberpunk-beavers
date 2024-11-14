@@ -34,6 +34,14 @@
     },
     "gameObjectsConfig": {
       "respawned": "random"
+    },
+    "teamsConfig": {
+      "amount": 2,
+      "weight": {
+        "frags": 2
+      },
+      "teams": [],
+      "bonus": 5000
     }
   },
   "sessions": [

@@ -2,6 +2,7 @@ import Const, { GAME_MODES } from '../../common/const.mjs';
 import { calculateRandomPos } from './__init';
 import { checkWhitelist } from './queue.mjs';
 import { EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
+import { assignToTeam } from './teams';
 
 const { BEAVER_TYPES, Map, GameTreasure } = Const;
 
@@ -75,6 +76,7 @@ export function registerPlayer(state, action) {
       additionalTokens,
     },
     pos: calculatePlayerRandomPos(state),
+    team: state.teamsConfig?.amount > 0 ? assignToTeam(state, walletAddress) : null,
   };
   playersOnTiles[newPlayer.pos.y][newPlayer.pos.x] = newPlayer.walletAddress;
   players[walletAddress] = newPlayer;

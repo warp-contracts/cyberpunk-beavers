@@ -17,6 +17,7 @@ import { useHp } from './cmd/hp.mjs';
 import { Horde } from './horde/Horde.js';
 import { drill } from './cmd/drill.js';
 import { GameObject } from '../common/gameObject.mjs';
+import { awardTeam } from './cmd/teams.js';
 
 function restrictedAccess(state, action, ts) {
   return (
@@ -59,6 +60,7 @@ export function handle(state, message) {
   if (restrictedAccess(state, action, message.Timestamp)) {
     console.log(`The game access is restricted`, action, message.Timestamp, state.playWindow);
     if (gameFinished(state, message.Timestamp)) {
+      if (state.teamsConfig?.amount > 0) awardTeam(state);
       sendScores(state, horde);
       if (!state.tokensTransferred) {
         ao.result({

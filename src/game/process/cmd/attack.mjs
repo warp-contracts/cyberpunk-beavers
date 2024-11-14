@@ -1,4 +1,4 @@
-import Const, { GAMEPLAY_MODES, GAME_MODES, AP_COSTS } from '../../common/const.mjs';
+import Const, { GAMEPLAY_MODES, GAME_MODES, AP_COSTS, BEAVER_TYPES } from '../../common/const.mjs';
 import { step, scoreToDisplay, addCoins } from '../../common/tools.mjs';
 import { calculatePlayerRandomPos } from './registerPlayer.mjs';
 import { BOOSTS } from '../../common/boostsConst.mjs';
@@ -31,7 +31,18 @@ export function attack(state, action, timestamp, horde) {
       break;
     }
     // note: hacker beaver can shoot over obstacles, because why not.
-    if (state.obstaclesTilemap[attackPos.y][attackPos.x] > EMPTY_TILE && player.beaverId !== 'hacker_beaver') {
+    if (
+      state.obstaclesTilemap[attackPos.y][attackPos.x] > EMPTY_TILE &&
+      player.beaverId !== BEAVER_TYPES.hacker_beaver.name
+    ) {
+      break;
+    }
+    // we are treating players from the same team as obstacles
+    if (
+      state.teamsConfig.amount > 0 &&
+      state.players[state.playersOnTiles[attackPos.y][attackPos.x]]?.team?.id == player.team?.id &&
+      player.beaverId !== BEAVER_TYPES.hacker_beaver.name
+    ) {
       break;
     }
     if (state.gameplayMode === GAMEPLAY_MODES.horde && state.currentWave) {
@@ -44,6 +55,11 @@ export function attack(state, action, timestamp, horde) {
     }
     range++;
     prevPos = attackPos;
+  }
+
+  if (opponent && state.teamsConfig.amount > 0 && opponent.team?.id == player.team?.id) {
+    console.log(`Opponent ${opponent.walletAddress} is from the same team: ${opponent.team?.name}`);
+    return { player, pos: attackPos, tokenTransfer: 0 };
   }
 
   if (opponent && opponent.stats.hp.current > 0) {
@@ -147,11 +163,16 @@ export function finishHim(player, opponent, damageFigures, state, timestamp) {
     respawnPlayer(opponent, state, timestamp);
     opponent.stats.kills.killedBy = player.walletAddress;
     player.stats.kills.frags++;
+    if (state.teamsConfig?.amount > 0) {
+      const teams = state.teamsConfig.teams;
+      teams[player.team.id].frags++;
+      teams[opponent.team.id].deaths++;
+    }
     player.stats.kills.fragsInRow++;
     if (revenge) {
       player.stats.kills.killedBy = '';
     }
-    addCoins(player, GAME_MODES[state.mode].token, lootWithBonus, state);
+    addCoins(player, GAME_MODES[state.mode].token, lootWithBonus, state, state.teamsConfig?.weight?.frags);
     if (additionalLoot?.token) {
       addCoins(player, additionalLoot.token, 1, state);
     }
@@ -191,7 +212,7 @@ export function respawnPlayer(player, state, timestamp) {
 
 export function lootPlayer(player, state) {
   const loot = Math.min(player.stats.coins.gained, Const.Combat.DefaultLoot);
-  player.stats.coins.gained -= loot;
+  addCoins(player, GAME_MODES[state.mode].token, -loot, state);
 
   const additionalTokens = Object.keys(player.stats.additionalTokens).filter(
     (t) => player.stats.additionalTokens[t].gained > 0

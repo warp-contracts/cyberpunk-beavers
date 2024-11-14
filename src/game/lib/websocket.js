@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export async function initWebSocket(moduleId, processId) {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(`ws://localhost:8097/${processId}`);
@@ -23,6 +25,24 @@ export async function initWebSocket(moduleId, processId) {
           const di = mockDataItem(moduleId, processId, message, ++nonce);
           ws.send(JSON.stringify(di));
           return { id: di.Id };
+        },
+        get: async (request, data) => {
+          const requestId = uuidv4();
+          return new Promise((resolve, reject) => {
+            const getListener = (event) => {
+              try {
+                const response = JSON.parse(event.data);
+                if (response.requestId == requestId) {
+                  ws.removeEventListener('message', getListener);
+                  resolve(response);
+                }
+              } catch (e) {
+                reject(e);
+              }
+            };
+            ws.send(JSON.stringify({ get: true, request, data, requestId }));
+            ws.addEventListener('message', getListener);
+          });
         },
       });
     };

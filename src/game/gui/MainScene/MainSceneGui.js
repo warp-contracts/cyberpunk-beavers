@@ -39,6 +39,7 @@ export function MainSceneGui() {
         hordeAliveMonsters,
         hordeAlivePlayers,
         hordeWaveNumber,
+        winningTeam,
       } = vnode.attrs;
 
       const { lagMessage, lagClass } = formatLag(window.warpAO.lag);
@@ -80,6 +81,17 @@ export function MainSceneGui() {
               visible ? m(KeyboardMapping, { spectatorMode }) : null,
               m(`.main-scene-info.main-scene-enter.alert`, 'FIGHT!'),
               gameOver ? m('.main-scene-info.blink', 'GAME OVER') : null,
+              gameOver && winningTeam
+                ? m(
+                    '.main-scene-info.team.blink',
+                    {
+                      style: {
+                        color: winningTeam.color,
+                      },
+                    },
+                    `${winningTeam.name} WINS!`
+                  )
+                : null,
               !gameActive && diff > 0
                 ? m('.main-scene-info.small', `GAME STARTS IN: ${formatCountdownTo(diff)}`)
                 : null,
@@ -102,6 +114,17 @@ export function MainSceneGui() {
                 timeout: 5_000,
               }),
               mainPlayer ? m(`.main-scene-lag ${lagClass !== `success` ? 'blink' : ''} ${lagClass}`, lagMessage) : null,
+              !gameOver && winningTeam
+                ? m(
+                    '.main-scene-team',
+                    {
+                      style: {
+                        color: winningTeam.color,
+                      },
+                    },
+                    `WINNING TEAM: ${winningTeam.name}`
+                  )
+                : null,
             ]
       );
     },
