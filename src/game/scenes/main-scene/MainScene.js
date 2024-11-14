@@ -51,6 +51,7 @@ export default class MainScene extends Phaser.Scene {
   gameObjectsSprites = {};
   lastAttack = { criticalHit: false };
   winningTeam;
+  teams;
 
   constructor() {
     super(mainSceneKey);
@@ -138,6 +139,7 @@ export default class MainScene extends Phaser.Scene {
           hordeAlivePlayers: self.hordeAlivePlayers,
           hordeWaveNumber: self.hordeWaveNumber,
           winningTeam: self.winningTeam,
+          teams: self.teams,
         });
       },
     });
@@ -428,6 +430,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     self.winningTeam = response?.gameStats?.winningTeam;
+    self.teams = response?.gameStats?.teams;
 
     switch (cmd) {
       case Const.Command.activated: {

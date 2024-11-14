@@ -104,6 +104,7 @@ export function gameStats(state, timestamp) {
 
   if (teamsConfig?.amount > 0) {
     result.gameStats.winningTeam = findWinningTeam(state.teamsConfig.teams);
+    result.gameStats.teams = state.teamsConfig.teams;
   }
 
   return result;

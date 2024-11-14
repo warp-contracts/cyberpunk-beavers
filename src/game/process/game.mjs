@@ -131,6 +131,7 @@ export function handle(state, message) {
       ao.result({
         cmd: Const.Command.activated,
         ...gameInfo(state, action.walletAddress, message.Timestamp),
+        ...gameStats(state, message.Timestamp),
       });
       break;
     case Const.Command.setup:

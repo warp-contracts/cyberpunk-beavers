@@ -41,6 +41,7 @@ export function MainSceneGui() {
         hordeAlivePlayers,
         hordeWaveNumber,
         winningTeam,
+        teams,
       } = vnode.attrs;
 
       const { lagMessage, lagClass } = formatLag(window.warpAO.lag);
@@ -68,7 +69,13 @@ export function MainSceneGui() {
                 m('.main-scene-panel-elements', [
                   mainPlayer
                     ? m('.main-scene-panel-element', [
-                        m(PlayerInfo, { mainPlayer, playersTotal, gameTokens: gameStats.gameTokens || {}, visible }),
+                        m(PlayerInfo, {
+                          mainPlayer,
+                          playersTotal,
+                          gameTokens: gameStats.gameTokens || {},
+                          visible,
+                          teams,
+                        }),
                       ])
                     : null,
                   m('.main-scene-panel-element', [

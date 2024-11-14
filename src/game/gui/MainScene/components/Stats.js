@@ -7,9 +7,8 @@ const { GameTreasure } = Const;
 export function PlayerInfo() {
   return {
     view: function (vnode) {
-      const { playersTotal, mainPlayer, gameTokens, visible } = vnode.attrs;
+      const { playersTotal, mainPlayer, gameTokens, visible, teams } = vnode.attrs;
       const { userName, walletAddress, beaverChoice, stats } = mainPlayer;
-
       const processId = window.warpAO.processId();
       const tokenProcessId = gameTokens[GAME_MODES[warpAO.config.mode].token]?.id;
       return m('.player-info', [
@@ -59,6 +58,20 @@ export function PlayerInfo() {
         ]),
         visible &&
           m('.stats-container', [
+            teams &&
+              teams.map((t) =>
+                m(Label, {
+                  name: t.name,
+                  content: t.players.length,
+                  style: `pl-0`,
+                  overrideStyle: {
+                    color: t.color,
+                    backgroundColor: 'black',
+                    padding: '3px 0 3px 3px',
+                    marginRight: '11px',
+                  },
+                })
+              ),
             m(Label, {
               name: 'frags/deaths',
               content: `${stats?.kills.frags}/${stats?.kills.deaths}`,
@@ -166,8 +179,8 @@ export function SpectatorStats() {
 function Label() {
   return {
     view: function (vnode) {
-      const { style, name, content, inlineStyle } = vnode.attrs;
-      return m(`.label ${style}`, [
+      const { style, name, content, inlineStyle, overrideStyle } = vnode.attrs;
+      return m(`.label ${style}`, overrideStyle && { style: overrideStyle }, [
         m('div', name),
         m('.label-container', [m(`.label-element ${inlineStyle}`, content)]),
       ]);
