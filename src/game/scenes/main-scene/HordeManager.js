@@ -82,7 +82,7 @@ export class HordeManager {
       const monsterObject = self.monsters[monsterId];
       const actions = monsterUpdates.actions;
       for (const action of actions) {
-        const isAttackingMainPlayer = action.data.attackingPlayer == self.scene.mainPlayer.walletAddress;
+        const isAttackingMainPlayer = action.data.attackingPlayer === self.scene.mainPlayer.walletAddress;
         switch (action.type) {
           case 'move': {
             const { encounter, newPosition } = action.data;

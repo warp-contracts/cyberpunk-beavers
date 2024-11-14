@@ -658,7 +658,7 @@ export default class MainScene extends Phaser.Scene {
 
   clearLandmine(pos) {
     this.gameObjectsLayer?.removeTileAt(pos.x, pos.y);
-    this[`mineGrid_${pos.x}_${pos.y}`].destroy();
+    this[`mineGrid_${pos.x}_${pos.y}`]?.destroy();
   }
 
   followWinner() {
