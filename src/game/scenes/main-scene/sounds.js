@@ -44,6 +44,7 @@ export function doAddSounds(mainScene) {
   mainScene.shieldSound = mainScene.sound.add('shield', { loop: false, volume: 2.0 });
   mainScene.xraySound = mainScene.sound.add('xray', { loop: false, volume: 1.0 });
   mainScene.bringItOn = mainScene.sound.add('bringItOn', { loop: false, volume: 5.0 });
+  mainScene.winningTeamSound = mainScene.sound.add('winning_team', { loop: false, volume: 2.0 });
 
   forDeathSounds((k, i) => addDeathSound(k, i));
 

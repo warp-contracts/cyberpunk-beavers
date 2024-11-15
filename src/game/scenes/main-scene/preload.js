@@ -95,6 +95,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('shield', ['assets/audio/shield.mp3']);
   mainScene.load.audio('xray', ['assets/audio/xray.mp3']);
   mainScene.load.audio('bringItOn', ['assets/audio/bring_it_on.m4a']);
+  mainScene.load.audio('winning_team', ['assets/audio/winning_team.mp3']);
   forDeathSounds((k, i) => loadDeathSound(k, i));
 
   function loadDeathSound(k, i) {

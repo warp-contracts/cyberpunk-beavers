@@ -433,6 +433,14 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
+    if (
+      self.winningTeam &&
+      response?.gameStats?.winningTeam &&
+      response?.gameStats?.winningTeam?.id != self.winningTeam.id &&
+      isMainPlayer
+    ) {
+      self.winningTeamSound.play();
+    }
     self.winningTeam = response?.gameStats?.winningTeam;
     self.teams = response?.gameStats?.teams;
 
