@@ -2,8 +2,9 @@ import Const, { DEFAULT_ROUND_INTERVAL_MS, GAMEPLAY_MODES, PRIZES } from '../../
 import { allGameObjectTiles, overwriteGameObjectParams, setVisibleGameObjects } from './__init.js';
 import { setTeams } from './teams.js';
 
-const SetupTimes = {
-  custom: 'custom',
+export const SetupType = {
+  custom: 'custom', // primary setup, run after game creation
+  simple: 'simple', // for simple updates
 };
 
 export function setup(state, action, message) {
@@ -15,11 +16,6 @@ export function setup(state, action, message) {
     };
   }
 
-  state.hubProcessId = action.hubProcessId || state.hubProcessId;
-  state.bridgeProcessId = action.bridgeProcessId || state.bridgeProcessId;
-  state.leaderboardProcessId = action.leaderboardProcessId || state.leaderboardProcessId;
-  state.playersLimit = action.playersLimit || state.playersLimit || Const.Queue.defaultLimit;
-  state.walletsWhitelist = action.walletsWhitelist || state.walletsWhitelist;
   state.gameObjectsConfig = action.gameObjectsConfig || state.gameObjectsConfig;
   if (action.gameObjectsConfig?.items?.length > 0) {
     state.gameObjectsTiles = allGameObjectTiles();
@@ -28,16 +24,26 @@ export function setup(state, action, message) {
   }
   state.teamsConfig = action.teamsConfig || state.teamsConfig;
   if (state.teamsConfig?.amount > 0) setTeams(state);
-  state.tokensTransferred = action.tokensTransferred || state.tokensTransferred;
-  state.scoresSent = action.scoresSent || state.scoresSent;
-  state.mode = action.mode || state.mode || Const.GAME_MODES.default.type;
+
+  const changed = {
+    ...updateProperty(state, action, 'bridgeProcessId'),
+    ...updateProperty(state, action, 'hubProcessId'),
+    ...updateProperty(state, action, 'leaderboardProcessId'),
+    ...updateProperty(state, action, 'mode', Const.GAME_MODES.default.type),
+    ...updateProperty(state, action, 'playersLimit'),
+    ...updateProperty(state, action, 'scoresSent'),
+    ...updateProperty(state, action, 'tokensTransferred'),
+    ...updateProperty(state, action, 'walletsWhitelist'),
+  };
+
+  console.log(`Setup changed`, changed);
 
   state.gameplayMode = action.gameplayConfig?.mode || state.gameplayMode || GAMEPLAY_MODES.deathmatch;
   state.gameplayPrizes =
     action.gameplayConfig?.prizes || state.gameplayPrizes || PRIZES[state.gameplayMode]?.[state.mode];
 
   switch (action.type) {
-    case SetupTimes.custom:
+    case SetupType.custom:
       const delay = action.startDelay || Const.GAME_ENTER_DELAY;
       state.playWindow.begin = action.start;
       state.playWindow.enter = action.start + delay;
@@ -66,18 +72,42 @@ export function setup(state, action, message) {
         };
       }
 
-      console.log(`Setup custom`, action, state.playWindow);
-      sendHubNotification(state);
+      console.log(`Setup custom finished`);
+      break;
+
+    case SetupType.simple:
+      console.log(`Setup simple finished`);
       break;
 
     default:
-      console.log(`Unknown setup type`, action.type, state.playWindow);
+      console.log(`Unknown setup type`, action.type);
       break;
   }
+
+  sendHubNotification(state);
   return {
     playWindow: state.playWindow,
     gameplayMode: state.gameplayMode,
+    ...changed,
   };
+}
+
+function updateProperty(state, action, name, defaultValue) {
+  // 1. Update state based on action config
+  if (action.hasOwnProperty(name) && state[name] !== action[name]) {
+    state[name] = action[name];
+    return {
+      [name]: state[name],
+    };
+  }
+
+  // 2. Otherwise, set default if not already set
+  if (defaultValue && !state[name]) {
+    state[name] = defaultValue;
+    return {
+      [name]: state[name],
+    };
+  }
 }
 
 function calculateTotalRounds(state) {
