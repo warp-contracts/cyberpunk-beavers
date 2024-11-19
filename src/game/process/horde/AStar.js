@@ -11,7 +11,7 @@ export class AStar {
     this.monstersGrid = monstersGrid;
   }
 
-  findPath(start, end) {
+  findPath(start, end, targetPlayerWalletAddress) {
     // console.log({ start, end });
     const openSet = [];
     const closedSet = [];
@@ -62,7 +62,7 @@ export class AStar {
         const neighborRow = currentNode.row + dir[0];
         const neighborCol = currentNode.col + dir[1];
 
-        if (this._isValidCell(neighborRow, neighborCol)) {
+        if (this._isValidCell(neighborRow, neighborCol, targetPlayerWalletAddress)) {
           const neighbor = {
             row: neighborRow,
             col: neighborCol,
@@ -101,14 +101,16 @@ export class AStar {
     }
   }
 
-  _isValidCell(row, col) {
+  _isValidCell(row, col, targetPlayerWalletAddress) {
     return (
       row >= 0 &&
       row < this.rows &&
       col >= 0 &&
       col < this.cols &&
       this.obstaclesGrid[row][col] <= EMPTY_TILE &&
-      /*&& this.playersGrid[row][col] == null*/
+      // note: we cannot exclude the player that we're trying to find path to
+      // - otherwise we will never be able to find the path to this player
+      (this.playersGrid[row][col] == null || this.playersGrid[row][col] === targetPlayerWalletAddress) &&
       this.monstersGrid[row][col] == null
     );
   }
