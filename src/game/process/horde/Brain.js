@@ -174,7 +174,8 @@ export class Brain {
   _findShortestPath(targetPlayer) {
     return this._pathFinder.findPath(
       { col: this._monster.pos.x, row: this._monster.pos.y },
-      { col: targetPlayer.pos.x, row: targetPlayer.pos.y }
+      { col: targetPlayer.pos.x, row: targetPlayer.pos.y },
+      targetPlayer.walletAddress
     );
   }
 
