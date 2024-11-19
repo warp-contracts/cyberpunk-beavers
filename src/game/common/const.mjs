@@ -239,7 +239,7 @@ export const BEAVER_TYPES = {
       scannerRadius: 3,
       drillRadius: 1,
       fov: 6,
-      fovExtended: 6,
+      fovExtended: 8,
       ap: {
         current: 22,
         max: 22,
