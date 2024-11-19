@@ -34,22 +34,51 @@ export class Brain {
     let targetPlayer = null;
     // console.log(` ==== ${monster.walletAddress} =====`);
 
-    if (this._isAlreadyAttackingPlayer()) {
-      if (this._isPlayerWithIdAlive(monster.attackedPlayerId)) {
-        targetPlayer = this._state.players[monster.attackedPlayerId];
-      } else {
+    /**
+     * if monster is both already attacking some player and at the same time is being
+     * attacked by another player AND the monster is aggressive enough
+     * - it will switch to the player that is attacking him
+     * UNLESS - the monster is attacking a digging player - in such
+     * case he is focusing on him
+     */
+    if (this._isAlreadyAttackingPlayer() && !this._isAttackingDigger() && this._isBeingAttackedByOtherPlayer()) {
+      const chanceToFightBack = Math.random(++this._state.randomCounter);
+      if (
+        chanceToFightBack <= monster.stats.aggressiveness &&
+        this._isPlayerWithIdAlive(monster.attackingPlayerId) &&
+        this._isPlayerInAttackRange(monster.attackingPlayerId)
+      ) {
+        targetPlayer = this._state.players[monster.attackingPlayerId];
         monster.attackedPlayerId = null;
       }
-    } else if (this._isBeingAttackedByOtherPlayer()) {
-      if (this._isPlayerWithIdAlive(monster.attackingPlayerId)) {
-        targetPlayer = this._state.players[monster.attackingPlayerId];
-      } else {
-        monster.attackingPlayerId = null;
+    }
+
+    if (!targetPlayer) {
+      if (this._isAlreadyAttackingPlayer()) {
+        if (this._isPlayerWithIdAlive(monster.attackedPlayerId)) {
+          targetPlayer = this._state.players[monster.attackedPlayerId];
+          if (!this._isAttackingDigger() && this._anyActiveDiggers()) {
+            const chanceToSwitchToDigger = Math.random(++this._state.randomCounter);
+            if (chanceToSwitchToDigger <= monster.stats.aggressiveness) {
+              targetPlayer = null;
+              monster.attackedPlayerId = null;
+            }
+          }
+        } else {
+          monster.attackedPlayerId = null;
+        }
+      } else if (this._isBeingAttackedByOtherPlayer()) {
+        if (this._isPlayerWithIdAlive(monster.attackingPlayerId)) {
+          targetPlayer = this._state.players[monster.attackingPlayerId];
+        } else {
+          monster.attackingPlayerId = null;
+        }
       }
     }
 
     targetPlayer = targetPlayer ? this._withDistanceFromMonster(targetPlayer) : this._findPlayerToAttack(monster);
     monster.attackedPlayerId = targetPlayer.player.walletAddress;
+    monster.isAttackingDigger = this._state.diggers.includes(targetPlayer.player.walletAddress);
 
     const result = [];
 
@@ -149,6 +178,9 @@ export class Brain {
       if (player.stats.hp.current < 0) {
         player.stats.hp.current = 0;
         player.stats.kills.deaths++;
+        if (this._state.diggers.includes(player.walletAddress)) {
+          this._state.diggers.splice(this._state.diggers.indexOf(player.walletAddress), 1);
+        }
       }
       // console.log('Player HP:', player.stats.hp.current);
       result.push({
@@ -183,6 +215,10 @@ export class Brain {
     return this._monster.attackedPlayerId !== null;
   }
 
+  _isAttackingDigger() {
+    return this._monster.isAttackingDigger;
+  }
+
   _isPlayerWithIdAlive(walletAddress) {
     return this._state.players[walletAddress].stats.hp.current > 0;
   }
@@ -207,6 +243,8 @@ export class Brain {
       .shift();
 
     /**
+     * find nearest digger first - if any
+     * otherwise:
      * if either of the players is in range - return that player
      * if both players are in range - return the one that will have less hp after attack
      * - that's an approximation (as no dmg multipliers, critical hits, etc. are taken into account - only base dmg)
@@ -218,6 +256,21 @@ export class Brain {
 
       const player1Dmg = self._isPlayerInAttackRange(p1) ? monster.stats.weapon.damage[p1.distance] : 0;
       const player2Dmg = self._isPlayerInAttackRange(p2) ? monster.stats.weapon.damage[p2.distance] : 0;
+
+      const player1IsDigger = self._state.diggers.includes(p1.player.walletAddress);
+      const player2IsDigger = self._state.diggers.includes(p2.player.walletAddress);
+
+      if (player1IsDigger && player2IsDigger) {
+        return p1.distance - p2.distance;
+      }
+
+      if (player1IsDigger) {
+        return -1;
+      }
+
+      if (player2IsDigger) {
+        return 1;
+      }
 
       if (player1Dmg > 0 && player2Dmg === 0) {
         return -1;
@@ -231,6 +284,10 @@ export class Brain {
 
       return p1.distance - p2.distance;
     }
+  }
+
+  _anyActiveDiggers() {
+    return this._state.diggers.length;
   }
 
   _isPlayerInAttackRange(playerWithDistance) {

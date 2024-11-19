@@ -23,6 +23,9 @@ export const MONSTER_TYPES = {
     },
     move_recovery_ms: 1000,
     points_multiplier: 1,
+    // i.e. Math.random must return value <= 0.3
+    // for the "aggressive" action to be performed
+    aggressiveness: 0.3,
   },
   sergeant: {
     type: 'sergeant',
@@ -40,6 +43,9 @@ export const MONSTER_TYPES = {
     },
     move_recovery_ms: 900,
     points_multiplier: 1.1,
+    // i.e. Math.random must return value <= 0.4
+    // for the "aggressive" action to be performed
+    aggressiveness: 0.4,
   },
   lieutenant: {
     type: 'lieutenant',
@@ -57,6 +63,7 @@ export const MONSTER_TYPES = {
     },
     move_recovery_ms: 800,
     points_multiplier: 1.2,
+    aggressiveness: 0.5,
   },
   captain: {
     type: 'captain',
@@ -74,6 +81,7 @@ export const MONSTER_TYPES = {
     },
     move_recovery_ms: 750,
     points_multiplier: 1.3,
+    aggressiveness: 0.6,
   },
   major: {
     type: 'major',
@@ -91,6 +99,7 @@ export const MONSTER_TYPES = {
     },
     move_recovery_ms: 700,
     points_multiplier: 1.4,
+    aggressiveness: 0.7,
   },
   colonel: {
     type: 'colonel',
@@ -108,6 +117,7 @@ export const MONSTER_TYPES = {
     },
     move_recovery_ms: 600,
     points_multiplier: 1.5,
+    aggressiveness: 0.8,
   },
 };
 
