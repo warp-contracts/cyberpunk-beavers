@@ -52,11 +52,19 @@ function alreadyDug(state, player) {
   return state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] > 0;
 }
 
+function registerDigger(state, player) {
+  if (state.diggers.length > 5) {
+    state.diggers.shift();
+  }
+  state.diggers.push(player.walletAddress);
+}
+
 function foundNothing(state, player) {
   console.log(`Player ${player.walletAddress} digged nothing.`);
   player.stats.ap.current -= 2;
   state.gameTreasuresTilemap[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
   state.gameTreasuresTilemapForClient[player.pos.y][player.pos.x] = GameTreasure.hole.tile;
+  registerDigger(state, player);
 
   return {
     player,
@@ -74,6 +82,7 @@ function foundTreasure(state, player, treasureTile) {
   state.gameTreasuresTilemap[player.pos.y][player.pos.x] = tile;
   state.gameTreasuresCounter[type] -= 1;
   player.onGameTreasure = treasure;
+  registerDigger(state, player);
   return {
     player,
     digged: { type, tile },

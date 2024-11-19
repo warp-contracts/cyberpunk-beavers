@@ -280,7 +280,12 @@ export class Horde {
       player.stats.kills.frags++;
       this.state.monstersOnTiles[monster.pos.y][monster.pos.x] = null;
     }
-    monster.attackingPlayerId = player.walletAddress;
+
+    // set the attacking player only if it is not already
+    // being attacked by this monster
+    if (monster.attackedPlayerId !== player.walletAddress) {
+      monster.attackingPlayerId = player.walletAddress;
+    }
     const finished = monster.stats.hp === 0;
     const points = finished ? this._calculateKillPoints(monster, player) : this._calculateAttackPoints(monster, player);
 

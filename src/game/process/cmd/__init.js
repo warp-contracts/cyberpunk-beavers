@@ -116,6 +116,7 @@ function initState(message, state) {
     gameObjectsToRespawnInRound: [],
     gameObjectsConfig: state.gameObjectsConfig || DEFAULT_GAME_OBJECTS_CONFIG,
     teamsConfig: state.teamsConfig || DEFAULT_TEAMS_CONFIG,
+    diggers: [],
   };
 }
 
