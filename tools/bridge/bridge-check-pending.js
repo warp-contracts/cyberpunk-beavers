@@ -14,8 +14,8 @@ const WALLET = JSON.parse(fs.readFileSync('../.secrets/general/jwk.json', 'utf-8
 
 const bridgeProcessId = '89_4zUaRp7RAIz4wZ7n5VgW548i6L2n__-McQzqLn4c';
 
-const euPendingHubId = 'wLnHSBv8xPTf92Qgamws0AH30hafOziof2NPX4hAIu0';
-const asiaPendingHubId = '_ShwhUTUvgJsawINH9tXvWvvR7W0TvMOJ0eINMiYGnI';
+const euPendingHubId = 'Qgf-0stZcN_I5U0cG1uOtXBSf9YDSYMvjcVH_xtM994';
+const asiaPendingHubId = 'HoW8vslmgHgo5slT_2dw4yJg4EWyp0GUV8UzOlmb1Tg';
 
 async function checkPending() {
   const signer = createDataItemSigner(WALLET);
