@@ -110,6 +110,8 @@ function messageListener(target, processId, verifyNonce, verifyLag) {
         if (target.handleMessage) {
           target.handleMessage(message.output, lag, message.walletAddress);
         }
+      } else {
+        console.warn('No "output" or "output.cmd" in message');
       }
     } catch (e) {
       console.error(e);
