@@ -82,7 +82,11 @@ export class Brain {
 
     const result = [];
 
-    if (this._state.activated && this._isPlayerInAttackRange(targetPlayer)) {
+    if (
+      this._state.activated &&
+      this._isPlayerInAttackRange(targetPlayer) &&
+      this._isPlayerWithIdAlive(monster.attackedPlayerId)
+    ) {
       // console.log(`Monster ${monster.walletAddress} is attacking player ${targetPlayer.player.walletAddress}`);
       return result.concat(this._attackPlayer(targetPlayer.player));
     } else {
@@ -175,7 +179,7 @@ export class Brain {
     if (finalDmg > 0) {
       player.stats.hp.current -= finalDmg;
 
-      if (player.stats.hp.current < 0) {
+      if (player.stats.hp.current <= 0) {
         player.stats.hp.current = 0;
         player.stats.kills.deaths++;
         if (this._state.diggers.includes(player.walletAddress)) {
