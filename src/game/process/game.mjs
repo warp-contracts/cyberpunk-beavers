@@ -312,6 +312,9 @@ function gamePlayerTick(state, action) {
 }
 
 function respawn(round, state) {
+  const tiles = Object.values(state.gameObjectsTiles).map((t) => {
+    if (t.type !== GameObject.none.type) return t.tile;
+  });
   for (let roundToRespawn in state?.gameObjectsToRespawn) {
     if (roundToRespawn <= round) {
       for (let gameObjectToRespawn of state?.gameObjectsToRespawn[roundToRespawn]) {
@@ -322,13 +325,7 @@ function respawn(round, state) {
         } else {
           let calculatedPos;
           while (!calculatedPos) {
-            ({ pos: calculatedPos } = setObjectOnPos(
-              0,
-              state,
-              state.gameObjectsTilemap,
-              state.gameObjectsTiles,
-              GameObject[type]
-            ));
+            ({ pos: calculatedPos } = setObjectOnPos(0, state, state.gameObjectsTilemap, tiles, GameObject[type]));
           }
           gameObjectToRespawn.pos = calculatedPos;
           gameObjectToRespawn.constant = false;
