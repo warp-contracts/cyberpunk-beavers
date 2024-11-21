@@ -429,7 +429,7 @@ export default class MainScene extends Phaser.Scene {
         self.allPlayers[response.player.walletAddress].boosts.hideShieldBoost();
       }
       if (!response.player.activeBoosts[BOOSTS.xray.type]) {
-        self.fov.removeXRay();
+        self.fov?.removeXRay();
       }
     }
 
