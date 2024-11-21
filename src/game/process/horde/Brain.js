@@ -150,7 +150,6 @@ export class Brain {
           owner: hiddenObject.owner,
           type: GameObject.active_mine.type,
         };
-        self._monsters.processPlayerAttack();
       }
       return encounter;
     }
