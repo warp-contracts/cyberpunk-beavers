@@ -280,7 +280,7 @@ export class Horde {
     const { dmg, player, monster } = this.playerAttack;
     this.playerAttack = null;
     monster.stats.hp.current -= dmg.finalDmg;
-    if (monster.stats.hp.current < 0) {
+    if (monster.stats.hp.current <= 0) {
       monster.stats.hp.current = 0;
       player.stats.kills.frags++;
       this.state.monstersOnTiles[monster.pos.y][monster.pos.x] = null;
