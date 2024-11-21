@@ -91,8 +91,9 @@ export class HordeManager {
                 self.scene.clearLandmine(newPosition);
               }
               monsterObject.moveTo(newPosition, true);
+            } else {
+              monsterObject.moveTo(newPosition);
             }
-            monsterObject.moveTo(newPosition);
             break;
           }
           case 'attacking': {
