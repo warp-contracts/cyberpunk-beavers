@@ -474,10 +474,10 @@ export default class MainScene extends Phaser.Scene {
 
             if (self.mode === GAMEPLAY_MODES.horde && !self.tickIntervalId) {
               self.tickIntervalId = setInterval(() => {
-                if (Date.now() - self.lastUpdateTs > 900) {
+                if (Date.now() - self.lastUpdateTs > 1000) {
                   self.server.send({ cmd: Const.Command.tick }).then();
                 }
-              }, 350);
+              }, 500);
             }
             if (self.gameEnd) {
               self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);
@@ -546,13 +546,11 @@ export default class MainScene extends Phaser.Scene {
         }
         self.isEverythingFuckingInitialized = true;
         break;
-
       case Const.Command.attacked:
         if (!response.hordeTick) {
           handleAttacked(response, self);
         }
         break;
-
       case Const.Command.landmineActivated:
         {
           if (response?.player?.walletAddress === self.mainPlayer?.walletAddress && response?.scoreToDisplay) {
@@ -610,7 +608,6 @@ export default class MainScene extends Phaser.Scene {
       case Const.Command.picked:
         executePick(response, self);
         break;
-
       case Const.Command.digged: {
         if (!response.digged) {
           return;
@@ -631,17 +628,14 @@ export default class MainScene extends Phaser.Scene {
         self.displayPlayerScore(response.scoreToDisplay, responsePlayer.walletAddress);
         break;
       }
-
       case Const.Command.drilled: {
         executeDrill(response, self);
         break;
       }
-
       case Const.Command.scanned: {
         executeScan(response, self);
         break;
       }
-
       case Const.Command.hpApplied: {
         if (!response.applied && isMainPlayer) {
           self.noCollectSound.play();
@@ -653,7 +647,6 @@ export default class MainScene extends Phaser.Scene {
         break;
       }
     }
-
     // note - yes, this code has to run after a message is handled by a target handler
     // - as we need to have updated players' stats
     if (response.battleRoyale) {

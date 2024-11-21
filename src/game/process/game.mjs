@@ -103,6 +103,7 @@ export function handle(state, message) {
       if (horde) {
         const hordeTick = horde.tick(message.Timestamp);
         ao.result({
+          cmd: Const.Command.tick,
           ...gameStats(state, message.Timestamp),
           hordeTick,
         });
