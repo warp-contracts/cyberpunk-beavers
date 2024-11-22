@@ -113,12 +113,12 @@ const Tile = {
  */
 export const GameTreasure = {
   hole: { type: 'hole', label: 'hole', tile: 0, value: 0 },
-  cbcoin: { type: 'cbcoin', label: 'CyberBeaversToken', tile: 1, value: 500, denomination: 0 },
+  cbcoin: { type: 'cbcoin', label: 'CyberBeaversToken', tile: 1, value: 100, denomination: 0 },
   tio: { type: 'tio', label: 'ar.io (tIO)', tile: 2, value: 100, baseVal: 300_000, denomination: 6 },
   war: { type: 'war', label: 'Wrapped AR', tile: 3, value: 300, baseVal: 10_000_000_000, denomination: 12 },
   trunk: { type: 'trunk', label: 'TRUNK', tile: 4, value: 100, baseVal: 30, denomination: 3 },
   gun: { type: 'gun', label: 'GUN', tile: 5, value: 300, baseVal: 1, denomination: 0 },
-  rsg: { type: 'rsg', label: 'RSG', tile: 6, value: 200, baseVal: 1, denomination: 0 },
+  rsg: { type: 'rsg', label: 'RSG', tile: 6, value: 40, baseVal: 1, denomination: 0 },
 };
 
 const DEFAULT_GAME_TOKENS = {
@@ -152,7 +152,7 @@ export const TreasureLimit = {
   PerGame: {
     [GAME_MODES.rsg.type]: {
       [GameTreasure.rsg.type]: {
-        value: 20_000,
+        value: 4_000,
       },
     },
   },
@@ -171,8 +171,8 @@ const Errors = {
 
 // ------- Combat
 const Combat = {
-  DefaultLoot: 1000, // Tokens that will be taken after defeating the opponent.
-  DefaultAttack: 50, // Tokens that will be taken after attacking the opponent.
+  DefaultLoot: 200, // Tokens that will be taken after defeating the opponent.
+  DefaultAttack: 10, // Tokens that will be taken after attacking the opponent.
 };
 
 // ------- Beaver Config
