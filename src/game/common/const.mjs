@@ -251,12 +251,12 @@ export const BEAVER_TYPES = {
       weapon: WEAPONS.sniper_rifle_basic,
       bonus: {
         [GAME_MODES.ao.type]: {
-          [BonusType.KillBonus]: 200,
-          [GameTreasure.cbcoin.type]: 100,
+          [BonusType.KillBonus]: 40,
+          [GameTreasure.cbcoin.type]: 20,
         },
         [GAME_MODES.rsg.type]: {
-          [BonusType.KillBonus]: 100,
-          [GameTreasure.rsg.type]: 100,
+          [BonusType.KillBonus]: 20,
+          [GameTreasure.rsg.type]: 20,
         },
       },
       kill: Kills.headshot,
@@ -319,11 +319,11 @@ export const BEAVER_TYPES = {
       weapon: WEAPONS.shotgun_basic,
       bonus: {
         [GAME_MODES.ao.type]: {
-          [BonusType.KillBonus]: 220,
+          [BonusType.KillBonus]: 45,
           [GameTreasure.cbcoin.type]: 0,
         },
         [GAME_MODES.rsg.type]: {
-          [BonusType.KillBonus]: 220,
+          [BonusType.KillBonus]: 45,
           [GameTreasure.rsg.type]: 0,
         },
       },
@@ -387,12 +387,12 @@ export const BEAVER_TYPES = {
       weapon: WEAPONS.katana_basic,
       bonus: {
         [GAME_MODES.ao.type]: {
-          [BonusType.KillBonus]: 180,
-          [GameTreasure.cbcoin.type]: 20,
+          [BonusType.KillBonus]: 35,
+          [GameTreasure.cbcoin.type]: 5,
         },
         [GAME_MODES.rsg.type]: {
-          [BonusType.KillBonus]: 180,
-          [GameTreasure.rsg.type]: 20,
+          [BonusType.KillBonus]: 35,
+          [GameTreasure.rsg.type]: 5,
         },
       },
       kill: Kills.slice,
@@ -431,12 +431,12 @@ const Queue = {
 export const PRIZES = {
   [GAMEPLAY_MODES.deathmatch]: null,
   [GAMEPLAY_MODES.battleRoyale]: {
-    [GAME_MODES.ao.type]: 20_000,
-    [GAME_MODES.rsg.type]: 20_000,
+    [GAME_MODES.ao.type]: 4_000,
+    [GAME_MODES.rsg.type]: 4_000,
   },
   [GAMEPLAY_MODES.horde]: {
-    [GAME_MODES.ao.type]: 20_000,
-    [GAME_MODES.rsg.type]: 20_000,
+    [GAME_MODES.ao.type]: 4_000,
+    [GAME_MODES.rsg.type]: 4_000,
   },
 };
 
