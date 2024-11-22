@@ -28,12 +28,12 @@ export class Boosts {
 
   animateQuadDamageBoost() {
     if (this.quadDamageFx) {
-      this.quadDamageTween = this.player.scene.tweens.add({
-        targets: this.quadDamageFx,
-        outerStrength: 8,
-        yoyo: true,
-        ease: 'sine.inout',
-      });
+      // this.quadDamageTween = this.player.scene.tweens.add({
+      //   targets: this.quadDamageFx,
+      //   outerStrength: 8,
+      //   yoyo: true,
+      //   ease: 'sine.inout',
+      // });
     }
   }
 
@@ -57,13 +57,13 @@ export class Boosts {
 
   animateShieldBoost() {
     if (this.shieldFx) {
-      this.shieldTween = this.player.scene.tweens.add({
-        targets: this.shieldFx,
-        outerStrength: 8,
-        color: 0xffde21,
-        yoyo: true,
-        ease: 'sine.inout',
-      });
+      // this.shieldTween = this.player.scene.tweens.add({
+      //   targets: this.shieldFx,
+      //   outerStrength: 8,
+      //   color: 0xffde21,
+      //   yoyo: true,
+      //   ease: 'sine.inout',
+      // });
     }
   }
 
