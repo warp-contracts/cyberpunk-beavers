@@ -19,7 +19,8 @@
     "deploy-session-game:prod:eu": "yarn build && node tools/deploy/deploy-spawn-session-game.js --env prod --config open-eu --time $1",
     "deploy-session-game:prod:asia": "yarn build && node tools/deploy/deploy-spawn-session-game.js --env prod --config open-asia --time $1",
     "display-session-schedule": "yarn build && node tools/deploy/display-session-config-schedule.js",
-    "test": "node  build.js && vitest",
+    "test": "node build.js && yarn test:flags",
+    "test:flags": "node --experimental-wasm-memory64 node_modules/vitest/vitest.mjs",
     "build": "node build.js",
     "format": "npx prettier --write .",
     "prepare": "husky install"
