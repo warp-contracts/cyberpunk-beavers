@@ -1,14 +1,14 @@
 import { GAMEPLAY_MODES } from './const.mjs';
 
 export const GameObject = {
-  ap: { type: 'ap', tile: 0, value: 1, rarity: 10, roundsToRespawn: 5 },
+  ap: { type: 'ap', tile: 0, value: 5, rarity: 10, roundsToRespawn: 5 },
   hp: {
     type: 'hp',
     tile: 1,
     value: {
-      [GAMEPLAY_MODES.deathmatch]: 5,
-      [GAMEPLAY_MODES.horde]: 15,
-      [GAMEPLAY_MODES.battleRoyale]: 10,
+      [GAMEPLAY_MODES.deathmatch]: 25,
+      [GAMEPLAY_MODES.horde]: 75,
+      [GAMEPLAY_MODES.battleRoyale]: 50,
     },
     rarity: 10,
     roundsToRespawn: 5,
