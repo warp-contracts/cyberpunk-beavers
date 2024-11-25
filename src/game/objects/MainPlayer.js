@@ -15,6 +15,7 @@ export default class MainPlayer extends Player {
   combatMode = false;
   mainScene;
   lastNoApPlayTimestamp;
+  lockingIntervalId = null;
 
   constructor(data) {
     let { stats, scene, x, y } = data;
@@ -202,9 +203,19 @@ export default class MainPlayer extends Player {
   }
 
   async send(message) {
+    const self = this;
+
     if (this.locked) return;
     if (this.mainScene.lockingTx) {
       console.log(`Action locked for tx`, this.mainScene.lockingTx);
+      if (!this.lockingIntervalId) {
+        this.lockingIntervalId = setInterval(() => {
+          console.log('Auto unlocking action for', self.mainScene.lockingTx);
+          self.mainScene.lockingTx = null;
+          clearInterval(self.lockingIntervalId);
+          self.lockingIntervalId = null;
+        }, 1500);
+      }
     } else {
       try {
         this.mainScene.lockingTx = (await this.scene.server.send(message)).id;
