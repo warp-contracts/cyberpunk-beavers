@@ -1,5 +1,6 @@
 local bint = require('.bint')(256)
 local sqlite3 = require("lsqlite3")
+local json = require('json')
 
 Owner = Owner or ao.env.Process.Owner
 
@@ -23,6 +24,7 @@ ao.authorities = {"fcoN_xJeisVsPXA-trzVAuIiqO3ydLQxM-L4XbrQKzY", "jmGGoJaDYDTx4O
 db = db or sqlite3.open_memory()
 
 -- init db
+db:exec("BEGIN TRANSACTION;")
 db:exec([[
 create table if not exists orders(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,6 +35,10 @@ create table if not exists orders(
 	payment INTEGER NOT NULL
 );
 ]])
+db:exec([[
+	CREATE INDEX IF NOT EXISTS idx_wallet_address_timestamp ON orders (wallet_address, timestamp DESC);
+]])
+db:exec("COMMIT;")
 
 Handlers.add('Credit-Notice', Handlers.utils.hasMatchingTag('Action', 'Credit-Notice'), function(msg)
 	local data = {
@@ -126,7 +132,7 @@ Handlers.add('Credit-Notice', Handlers.utils.hasMatchingTag('Action', 'Credit-No
 		end
 
 		-- check if there are enough items in the hollow
-		if  ToNumber(Items[orderArgs.item].Quantity) < ToNumber(orderArgs.itemQuantity) then
+		if  tonumber(Items[orderArgs.item].Quantity) < tonumber(orderArgs.itemQuantity) then
 			HandleError({
 				Target = orderArgs.sender,
 				Action = 'Create-Order-Error',
@@ -140,7 +146,7 @@ Handlers.add('Credit-Notice', Handlers.utils.hasMatchingTag('Action', 'Credit-No
 		-- check if price of ordered items alligns with quantity of the Credit-Notice
 		local totalItemPrice = Multiply(orderArgs.itemQuantity, Items[orderArgs.item].Price)
 
-		if  ToNumber(totalItemPrice) <= ToNumber(orderArgs.quantity) then
+		if  tonumber(totalItemPrice) <= tonumber(orderArgs.quantity) then
 			if not Balances[orderArgs.sender] then Balances[orderArgs.sender] = {} end
 			if not Balances[orderArgs.sender][orderArgs.item] then
 				Balances[orderArgs.sender][orderArgs.item] = '0'
@@ -156,7 +162,7 @@ Handlers.add('Credit-Notice', Handlers.utils.hasMatchingTag('Action', 'Credit-No
 
 
 			-- return remaining token quantity to the sender
-			if  ToNumber(totalItemPrice) < ToNumber(orderArgs.quantity) then
+			if  tonumber(totalItemPrice) < tonumber(orderArgs.quantity) then
 				ao.send({
 					Target = msg.From,
 					Action = 'Transfer',
@@ -236,7 +242,7 @@ Handlers.add('Read-Item', Handlers.utils.hasMatchingTag('Action', 'Read-Item'), 
 	ao.send({
 		Target = msg.From,
 		Action = 'Item-Info',
-		Data = Items[msg.Tags.Item],
+		Data = json.encode(Items[msg.Tags.Item]),
 	  })
 end)
 
@@ -257,7 +263,7 @@ Handlers.add('Read-Balance', Handlers.utils.hasMatchingTag('Action', 'Read-Balan
 	ao.send({
 		Target = msg.From,
 		Action = 'Read-Balance-Success',
-		Data = Balances[msg.Tags['Wallet-Address']],
+		Data = json.encode(Balances[msg.Tags['Wallet-Address']]),
 	  })
 end)
 
@@ -265,7 +271,7 @@ Handlers.add('Read-Hollow', Handlers.utils.hasMatchingTag('Action', 'Read-Hollow
 	ao.send({
 		Target = msg.From,
 		Action = 'Read-Hollow-Success',
-		Data = Items,
+		Data = json.encode(Items),
 	  })
 end)
 
@@ -277,6 +283,6 @@ Handlers.add('Read-Orders', Handlers.utils.hasMatchingTag('Action', 'Read-Orders
 	ao.send({
 		Target = msg.From,
 		Action = 'Read-Orders-Success',
-		Data = result,
+		Data = json.encode(result),
 	  })
 end)

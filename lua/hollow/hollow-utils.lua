@@ -5,7 +5,7 @@ function CheckValidAddress(address)
 		return false
 	end
 
-	return string.match(address, '^[%w%-_]+$') ~= nil and #address == 43
+	return string.match(address, '^[%w%-_]+$') ~= nil and (#address == 43 or #address == 42)
 end
 
 function CheckValidAmount(data)
@@ -24,11 +24,7 @@ function Subtract(a,b)
     return tostring(bint(a) - bint(b))
 end
 
-function ToNumber(a)
-    return tonumber(a)
-  end
-
-  function HandleError(args) -- Target, TransferToken, Quantity
+function HandleError(args) -- Target, TransferToken, Quantity
 	-- If there is a valid quantity then return the funds
 	if args.TransferToken and args.Quantity and  CheckValidAmount(args.Quantity) then
 		ao.send({

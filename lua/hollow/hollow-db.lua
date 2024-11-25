@@ -39,7 +39,7 @@ function ReadOrders(limit, offset, wallet_address)
 		table.insert(valuesToBind, wallet_address)
 	end
 
-	sql = sql .. ' LIMIT ? OFFSET ?;'
+	sql = sql .. ' ORDER BY timestamp DESC LIMIT ? OFFSET ?;'
 	table.insert(valuesToBind, limit)
 	table.insert(valuesToBind, offset)
     local stmt, err_parse = db:prepare(sql)
