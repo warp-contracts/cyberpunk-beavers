@@ -198,16 +198,18 @@ export function respawnPlayer(player, state, timestamp) {
   player.stats.kills.deaths++;
   player.stats.kills.fragsInRow = 0;
   [BOOSTS.quad_damage.type, BOOSTS.shield.type].forEach((b) => delete player.activeBoosts[b]);
-  if (state.gameplayMode === GAMEPLAY_MODES.deathmatch) {
+  if (state.gameplayMode === GAMEPLAY_MODES.deathmatch || state.gameplayMode === GAMEPLAY_MODES.horde) {
     player.stats.hp.current = player.stats.hp.max;
     state.playersOnTiles[player.pos.y][player.pos.x] = null;
     player.pos = calculatePlayerRandomPos(state);
     state.playersOnTiles[player.pos.y][player.pos.x] = player.walletAddress;
   }
-  player.stats.death = {
-    ts: timestamp,
-    round: state.round.current,
-  };
+  if (timestamp) {
+    player.stats.death = {
+      ts: timestamp,
+      round: state.round.current,
+    };
+  }
 }
 
 export function lootPlayer(player, state) {

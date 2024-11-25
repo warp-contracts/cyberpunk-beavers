@@ -80,6 +80,7 @@ export default class MainScene extends Phaser.Scene {
     this.hordeAliveMonsters = 0;
     this.hordeAlivePlayers = 0;
     this.hordeWaveNumber = 0;
+    this.playerLives = null;
     this.lastUpdateTs = 0;
   }
 
@@ -140,6 +141,7 @@ export default class MainScene extends Phaser.Scene {
           hordeWaveNumber: self.hordeWaveNumber,
           winningTeam: self.winningTeam,
           teams: self.teams,
+          playerLives: self.playerLives,
         });
       },
     });
@@ -478,6 +480,7 @@ export default class MainScene extends Phaser.Scene {
                   self.server.send({ cmd: Const.Command.tick }).then();
                 }
               }, 500);
+              self.playerLives = responsePlayer.stats.lives.current;
             }
             if (self.gameEnd) {
               self.roundsCountdownTotal = ~~((self.gameEnd - response.round.start) / response.round.interval);

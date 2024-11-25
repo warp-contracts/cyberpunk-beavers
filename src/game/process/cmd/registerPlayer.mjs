@@ -1,4 +1,4 @@
-import Const, { GAME_MODES } from '../../common/const.mjs';
+import Const, { GAME_MODES, GAMEPLAY_MODES } from '../../common/const.mjs';
 import { calculateRandomPos } from './__init';
 import { checkWhitelist } from './queue.mjs';
 import { EMPTY_TILE } from '../../common/mapsLayersConst.mjs';
@@ -82,6 +82,13 @@ export function registerPlayer(state, action) {
   players[walletAddress] = newPlayer;
   if (generatedWalletAddress) {
     state.generatedWalletsMapping[generatedWalletAddress] = walletAddress;
+  }
+  if (state.gameplayMode === GAMEPLAY_MODES.horde) {
+    if (this.state?.currentWave) {
+      newPlayer.joinedWaveIdx = this.state.currentWave.index;
+    } else {
+      newPlayer.joinedWaveIdx = 0;
+    }
   }
   sendHubNotification(state);
   return { player: newPlayer };

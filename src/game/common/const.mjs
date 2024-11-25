@@ -220,6 +220,7 @@ export const BEAVER_TYPES = {
   hacker_beaver: {
     name: 'hacker_beaver',
     stats: {
+      lives: { current: 999, max: 999 },
       battleRoyale: {
         hp: {
           current: 260,
@@ -235,6 +236,7 @@ export const BEAVER_TYPES = {
           current: 30,
           max: 30,
         },
+        lives: { current: 3, max: 3 },
       },
       scannerRadius: 3,
       drillRadius: 1,
@@ -288,6 +290,7 @@ export const BEAVER_TYPES = {
   heavy_beaver: {
     name: 'heavy_beaver',
     stats: {
+      lives: { current: 999, max: 999 },
       battleRoyale: {
         hp: {
           current: 400,
@@ -303,6 +306,7 @@ export const BEAVER_TYPES = {
           current: 28,
           max: 28,
         },
+        lives: { current: 3, max: 3 },
       },
       scannerRadius: 2,
       drillRadius: 1,
@@ -356,6 +360,7 @@ export const BEAVER_TYPES = {
   speedy_beaver: {
     name: 'speedy_beaver',
     stats: {
+      lives: { current: 999, max: 999 },
       battleRoyale: {
         hp: {
           current: 200,
@@ -371,6 +376,7 @@ export const BEAVER_TYPES = {
           current: 33,
           max: 33,
         },
+        lives: { current: 3, max: 3 },
       },
       scannerRadius: 1,
       drillRadius: 1,
