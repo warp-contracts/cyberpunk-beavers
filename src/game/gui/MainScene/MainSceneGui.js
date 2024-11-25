@@ -42,6 +42,7 @@ export function MainSceneGui() {
         hordeWaveNumber,
         winningTeam,
         teams,
+        playerLives,
       } = vnode.attrs;
 
       const { lagMessage, lagClass } = formatLag(window.warpAO.lag);
@@ -113,7 +114,7 @@ export function MainSceneGui() {
               hordeWaveNumber > 0 && !waitingForNewWave
                 ? m(
                     '.main-scene-info.small',
-                    `Wave: ${hordeWaveNumber}, monsters alive: ${hordeAliveMonsters}, players alive: ${hordeAlivePlayers}`
+                    `Lives: ${playerLives}, Wave: ${hordeWaveNumber}, monsters alive: ${hordeAliveMonsters}, players alive: ${hordeAlivePlayers}`
                   )
                 : null,
               m(BattleReport, {

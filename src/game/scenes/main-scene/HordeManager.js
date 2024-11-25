@@ -3,6 +3,7 @@ import { scoreToDisplay } from '../../common/tools.mjs';
 import { doPlayAttackSound } from './sounds.js';
 import { HORDE_GAME_STATUS } from '../../common/hordeConst.mjs';
 import { GameObject } from '../../common/gameObject.mjs';
+import { GAMEPLAY_MODES } from '../../common/const.mjs';
 
 export class HordeManager {
   constructor(scene) {
@@ -151,7 +152,6 @@ export class HordeManager {
           }
           // i.e. has been killed by monster
           case 'killed': {
-            console.warn('=========== KILL ========');
             player.kill();
             player.deathAnim(MONSTER_TO_BEAVER[action.data.attackingMonsterType], isMainPLayer);
             break;
@@ -161,6 +161,20 @@ export class HordeManager {
             player.stats.ap.current = action.data.ap;
             player.stats.coins = action.data.coins;
             self.scene.updateStats(player, gameStats);
+            break;
+          }
+          case 'respawned': {
+            player.lock();
+            self.scene.playerLives = action.data.lives;
+            player.deathAnim(MONSTER_TO_BEAVER[action.data.attackingMonsterType]).once('animationcomplete', () => {
+              self.scene.updateStats(player, gameStats);
+              player.baseMoveTo(
+                action.data.pos,
+                () => {},
+                () => player.blink()
+              );
+              player.unlock();
+            });
             break;
           }
         }

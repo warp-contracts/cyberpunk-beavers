@@ -1,5 +1,5 @@
 import { getChebyshevDistance, getSnakeDistance } from './Horde.js';
-import { calculateDamage } from '../cmd/attack.mjs';
+import { calculateDamage, respawnPlayer } from '../cmd/attack.mjs';
 import Const from '../../common/const.mjs';
 import { AStar } from './AStar.js';
 import { GameObject } from '../../common/gameObject.mjs';
@@ -175,17 +175,25 @@ export class Brain {
       },
     ];
 
+    let actionType = 'attacked';
     if (finalDmg > 0) {
       player.stats.hp.current -= finalDmg;
 
       if (player.stats.hp.current <= 0) {
         player.stats.hp.current = 0;
-        player.stats.kills.deaths++;
         if (this._state.diggers.includes(player.walletAddress)) {
           this._state.diggers.splice(this._state.diggers.indexOf(player.walletAddress), 1);
         }
+        if (player.stats.lives.current > 0) {
+          player.stats.lives.current--;
+          respawnPlayer(player, this._state);
+          actionType = 'respawned';
+        } else {
+          player.stats.kills.deaths++;
+          actionType = 'killed';
+        }
       }
-      // console.log('Player HP:', player.stats.hp.current);
+
       result.push({
         target: {
           type: 'players',
@@ -193,11 +201,13 @@ export class Brain {
         },
         scores: [{ value: -finalDmg, type: Const.Scores.hp }],
         action: {
-          type: player.stats.hp.current === 0 ? 'killed' : 'attacked',
+          type: actionType,
           data: {
             attackingPlayer: player.walletAddress,
             attackingMonsterType: this._monster.stats.type,
             hp: player.stats.hp.current,
+            pos: player.pos,
+            lives: player.stats.lives.current,
           },
         },
       });
