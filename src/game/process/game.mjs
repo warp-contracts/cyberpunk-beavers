@@ -33,7 +33,9 @@ function addToLastTxs(message, state) {
   }
 }
 
-export function handle(state, message) {
+export async function handle(state, message) {
+  const test = await readExternal('iWM-odlyQHopPECpyz465p7ED8lm5d3hyyWtijKhie4', 'Read-Hollow');
+  console.log(test);
   state.randomCounter = 0;
   if (state.hasOwnProperty('rawMap')) {
     __init(state, message);

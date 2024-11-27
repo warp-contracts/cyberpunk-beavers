@@ -99,8 +99,8 @@ Handlers.add('Credit-Notice', Handlers.utils.hasMatchingTag('Action', 'Credit-No
 		local orderArgs = {
 			orderId = msg.Id,
 			token = msg.From,
-			item = msg.Tags.Item,
-			itemQuantity = msg.Tags['Item-Quantity'],
+			item = msg.Tags['X-Item'],
+			itemQuantity = msg.Tags['X-Item-Quantity'],
 			sender = data.Sender,
 			quantity = data.Quantity,
 			timestamp = msg.Timestamp,
@@ -172,6 +172,17 @@ Handlers.add('Credit-Notice', Handlers.utils.hasMatchingTag('Action', 'Credit-No
 					}
 				})
 			end
+
+			-- send tokens to the token proces
+			ao.send({
+				Target = msg.From,
+				Action = 'Transfer',
+				Tags = {
+					Recipient = msg.From,
+					Quantity = tostring(totalItemPrice)
+				}
+			})
+
 			InsertOrder(orderArgs.sender, msg.Timestamp, orderArgs.item, orderArgs.itemQuantity, totalItemPrice)
 			return
 		else

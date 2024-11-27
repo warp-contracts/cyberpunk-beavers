@@ -28,37 +28,11 @@
       "start": {
         "secondsFromNow": -60
       },
-      "gameDuration": 420000,
+      "gameDuration": 10800000,
       "gameDuration_comment": "1 minute",
       "gameBreak": 10000,
       "gameBreak_comment": "10 seconds",
       "games": [{ "map": "b2m3" }]
-    },
-    {
-      "start": {
-        "secondsFromNow": 20
-      },
-      "gameDuration": 420000,
-      "gameDuration_comment": "1 minute",
-      "gameBreak": 10000,
-      "gameBreak_comment": "10 seconds",
-      "commonSetup": {
-        "playersLimit": 20
-      },
-      "games": [{ "map": "b2m1" }]
-    },
-    {
-      "start": {
-        "secondsFromNow": 20
-      },
-      "gameDuration": 420000,
-      "gameDuration_comment": "1 minute",
-      "gameBreak": 10000,
-      "gameBreak_comment": "10 seconds",
-      "commonSetup": {
-        "playersLimit": 20
-      },
-      "games": [{ "map": "b2m2" }]
     }
   ],
   "tokensShipment": {

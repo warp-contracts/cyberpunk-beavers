@@ -2,7 +2,6 @@ import Const from '../common/const.mjs';
 
 export function handle(state, message) {
   console.log('-- Game Hub, message from ', message.Owner);
-
   const actionTagValue = message.Tags?.find((t) => t.name === 'Action')?.value;
   const gameProcess = message.Tags?.find((t) => t.name === 'From-Process')?.value;
   const module = message.Tags?.find((t) => t.name === 'From-Module')?.value;
