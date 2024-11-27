@@ -43,12 +43,13 @@ export class Brain {
      */
     if (this._isAlreadyAttackingPlayer() && !this._isAttackingDigger() && this._isBeingAttackedByOtherPlayer()) {
       const chanceToFightBack = Math.random(++this._state.randomCounter);
+      const attackingPlayer = this._state.players[monster.attackingPlayerId];
       if (
         chanceToFightBack <= monster.stats.aggressiveness &&
         this._isPlayerWithIdAlive(monster.attackingPlayerId) &&
-        this._isPlayerInAttackRange(monster.attackingPlayerId)
+        this._isPlayerInAttackRange(attackingPlayer)
       ) {
-        targetPlayer = this._state.players[monster.attackingPlayerId];
+        targetPlayer = attackingPlayer;
         monster.attackedPlayerId = null;
       }
     }
@@ -84,7 +85,7 @@ export class Brain {
 
     if (
       this._state.activated &&
-      this._isPlayerInAttackRange(targetPlayer) &&
+      this._isPlayerInAttackRange(targetPlayer.player) &&
       this._isPlayerWithIdAlive(monster.attackedPlayerId)
     ) {
       // console.log(`Monster ${monster.walletAddress} is attacking player ${targetPlayer.player.walletAddress}`);
@@ -267,8 +268,8 @@ export class Brain {
       const player1Hp = p1.player.stats.hp.current;
       const player2Hp = p2.player.stats.hp.current;
 
-      const player1Dmg = self._isPlayerInAttackRange(p1) ? monster.stats.weapon.damage[p1.distance] : 0;
-      const player2Dmg = self._isPlayerInAttackRange(p2) ? monster.stats.weapon.damage[p2.distance] : 0;
+      const player1Dmg = self._isPlayerInAttackRange(p1.player) ? monster.stats.weapon.damage[p1.distance] : 0;
+      const player2Dmg = self._isPlayerInAttackRange(p2.player) ? monster.stats.weapon.damage[p2.distance] : 0;
 
       const player1IsDigger = self._state.diggers.includes(p1.player.walletAddress);
       const player2IsDigger = self._state.diggers.includes(p2.player.walletAddress);
@@ -303,10 +304,10 @@ export class Brain {
     return this._state.diggers.length;
   }
 
-  _isPlayerInAttackRange(playerWithDistance) {
+  _isPlayerInAttackRange(player) {
     const attackRange = this._monster.stats.weapon.attack_range;
     const monsterPosition = this._monster.pos;
-    const playerPosition = playerWithDistance.player.pos;
+    const playerPosition = player.pos;
 
     const distance = getChebyshevDistance(monsterPosition.x, monsterPosition.y, playerPosition.x, playerPosition.y);
     /*console.log({
