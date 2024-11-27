@@ -37,9 +37,8 @@ export default class MonsterObject extends Phaser.Physics.Arcade.Sprite {
     this.addLayeredSprites();
     this.additionalElements.push(this.healthBar /*, this.name*/);
 
-    this.monsterFx = this.postFX.addGlow(monster.stats.color, 2, 0, false, 0.1, 12);
     this.setScale(1 + MONSTERS_HIERARCHY.indexOf(monster.stats.type) / 10);
-    this.setTint(monster.stats.color);
+    this.setTintFill(monster.stats.color);
     // this.monsterTween = this.scene.tweens.add({
     //   targets: this.monsterFx,
     //   outerStrength: 8,

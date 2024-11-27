@@ -9,7 +9,7 @@ export const HORDE_GAME_STATUS = {
 export const MONSTER_TYPES = {
   private: {
     type: 'private',
-    color: 0xfc99c4,
+    color: 0xffffff,
     hp: {
       current: 75,
       max: 75,
@@ -29,7 +29,7 @@ export const MONSTER_TYPES = {
   },
   sergeant: {
     type: 'sergeant',
-    color: 0xdb73b7,
+    color: 0xffa500,
     hp: {
       current: 100,
       max: 100,
@@ -49,7 +49,7 @@ export const MONSTER_TYPES = {
   },
   lieutenant: {
     type: 'lieutenant',
-    color: 0xba52ad,
+    color: 0x0000ff,
     hp: {
       current: 150,
       max: 150,
@@ -67,7 +67,7 @@ export const MONSTER_TYPES = {
   },
   captain: {
     type: 'captain',
-    color: 0x903799,
+    color: 0xffde21,
     hp: {
       current: 200,
       max: 200,
@@ -85,7 +85,7 @@ export const MONSTER_TYPES = {
   },
   major: {
     type: 'major',
-    color: 0x5c2179,
+    color: 0x00ff00,
     hp: {
       current: 275,
       max: 275,
@@ -103,7 +103,7 @@ export const MONSTER_TYPES = {
   },
   colonel: {
     type: 'colonel',
-    color: 0x311058,
+    color: 0xff0000,
     hp: {
       current: 400,
       max: 400,

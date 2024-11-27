@@ -22,7 +22,7 @@ export class Boosts {
 
   showQuadDamageBoost() {
     if (this.quadDamageFx === null) {
-      this.quadDamageFx = this.player.postFX.addGlow(0xff0000, 2, 0, false, 0.1, 16);
+      this.quadDamageFx = this.player.postFX.addGlow(0xff0000, 2, 0, false, 0.05, 8);
     }
   }
 
@@ -51,7 +51,7 @@ export class Boosts {
 
   showShieldBoost() {
     if (this.shieldFx === null) {
-      this.shieldFx = this.player.postFX.addGlow(0x00ffff, 2, 0, false, 0.1, 16);
+      this.shieldFx = this.player.postFX.addGlow(0x00ffff, 2, 0, false, 0.05, 8);
     }
   }
 
