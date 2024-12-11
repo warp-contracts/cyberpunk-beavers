@@ -1,6 +1,8 @@
 :root {
   /* colors */
   --yellow: #fcee09;
+  --golden: #ffd700;
+  --dark-yellow: #ffcc66;
   --white: #ffffff;
   --green: #00ff00;
   --darkgreen: darkgreen;
@@ -11,8 +13,15 @@
   --blue: rgba(0, 140, 255, 0.83);
   --ap: #25a31f;
   --boxblack: #050a0e;
+  --black: #000000;
+  --violet: #8000ff;
+  --grey: #ccc;
+  --light-violet: #9a33ff;
+  --neon-blue: #00bfff;
+  --turquoise: #00ffff;
 
   /* font sizes */
+  --fs-16: 16px;
   --regular: 22px;
   --big: 25px;
   --big-title: 50px;
@@ -22,6 +31,11 @@
 
   /* font families */
   --ff-main: 'Press Start 2P';
+  --ff-poppins: 'Poppins ', sans-serif;
+
+  /* screen */
+  --mobile: 600px;
+  --tablet: 1200px;
 }
 
 body {
@@ -30,6 +44,10 @@ body {
   background-color: #000000;
   font-family: 'Courier New', Courier, monospace;
   font-size: 16px;
+
+  @media (max-width: 600px) {
+    overflow: auto;
+  }
 }
 
 .d-flex {

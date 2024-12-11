@@ -33,7 +33,7 @@
     "mrpas": "^2.0.0",
     "phaser": "^3.80.1",
     "warp-contracts": "^1.4.45",
-    "warp-contracts-plugin-quickjs": "^1.1.10",
+    "warp-contracts-plugin-quickjs": "^1.1.13",
     "warp-contracts-plugin-signature": "^1.0.20",
     "webfontloader": "^1.6.28",
     "ws": "^8.16.0"

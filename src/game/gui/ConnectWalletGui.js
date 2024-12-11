@@ -6,7 +6,6 @@ import { getAddress } from '@ethersproject/address';
 import m from 'mithril';
 
 const CHANGE_SCENE_TIMEOUT_MS = window.warpAO.config.env === 'dev' ? 0 : 2000;
-
 export function ConnectWalletSceneGui(initialVnode) {
   let walletConnectionText;
   let walletErrorText = null;
@@ -141,10 +140,24 @@ export function ConnectWalletSceneGui(initialVnode) {
               },
               style: {
                 width: '150px',
-                marginBottom: '40px',
+                marginBottom: '20px',
               },
             },
             'Read manual'
+          ),
+          m(
+            '.button yellow',
+            {
+              onclick: async () => {
+                playClick();
+                m.route.set('/market');
+              },
+              style: {
+                width: '150px',
+                marginBottom: '40px',
+              },
+            },
+            'Market'
           ),
           m(
             '.button green',

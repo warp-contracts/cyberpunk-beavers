@@ -30,7 +30,7 @@ export const loadingSceneKey = scenes.loadingScene.key;
 export const loungeAreaSceneKey = scenes.loungeAreaScene.key;
 export const characterPickSceneKey = scenes.characterPickScene.key;
 
-const config = {
+export const config = {
   title: 'CyberBeavers',
   type: Phaser.WEBGL,
   parent: 'game',
@@ -64,12 +64,10 @@ const config = {
 };
 
 window.sizeChanged = () => {
-  if (window.game.isBooted) {
+  if (window.game?.isBooted) {
     setTimeout(() => {
-      window.game.scale.resize(window.innerWidth, window.innerHeight);
+      window.game?.scale.resize(window.innerWidth, window.innerHeight);
     }, 100);
   }
 };
 window.onresize = () => window.sizeChanged();
-
-window.game = new Phaser.Game(config);

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/css/mithril/leaderboard.css" />
     <link rel="stylesheet" href="/css/mithril/global-leaderboard.css" />
     <link rel="stylesheet" href="/css/mithril/character-pick-gui.css" />
+    <link rel="stylesheet" href="/css/mithril/market-page.css" />
     <title>Cyberpunk Beavers</title>
   </head>
   <!-- Google tag (gtag.js) -->
@@ -33,6 +34,10 @@
       padding: 0px;
       overflow: hidden;
       height: 100%;
+
+      @media (max-width: 600px) {
+        overflow: auto;
+      }
     }
 
     #mithril-gui {
@@ -61,10 +66,9 @@
   </style>
 
   <body>
-    <div id="game"></div>
+    <div id="app"></div>
     <div id="mithril-gui" class="mithril-gui-hide"></div>
-    <script type="module" src="/src/game/config/warp-ao.js"></script>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/routes.js"></script>
     <audio id="button-click-sound" src="/assets/audio/click.mp3"></audio>
   </body>
 </html>
