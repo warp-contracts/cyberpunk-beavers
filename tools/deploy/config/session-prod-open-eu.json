@@ -28,7 +28,7 @@
     {
       "start": {
         "dayOfTheWeek": 5,
-        "time": "01:00",
+        "time": "18:00",
         "dayOfTheWeek_comment": "Sunday - Saturday : 0 - 6"
       },
       "gameDuration": 300000,
@@ -36,6 +36,102 @@
       "gameBreak": 60000,
       "gameBreak_comment": "1 minute",
       "games": [
+        {
+          "map": "b2m2",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        {
+          "map": "b2m3",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        {
+          "map": "b3m4",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        {
+          "map": "b1m5",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        {
+          "map": "b2m1",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
         { "map": "b2m2" },
         { "map": "b2m3" },
         { "map": "b3m4" },
@@ -43,9 +139,238 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
         { "map": "b2m2" },
         { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
         { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -58,16 +383,101 @@
         { "map": "b2m3" },
         { "map": "b2m4" },
 
-        { "map": "b2m2" },
-        { "map": "b2m3" },
-        { "map": "b3m4" },
-        { "map": "b1m5" },
-        { "map": "b2m1" },
+        {
+          "map": "b2m2",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        {
+          "map": "b2m3",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        {
+          "map": "b3m4",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        {
+          "map": "b1m5",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
+        {
+          "map": "b2m1",
+          "playersLimit": 20,
+          "gameplayConfig": {
+            "mode": "deathmatch"
+          },
+          "gameObjectsConfig": {
+            "respawned": "random"
+          },
+          "teamsConfig": {
+            "amount": 2,
+            "weight": {
+              "frags": 2
+            },
+            "teams": [],
+            "bonus": 5000
+          }
+        },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -76,9 +486,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -87,9 +497,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -98,9 +508,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -109,9 +519,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -120,19 +530,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
-        { "map": "b2m2" },
-        { "map": "b2m3" },
-        { "map": "b3m4" },
         { "map": "b1m5" },
-        { "map": "b2m1" },
-        { "map": "b2m4" },
-        { "map": "b2m5" },
-        { "map": "b2m2" },
-        { "map": "b2m3" },
-        { "map": "b2m4" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -141,9 +541,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -152,9 +552,19 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
         { "map": "b2m2" },
         { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
         { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -163,9 +573,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -174,9 +584,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -185,9 +595,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -196,9 +606,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -207,19 +617,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
-        { "map": "b2m2" },
-        { "map": "b2m3" },
-        { "map": "b3m4" },
         { "map": "b1m5" },
-        { "map": "b2m1" },
-        { "map": "b2m4" },
-        { "map": "b2m5" },
-        { "map": "b2m2" },
-        { "map": "b2m3" },
-        { "map": "b2m4" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -228,9 +628,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -239,9 +639,19 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
         { "map": "b2m2" },
         { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
         { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -250,9 +660,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -261,9 +671,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -272,9 +682,9 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
-        { "map": "b2m2" },
+        { "map": "b1m4" },
         { "map": "b2m3" },
-        { "map": "b2m4" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
@@ -283,9 +693,31 @@
         { "map": "b2m1" },
         { "map": "b2m4" },
         { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
         { "map": "b2m2" },
         { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
         { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
+
+        { "map": "b2m2" },
+        { "map": "b2m3" },
+        { "map": "b3m4" },
+        { "map": "b1m5" },
+        { "map": "b2m1" },
+        { "map": "b2m4" },
+        { "map": "b2m5" },
+        { "map": "b1m4" },
+        { "map": "b2m3" },
+        { "map": "b1m5" },
 
         { "map": "b2m2" },
         { "map": "b2m3" },
