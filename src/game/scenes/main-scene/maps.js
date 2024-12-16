@@ -75,6 +75,13 @@ export function doCreateTileMap(mainScene) {
     mainScene.tileMap.addTilesetImage('Snow_C', 'Snow_C'),
     mainScene.tileMap.addTilesetImage('Snow_D', 'Snow_D'),
     mainScene.tileMap.addTilesetImage('Snow_E', 'Snow_E'),
+    mainScene.tileMap.addTilesetImage('$oldtruck_tree', '$oldtruck_tree'),
+    mainScene.tileMap.addTilesetImage('$oldtruck', '$oldtruck'),
+    mainScene.tileMap.addTilesetImage('$snowglobe', '$snowglobe'),
+    mainScene.tileMap.addTilesetImage('$sleigh', '$sleigh'),
+    mainScene.tileMap.addTilesetImage('Chr_A2', 'Chr_A2'),
+    mainScene.tileMap.addTilesetImage('Chr_B', 'Chr_B'),
+    mainScene.tileMap.addTilesetImage('Chr_non-rm-a2-square', 'Chr_non-rm-a2-square'),
   ];
   const layers = mainScene.tileMap.getTileLayerNames();
   let frontLayerDepth = FRONT_LAYER_DEPTH;
