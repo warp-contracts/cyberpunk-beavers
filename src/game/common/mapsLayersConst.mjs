@@ -16,7 +16,7 @@ export const DEV_MAP = 'ice';
 
 const maps_snow = {
   ice: {
-    txId: '26RNvNr3dA0UHmftRz4T5fvwRGRm0rAk4jNKmzYviWs',
+    txId: 'cgdenV9nHYPjqvdc6oIBXhNM5enoOPMbYQXndvQ2WMA',
     music: 'backgroundMusicMetal',
   },
 };

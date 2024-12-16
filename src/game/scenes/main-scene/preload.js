@@ -210,4 +210,11 @@ function preloadHauntedMapAssets(mainScene) {
   loadSpriteSheet(mainScene, 'Snow_C', 'assets/maps/v2/snow/tilesets/Snow_C.png');
   loadSpriteSheet(mainScene, 'Snow_D', 'assets/maps/v2/snow/tilesets/Snow_D.png');
   loadSpriteSheet(mainScene, 'Snow_E', 'assets/maps/v2/snow/tilesets/Snow_E.png');
+  loadSpriteSheet(mainScene, '$oldtruck_tree', 'assets/maps/v2/snow/tilesets/$oldtruck_tree.png');
+  loadSpriteSheet(mainScene, '$oldtruck', 'assets/maps/v2/snow/tilesets/$oldtruck.png');
+  loadSpriteSheet(mainScene, '$snowglobe', 'assets/maps/v2/snow/tilesets/$snowglobe.png');
+  loadSpriteSheet(mainScene, '$sleigh', 'assets/maps/v2/snow/tilesets/$sleigh.png');
+  loadSpriteSheet(mainScene, 'Chr_A2', 'assets/maps/v2/snow/tilesets/Chr_A2.png');
+  loadSpriteSheet(mainScene, 'Chr_B', 'assets/maps/v2/snow/tilesets/Chr_B.png');
+  loadSpriteSheet(mainScene, 'Chr_non-rm-a2-square', 'assets/maps/v2/snow/tilesets/Chr_non-rm-a2-square.png');
 }
