@@ -195,4 +195,19 @@ function preloadHauntedMapAssets(mainScene) {
     'hauntedhouse_C_destroyed_dark',
     'assets/maps/v2/haunted/tilesets/hauntedhouse_C_destroyed_dark.png'
   );
+  loadSpriteSheet(mainScene, '!$door', 'assets/maps/v2/snow/tilesets/!$door.png');
+  loadSpriteSheet(mainScene, '!$lighthouseani', 'assets/maps/v2/snow/tilesets/!$lighthouseani.png');
+  loadSpriteSheet(mainScene, 'non-rm-a1-square', 'assets/maps/v2/snow/tilesets/non-rm-a1-square.png');
+  loadSpriteSheet(mainScene, 'non-rm-a2-square', 'assets/maps/v2/snow/tilesets/non-rm-a2-square.png');
+  loadSpriteSheet(mainScene, 'non-rm-a3', 'assets/maps/v2/snow/tilesets/non-rm-a3.png');
+  loadSpriteSheet(mainScene, 'non-rm-a4-square', 'assets/maps/v2/snow/tilesets/non-rm-a4-square.png');
+  loadSpriteSheet(mainScene, 'Snow_A1', 'assets/maps/v2/snow/tilesets/Snow_A1.png');
+  loadSpriteSheet(mainScene, 'Snow_A2', 'assets/maps/v2/snow/tilesets/Snow_A2.png');
+  loadSpriteSheet(mainScene, 'Snow_A3', 'assets/maps/v2/snow/tilesets/Snow_A3.png');
+  loadSpriteSheet(mainScene, 'Snow_A4', 'assets/maps/v2/snow/tilesets/Snow_A4.png');
+  loadSpriteSheet(mainScene, 'Snow_A5', 'assets/maps/v2/snow/tilesets/Snow_A5.png');
+  loadSpriteSheet(mainScene, 'Snow_B', 'assets/maps/v2/snow/tilesets/Snow_B.png');
+  loadSpriteSheet(mainScene, 'Snow_C', 'assets/maps/v2/snow/tilesets/Snow_C.png');
+  loadSpriteSheet(mainScene, 'Snow_D', 'assets/maps/v2/snow/tilesets/Snow_D.png');
+  loadSpriteSheet(mainScene, 'Snow_E', 'assets/maps/v2/snow/tilesets/Snow_E.png');
 }

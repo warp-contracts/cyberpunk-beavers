@@ -60,6 +60,21 @@ export function doCreateTileMap(mainScene) {
     mainScene.tileMap.addTilesetImage('drip_dark', 'drip_dark'),
     mainScene.tileMap.addTilesetImage('hauntedhouse_B_dark', 'hauntedhouse_B_dark'),
     mainScene.tileMap.addTilesetImage('hauntedhouse_C_destroyed_dark', 'hauntedhouse_C_destroyed_dark'),
+    mainScene.tileMap.addTilesetImage('!$door', '!$door'),
+    mainScene.tileMap.addTilesetImage('!$lighthouseani', '!$lighthouseani'),
+    mainScene.tileMap.addTilesetImage('non-rm-a1-square', 'non-rm-a1-square'),
+    mainScene.tileMap.addTilesetImage('non-rm-a2-square', 'non-rm-a2-square'),
+    mainScene.tileMap.addTilesetImage('non-rm-a3', 'non-rm-a3'),
+    mainScene.tileMap.addTilesetImage('non-rm-a4-square', 'non-rm-a4-square'),
+    mainScene.tileMap.addTilesetImage('Snow_A1', 'Snow_A1'),
+    mainScene.tileMap.addTilesetImage('Snow_A2', 'Snow_A2'),
+    mainScene.tileMap.addTilesetImage('Snow_A3', 'Snow_A3'),
+    mainScene.tileMap.addTilesetImage('Snow_A4', 'Snow_A4'),
+    mainScene.tileMap.addTilesetImage('Snow_A5', 'Snow_A5'),
+    mainScene.tileMap.addTilesetImage('Snow_B', 'Snow_B'),
+    mainScene.tileMap.addTilesetImage('Snow_C', 'Snow_C'),
+    mainScene.tileMap.addTilesetImage('Snow_D', 'Snow_D'),
+    mainScene.tileMap.addTilesetImage('Snow_E', 'Snow_E'),
   ];
   const layers = mainScene.tileMap.getTileLayerNames();
   let frontLayerDepth = FRONT_LAYER_DEPTH;
