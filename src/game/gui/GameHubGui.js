@@ -2,11 +2,14 @@ import { trimString } from '../utils/utils.js';
 import { playClick } from '../utils/mithril.js';
 import { GAMEPLAY_MODE_LABEL } from '../common/const.mjs';
 import m from 'mithril';
+import { state } from './state.js';
 
 export function GameHubGui() {
   return {
     view: function (vnode) {
-      const { games, gameError, joinGame, spectateGame, enterGlobalLeaderboard } = vnode.attrs;
+      const { games, gameError, joinGame, spectateGame, enterGlobalLeaderboard, walletAddress } = vnode.attrs;
+      state.walletAddress = walletAddress;
+      console.log(state);
       return [
         m('.mithril-component', { id: 'game-hub' }, [
           m('.games-list-wrapper', [
@@ -23,6 +26,20 @@ export function GameHubGui() {
                 },
               },
               'GLOBAL LEADERBOARD'
+            ),
+            m(
+              '.button yellow',
+              {
+                onclick: async () => {
+                  playClick();
+                  m.route.set('/market');
+                },
+                style: {
+                  marginTop: '40px',
+                  textTransform: 'uppercase',
+                },
+              },
+              'Market'
             ),
           ]),
         ]),

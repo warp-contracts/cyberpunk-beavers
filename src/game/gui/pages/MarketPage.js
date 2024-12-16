@@ -1,8 +1,18 @@
 import m from 'mithril';
 import { playClick } from '../../utils/mithril';
 import { hideGui } from '../../utils/mithril';
+import { state } from '../state';
+import { trimString } from '../../utils/utils';
 
 export function MarketPage() {
+  const { walletAddress } = state;
+  let showModal = false; // State to control the visibility of the modal
+
+  function toggleModal() {
+    console.log('toggle');
+    showModal = !showModal;
+    m.redraw();
+  }
   return {
     oninit: function (vnode) {
       hideGui();
@@ -24,7 +34,22 @@ export function MarketPage() {
 
     view: function (vnode) {
       return m('.marketplace', [
-        m('.market-connect-wallet', 'Connect wallet'),
+        m('.market-connect-wallet', [
+          m(
+            '.market-connect-wallet-button',
+            {
+              onclick: () => {
+                playClick();
+                toggleModal();
+              },
+              disabled: walletAddress,
+            },
+            walletAddress ? 'Disconnect' : 'Connect'
+          ),
+          walletAddress && m('.market-connect-wallet-address', trimString(walletAddress, 3, 3, 3)),
+        ]),
+        showModal && m(Modal, { onClose: toggleModal }), // Show modal based on state
+
         m('.container', [
           m('.title', 'Marketplace'),
           m('.products', [vnode.state.products.map((product) => m(ProductTile, { product }))]),
@@ -32,6 +57,61 @@ export function MarketPage() {
       ]);
     },
   };
+}
+
+function Modal() {
+  return {
+    view: function (vnode) {
+      return m('.modal-background', [
+        m('.modal', [
+          m('.modal-content', [
+            m(
+              'button.modal-close',
+              {
+                onclick: () => {
+                  console.log('closing');
+                  vnode.attrs.onClose();
+                },
+              },
+              '×'
+            ),
+            m('h1.modal-title', 'Connect Wallet'),
+            m(
+              'button.wallet-button',
+              {
+                onclick: async () => {
+                  console.log('clicked');
+                  await handleArconnect();
+                },
+              },
+              'Arconnect'
+            ),
+            m('button.wallet-button', 'Metamask'),
+          ]),
+        ]),
+      ]);
+    },
+  };
+}
+
+async function handleArconnect() {
+  console.log(window.arweaveWallet);
+  if (!window.arweaveWallet) return;
+  try {
+    console.log('connecting');
+    await window.arweaveWallet.connect([
+      'ACCESS_ADDRESS',
+      'DISPATCH',
+      'SIGN_TRANSACTION',
+      'ACCESS_PUBLIC_KEY',
+      'SIGNATURE',
+    ]);
+  } catch (e) {
+    window.alert(
+      `Problem with loading ArConnect.\nPlease refresh page and try again. Our best tech beavers are working on solving this problem.`
+    );
+  }
+  state.walletAddress = await window.arweaveWallet.getActiveAddress();
 }
 
 function ProductTile() {
@@ -85,7 +165,7 @@ function ProductTile() {
             'button.buy-button',
             {
               onclick: () => buyProduct(product),
-              disabled: (product.selectedQuantity || 0) <= 0, // Disable if quantity is 0
+              disabled: (product.selectedQuantity || 0) <= 0,
             },
             'Buy'
           ),
@@ -97,6 +177,5 @@ function ProductTile() {
 
 function buyProduct(product) {
   console.log('Buying', product);
-  // Implement the buy logic here
   playClick();
 }

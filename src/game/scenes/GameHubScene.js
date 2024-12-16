@@ -49,6 +49,7 @@ export default class GameHubScene extends Phaser.Scene {
           return m(GameHubGui, {
             gameError: self.gameError,
             games: self.games,
+            walletAddress: self.walletAddress,
             joinGame: async (processId, game) => {
               console.log(`picked ${processId}`);
               await serverConnection.initGame(game.module, processId, game.mapTxId);
