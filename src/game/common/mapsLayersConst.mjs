@@ -12,11 +12,11 @@ export const FRONT_LAYER_PREFIX = 'front';
 
 export const DEFAULT_BG_MUSIC = 'backgroundMusic';
 
-export const DEV_MAP = 'b4m2';
+export const DEV_MAP = 'b4m1';
 
 const maps_snow = {
-  ice: {
-    txId: 'cgdenV9nHYPjqvdc6oIBXhNM5enoOPMbYQXndvQ2WMA',
+  b4m1: {
+    txId: 'HJZzZP2yiQ1H1pfB997xfCL6OkbZyAmp-_SAEZLMdwY',
     music: 'backgroundMusicMetal',
   },
   b4m2: {
