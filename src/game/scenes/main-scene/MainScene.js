@@ -241,6 +241,9 @@ export default class MainScene extends Phaser.Scene {
     this.gameOver = true;
     this.backgroundMusic.stop();
     this.backgroundMusicMetal.stop();
+    this.chri.stop();
+    this.christmasMusic.stop();
+    this.christmasMusic2.stop();
     this.gameOverSound.play();
     this.server.send({ cmd: Const.Command.info }); // sent just so we can send the tokens at the end of the game
     setTimeout(() => {
