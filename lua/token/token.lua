@@ -59,7 +59,7 @@ Denomination = Denomination or 0
 Balances = Balances or { [ao.id] = 10000000000000000 }
 TotalSupply = TotalSupply or 10000000000000000
 Name = Name or 'CyberBeaver Coin'
-Ticker = Ticker or 'CBCOINS'
+Ticker = 'DAM'
 Logo = Logo or 'WATOlqtoEaO2IsZyUaG-en3qLxPwUnCKLu3SnEm42SY'
 
 --[[
