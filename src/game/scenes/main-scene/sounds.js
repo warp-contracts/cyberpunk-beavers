@@ -6,6 +6,8 @@ export function doAddSounds(mainScene) {
   mainScene.gameActiveSound = mainScene.sound.add('game_active_sound', { loop: false, volume: 1.0 });
   mainScene.backgroundMusic = mainScene.sound.add('background_music', { loop: true, volume: 0.25 });
   mainScene.backgroundMusicMetal = mainScene.sound.add('background_music_metal', { loop: true, volume: 0.25 });
+  mainScene.christmasMusic = mainScene.sound.add('christmas_music', { loop: true, volume: 0.25 });
+  mainScene.christmasMusic2 = mainScene.sound.add('christmas_music_2', { loop: true, volume: 0.25 });
   mainScene.pickUpSound = mainScene.sound.add('pick_up_sound', { loop: false, volume: 3 });
   mainScene.noCollectSound = mainScene.sound.add('no_collect_sound', { loop: false, volume: 3 });
   mainScene.digSound = mainScene.sound.add('dig_sound', { loop: false, volume: 0.5 });

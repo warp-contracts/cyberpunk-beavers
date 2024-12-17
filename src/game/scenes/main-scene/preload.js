@@ -58,6 +58,8 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('game_active_sound', ['assets/audio/game_active.mp3']);
   mainScene.load.audio('background_music', ['assets/audio/background_music.mp3']);
   mainScene.load.audio('background_music_metal', ['assets/audio/background_music_metal.mp3']);
+  mainScene.load.audio('christmas_music', ['assets/audio/christmas_1.mp3']);
+  mainScene.load.audio('christmas_music_2', ['assets/audio/christmas_2.mp3']);
   mainScene.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
   mainScene.load.audio('no_collect_sound', ['assets/audio/no_collect.mp3']);
   mainScene.load.audio('dig_sound', ['assets/audio/dig.mp3']);
