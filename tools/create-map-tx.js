@@ -49,7 +49,7 @@ const file = `../public/assets/maps/v2/snow/${mapName}`;
         },
         {
           name: 'Terrain',
-          value: 'haunted',
+          value: 'snow',
         },
       ],
     },
