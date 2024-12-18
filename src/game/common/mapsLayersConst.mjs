@@ -20,7 +20,7 @@ const maps_snow = {
     music: 'christmasMusic2',
   },
   b4m2: {
-    txId: 'WsejNiDUivgwgMRt2roFNBgvxOa4rw9BOTh3HT-_cxE',
+    txId: '5lQ6D8daF0uznGUK5xhc81_ZK7v8bP3H0xHao4ihH5M',
     music: 'christmasMusic',
   },
 };
