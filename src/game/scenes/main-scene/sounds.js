@@ -38,6 +38,7 @@ export function doAddSounds(mainScene) {
   mainScene.quadDamage = mainScene.sound.add('quad_damage', { loop: false, volume: 2.5 });
   mainScene.shotBuzz = mainScene.sound.add('shot_buzz', { loop: false, volume: 0.5 });
   mainScene.hahaSound = mainScene.sound.add('haha', { loop: false, volume: 2 });
+  mainScene.hohohoSound = mainScene.sound.add('hohoho', { loop: false, volume: 2 });
   mainScene.healEffect = mainScene.sound.add('heal_effect', { loop: false, volume: 1 });
   mainScene.monsterEliminated = mainScene.sound.add('monster_eliminated', { loop: false, volume: 4.0 });
   mainScene.newWave = mainScene.sound.add('new_wave', { loop: false, volume: 4.0 });
