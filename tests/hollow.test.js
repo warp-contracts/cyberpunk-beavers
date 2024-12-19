@@ -163,8 +163,8 @@ function createSingleOrder(qty, itemQty, item) {
     ['X-Order-Action']: 'Create-Order',
     Sender: 'jmGGoJaDYDTx4OCM7MP-7l-VLIM4ZEGCS0cHPsSmiNE',
     Quantity: qty,
-    ['Item-Quantity']: itemQty,
-    Item: item,
+    ['X-Item-Quantity']: itemQty,
+    ['X-Item']: item,
   };
 }
 

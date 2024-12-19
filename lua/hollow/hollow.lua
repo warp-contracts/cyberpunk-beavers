@@ -112,7 +112,7 @@ Handlers.add('Credit-Notice', Handlers.utils.hasMatchingTag('Action', 'Credit-No
 			HandleError({
 				Target = orderArgs.sender,
 				Action = 'Input-Error',
-				Message = 'Invalid arguments, required { Item, Item-Quantity }.',
+				Message = 'Invalid arguments, required { X-Item, X-Item-Quantity }.',
 				Quantity = orderArgs.quantity,
 				TransferToken = msg.From,
 			})
