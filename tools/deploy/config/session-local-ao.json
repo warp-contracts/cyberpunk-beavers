@@ -32,7 +32,7 @@
       "gameDuration_comment": "1 minute",
       "gameBreak": 10000,
       "gameBreak_comment": "10 seconds",
-      "games": [{ "map": "b2m3" }]
+      "games": [{ "map": "b4m2" }]
     },
     {
       "start": {

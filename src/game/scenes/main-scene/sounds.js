@@ -6,6 +6,8 @@ export function doAddSounds(mainScene) {
   mainScene.gameActiveSound = mainScene.sound.add('game_active_sound', { loop: false, volume: 1.0 });
   mainScene.backgroundMusic = mainScene.sound.add('background_music', { loop: true, volume: 0.25 });
   mainScene.backgroundMusicMetal = mainScene.sound.add('background_music_metal', { loop: true, volume: 0.25 });
+  mainScene.christmasMusic = mainScene.sound.add('christmas_music', { loop: true, volume: 0.25 });
+  mainScene.christmasMusic2 = mainScene.sound.add('christmas_music_2', { loop: true, volume: 0.25 });
   mainScene.pickUpSound = mainScene.sound.add('pick_up_sound', { loop: false, volume: 3 });
   mainScene.noCollectSound = mainScene.sound.add('no_collect_sound', { loop: false, volume: 3 });
   mainScene.digSound = mainScene.sound.add('dig_sound', { loop: false, volume: 0.5 });
@@ -36,6 +38,7 @@ export function doAddSounds(mainScene) {
   mainScene.quadDamage = mainScene.sound.add('quad_damage', { loop: false, volume: 2.5 });
   mainScene.shotBuzz = mainScene.sound.add('shot_buzz', { loop: false, volume: 0.5 });
   mainScene.hahaSound = mainScene.sound.add('haha', { loop: false, volume: 2 });
+  mainScene.hohohoSound = mainScene.sound.add('hohoho', { loop: false, volume: 2 });
   mainScene.healEffect = mainScene.sound.add('heal_effect', { loop: false, volume: 1 });
   mainScene.monsterEliminated = mainScene.sound.add('monster_eliminated', { loop: false, volume: 4.0 });
   mainScene.newWave = mainScene.sound.add('new_wave', { loop: false, volume: 4.0 });

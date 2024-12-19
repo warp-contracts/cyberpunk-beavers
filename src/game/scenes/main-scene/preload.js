@@ -27,7 +27,7 @@ export function doPreloadAssets(mainScene) {
 
   //mainScene.load.image('cyberpunk_game_treasures', 'assets/images/game_treasures.png');
 
-  mainScene.load.image('post_apocalyptic_background', 'assets/images/background_post_apocalyptic.jpg');
+  mainScene.load.image('post_apocalyptic_background', 'assets/images/christmas_ice.png');
 
   mainScene.load.image('medal_gold', 'assets/images/medal-gold.png');
   mainScene.load.image('medal_silver', 'assets/images/medal-silver.png');
@@ -58,6 +58,8 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('game_active_sound', ['assets/audio/game_active.mp3']);
   mainScene.load.audio('background_music', ['assets/audio/background_music.mp3']);
   mainScene.load.audio('background_music_metal', ['assets/audio/background_music_metal.mp3']);
+  mainScene.load.audio('christmas_music', ['assets/audio/christmas_1.mp3']);
+  mainScene.load.audio('christmas_music_2', ['assets/audio/christmas_2.mp3']);
   mainScene.load.audio('pick_up_sound', ['assets/audio/pick.mp3']);
   mainScene.load.audio('no_collect_sound', ['assets/audio/no_collect.mp3']);
   mainScene.load.audio('dig_sound', ['assets/audio/dig.mp3']);
@@ -85,6 +87,7 @@ export function doPreloadAssets(mainScene) {
   mainScene.load.audio('quad_damage', ['assets/audio/quad_damage.m4a']);
   mainScene.load.audio('shot_buzz', ['assets/audio/shot_buzz.mp3']);
   mainScene.load.audio('haha', ['assets/audio/haha.mp3']);
+  mainScene.load.audio('hohoho', ['assets/audio/hohoho.mp3']);
   // mainScene.load.audio('background_music_haunted_1', ['assets/audio/background_music_haunted_1.mp3']);
   // mainScene.load.audio('background_music_haunted_2', ['assets/audio/background_music_haunted_2.mp3']);
   mainScene.load.audio('heal_effect', ['assets/audio/heal_effect.mp3']);
@@ -195,4 +198,26 @@ function preloadHauntedMapAssets(mainScene) {
     'hauntedhouse_C_destroyed_dark',
     'assets/maps/v2/haunted/tilesets/hauntedhouse_C_destroyed_dark.png'
   );
+  loadSpriteSheet(mainScene, '!$door', 'assets/maps/v2/snow/tilesets/!$door.png');
+  loadSpriteSheet(mainScene, '!$lighthouseani', 'assets/maps/v2/snow/tilesets/!$lighthouseani.png');
+  loadSpriteSheet(mainScene, 'non-rm-a1-square', 'assets/maps/v2/snow/tilesets/non-rm-a1-square.png');
+  loadSpriteSheet(mainScene, 'non-rm-a2-square', 'assets/maps/v2/snow/tilesets/non-rm-a2-square.png');
+  loadSpriteSheet(mainScene, 'non-rm-a3', 'assets/maps/v2/snow/tilesets/non-rm-a3.png');
+  loadSpriteSheet(mainScene, 'non-rm-a4-square', 'assets/maps/v2/snow/tilesets/non-rm-a4-square.png');
+  loadSpriteSheet(mainScene, 'Snow_A1', 'assets/maps/v2/snow/tilesets/Snow_A1.png');
+  loadSpriteSheet(mainScene, 'Snow_A2', 'assets/maps/v2/snow/tilesets/Snow_A2.png');
+  loadSpriteSheet(mainScene, 'Snow_A3', 'assets/maps/v2/snow/tilesets/Snow_A3.png');
+  loadSpriteSheet(mainScene, 'Snow_A4', 'assets/maps/v2/snow/tilesets/Snow_A4.png');
+  loadSpriteSheet(mainScene, 'Snow_A5', 'assets/maps/v2/snow/tilesets/Snow_A5.png');
+  loadSpriteSheet(mainScene, 'Snow_B', 'assets/maps/v2/snow/tilesets/Snow_B.png');
+  loadSpriteSheet(mainScene, 'Snow_C', 'assets/maps/v2/snow/tilesets/Snow_C.png');
+  loadSpriteSheet(mainScene, 'Snow_D', 'assets/maps/v2/snow/tilesets/Snow_D.png');
+  loadSpriteSheet(mainScene, 'Snow_E', 'assets/maps/v2/snow/tilesets/Snow_E.png');
+  loadSpriteSheet(mainScene, '$oldtruck_tree', 'assets/maps/v2/snow/tilesets/$oldtruck_tree.png');
+  loadSpriteSheet(mainScene, '$oldtruck', 'assets/maps/v2/snow/tilesets/$oldtruck.png');
+  loadSpriteSheet(mainScene, '$snowglobe', 'assets/maps/v2/snow/tilesets/$snowglobe.png');
+  loadSpriteSheet(mainScene, '$sleigh', 'assets/maps/v2/snow/tilesets/$sleigh.png');
+  loadSpriteSheet(mainScene, 'Chr_A2', 'assets/maps/v2/snow/tilesets/Chr_A2.png');
+  loadSpriteSheet(mainScene, 'Chr_B', 'assets/maps/v2/snow/tilesets/Chr_B.png');
+  loadSpriteSheet(mainScene, 'Chr_non-rm-a2-square', 'assets/maps/v2/snow/tilesets/Chr_non-rm-a2-square.png');
 }
