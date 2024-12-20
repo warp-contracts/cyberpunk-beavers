@@ -33,10 +33,11 @@
       }
     },
     "gameObjectsConfig": {
-      "respawned": "random"
+      "respawned": "random",
+      "items": [{ "type": "hazard", "value": 500, "rarity": 20, "roundsToRespawn": 5 }]
     },
     "teamsConfig": {
-      "amount": 2,
+      "amount": 0,
       "weight": {
         "frags": 2
       },
@@ -55,22 +56,34 @@
       "gameBreak_comment": "10 seconds",
       "games": [
         {
-          "map": "b2m2",
+          "map": "b4m1",
           "gameplayConfig": {
             "mode": "horde"
           }
         },
         {
-          "map": "b2m2",
+          "map": "b4m2",
           "gameplayConfig": {
             "mode": "horde"
           }
         },
         {
-          "map": "b2m2",
+          "map": "b4m3",
           "gameplayConfig": {
             "mode": "battleRoyale",
             "roundInterval": 5000
+          }
+        },
+        {
+          "map": "b4m4",
+          "gameplayConfig": {
+            "mode": "horde"
+          }
+        },
+        {
+          "map": "b4m5",
+          "gameplayConfig": {
+            "mode": "horde"
           }
         }
       ]

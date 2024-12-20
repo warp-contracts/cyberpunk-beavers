@@ -12,7 +12,34 @@ export const FRONT_LAYER_PREFIX = 'front';
 
 export const DEFAULT_BG_MUSIC = 'backgroundMusic';
 
-export const DEV_MAP = 'b3m4';
+export const DEV_MAP = 'b4m5';
+
+const maps_snow = {
+  b4m1: {
+    txId: 'HJZzZP2yiQ1H1pfB997xfCL6OkbZyAmp-_SAEZLMdwY',
+    music: 'christmasMusic2',
+  },
+  b4m2: {
+    txId: '5lQ6D8daF0uznGUK5xhc81_ZK7v8bP3H0xHao4ihH5M',
+    music: 'christmasMusic',
+  },
+  b4m3: {
+    txId: 'Nm6Lq4iFbYbouRS3Sv--e3P5p5Z_aae3L4F8gHJVKtg',
+    music: 'christmasMusic2',
+  },
+  b2m3se: {
+    txId: 'rnb5thoMBTWZILSHrlK0QQgAqoEPMix0fxb6aDXQnEM',
+    music: 'christmasMusic',
+  },
+  b4m4: {
+    txId: 'CcTfr9fRj1qHHbsumilxu12_Dla8jEIeOnIjEzyF8ZU',
+    music: 'christmasMusic2',
+  },
+  b4m5: {
+    txId: 'RrQ0ZPwYV1fyOPLZzG0J96j9S8ofPrrku_d59Awwa-8',
+    music: 'christmasMusic',
+  },
+};
 
 const maps_desert = {
   b1m1: {
@@ -93,4 +120,5 @@ export const maps = {
   ...maps_desert,
   ...maps_city,
   ...maps_haunted,
+  ...maps_snow,
 };

@@ -72,9 +72,9 @@ function playSound(picked, self) {
 
 function handleHazard(picked, self, player) {
   if (picked.result === 'win') {
+    self.hohohoSound.play();
     self.treasureSound.play();
   } else {
-    self.hahaSound.play();
     self.explosionSound.play();
     self.mainPlayer.explosionAnim().once('animationcomplete', () => {
       if (picked.finished) {

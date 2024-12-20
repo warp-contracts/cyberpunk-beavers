@@ -200,6 +200,7 @@ async function spawnGame(processId, start, end) {
         items: [
           { type: 'shield', value: 300, rarity: 20, roundsToRespawn: 20 },
           { type: 'quad_damage', value: 500, rarity: 50, roundsToRespawn: 5 },
+          { type: 'hazard', value: 500, rarity: 20, roundsToRespawn: 5 },
           { type: 'drill', rarity: 0 },
           { type: 'scanner_device', rarity: 0 },
         ],
