@@ -33,10 +33,11 @@
       }
     },
     "gameObjectsConfig": {
-      "respawned": "random"
+      "respawned": "random",
+      "items": [{ "type": "hazard", "value": 500, "rarity": 20, "roundsToRespawn": 5 }]
     },
     "teamsConfig": {
-      "amount": 2,
+      "amount": 0,
       "weight": {
         "frags": 2
       },
