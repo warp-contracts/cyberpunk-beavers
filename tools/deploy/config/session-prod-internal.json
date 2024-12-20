@@ -55,22 +55,34 @@
       "gameBreak_comment": "10 seconds",
       "games": [
         {
-          "map": "b2m2",
+          "map": "b4m1",
           "gameplayConfig": {
             "mode": "horde"
           }
         },
         {
-          "map": "b2m2",
+          "map": "b4m2",
           "gameplayConfig": {
             "mode": "horde"
           }
         },
         {
-          "map": "b2m2",
+          "map": "b4m3",
           "gameplayConfig": {
             "mode": "battleRoyale",
             "roundInterval": 5000
+          }
+        },
+        {
+          "map": "b4m4",
+          "gameplayConfig": {
+            "mode": "horde"
+          }
+        },
+        {
+          "map": "b4m5",
+          "gameplayConfig": {
+            "mode": "horde"
           }
         }
       ]
