@@ -128,7 +128,29 @@ export function ConnectWalletSceneGui(initialVnode) {
     view: function () {
       return m('.connect-wallet', [
         m('.container', [
-          m('.title', 'Hey stranger...'),
+          m('.title', 'Hey stranger... There is something you should know...'),
+          m(
+            '.button yellow',
+            {
+              onclick: async () => {
+                playClick();
+                window.open(
+                  'https://bazar.arweave.net/#/collection/iLqXKTX1cwANalufrIU01CO3B-IG2Ht6uWvit5tR0Dk',
+                  '_blank'
+                );
+              },
+              style: {
+                width: '450px',
+                marginBottom: '40px',
+              },
+            },
+            [
+              m('', 'Cyberbeavers ($DAM) Collection'),
+              m('', 'NFT Wave 1. 23.12.25'),
+              m('', '44 NFTs, 0,5 AR'),
+              m('', 'listing 16.00-17.00 UTC'),
+            ]
+          ),
           m(
             '.button yellow',
             {
@@ -140,11 +162,11 @@ export function ConnectWalletSceneGui(initialVnode) {
                 );
               },
               style: {
-                width: '150px',
+                width: '250px',
                 marginBottom: '40px',
               },
             },
-            'Read manual'
+            'Read Game manual'
           ),
           m(
             '.button green',
