@@ -12,7 +12,7 @@ export const FRONT_LAYER_PREFIX = 'front';
 
 export const DEFAULT_BG_MUSIC = 'backgroundMusic';
 
-export const DEV_MAP = 'b2m3se';
+export const DEV_MAP = 'b4m4';
 
 const maps_snow = {
   b4m1: {
@@ -29,6 +29,10 @@ const maps_snow = {
   },
   b2m3se: {
     txId: 'rnb5thoMBTWZILSHrlK0QQgAqoEPMix0fxb6aDXQnEM',
+    music: 'christmasMusic',
+  },
+  b4m4: {
+    txId: 'CcTfr9fRj1qHHbsumilxu12_Dla8jEIeOnIjEzyF8ZU',
     music: 'christmasMusic2',
   },
 };
