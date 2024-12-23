@@ -71,7 +71,7 @@ export function LoungeArenaSceneGui(initialVnode) {
                       marginBottom: '40px',
                     },
                   },
-                  [m('', 'NFT Wave 1. 23.12.25'), m('', '44 NFTs, 0,5 AR, listing 16.00-17.00 UTC')]
+                  [m('', 'NFT Wave 1. 23.12.24'), m('', '44 NFTs, 0,5 AR, listing 16.00-17.00 UTC')]
                 ),
                 m(
                   '.info',
