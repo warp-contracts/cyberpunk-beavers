@@ -146,9 +146,9 @@ export function ConnectWalletSceneGui(initialVnode) {
             },
             [
               m('', 'Cyberbeavers ($DAM) Collection'),
-              m('', 'NFT Wave 1. 23.12.24'),
-              m('', '44 NFTs, 0,5 AR'),
-              m('', 'listing 16.00-17.00 UTC'),
+              m('', 'Wave 2 is near!'),
+              m('', 'Stay tuned for the date.'),
+              m('', 'Min. 44 NFTs at  0.5 AR+'),
             ]
           ),
           m(
