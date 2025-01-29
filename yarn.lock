@@ -2267,6 +2267,11 @@ crypto-browserify@^3.11.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
+csv-parser@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/csv-parser/-/csv-parser-3.1.0.tgz#aadb8ba86f9ade01edce1a1095ef2e1614c82297"
+  integrity sha512-egOwFF+imkpAE0gTrbzdf7c322lonHAmLPT2Ou1b5lhTSeXyfEdaMBdWuVeUJ6fsYuR0/ENonFo16kEXWKOQFw==
+
 date-fns@^2.29.3:
   version "2.30.0"
   resolved "https://registry.npmjs.org/date-fns/-/date-fns-2.30.0.tgz"

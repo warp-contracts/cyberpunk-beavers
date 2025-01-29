@@ -43,6 +43,7 @@
     "@permaweb/aoconnect": "^0.0.55",
     "ar-gql": "^2.0.2",
     "arweave": "^1.15.1",
+    "csv-parser": "^3.1.0",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
     "husky": "^8.0.0",
